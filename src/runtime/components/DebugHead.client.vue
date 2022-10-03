@@ -1,4 +1,6 @@
 <script lang="ts" setup>
+import { nextTick, onBeforeUnmount, ref } from 'vue'
+
 const els = ref(document.querySelectorAll('head > *'))
 
 const tagColour = (tag: string) => {

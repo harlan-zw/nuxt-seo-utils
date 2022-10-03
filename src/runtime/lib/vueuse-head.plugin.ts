@@ -2,7 +2,9 @@ import { createHead, renderHeadToString } from '@vueuse/head'
 import { defineNuxtPlugin } from '#app'
 import { defu } from 'defu'
 import { packMeta } from 'zhead'
-import type { MetaObject } from '../../schema'
+import type { MetaObject } from '@nuxt/schema'
+import { computed, getCurrentInstance, onBeforeUnmount, ref, watchEffect } from 'vue'
+// @ts-expect-error untyped
 import options from '#build/nuxt-hedge-config.mjs'
 
 // Note: This should always be a partial match to nuxt's internal vueuse-head plugin

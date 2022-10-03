@@ -29,11 +29,11 @@ Nuxt v3 head-edge module to play with new experimental features.
 
 ## Features
 
-- 💎 Latest [@vueuse/head](https://github.com/vueuse/head) features
+- 💎 Latest [@vueuse/head](https://github.com/vueuse/head): Computed getter support and more
 - 🧙 Define your meta tags as a flat object `useMetaTags`
 - ✨ Automatic social share meta tags
 - 🤖 Debug head tags component `DebugHead`
-- 🌳 Fully typed with `href` and `src` file auto-completion
+- 🌳 Fully typed Head Schema with `href` and `src` file auto-completion
 
 Coming soon:
 - 🪝 New hooks: `head:tags`, `head:dom`

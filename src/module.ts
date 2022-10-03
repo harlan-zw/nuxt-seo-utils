@@ -48,9 +48,7 @@ export default defineNuxtModule<ModuleOptions>({
       references.push({ path: resolve(nuxt.options.buildDir, 'head.d.ts') })
     })
 
-    nuxt.options.build.transpile.push('@zhead/schema')
-    nuxt.options.build.transpile.push('@zhead/vue')
-    nuxt.options.build.transpile.push('@zhead/schema-vue')
+    nuxt.options.build.transpile.push(...['@zhead/schema', '@zhead/vue', '@zhead/schema-vue'])
 
     addImports({
       name: 'useMetaTags',

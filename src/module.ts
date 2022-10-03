@@ -19,7 +19,7 @@ export interface ModuleOptions {
 
 export default defineNuxtModule<ModuleOptions>({
   meta: {
-    name: 'nuxt-headge',
+    name: 'nuxt-hedge',
     configKey: 'head',
   },
   defaults: {
@@ -34,7 +34,7 @@ export default defineNuxtModule<ModuleOptions>({
     addPlugin({ src: resolve(runtimeDir, 'lib', 'vueuse-head.plugin') }, { append: true })
 
     addTemplate({
-      filename: 'nuxt-headge-config.mjs',
+      filename: 'nuxt-hedge-config.mjs',
       getContents: () => `export default ${JSON.stringify(options)}`,
     })
 

@@ -1,11 +1,11 @@
-<h1 align='center'>🌳 nuxt-headge</h1>
+<h1 align='center'>🌳 nuxt-hedge</h1>
 
 <p align="center">
-<a href='https://github.com/harlan-zw/nuxt-headge/actions/workflows/test.yml'>
+<a href='https://github.com/harlan-zw/nuxt-hedge/actions/workflows/test.yml'>
 </a>
-<a href="https://www.npmjs.com/package/nuxt-headge" target="__blank"><img src="https://img.shields.io/npm/v/nuxt-headge?style=flat&colorA=002438&colorB=28CF8D" alt="NPM version"></a>
-<a href="https://www.npmjs.com/package/nuxt-headge" target="__blank"><img alt="NPM Downloads" src="https://img.shields.io/npm/dm/nuxt-headge?flat&colorA=002438&colorB=28CF8D"></a>
-<a href="https://github.com/harlan-zw/nuxt-headge" target="__blank"><img alt="GitHub stars" src="https://img.shields.io/github/stars/harlan-zw/nuxt-headge?flat&colorA=002438&colorB=28CF8D"></a>
+<a href="https://www.npmjs.com/package/nuxt-hedge" target="__blank"><img src="https://img.shields.io/npm/v/nuxt-hedge?style=flat&colorA=002438&colorB=28CF8D" alt="NPM version"></a>
+<a href="https://www.npmjs.com/package/nuxt-hedge" target="__blank"><img alt="NPM Downloads" src="https://img.shields.io/npm/dm/nuxt-hedge?flat&colorA=002438&colorB=28CF8D"></a>
+<a href="https://github.com/harlan-zw/nuxt-hedge" target="__blank"><img alt="GitHub stars" src="https://img.shields.io/github/stars/harlan-zw/nuxt-hedge?flat&colorA=002438&colorB=28CF8D"></a>
 </p>
 
 
@@ -43,27 +43,27 @@ Coming soon:
 ## Install
 
 ```bash
-npm install --save-dev nuxt-headge
+npm install --save-dev nuxt-hedge
 
 # Using yarn
-yarn add --dev nuxt-headge
+yarn add --dev nuxt-hedge
 ```
 
 ## Add Module
 
 Because this module is replacing an internal Nuxt one, the setup is slightly different.
 
-We need to hook into the internal modules and replace `meta` with `nuxt-headge`.
+We need to hook into the internal modules and replace `meta` with `nuxt-hedge`.
 
 ```ts
 export default defineNuxtConfig({
   // ...
   hooks: {
     'modules:before': async ({ nuxt }) => {
-      // swap out the nuxt internal module for nuxt-headge
+      // swap out the nuxt internal module for nuxt-hedge
       for (const k in nuxt.options._modules) {
         if (typeof nuxt.options._modules[k] === 'function' && (await nuxt.options._modules[k].getMeta()).name === 'meta')
-          nuxt.options._modules[k] = 'nuxt-headge'
+          nuxt.options._modules[k] = 'nuxt-hedge'
       }
     },
   },

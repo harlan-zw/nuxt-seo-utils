@@ -10,7 +10,7 @@
 
 
 <p align="center">
-Nuxt v3 hea_d-_edge module to play with new experimental features.
+Nuxt v3 head-edge module to play with new experimental features.
 </p>
 
 <p align="center">

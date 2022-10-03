@@ -19,6 +19,10 @@ describe('pages', () => {
           charset="utf-8"
         />,
         <meta
+          content="width=device-width, initial-scale=1"
+          name="viewport"
+        />,
+        <meta
           content="https://nuxtjs.org/meta_400.png"
           property="og:image"
         />,
@@ -67,7 +71,7 @@ describe('pages', () => {
           name="og:description"
         />,
         <meta
-          content="16"
+          content="17"
           name="head:count"
         />,
       ]

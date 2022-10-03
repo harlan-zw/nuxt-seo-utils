@@ -1,6 +1,6 @@
 import { fileURLToPath } from 'node:url'
-import { describe, expect, it } from 'vitest'
-import { setup } from '@nuxt/test-utils'
+import { afterAll, describe, expect, it } from 'vitest'
+import { getBrowser, setup } from '@nuxt/test-utils'
 import { $fetchPath, expectNoClientErrors } from './utils'
 
 /**
@@ -20,6 +20,11 @@ await setup({
   },
 })
 
+afterAll(() => {
+  const browser = await getBrowser()
+  await browser.close()
+})
+
 describe('pages', () => {
   it('render index', async () => {
     const $ = await $fetchPath('/')
@@ -29,6 +34,10 @@ describe('pages', () => {
       [
         <meta
           charset="utf-8"
+        />,
+        <meta
+          content="width=device-width, initial-scale=1"
+          name="viewport"
         />,
         <meta
           content="https://nuxtjs.org/meta_400.png"
@@ -79,7 +88,7 @@ describe('pages', () => {
           name="og:description"
         />,
         <meta
-          content="16"
+          content="17"
           name="head:count"
         />,
       ]

@@ -20,11 +20,6 @@ await setup({
   },
 })
 
-afterAll(() => {
-  const browser = await getBrowser()
-  await browser.close()
-})
-
 describe('pages', () => {
   it('render index', async () => {
     const $ = await $fetchPath('/')

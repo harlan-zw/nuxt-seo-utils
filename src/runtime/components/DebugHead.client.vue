@@ -3,6 +3,8 @@ import { nextTick, onBeforeUnmount, ref } from 'vue'
 
 const els = ref(document.querySelectorAll('head > *'))
 
+const filter = ref('')
+
 const tagColour = (tag: string) => {
   switch (tag) {
     case 'META':
@@ -41,12 +43,35 @@ nextTick(() => {
 onBeforeUnmount(() => {
   observer?.disconnect()
 })
+
+const setFilter = (val) => {
+  filter.value = val
+}
 </script>
 
 <template>
-  <div class="debug-head">
-    <p>DebugHead</p>
-    <div v-for="el in els" class="debug-head__inner">
+<div class="debug-head">
+  <p>DebugHead</p>
+  <div style="display: flex; margin-bottom: 30px;">
+    <div style="margin-right: 10px;">
+      Filter:
+    </div>
+    <div style="display: flex;">
+      <button
+        v-for="type in ['META', 'LINK', 'STYLE', 'SCRIPT']" class="debug-head__tag"
+        style="width: 50px; cursor: pointer; margin: 0 5px;"
+        :style="{ backgroundColor: !filter || filter === type ? tagColour(type) : '' }"
+        @click="setFilter(type)"
+      >
+        {{ type }}
+      </button>
+      <button class="debug-head__tag" style="width: 50px; cursor: pointer; margin: 0 5px;" @click="setFilter(null)">
+        RESET
+      </button>
+    </div>
+  </div>
+  <div v-for="el in els" >
+    <div v-if="!filter || el.tagName === filter" class="debug-head__inner">
       <div class="debug-head__tag" :style="{ backgroundColor: tagColour(el.tagName) }">
         {{ el.tagName }}
       </div>
@@ -64,6 +89,7 @@ onBeforeUnmount(() => {
       </div>
     </div>
   </div>
+</div>
 </template>
 
 <style>
@@ -75,6 +101,7 @@ onBeforeUnmount(() => {
   padding: 5px 20px;
   display: inline-block;
   max-width: 900px;
+  min-width: 600px;
   border-radius: 20px;
 }
 
@@ -108,6 +135,7 @@ onBeforeUnmount(() => {
 
 .debug-head__html {
   display: flex;
+  flex-grow: 1;
   flex-direction: column;
   white-space: pre-wrap;
   max-height: 200px;

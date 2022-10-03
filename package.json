@@ -1,12 +1,24 @@
 {
-  "name": "my-module",
-  "version": "1.0.0",
-  "license": "MIT",
+  "name": "nuxt-hedge",
   "type": "module",
+  "packageManager": "pnpm@7.8.0",
+  "version": "0.0.0",
+  "funding": "https://github.com/sponsors/harlan-zw",
+  "homepage": "https://github.com/harlan-zw/nuxt-hedge#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/harlan-zw/nuxt-hedge.git",
+    "directory": "packages/zhead"
+  },
+  "bugs": {
+    "url": "https://github.com/harlan-zw/nuxt-hedge/issues"
+  },
+  "license": "MIT",
   "exports": {
     ".": {
-      "import": "./dist/module.mjs",
-      "require": "./dist/module.cjs"
+      "types": "./dist/types.d.ts",
+      "require": "./dist/module.cjs",
+      "import": "./dist/module.mjs"
     }
   },
   "main": "./dist/module.cjs",
@@ -15,24 +27,35 @@
     "dist"
   ],
   "scripts": {
+    "lint": "eslint \"**/*.{ts,vue,json,yml}\"",
     "build": "nuxt-module-build",
     "dev": "nuxi dev playground",
     "dev:build": "nuxi build playground",
-    "dev:prepare": "nuxt-module-build --stub && nuxi prepare playground"
+    "dev:prepare": "nuxt-module-build --stub && nuxi prepare playground",
+    "release": "bumpp package.json --commit --push --tag",
+    "test": "vitest"
   },
   "dependencies": {
     "@nuxt/kit": "^3.0.0-rc.11",
-    "@vueuse/head": "^0.8.0",
-    "@zhead/schema-vue": "^0.7.4",
-    "@zhead/vue": "^0.7.4",
+    "@vueuse/head": "^0.8.2",
+    "@zhead/schema-vue": "^0.8.0",
+    "@zhead/vue": "^0.8.0",
+    "fast-glob": "^3.2.12",
     "pathe": "^0.3.8",
-    "vue": "^3.2.40"
+    "zhead": "^0.8.0"
   },
   "devDependencies": {
+    "@antfu/eslint-config": "^0.27.0",
     "@nuxt/module-builder": "latest",
     "@nuxt/schema": "^3.0.0-rc.11",
+    "@nuxt/test-utils": "3.0.0-rc.11",
     "@nuxtjs/eslint-config-typescript": "latest",
+    "bumpp": "^8.2.1",
+    "cheerio": "1.0.0-rc.12",
     "eslint": "8.24.0",
-    "nuxt": "3.0.0-rc.11"
+    "nuxt": "3.0.0-rc.11",
+    "playwright": "^1.26.1",
+    "sass": "^1.55.0",
+    "vitest": "^0.23.4"
   }
 }

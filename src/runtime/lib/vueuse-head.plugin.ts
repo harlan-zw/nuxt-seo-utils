@@ -1,9 +1,9 @@
 import { createHead, renderHeadToString } from '@vueuse/head'
-import { defineNuxtPlugin } from '#app'
+import { defineNuxtPlugin, useRoute, useRouter } from '#app'
 import { defu } from 'defu'
 import { packMeta } from 'zhead'
 import type { MetaObject } from '@nuxt/schema'
-import { computed, getCurrentInstance, onBeforeUnmount, ref, watchEffect } from 'vue'
+import { computed, getCurrentInstance, onBeforeUnmount, ref, watch, watchEffect } from 'vue'
 // @ts-expect-error untyped
 import options from '#build/nuxt-hedge-config.mjs'
 

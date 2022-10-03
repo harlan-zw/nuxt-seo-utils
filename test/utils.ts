@@ -43,7 +43,7 @@ export async function expectNoClientErrors(path: string) {
   if (!ctx.options.browser)
     return
 
-  const { pageErrors, consoleLogs } = await renderPage(path)
+  const { pageErrors, consoleLogs, page } = await renderPage(path)
 
   const consoleLogErrors = consoleLogs.filter((i: any) => i.type === 'error')
   const consoleLogWarnings = consoleLogs.filter((i: any) => i.type === 'warning')
@@ -51,4 +51,6 @@ export async function expectNoClientErrors(path: string) {
   expect(pageErrors).toEqual([])
   expect(consoleLogErrors).toEqual([])
   expect(consoleLogWarnings).toEqual([])
+
+  await page.close()
 }

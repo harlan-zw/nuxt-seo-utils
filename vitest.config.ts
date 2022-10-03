@@ -1,4 +1,3 @@
-/* eslint-disable spaced-comment */
 /// <reference types="vitest" />
 /// <reference types="vitest/globals" />
 
@@ -9,7 +8,7 @@ export default defineConfig({
   test: {
     watchExclude: [
       '**/.nuxt/**',
-      '**/.output/**'
+      '**/.output/**',
     ],
   },
 })

@@ -2,7 +2,7 @@ import { computed, getCurrentInstance, markRaw } from 'vue'
 import { defineNuxtPlugin, useNuxtApp } from '#app'
 import * as Components from './components'
 import { useHead } from './composables'
-// @ts-expect-error
+// @ts-expect-error untyped
 import { appHead } from '#build/nuxt.config.mjs'
 
 type MetaComponents = typeof Components

@@ -55,6 +55,8 @@ Because this module is replacing an internal Nuxt one, the setup is slightly dif
 
 We need to hook into the internal modules and replace `meta` with `nuxt-hedge`.
 
+_nuxt.config.ts_
+
 ```ts
 export default defineNuxtConfig({
   // ...
@@ -90,6 +92,16 @@ export default defineNuxtConfig({
 ### useHead
 
 Usage of the composable remains the same but offers better TypeScript support.
+
+Read the [useHead](https://v3.nuxtjs.org/api/composables/use-head) docs for more details.
+
+```ts
+useHead({
+  link: [
+    { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' },
+  ]
+})
+```
 
 ### useMetaTags
 

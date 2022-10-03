@@ -40,6 +40,15 @@ Coming soon:
 - 📦 Support resolving aliases
 - 🖥️ Server Only Head tags
 
+## Background
+
+I'm the maintainer of [@vueuse/head](https://github.com/vueuse/head) and [zhead](https://github.com/harlan-zw/zhead).
+
+This module was built to test bug fixes as well as experimental new features which may
+land into the Nuxt core.
+
+While it should be relatively safe for production use, it will be updated frequently and may lose parity with the Nuxt meta module, use with caution.
+
 ## Install
 
 ```bash
@@ -49,11 +58,9 @@ npm install --save-dev nuxt-hedge
 yarn add --dev nuxt-hedge
 ```
 
-## Add Module
+## Register Module 
 
-Because this module is replacing an internal Nuxt one, the setup is slightly different.
-
-We need to hook into the internal modules and replace `meta` with `nuxt-hedge`.
+This module replaces the internal Nuxt `meta` module, so the setup is slightly different.
 
 _nuxt.config.ts_
 

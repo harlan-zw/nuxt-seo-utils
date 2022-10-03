@@ -8,8 +8,8 @@ specifiers:
   '@nuxt/test-utils': 3.0.0-rc.11
   '@nuxtjs/eslint-config-typescript': latest
   '@vueuse/head': ^0.8.2
-  '@zhead/schema-vue': ^0.8.0
-  '@zhead/vue': ^0.8.0
+  '@zhead/schema-vue': ^0.8.1
+  '@zhead/vue': ^0.8.1
   bumpp: ^8.2.1
   cheerio: 1.0.0-rc.12
   eslint: 8.24.0
@@ -19,16 +19,16 @@ specifiers:
   playwright: ^1.26.1
   sass: ^1.55.0
   vitest: ^0.23.4
-  zhead: ^0.8.0
+  zhead: ^0.8.1
 
 dependencies:
   '@nuxt/kit': 3.0.0-rc.11
   '@vueuse/head': 0.8.2
-  '@zhead/schema-vue': 0.8.0
-  '@zhead/vue': 0.8.0
+  '@zhead/schema-vue': 0.8.1
+  '@zhead/vue': 0.8.1
   fast-glob: 3.2.12
   pathe: 0.3.8
-  zhead: 0.8.0
+  zhead: 0.8.1
 
 devDependencies:
   '@antfu/eslint-config': 0.27.0_eslint@8.24.0
@@ -1282,7 +1282,7 @@ packages:
       vue: '>=2.7 || >=3'
     dependencies:
       '@vueuse/shared': 9.3.0
-      '@zhead/schema-vue': 0.8.0
+      '@zhead/schema-vue': 0.8.1
     transitivePeerDependencies:
       - '@vue/composition-api'
     dev: false
@@ -1305,10 +1305,10 @@ packages:
       - vue
     dev: true
 
-  /@zhead/schema-raw/0.8.0:
-    resolution: {integrity: sha512-mP7nPbnHOMMZCBh0QFIkQVM6PgTaFNEtN2rggP4Gi2QjFcEM35BWTNgxITRIt/O0qZnfXkUfR2jhqiXqF47AXQ==}
+  /@zhead/schema-raw/0.8.1:
+    resolution: {integrity: sha512-xe5F0OUkDUgbuhbI+55zE3zoat9YbQtYNJaALLqHd+IFfbn+prBxmJ0utzE+ieYkbcDQZrVzgNppJR//bekV2A==}
     dependencies:
-      '@zhead/schema': 0.8.0
+      '@zhead/schema': 0.8.1
     dev: false
 
   /@zhead/schema-vue/0.7.4_vue@3.2.40:
@@ -1323,14 +1323,14 @@ packages:
       - '@vue/composition-api'
     dev: true
 
-  /@zhead/schema-vue/0.8.0:
-    resolution: {integrity: sha512-wRB6Jn1Da9ELNYFyQ6u5Qi20liT2X8RvxXblGmVFXlizWUjBGMiRHS6qmqMzDTT+DOF45MU4Q0KvReksOgjgxQ==}
+  /@zhead/schema-vue/0.8.1:
+    resolution: {integrity: sha512-SfrykGIA0w7uolIzy0Bg2kqdXIcVeiKepdfbrKN36PtQbvByV/fow6zJ7gH6IYgtAKM7XxCQ3WIuAgn038LUNQ==}
     peerDependencies:
       vue: '>=2.7 || >=3'
     dependencies:
       '@vueuse/shared': 9.3.0
-      '@zhead/schema': 0.8.0
-      '@zhead/schema-raw': 0.8.0
+      '@zhead/schema': 0.8.1
+      '@zhead/schema-raw': 0.8.1
     transitivePeerDependencies:
       - '@vue/composition-api'
     dev: false
@@ -1339,25 +1339,25 @@ packages:
     resolution: {integrity: sha512-18gfgmZL8gM64JdcT11d1rYLnCaY2mOtbDDSAXtCySanPGpkA1r+w01LCssEI/OfLdoZPS/kYCIW09d1PmUFfQ==}
     dev: true
 
-  /@zhead/schema/0.8.0:
-    resolution: {integrity: sha512-/uRApgsOmKdUmjmKeFAwc2mkA3DxJDbreHXLBy4QLYxBbrmCak2ibIlUKiN8LJtKo9LaUyW4GXgLUKaI2SuIew==}
+  /@zhead/schema/0.8.1:
+    resolution: {integrity: sha512-Zhfp7R+HXHsN0Ig5L5R9624NgIGENzagpP3TMnq0mE/JBXU7cP+iY5ooONex2rlPl08QuF3FbNu8qKULH3oiJg==}
     dev: false
 
-  /@zhead/vue/0.8.0:
-    resolution: {integrity: sha512-tlVWGo9e9eSOKRj4TiGBhOtcl53pNboGVbPETSfQNENCBo5YeP53H5VJhYp9HQXvffJsEShZhFGvSbKJsYrGqg==}
+  /@zhead/vue/0.8.1:
+    resolution: {integrity: sha512-andovi38TjGRv6oP3BfoE6ahvRdi+XSf6Z7qqs15WMs9olBjecySvBT9po8YIdw754xRcwdVMSC/GUe9DjNPnA==}
     peerDependencies:
       vue: '>=2.7 || >=3'
     dependencies:
       '@vueuse/shared': 9.3.0
-      '@zhead/schema': 0.8.0
-      '@zhead/schema-vue': 0.8.0
-      zhead: 0.8.0
+      '@zhead/schema': 0.8.1
+      '@zhead/schema-vue': 0.8.1
+      zhead: 0.8.1
     transitivePeerDependencies:
       - '@vue/composition-api'
     dev: false
 
-  /@zhead/zod/0.8.0:
-    resolution: {integrity: sha512-kv299RWDETzKHnLJj2cY/WNpXc1STQGSG08dcxAsH4fQI2+zOx6fgZlNhxYAIqawbdOlA6tueEiVBjOo2nLxIg==}
+  /@zhead/zod/0.8.1:
+    resolution: {integrity: sha512-fyrmE+57KUgMg1AZeF6Kpli+77BeN8sjyVhx+Uffqdmp5Fs1D26c7Y36F5W+AvD/7Qh9h0R4ashQ40qeLFoyHA==}
     dependencies:
       zod: 3.19.1
     dev: false
@@ -6918,12 +6918,12 @@ packages:
     engines: {node: '>=10'}
     dev: true
 
-  /zhead/0.8.0:
-    resolution: {integrity: sha512-UfpeopoEVEVVtn3iXwMitHPB5QO/4o6vSj5TSSYXUTE8GYhf6gFKN479By6yLYFnKLd0KjNO1js5UXbIqb7J3A==}
+  /zhead/0.8.1:
+    resolution: {integrity: sha512-VM4qwg5Jw22L9rvsHmGWmjSzlqPbUHS5ShBk3QiA2dCIQH8rCLoQOCnR5l+8N50eI2qIu+WdYeNq3p2agSBLMg==}
     dependencies:
-      '@zhead/schema': 0.8.0
-      '@zhead/schema-raw': 0.8.0
-      '@zhead/zod': 0.8.0
+      '@zhead/schema': 0.8.1
+      '@zhead/schema-raw': 0.8.1
+      '@zhead/zod': 0.8.1
       packrup: 0.1.0
     dev: false
 

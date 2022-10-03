@@ -1,17 +1,17 @@
 {
-  "name": "nuxt-hedge",
+  "name": "nuxt-headge",
   "type": "module",
   "packageManager": "pnpm@7.8.0",
   "version": "0.0.0",
   "funding": "https://github.com/sponsors/harlan-zw",
-  "homepage": "https://github.com/harlan-zw/nuxt-hedge#readme",
+  "homepage": "https://github.com/harlan-zw/nuxt-headge#readme",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/harlan-zw/nuxt-hedge.git",
+    "url": "git+https://github.com/harlan-zw/nuxt-headge.git",
     "directory": "packages/zhead"
   },
   "bugs": {
-    "url": "https://github.com/harlan-zw/nuxt-hedge/issues"
+    "url": "https://github.com/harlan-zw/nuxt-headge/issues"
   },
   "license": "MIT",
   "exports": {
@@ -28,7 +28,7 @@
   ],
   "scripts": {
     "lint": "eslint \"**/*.{ts,vue,json,yml}\"",
-    "build": "nuxt-module-build",
+    "build": "nuxi prepare playground && nuxt-module-build",
     "dev": "nuxi dev playground",
     "dev:build": "nuxi build playground",
     "dev:prepare": "nuxt-module-build --stub && nuxi prepare playground",

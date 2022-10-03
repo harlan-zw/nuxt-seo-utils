@@ -1,16 +1,16 @@
-<h1 align='center'>🌳 nuxt-hedge</h1>
+<h1 align='center'>🌳 nuxt-headge</h1>
 
 <p align="center">
-<a href='https://github.com/harlan-zw/nuxt-hedge/actions/workflows/test.yml'>
+<a href='https://github.com/harlan-zw/nuxt-headge/actions/workflows/test.yml'>
 </a>
-<a href="https://www.npmjs.com/package/nuxt-hedge" target="__blank"><img src="https://img.shields.io/npm/v/nuxt-hedge?style=flat&colorA=002438&colorB=28CF8D" alt="NPM version"></a>
-<a href="https://www.npmjs.com/package/nuxt-hedge" target="__blank"><img alt="NPM Downloads" src="https://img.shields.io/npm/dm/nuxt-hedge?flat&colorA=002438&colorB=28CF8D"></a>
-<a href="https://github.com/harlan-zw/nuxt-hedge" target="__blank"><img alt="GitHub stars" src="https://img.shields.io/github/stars/harlan-zw/nuxt-hedge?flat&colorA=002438&colorB=28CF8D"></a>
+<a href="https://www.npmjs.com/package/nuxt-headge" target="__blank"><img src="https://img.shields.io/npm/v/nuxt-headge?style=flat&colorA=002438&colorB=28CF8D" alt="NPM version"></a>
+<a href="https://www.npmjs.com/package/nuxt-headge" target="__blank"><img alt="NPM Downloads" src="https://img.shields.io/npm/dm/nuxt-headge?flat&colorA=002438&colorB=28CF8D"></a>
+<a href="https://github.com/harlan-zw/nuxt-headge" target="__blank"><img alt="GitHub stars" src="https://img.shields.io/github/stars/harlan-zw/nuxt-headge?flat&colorA=002438&colorB=28CF8D"></a>
 </p>
 
 
 <p align="center">
-A replacement head module for Nuxt v3 to experiment with new features.
+Nuxt v3 hea_d-_edge module to play with new experimental features.
 </p>
 
 <p align="center">
@@ -35,33 +35,35 @@ A replacement head module for Nuxt v3 to experiment with new features.
 - 🤖 Debug head tags component `DebugHead`
 - 🌳 Fully typed with `href` and `src` file auto-completion
 
-- 📦 Support resolving aliases (coming soon)
-- 🖥️ Server Only Head tags (coming soon)
+Coming soon:
+- 🪝 New hooks: `head:tags`, `head:dom`
+- 📦 Support resolving aliases
+- 🖥️ Server Only Head tags
 
 ## Install
 
 ```bash
-npm install --save-dev nuxt-hedge
+npm install --save-dev nuxt-headge
 
 # Using yarn
-yarn add --dev nuxt-hedge
+yarn add --dev nuxt-headge
 ```
 
 ## Add Module
 
 Because this module is replacing an internal Nuxt one, the setup is slightly different.
 
-We need to hook into the internal modules and replace `meta` with `nuxt-hedge`.
+We need to hook into the internal modules and replace `meta` with `nuxt-headge`.
 
 ```ts
 export default defineNuxtConfig({
   // ...
   hooks: {
     'modules:before': async ({ nuxt }) => {
-      // swap out the nuxt internal module for nuxt-hedge
+      // swap out the nuxt internal module for nuxt-headge
       for (const k in nuxt.options._modules) {
         if (typeof nuxt.options._modules[k] === 'function' && (await nuxt.options._modules[k].getMeta()).name === 'meta')
-          nuxt.options._modules[k] = 'nuxt-hedge'
+          nuxt.options._modules[k] = 'nuxt-headge'
       }
     },
   },

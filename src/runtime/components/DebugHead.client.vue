@@ -109,5 +109,8 @@ onBeforeUnmount(() => {
 .debug-head__html {
   display: flex;
   flex-direction: column;
+  white-space: pre-wrap;
+  max-height: 200px;
+  overflow-y: auto;
 }
 </style>

@@ -1,6 +1,6 @@
 import { fileURLToPath } from 'node:url'
-import { afterAll, describe, expect, it } from 'vitest'
-import { getBrowser, setup } from '@nuxt/test-utils'
+import { describe, expect, it } from 'vitest'
+import { setup } from '@nuxt/test-utils'
 import { $fetchPath, expectNoClientErrors } from './utils'
 
 /**

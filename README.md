@@ -117,6 +117,8 @@ useMetaTags({
 
 A component to debug your head tags.
 
+<img src="https://raw.githubusercontent.com/harlan-zw/nuxt-hedge/main/.github/component.png" alt="DebugHead Component preview">
+
 ```vue
 <template>
   <DebugHead />

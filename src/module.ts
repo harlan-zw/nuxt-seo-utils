@@ -29,10 +29,6 @@ export default defineNuxtModule<ModuleOptions>({
   async setup(options, nuxt) {
     const runtimeDir = fileURLToPath(new URL('./runtime', import.meta.url))
 
-    nuxt.options.alias['#head'] = runtimeDir
-
-    addPlugin({ src: resolve(runtimeDir, 'lib', 'vueuse-head.plugin') }, { append: true })
-
     addTemplate({
       filename: 'nuxt-hedge-config.mjs',
       getContents: () => `export default ${JSON.stringify(options)}`,
@@ -60,5 +56,19 @@ export default defineNuxtModule<ModuleOptions>({
       mode: 'client',
       filePath: `${runtimeDir}/components/DebugHead.client.vue`,
     })
+
+    /* Current head module below */
+
+    // Transpile @nuxt/meta and @vueuse/head
+    nuxt.options.build.transpile.push('@vueuse/head')
+
+    // Add #head alias
+    nuxt.options.alias['#head'] = runtimeDir
+
+    // Add generic plugin
+    addPlugin({ src: resolve(runtimeDir, 'plugin') })
+
+    // Add library specific plugin
+    addPlugin({ src: resolve(runtimeDir, 'lib/vueuse-head.plugin') })
   },
 })

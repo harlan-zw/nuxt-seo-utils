@@ -29,10 +29,11 @@ Nuxt v3 head-edge module to play with new experimental features.
 
 ## Features
 
-- 💎 Latest [@vueuse/head](https://github.com/vueuse/head): Computed getter support and more
+- 💎 Latest [@vueuse/head](https://github.com/vueuse/head): Computed getters, XSS protection, improved performance and more
 - 🧙 Define your meta tags as a flat object `useMetaTags`
 - ✨ Automatic social share meta tags
 - 🤖 Debug head tags component `DebugHead`
+- 🍣 Handle raw un-encoded tags with `useHeadRaw`
 - 🌳 Fully typed Head Schema with `href` and `src` file auto-completion
 
 Coming soon:
@@ -98,7 +99,9 @@ export default defineNuxtConfig({
 
 ### useHead
 
-Usage of the composable remains the same but offers better TypeScript support.
+Usage of the composable remains mostly the same. This version offers better TypeScript and XSS presentation support.
+
+The `children` property is has been deprecated in favor of `textContent`.
 
 Read the [useHead](https://v3.nuxtjs.org/api/composables/use-head) docs for more details.
 
@@ -106,9 +109,16 @@ Read the [useHead](https://v3.nuxtjs.org/api/composables/use-head) docs for more
 useHead({
   link: [
     { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' },
+  ],
+  style: [
+    {
+      textContent: 'body { background-color: red; }',
+    }
   ]
 })
 ```
+
+### useHeadRaw
 
 ### useMetaTags
 

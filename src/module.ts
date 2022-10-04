@@ -48,7 +48,12 @@ export default defineNuxtModule<ModuleOptions>({
 
     addImports({
       name: 'useMetaTags',
-      from: runtimeDir,
+      from: '#head',
+    })
+
+    addImports({
+      name: 'useHeadRaw',
+      from: '#head',
     })
 
     await addComponent({

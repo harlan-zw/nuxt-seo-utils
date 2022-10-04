@@ -1,4 +1,5 @@
 import { createHead, renderHeadToString } from '@vueuse/head'
+import type { HeadEntryOptions } from '@vueuse/head'
 import { defineNuxtPlugin, useRoute, useRouter } from '#app'
 import { defu } from 'defu'
 import { packMeta } from 'zhead'
@@ -107,7 +108,7 @@ export default defineNuxtPlugin((nuxtApp) => {
     })
   })
 
-  nuxtApp._useHead = (_meta: MetaObject) => {
+  nuxtApp._useHead = (_meta: MetaObject, options: HeadEntryOptions) => {
     const meta = ref<MetaObject>(_meta)
     const headObj = computed(() => {
       const overrides: MetaObject = { meta: [] }

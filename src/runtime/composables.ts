@@ -20,6 +20,10 @@ export function useHead(meta: MetaObject) {
   useNuxtApp()._useHead(meta)
 }
 
+export function useHeadRaw(meta: UseHeadRawInput) {
+  useNuxtApp()._useHead(meta, { raw: true })
+}
+
 export function useMeta(meta: MetaObject) {
   useHead(meta)
 }

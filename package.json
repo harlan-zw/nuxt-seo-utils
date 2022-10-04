@@ -37,12 +37,12 @@
   },
   "dependencies": {
     "@nuxt/kit": "^3.0.0-rc.11",
-    "@vueuse/head": "^0.8.2",
-    "@zhead/schema-vue": "^0.8.1",
-    "@zhead/vue": "^0.8.1",
+    "@vueuse/head": "^0.9.1",
+    "@zhead/schema-vue": "^0.8.2",
+    "@zhead/vue": "^0.8.2",
     "fast-glob": "^3.2.12",
     "pathe": "^0.3.8",
-    "zhead": "^0.8.1"
+    "zhead": "^0.8.2"
   },
   "devDependencies": {
     "@antfu/eslint-config": "^0.27.0",

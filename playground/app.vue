@@ -12,6 +12,14 @@ useMetaTags({
     noindex: true,
   },
 })
+
+useHeadRaw({
+  script: [
+    {
+      innerHTML: 'console.log("Non-encoded HTML!")',
+    },
+  ],
+})
 </script>
 
 <template>

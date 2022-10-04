@@ -104,7 +104,8 @@ export default defineNuxtPlugin((nuxtApp) => {
     // watch for new route before unpausing dom updates (triggered after suspense resolved)
     watch(useRoute(), () => {
       pauseDOMUpdates = false
-      head.updateDOM()
+      // force update
+      head.updateDOM(window.document, true)
     })
   })
 

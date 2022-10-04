@@ -23,15 +23,19 @@ describe('pages', () => {
           name="viewport"
         />,
         <meta
-          content="https://nuxtjs.org/meta_400.png"
+          content="DPR"
+          http-equiv="accept-ch"
+        />,
+        <meta
+          content="https://harlanzw.com/og.png"
           property="og:image"
         />,
         <meta
-          content="https://nuxtjs.org"
+          content="https://harlanzw.com"
           property="og:url"
         />,
         <meta
-          content="NuxtJS"
+          content="Harlan Wilton"
           property="og:site:name"
         />,
         <meta
@@ -39,23 +43,19 @@ describe('pages', () => {
           property="og:type"
         />,
         <meta
-          content="en_US"
+          content="en_AU"
           property="og:locale"
-        />,
-        <meta
-          content="fr_FR"
-          property="og:locale:alternate"
         />,
         <meta
           content="summary_large_image"
           property="twitter:card"
         />,
         <meta
-          content="@nuxt_js"
+          content="@harlan-zw"
           property="twitter:site"
         />,
         <meta
-          content="noindex"
+          content="max-snippet:-1, max-image-preview:large"
           name="robots"
         />,
         <meta
@@ -71,7 +71,7 @@ describe('pages', () => {
           name="og:description"
         />,
         <meta
-          content="18"
+          content="22"
           name="head:count"
         />,
       ]

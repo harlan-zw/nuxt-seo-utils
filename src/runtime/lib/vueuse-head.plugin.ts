@@ -53,7 +53,7 @@ export default defineNuxtPlugin((nuxtApp) => {
         if (tags[i].tag === 'meta')
           metaProps.push(tags[i].props)
         if (tags[i].tag === 'title')
-          title = tags[i].props.children
+          title = tags[i].props.textContent
       }
       const meta = packMeta(metaProps)
       // ensure twitter card is set

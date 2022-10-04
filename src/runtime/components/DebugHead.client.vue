@@ -50,46 +50,46 @@ const setFilter = (val) => {
 </script>
 
 <template>
-<div class="debug-head">
-  <p>DebugHead</p>
-  <div style="display: flex; margin-bottom: 30px;">
-    <div style="margin-right: 10px;">
-      Filter:
-    </div>
-    <div style="display: flex;">
-      <button
-        v-for="type in ['META', 'LINK', 'STYLE', 'SCRIPT']" class="debug-head__tag"
-        style="width: 50px; cursor: pointer; margin: 0 5px;"
-        :style="{ backgroundColor: !filter || filter === type ? tagColour(type) : '' }"
-        @click="setFilter(type)"
-      >
-        {{ type }}
-      </button>
-      <button class="debug-head__tag" style="width: 50px; cursor: pointer; margin: 0 5px;" @click="setFilter(null)">
-        RESET
-      </button>
-    </div>
-  </div>
-  <div v-for="el in els" >
-    <div v-if="!filter || el.tagName === filter" class="debug-head__inner">
-      <div class="debug-head__tag" :style="{ backgroundColor: tagColour(el.tagName) }">
-        {{ el.tagName }}
+  <div class="debug-head">
+    <p>DebugHead</p>
+    <div style="display: flex; margin-bottom: 30px;">
+      <div style="margin-right: 10px;">
+        Filter:
       </div>
-      <div v-for="(attr, key) in el.attributes" :key="key" class="debug-head__attr">
-        <span style="opacity: 0.6; font-size: 12px;">{{ attr.name }}</span>
-        <span style="opacity: 0.9;">{{ attr.value || 'true' }}</span>
+      <div style="display: flex;">
+        <button
+          v-for="type in ['META', 'LINK', 'STYLE', 'SCRIPT']" class="debug-head__tag"
+          style="width: 50px; cursor: pointer; margin: 0 5px;"
+          :style="{ backgroundColor: !filter || filter === type ? tagColour(type) : '' }"
+          @click="setFilter(type)"
+        >
+          {{ type }}
+        </button>
+        <button class="debug-head__tag" style="width: 50px; cursor: pointer; margin: 0 5px;" @click="setFilter(null)">
+          RESET
+        </button>
       </div>
-      <div v-if="el.innerHTML" class="debug-head__html">
-        <div v-if="el.tagName !== 'TITLE'">
-          <div style="opacity: 0.6; font-size: 12px;">
-            Inline
-          </div>
+    </div>
+    <div v-for="el in els">
+      <div v-if="!filter || el.tagName === filter" class="debug-head__inner">
+        <div class="debug-head__tag" :style="{ backgroundColor: tagColour(el.tagName) }">
+          {{ el.tagName }}
         </div>
-        {{ el.innerHTML }}
+        <div v-for="(attr, key) in el.attributes" :key="key" class="debug-head__attr">
+          <span style="opacity: 0.6; font-size: 12px;">{{ attr.name }}</span>
+          <span style="opacity: 0.9;">{{ attr.value || 'true' }}</span>
+        </div>
+        <div v-if="el.innerHTML" class="debug-head__html">
+          <div v-if="el.tagName !== 'TITLE'">
+            <div style="opacity: 0.6; font-size: 12px;">
+              Inline
+            </div>
+          </div>
+          {{ el.innerHTML }}
+        </div>
       </div>
     </div>
   </div>
-</div>
 </template>
 
 <style>

@@ -1,17 +1,18 @@
 <script setup lang="ts">
 useMetaTags({
-  ogImage: 'https://nuxtjs.org/meta_400.png',
-  ogUrl: 'https://nuxtjs.org',
-  ogSiteName: 'NuxtJS',
+  ogImage: 'https://harlanzw.com/og.png',
+  ogUrl: 'https://harlanzw.com',
+  ogSiteName: 'Harlan Wilton',
   ogType: 'website',
-  ogLocale: 'en_US',
-  ogLocaleAlternate: 'fr_FR',
+  ogLocale: 'en_AU',
   twitterCard: 'summary_large_image',
-  twitterSite: '@nuxt_js',
+  twitterSite: '@harlan-zw',
   robots: {
-    noindex: true,
+    maxSnippet: -1,
+    maxImagePreview: 'large',
   },
 })
+
 
 useHeadRaw({
   script: [

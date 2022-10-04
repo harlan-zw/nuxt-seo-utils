@@ -3,6 +3,7 @@ useHead({
   htmlAttrs: {
     style: 'background: red',
   },
+  title: 'red',
 })
 </script>
 

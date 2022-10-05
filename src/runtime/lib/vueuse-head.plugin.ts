@@ -1,10 +1,10 @@
 import { createHead, renderHeadToString } from '@vueuse/head'
 import type { HeadEntryOptions } from '@vueuse/head'
-import { defineNuxtPlugin, useRoute, useRouter } from '#app'
+import { defineNuxtPlugin, useRouter } from '#app'
 import { defu } from 'defu'
 import { packMeta } from 'zhead'
 import type { MetaObject } from '@nuxt/schema'
-import { computed, getCurrentInstance, onBeforeUnmount, ref, watch, watchEffect } from 'vue'
+import { computed, getCurrentInstance, onBeforeUnmount, ref, watchEffect } from 'vue'
 // @ts-expect-error untyped
 import options from '#build/nuxt-hedge-config.mjs'
 
@@ -97,15 +97,14 @@ export default defineNuxtPlugin((nuxtApp) => {
   nuxtApp.hooks.hookOnce('page:finish', () => {
     pauseDOMUpdates = false
     // start pausing DOM updates when route changes (trigger immediately)
+    // start pausing DOM updates when route changes (trigger immediately)
     useRouter().beforeEach(() => {
       pauseDOMUpdates = true
     })
-
     // watch for new route before unpausing dom updates (triggered after suspense resolved)
-    watch(useRoute(), () => {
+    useRouter().afterEach(() => {
       pauseDOMUpdates = false
-      // force update
-      head.updateDOM(window.document, true)
+      head.updateDOM()
     })
   })
 

@@ -1,6 +1,6 @@
 import { defineComponent } from 'vue'
 import type { PropType, SetupContext } from 'vue'
-import { useHead } from './composables'
+import { useHeadRaw } from './composables'
 import type {
   CrossOrigin,
   FetchPriority,
@@ -15,7 +15,7 @@ const removeUndefinedProps = (props: Props) =>
   Object.fromEntries(Object.entries(props).filter(([, value]) => value !== undefined))
 
 const setupForUseMeta = (metaFactory: (props: Props, ctx: SetupContext) => Record<string, any>, renderChild?: boolean) => (props: Props, ctx: SetupContext) => {
-  useHead(() => metaFactory({ ...removeUndefinedProps(props), ...ctx.attrs }, ctx))
+  useHeadRaw(() => metaFactory({ ...removeUndefinedProps(props), ...ctx.attrs }, ctx))
   return () => renderChild ? ctx.slots.default?.() : null
 }
 

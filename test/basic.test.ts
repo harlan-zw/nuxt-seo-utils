@@ -23,42 +23,6 @@ describe('pages', () => {
           name="viewport"
         />,
         <meta
-          content="DPR"
-          http-equiv="accept-ch"
-        />,
-        <meta
-          content="https://harlanzw.com/og.png"
-          property="og:image"
-        />,
-        <meta
-          content="https://harlanzw.com"
-          property="og:url"
-        />,
-        <meta
-          content="Harlan Wilton"
-          property="og:site:name"
-        />,
-        <meta
-          content="website"
-          property="og:type"
-        />,
-        <meta
-          content="en_AU"
-          property="og:locale"
-        />,
-        <meta
-          content="summary_large_image"
-          property="twitter:card"
-        />,
-        <meta
-          content="@harlan-zw"
-          property="twitter:site"
-        />,
-        <meta
-          content="max-snippet:-1, max-image-preview:large"
-          name="robots"
-        />,
-        <meta
           content="description"
           name="description"
         />,
@@ -71,7 +35,7 @@ describe('pages', () => {
           name="og:description"
         />,
         <meta
-          content="22"
+          content="8"
           name="head:count"
         />,
       ]

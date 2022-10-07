@@ -1,14 +1,25 @@
 <script lang="ts" setup>
-const { colour, changeColour } = useChangeColour()
+const { colour, changeColour, nextColour } = useChangeColour()
 
 useHead({
   htmlAttrs: {
     style: () => `background: ${colour.value}`,
-    class: () => `bg-${colour.value}-500`,
     lang: 'en-AU',
     dir: 'ltr',
   },
 })
+
+useHead(() => {
+  return {
+    bodyAttrs: {
+      style: () => `background: ${nextColour.value}; margin: 50px 100px; padding: 20px;`,
+    },
+  }
+})
+
+useHead(() => ({
+  title: `Html: ${colour.value} Body: ${nextColour.value}`,
+}))
 </script>
 
 <template>

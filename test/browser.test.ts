@@ -1,6 +1,6 @@
 import { fileURLToPath } from 'node:url'
 import { describe, expect, it } from 'vitest'
-import { setup } from '@nuxt/test-utils'
+import { createPage, setup } from '@nuxt/test-utils'
 import { $fetchPath, expectNoClientErrors } from './utils'
 
 /**
@@ -35,42 +35,6 @@ describe('pages', () => {
           name="viewport"
         />,
         <meta
-          content="https://nuxtjs.org/meta_400.png"
-          property="og:image"
-        />,
-        <meta
-          content="https://nuxtjs.org"
-          property="og:url"
-        />,
-        <meta
-          content="NuxtJS"
-          property="og:site:name"
-        />,
-        <meta
-          content="website"
-          property="og:type"
-        />,
-        <meta
-          content="en_US"
-          property="og:locale"
-        />,
-        <meta
-          content="fr_FR"
-          property="og:locale:alternate"
-        />,
-        <meta
-          content="summary_large_image"
-          property="twitter:card"
-        />,
-        <meta
-          content="@nuxt_js"
-          property="twitter:site"
-        />,
-        <meta
-          content="noindex"
-          name="robots"
-        />,
-        <meta
           content="description"
           name="description"
         />,
@@ -83,12 +47,91 @@ describe('pages', () => {
           name="og:description"
         />,
         <meta
-          content="17"
+          content="8"
           name="head:count"
         />,
       ]
     `)
 
     await expectNoClientErrors('/')
+  })
+
+  it.only('reactive', async () => {
+    const page = await createPage('/composition/reactivity')
+    let htmlAttrs = await page.evaluate('[...document.children[0].attributes].map(f => ({ name: f.name, value: f.value }))')
+    let bodyAttrs = await page.evaluate('[...document.querySelector(\'body\').attributes].map(f => ({ name: f.name, value: f.value }))')
+    let title = await page.title()
+    expect(htmlAttrs).toMatchInlineSnapshot(`
+      [
+        {
+          "name": "style",
+          "value": "background: limegreen",
+        },
+        {
+          "name": "lang",
+          "value": "en-AU",
+        },
+        {
+          "name": "dir",
+          "value": "ltr",
+        },
+        {
+          "name": "data-head-attrs",
+          "value": "style,lang,dir",
+        },
+      ]
+    `)
+    expect(bodyAttrs).toMatchInlineSnapshot(`
+      [
+        {
+          "name": "style",
+          "value": "background: lightskyblue; margin: 50px 100px; padding: 20px;",
+        },
+        {
+          "name": "data-head-attrs",
+          "value": "style",
+        },
+      ]
+    `)
+    expect(title).toMatchInlineSnapshot('"Html: limegreen Body: lightskyblue"')
+
+    await page.click('button')
+    htmlAttrs = await page.evaluate('[...document.children[0].attributes].map(f => ({ name: f.name, value: f.value }))')
+    bodyAttrs = await page.evaluate('[...document.querySelector(\'body\').attributes].map(f => ({ name: f.name, value: f.value }))')
+    title = await page.title()
+
+    expect(htmlAttrs).toMatchInlineSnapshot(`
+      [
+        {
+          "name": "style",
+          "value": "background: lightskyblue",
+        },
+        {
+          "name": "lang",
+          "value": "en-AU",
+        },
+        {
+          "name": "dir",
+          "value": "ltr",
+        },
+        {
+          "name": "data-head-attrs",
+          "value": "style,lang,dir",
+        },
+      ]
+    `)
+    expect(bodyAttrs).toMatchInlineSnapshot(`
+      [
+        {
+          "name": "style",
+          "value": "background: yellow; margin: 50px 100px; padding: 20px;",
+        },
+        {
+          "name": "data-head-attrs",
+          "value": "style",
+        },
+      ]
+    `)
+    expect(title).toMatchInlineSnapshot('"Html: lightskyblue Body: yellow"')
   })
 })

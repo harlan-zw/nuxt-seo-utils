@@ -89,6 +89,8 @@ export const Script = defineComponent({
     charset: String,
     /** @deprecated **/
     language: String,
+    body: Boolean,
+    renderPriority: String,
   },
   setup: setupForUseMeta((props, { slots }) => {
     const script = { ...props }
@@ -112,6 +114,8 @@ export const NoScript = defineComponent({
   props: {
     ...globalProps,
     title: String,
+    body: Boolean,
+    renderPriority: String,
   },
   setup: setupForUseMeta((props, { slots }) => {
     const noscript = { ...props }
@@ -158,6 +162,8 @@ export const Link = defineComponent({
     methods: String,
     /** @deprecated **/
     target: String as PropType<Target>,
+    body: Boolean,
+    renderPriority: String,
   },
   setup: setupForUseMeta(link => ({
     link: [link],
@@ -206,6 +212,8 @@ export const Meta = defineComponent({
     content: String,
     httpEquiv: String as PropType<HTTPEquiv>,
     name: String,
+    body: Boolean,
+    renderPriority: String,
   },
   setup: setupForUseMeta((props) => {
     const meta = { ...props }
@@ -236,6 +244,8 @@ export const Style = defineComponent({
       type: Boolean,
       default: undefined,
     },
+    body: Boolean,
+    renderPriority: String,
   },
   setup: setupForUseMeta((props, { slots }) => {
     const style = { ...props }
@@ -270,6 +280,7 @@ export const Html = defineComponent({
     manifest: String,
     version: String,
     xmlns: String,
+    renderPriority: String,
   },
   setup: setupForUseMeta(htmlAttrs => ({ htmlAttrs }), true),
 })
@@ -279,6 +290,9 @@ export const Body = defineComponent({
   // eslint-disable-next-line vue/no-reserved-component-names
   name: 'Body',
   inheritAttrs: false,
-  props: globalProps,
+  props: {
+    ...globalProps,
+    renderPriority: String,
+  },
   setup: setupForUseMeta(bodyAttrs => ({ bodyAttrs }), true),
 })

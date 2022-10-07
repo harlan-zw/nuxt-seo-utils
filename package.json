@@ -37,7 +37,7 @@
   },
   "dependencies": {
     "@nuxt/kit": "^3.0.0-rc.11",
-    "@vueuse/head": "^0.9.6",
+    "@vueuse/head": "^0.9.7",
     "@zhead/schema-vue": "^0.8.5",
     "@zhead/vue": "^0.8.5",
     "fast-glob": "^3.2.12",

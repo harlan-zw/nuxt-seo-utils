@@ -90,9 +90,19 @@ export const Script = defineComponent({
     /** @deprecated **/
     language: String,
   },
-  setup: setupForUseMeta(script => ({
-    script: [script],
-  })),
+  setup: setupForUseMeta((props, { slots }) => {
+    const script = { ...props }
+    const textContent = (slots.default?.() || [])
+      .filter(({ children }) => children)
+      .map(({ children }) => children)
+      .join('')
+    if (textContent)
+      script.innerHTML = textContent
+
+    return {
+      script: [script],
+    }
+  }),
 })
 
 // <noscript>
@@ -110,7 +120,7 @@ export const NoScript = defineComponent({
       .map(({ children }) => children)
       .join('')
     if (textContent)
-      noscript.children = textContent
+      noscript.innerHTML = textContent
 
     return {
       noscript: [noscript],
@@ -234,7 +244,7 @@ export const Style = defineComponent({
       if (process.dev && typeof textContent !== 'string')
         console.error('<Style> can only take a string in its default slot.')
 
-      style.children = textContent
+      style.textContent = textContent
     }
     return {
       style: [style],

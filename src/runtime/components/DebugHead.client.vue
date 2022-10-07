@@ -1,7 +1,10 @@
 <script lang="ts" setup>
+import type { Ref } from 'vue'
 import { nextTick, onBeforeUnmount, ref } from 'vue'
 
-const els = ref(document.querySelectorAll('head > *'))
+const els: Ref<any> = ref(document.querySelectorAll('head > *'))
+const head = ref([...document.querySelector('html').attributes])
+const body = ref([...document.querySelector('body').attributes])
 
 const filter = ref('')
 
@@ -15,6 +18,9 @@ const tagColour = (tag: string) => {
       return '#e9d5ff'
     case 'SCRIPT':
       return '#ccfbf1'
+    case 'HTML':
+    case 'BODY':
+      return 'white'
   }
   return '#e5e7eb'
 }
@@ -23,7 +29,17 @@ let observer: MutationObserver
 
 nextTick(() => {
   const fetchSchema = () => {
-    els.value = document.querySelectorAll('head > *')
+    els.value = [
+      {
+        tagName: 'HTML',
+        attributes: [...document.querySelector('html').attributes],
+      },
+      {
+        tagName: 'BODY',
+        attributes: [...document.querySelector('body').attributes],
+      },
+      ...document.querySelectorAll('head > *'),
+    ]
   }
 
   // Create an observer instance linked to the callback function

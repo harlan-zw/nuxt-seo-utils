@@ -67,11 +67,7 @@ const setFilter = (val) => {
 
 <template>
   <div class="debug-head">
-    <p>DebugHead</p>
-    <div style="display: flex; margin-bottom: 30px;">
-      <div style="margin-right: 10px;">
-        Filter:
-      </div>
+    <div style="display: flex; margin: 20px 0 30px 0;">
       <div style="display: flex;">
         <button
           v-for="type in ['META', 'LINK', 'STYLE', 'SCRIPT']" class="debug-head__tag"
@@ -110,7 +106,8 @@ const setFilter = (val) => {
 
 <style>
 .debug-head {
-  margin: 20px;
+  background-color: white;
+  margin: 0 auto;
   font-family: inherit, sans-serif;
   box-shadow: 0px 0px 12px rgba(0,0,0, 0.1);
   font-size: 0.9em;

@@ -3,7 +3,7 @@ import type { HeadEntryOptions } from '@vueuse/head'
 import { defineNuxtPlugin, useRouter } from '#app'
 import { packMeta } from 'zhead'
 import type { MetaObject } from '@nuxt/schema'
-import { getCurrentInstance, onBeforeUnmount, watchEffect } from 'vue'
+import { getCurrentInstance, onBeforeUnmount, watchEffect, isRef } from 'vue'
 // @ts-expect-error untyped
 import options from '#build/nuxt-hedge-config.mjs'
 

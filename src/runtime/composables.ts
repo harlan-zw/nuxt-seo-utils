@@ -17,7 +17,7 @@ export function useMetaTags(metaTags: MaybeComputedRef<MetaFlatRef>) {
   return tags
 }
 
-export function useHead(meta: MetaObject) {
+export function useHead(meta: MaybeComputedRef<MetaObject>) {
   useNuxtApp()._useHead(meta)
 }
 

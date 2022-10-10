@@ -47,7 +47,7 @@ describe('pages', () => {
           name="og:description"
         />,
         <meta
-          content="8"
+          content="7"
           name="head:count"
         />,
       ]
@@ -56,7 +56,7 @@ describe('pages', () => {
     await expectNoClientErrors('/')
   })
 
-  it.only('reactive', async () => {
+  it('reactive', async () => {
     const page = await createPage('/composition/reactivity')
     let htmlAttrs = await page.evaluate('[...document.children[0].attributes].map(f => ({ name: f.name, value: f.value }))')
     let bodyAttrs = await page.evaluate('[...document.querySelector(\'body\').attributes].map(f => ({ name: f.name, value: f.value }))')

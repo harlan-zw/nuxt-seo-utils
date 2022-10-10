@@ -10,11 +10,6 @@ useHead({
       rel: 'stylesheet',
     },
   ],
-  script: [
-    {
-      children: 'console.log("test")',
-    },
-  ],
   meta: [
     {
       charset: () => 'utf-8',

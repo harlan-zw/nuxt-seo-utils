@@ -35,7 +35,7 @@ describe('pages', () => {
           name="og:description"
         />,
         <meta
-          content="8"
+          content="7"
           name="head:count"
         />,
       ]

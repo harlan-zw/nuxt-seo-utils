@@ -1,9 +1,9 @@
 import { createHead, renderHeadToString } from '@vueuse/head'
 import type { HeadEntryOptions } from '@vueuse/head'
-import { defineNuxtPlugin, useRouter } from '#app'
 import { packMeta } from 'zhead'
 import type { MetaObject } from '@nuxt/schema'
-import { getCurrentInstance, onBeforeUnmount, watchEffect, isRef } from 'vue'
+import { getCurrentInstance, isRef, onBeforeUnmount } from 'vue'
+import { defineNuxtPlugin, useRouter } from '#app'
 // @ts-expect-error untyped
 import options from '#build/nuxt-hedge-config.mjs'
 
@@ -46,7 +46,7 @@ export default defineNuxtPlugin((nuxtApp) => {
         if (tags[i].tag === 'meta')
           metaProps.push(tags[i].props)
         if (tags[i].tag === 'title')
-          title = tags[i].props.textContent
+          title = tags[i]._runtime.textContent
       }
       const meta = packMeta(metaProps)
       // ensure twitter card is set
@@ -57,6 +57,7 @@ export default defineNuxtPlugin((nuxtApp) => {
             name: 'twitter:card',
             content: 'summary_large_image',
           },
+          _runtime: {},
         })
       }
 
@@ -68,6 +69,7 @@ export default defineNuxtPlugin((nuxtApp) => {
             name: 'og:title',
             content: title,
           },
+          _runtime: {},
         })
       }
 
@@ -79,6 +81,7 @@ export default defineNuxtPlugin((nuxtApp) => {
             name: 'og:description',
             content: meta.description,
           },
+          _runtime: {},
         })
       }
     })
@@ -119,35 +122,33 @@ export default defineNuxtPlugin((nuxtApp) => {
         })
       }
       if (shortcutMeta.length) {
-        removeSideEffectFns.push(head.addHeadObjs({
+        removeSideEffectFns.push(head.addEntry({
           meta: shortcutMeta,
         }))
       }
     }
 
-    removeSideEffectFns.push(head.addHeadObjs(_meta, options))
-
-    if (process.server)
+    if (process.server) {
+      head.addEntry(_meta, options)
       return
+    }
 
-    // will happen next tick
-    watchEffect(() => {
-      head.updateDOM()
-    })
+    const cleanUp = head.addReactiveEntry(_meta, options)
 
     const vm = getCurrentInstance()
     if (!vm)
       return
 
     onBeforeUnmount(() => {
+      cleanUp()
       removeSideEffectFns.forEach(fn => fn())
       head.updateDOM()
     })
   }
 
   if (process.server) {
-    nuxtApp.ssrContext!.renderMeta = () => {
-      const meta = renderHeadToString(head)
+    nuxtApp.ssrContext!.renderMeta = async () => {
+      const meta = await renderHeadToString(head)
       return {
         ...meta,
         // resolves naming difference with NuxtMeta and @vueuse/head

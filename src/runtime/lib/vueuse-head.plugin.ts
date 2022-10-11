@@ -17,8 +17,7 @@ export default defineNuxtPlugin((nuxtApp) => {
 
   // @todo get this to work in v1
   if (resolveAliases) {
-    // promise hooks are not supported in < v1
-    head.hookTagsResolved.push(async (tags) => {
+    head.hooks['resolved:tags'].push(async (tags) => {
       // resolve runtime build aliases
       const props = ['href', 'src']
       for (const i in tags) {
@@ -26,11 +25,11 @@ export default defineNuxtPlugin((nuxtApp) => {
           if (tags[i]?.props?.[prop] && /^[~@]+\//.test(tags[i].props[prop])) {
             // Note: This could work but we need this hook to be async or to be able to resolve promises as values
             if (process.server) {
-              tags[i].props[prop] = await import(/* @vite-ignore */ `${tags[i].props[prop]}?url`)
+              tags[i].props[prop] = (await import(/* @vite-ignore */ `${tags[i].props[prop]}?url`)).default
             }
             else {
-              // remove this tag
-              tags.splice(i, 1)
+              // Note: client side does not work
+              // @todo need to figure out a way to opt-out of the hydration of a tag
             }
           }
         }
@@ -39,14 +38,14 @@ export default defineNuxtPlugin((nuxtApp) => {
   }
 
   if (seoOptimise) {
-    head.hookTagsResolved.push((tags) => {
+    head.hooks['resolved:tags'].push((tags) => {
       const metaProps = []
       let title = ''
       for (const i in tags) {
         if (tags[i].tag === 'meta')
           metaProps.push(tags[i].props)
         if (tags[i].tag === 'title')
-          title = tags[i]._runtime.textContent
+          title = tags[i].children
       }
       const meta = packMeta(metaProps)
       // ensure twitter card is set
@@ -57,7 +56,6 @@ export default defineNuxtPlugin((nuxtApp) => {
             name: 'twitter:card',
             content: 'summary_large_image',
           },
-          _runtime: {},
         })
       }
 
@@ -69,7 +67,6 @@ export default defineNuxtPlugin((nuxtApp) => {
             name: 'og:title',
             content: title,
           },
-          _runtime: {},
         })
       }
 
@@ -81,14 +78,13 @@ export default defineNuxtPlugin((nuxtApp) => {
             name: 'og:description',
             content: meta.description,
           },
-          _runtime: {},
         })
       }
     })
   }
 
   let pauseDOMUpdates = true
-  head.hookBeforeDomUpdate.push(() => !pauseDOMUpdates)
+  head.hooks['before:dom'].push(() => !pauseDOMUpdates)
   nuxtApp.hooks.hookOnce('app:mounted', () => {
     pauseDOMUpdates = false
     head.updateDOM()

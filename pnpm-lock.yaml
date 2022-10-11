@@ -7,7 +7,7 @@ specifiers:
   '@nuxt/schema': ^3.0.0-rc.11
   '@nuxt/test-utils': 3.0.0-rc.11
   '@nuxtjs/eslint-config-typescript': latest
-  '@vueuse/head': 1.0.0-rc.3
+  '@vueuse/head': 1.0.0-rc.4
   '@zhead/schema-vue': ^0.8.5
   '@zhead/vue': ^0.8.5
   bumpp: ^8.2.1
@@ -23,7 +23,7 @@ specifiers:
 
 dependencies:
   '@nuxt/kit': 3.0.0-rc.11
-  '@vueuse/head': 1.0.0-rc.3
+  '@vueuse/head': 1.0.0-rc.4
   '@zhead/schema-vue': 0.8.5
   '@zhead/vue': 0.8.5
   fast-glob: 3.2.12
@@ -1398,8 +1398,8 @@ packages:
       - '@vue/composition-api'
     dev: true
 
-  /@vueuse/head/1.0.0-rc.3:
-    resolution: {integrity: sha512-Wfhcl+fI8V3O3RGulVsXVinnVQb/0t8pW/rMQ52t+PPIxXqt6LNyKJEM+Z11YvZLUblNXCcvwq3u/bZpwr6XOA==}
+  /@vueuse/head/1.0.0-rc.4:
+    resolution: {integrity: sha512-s+kVEa1V79JzlzoAcynISZktc7475Vxq0l1vs+L0q7NM0bBXWRI3/DEMJAShSs6+oLbt8x6M5yMUJ6SUSM0phg==}
     peerDependencies:
       vue: '>=2.7 || >=3'
     dependencies:

@@ -15,6 +15,14 @@ export default defineNuxtPlugin((nuxtApp) => {
 
   nuxtApp.vueApp.use(head)
 
+  head.hooks['resolved:tags'].push(async (tags) => {
+    await nuxtApp.hooks.callHook('head:tags', tags)
+  })
+
+  head.hooks['resolved:entries'].push(async (entries) => {
+    await nuxtApp.hooks.callHook('head:entries', entries)
+  })
+
   // @todo get this to work in v1
   if (resolveAliases) {
     head.hooks['resolved:tags'].push(async (tags) => {

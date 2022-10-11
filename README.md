@@ -35,9 +35,10 @@ Nuxt v3 head-edge module to play with new experimental features.
 - 🤖 Debug head tags component `DebugHead`
 - 🍣 Handle raw un-encoded tags with `useHeadRaw`
 - 🌳 Fully typed Head Schema with `href` and `src` file auto-completion
+- 🪝 Runtime hooks: `head:tags`, `head:entries`
 
 Coming soon:
-- 🪝 New hooks: `head:tags`, `head:dom`
+- 🪝 More runtime hooks: `head:dom:render`, `head:ssr:render`
 - 📦 Support resolving aliases
 - 🖥️ Server Only Head tags
 

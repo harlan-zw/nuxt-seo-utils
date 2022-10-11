@@ -17,6 +17,15 @@ export const headTypeTemplate: NuxtTemplate<PathsTemplateContext> = {
       output += `export type PublicFiles = ${paths.public.map(path => `'/${path}'`).join('|')}\n`
 
     output += `
+module '#app/nuxt' {
+  import { HeadEntry, HeadTag } from '@vueuse/head'
+
+  interface RuntimeNuxtHooks {
+    'head:tags': (tag: HeadTag[]) => Promise<void> | void
+    'head:entries': (entries: HeadEntry[]) => Promise<void> | void
+  }
+}
+
 module '@nuxt/schema' {
   import { VueUseHeadSchema } from '@vueuse/head'
   import { MergeHead } from '@zhead/schema'

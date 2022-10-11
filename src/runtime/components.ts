@@ -90,7 +90,7 @@ export const Script = defineComponent({
     /** @deprecated **/
     language: String,
     body: Boolean,
-    renderPriority: String,
+    renderPriority: [String, Number],
   },
   setup: setupForUseMeta((props, { slots }) => {
     const script = { ...props }
@@ -99,7 +99,7 @@ export const Script = defineComponent({
       .map(({ children }) => children)
       .join('')
     if (textContent)
-      script.innerHTML = textContent
+      script.children = textContent
 
     return {
       script: [script],
@@ -115,7 +115,7 @@ export const NoScript = defineComponent({
     ...globalProps,
     title: String,
     body: Boolean,
-    renderPriority: String,
+    renderPriority: [String, Number],
   },
   setup: setupForUseMeta((props, { slots }) => {
     const noscript = { ...props }
@@ -124,7 +124,7 @@ export const NoScript = defineComponent({
       .map(({ children }) => children)
       .join('')
     if (textContent)
-      noscript.innerHTML = textContent
+      noscript.children = textContent
 
     return {
       noscript: [noscript],
@@ -163,7 +163,7 @@ export const Link = defineComponent({
     /** @deprecated **/
     target: String as PropType<Target>,
     body: Boolean,
-    renderPriority: String,
+    renderPriority: [String, Number],
   },
   setup: setupForUseMeta(link => ({
     link: [link],
@@ -213,7 +213,7 @@ export const Meta = defineComponent({
     httpEquiv: String as PropType<HTTPEquiv>,
     name: String,
     body: Boolean,
-    renderPriority: String,
+    renderPriority: [String, Number],
   },
   setup: setupForUseMeta((props) => {
     const meta = { ...props }
@@ -245,7 +245,7 @@ export const Style = defineComponent({
       default: undefined,
     },
     body: Boolean,
-    renderPriority: String,
+    renderPriority: [String, Number],
   },
   setup: setupForUseMeta((props, { slots }) => {
     const style = { ...props }
@@ -254,7 +254,7 @@ export const Style = defineComponent({
       if (process.dev && typeof textContent !== 'string')
         console.error('<Style> can only take a string in its default slot.')
 
-      style.textContent = textContent
+      style.children = textContent
     }
     return {
       style: [style],
@@ -280,7 +280,7 @@ export const Html = defineComponent({
     manifest: String,
     version: String,
     xmlns: String,
-    renderPriority: String,
+    renderPriority: [String, Number],
   },
   setup: setupForUseMeta(htmlAttrs => ({ htmlAttrs }), true),
 })
@@ -292,7 +292,7 @@ export const Body = defineComponent({
   inheritAttrs: false,
   props: {
     ...globalProps,
-    renderPriority: String,
+    renderPriority: [String, Number],
   },
   setup: setupForUseMeta(bodyAttrs => ({ bodyAttrs }), true),
 })

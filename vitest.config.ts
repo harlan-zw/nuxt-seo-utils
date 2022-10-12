@@ -7,8 +7,11 @@ import { defineConfig } from 'vite'
 export default defineConfig({
   test: {
     watchExclude: [
-      '**/.nuxt/**',
-      '**/.output/**',
+      'dist',
+      'playground',
+      'test/**/*',
+      '**/.nuxt/**/*',
+      '**/.output/**/*',
     ],
   },
 })

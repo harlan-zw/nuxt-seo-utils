@@ -17,6 +17,7 @@ const tagColour = (tag: string) => {
     case 'STYLE':
       return '#e9d5ff'
     case 'SCRIPT':
+    case 'NOSCRIPT':
       return '#ccfbf1'
     case 'HTML':
     case 'BODY':

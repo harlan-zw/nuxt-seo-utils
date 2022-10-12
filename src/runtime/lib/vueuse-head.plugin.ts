@@ -2,16 +2,29 @@ import { createHead, renderHeadToString } from '@vueuse/head'
 import type { HeadEntryOptions } from '@vueuse/head'
 import { packMeta } from 'zhead'
 import type { MetaObject } from '@nuxt/schema'
-import { getCurrentInstance, isRef, onBeforeUnmount } from 'vue'
+import { getCurrentInstance, onBeforeUnmount } from 'vue'
 import { defineNuxtPlugin, useRouter } from '#app'
 // @ts-expect-error untyped
 import options from '#build/nuxt-hedge-config.mjs'
+// @ts-expect-error untyped
+import { appHead } from '#build/nuxt.config.mjs'
 
 // Note: This should always be a partial match to nuxt's internal vueuse-head plugin
 
 export default defineNuxtPlugin((nuxtApp) => {
   const { resolveAliases, seoOptimise } = options
+
   const head = createHead()
+
+  // this is a pollyfill for not having the schema resolving
+  appHead.meta = appHead.meta || []
+  if (appHead.viewport)
+    appHead.meta.push({ name: 'viewport', content: appHead.viewport })
+
+  if (appHead.charset)
+    appHead.meta.push({ charset: appHead.charset })
+
+  head.addEntry(appHead, { resolved: true })
 
   nuxtApp.vueApp.use(head)
 
@@ -47,6 +60,7 @@ export default defineNuxtPlugin((nuxtApp) => {
 
   if (seoOptimise) {
     head.hooks['resolved:tags'].push((tags) => {
+      console.log(tags)
       const metaProps = []
       let title = ''
       for (const i in tags) {
@@ -110,27 +124,6 @@ export default defineNuxtPlugin((nuxtApp) => {
 
   nuxtApp._useHead = (_meta: MetaObject, options: HeadEntryOptions) => {
     const removeSideEffectFns = []
-
-    // only support shortcuts if it's a plain object (avoids ref packing / unpacking)
-    if (!isRef(_meta) && typeof _meta === 'object') {
-      const shortcutMeta = []
-      if (_meta.charset) {
-        shortcutMeta.push({
-          charset: _meta.charset,
-        })
-      }
-      if (_meta.viewport) {
-        shortcutMeta.push({
-          name: 'viewport',
-          content: _meta.viewport,
-        })
-      }
-      if (shortcutMeta.length) {
-        removeSideEffectFns.push(head.addEntry({
-          meta: shortcutMeta,
-        }))
-      }
-    }
 
     if (process.server) {
       head.addEntry(_meta, options)

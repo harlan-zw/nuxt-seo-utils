@@ -48,7 +48,24 @@ describe('basic', () => {
           "<meta charset=\\"utf-8\\">",
           "<meta name=\\"viewport\\" content=\\"width=device-width, initial-scale=1\\">",
         ],
-        "htmlAttrs": [],
+        "htmlAttrs": [
+          {
+            "name": "style",
+            "value": "background: limegreen",
+          },
+          {
+            "name": "lang",
+            "value": "en-AU",
+          },
+          {
+            "name": "dir",
+            "value": "ltr",
+          },
+          {
+            "name": "data-head-attrs",
+            "value": "style,lang,dir",
+          },
+        ],
         "title": "Html: limegreen Body: lightskyblue",
       }
     `)

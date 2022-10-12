@@ -1,9 +1,8 @@
-import type { MaybeComputedRef } from '@vueuse/shared'
 import type { MetaFlatRef } from '@zhead/vue'
 import { unpackMeta } from '@zhead/vue'
 import type { MetaObject } from '@nuxt/schema'
 import { ref, watchEffect } from 'vue'
-import type { UseHeadRawInput } from '@vueuse/head'
+import type { MaybeComputedRef } from '@vueuse/head'
 import { useNuxtApp } from '#app'
 
 export function useMetaTags(metaTags: MaybeComputedRef<MetaFlatRef>) {
@@ -19,10 +18,6 @@ export function useMetaTags(metaTags: MaybeComputedRef<MetaFlatRef>) {
 
 export function useHead(meta: MaybeComputedRef<MetaObject>) {
   useNuxtApp()._useHead(meta)
-}
-
-export function useHeadRaw(meta: UseHeadRawInput) {
-  useNuxtApp()._useHead(meta, { raw: true })
 }
 
 export function useMeta(meta: MetaObject) {

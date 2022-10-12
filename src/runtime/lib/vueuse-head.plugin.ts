@@ -123,8 +123,6 @@ export default defineNuxtPlugin((nuxtApp) => {
   })
 
   nuxtApp._useHead = (_meta: MetaObject, options: HeadEntryOptions) => {
-    const removeSideEffectFns = []
-
     if (process.server) {
       head.addEntry(_meta, options)
       return
@@ -138,7 +136,6 @@ export default defineNuxtPlugin((nuxtApp) => {
 
     onBeforeUnmount(() => {
       cleanUp()
-      removeSideEffectFns.forEach(fn => fn())
       head.updateDOM()
     })
   }

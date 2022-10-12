@@ -17,6 +17,10 @@ export default defineNuxtConfig({
     head: {
       viewport: 'width=device-width, initial-scale=1',
       charset: 'utf-8',
+      // @todo support aliasing
+      // link: [
+      //   { rel: 'stylesheet', href: '~/assets/my-css-file.scss' },
+      // ],
     },
   },
   workspaceDir: resolve(__dirname, '../'),

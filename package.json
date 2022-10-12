@@ -33,7 +33,7 @@
     "dev:build": "nuxi build playground",
     "dev:prepare": "nuxt-module-build --stub && nuxi prepare playground",
     "release": "bumpp package.json --commit --push --tag",
-    "test": "vitest basic"
+    "test": "vitest ssr"
   },
   "dependencies": {
     "@nuxt/kit": "^3.0.0-rc.11",

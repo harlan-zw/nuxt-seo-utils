@@ -3,37 +3,26 @@ import { defineComponent } from 'vue'
 import type { MetaObject } from '@nuxt/schema'
 
 export default defineComponent({
-  head(): MetaObject {
-    return {
-      title: 'Options',
+  head(nuxtApp) {
+    return (() => ({
+      title: `Options - ${nuxtApp.vueApp._uid}`,
       meta: [
         {
           hid: 'description',
           name: 'description',
-          content: 'My page description',
+          content: 'function desc',
         },
       ],
       link: [
         { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' },
       ],
-    }
+    }))
   },
 })
 </script>
 
 <template>
-  <div>
-    Nuxt module playground!
-    <button @click="count++">
-      Click me
-    </button>
-    <div>
-      <NuxtLink to="/delayed">
-        delayed
-      </NuxtLink>
-      <NuxtLink to="/red">
-        red
-      </NuxtLink>
-    </div>
-  </div>
+<div>
+  options api - function
+</div>
 </template>

@@ -21,6 +21,9 @@ export default defineNuxtModule<ModuleOptions>({
   meta: {
     name: 'nuxt-hedge',
     configKey: 'head',
+    compatibility: {
+      nuxt: '>=3.0.0-rc.12',
+    },
   },
   defaults: {
     seoOptimise: true,
@@ -44,16 +47,9 @@ export default defineNuxtModule<ModuleOptions>({
       references.push({ path: resolve(nuxt.options.buildDir, 'head.d.ts') })
     })
 
-    nuxt.options.build.transpile.push(...['@zhead/schema', '@zhead/vue', '@zhead/schema-vue'])
-
     addImports({
       name: 'useMetaTags',
-      from: '#head',
-    })
-
-    addImports({
-      name: 'useHeadRaw',
-      from: '#head',
+      from: `${runtimeDir}/composables`,
     })
 
     await addComponent({
@@ -62,18 +58,6 @@ export default defineNuxtModule<ModuleOptions>({
       filePath: `${runtimeDir}/components/DebugHead.client.vue`,
     })
 
-    /* Current head module below */
-
-    // Transpile @nuxt/meta and @vueuse/head
-    nuxt.options.build.transpile.push('@vueuse/head')
-
-    // Add #head alias
-    nuxt.options.alias['#head'] = runtimeDir
-
-    // Add generic plugin
     addPlugin({ src: resolve(runtimeDir, 'plugin') })
-
-    // Add library specific plugin
-    addPlugin({ src: resolve(runtimeDir, 'lib/vueuse-head.plugin') })
   },
 })

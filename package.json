@@ -36,8 +36,7 @@
     "test": "vitest ssr"
   },
   "dependencies": {
-    "@nuxt/kit": "^3.0.0-rc.11",
-    "@vueuse/head": "1.0.0-rc.7",
+    "@nuxt/kit": "npm:@nuxt/kit-edge@latest",
     "@zhead/schema-vue": "^0.9.5",
     "@zhead/vue": "^0.9.5",
     "fast-glob": "^3.2.12",
@@ -47,18 +46,18 @@
   "devDependencies": {
     "@antfu/eslint-config": "^0.27.0",
     "@nuxt/module-builder": "latest",
-    "@nuxt/schema": "^3.0.0-rc.11",
-    "@nuxt/test-utils": "3.0.0-rc.11",
+    "@nuxt/schema": "npm:@nuxt/schema-edge@latest",
+    "@nuxt/test-utils": "npm:@nuxt/test-utils-edge@latest",
     "@nuxtjs/eslint-config-typescript": "latest",
     "bumpp": "^8.2.1",
     "cheerio": "1.0.0-rc.12",
     "eslint": "8.25.0",
-    "nuxt": "3.0.0-rc.11",
+    "nuxt": "npm:nuxt3@latest",
     "playwright": "^1.27.1",
     "sass": "^1.55.0",
     "vitest": "^0.24.1"
   },
   "resolutions": {
-    "@vueuse/head": "1.0.0-rc.7"
+    "@nuxt/kit": "npm:@nuxt/kit-edge@latest"
   }
 }

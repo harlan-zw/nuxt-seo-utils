@@ -1,9 +1,8 @@
 import type { MetaFlatRef } from '@zhead/vue'
 import { unpackMeta } from '@zhead/vue'
-import type { MetaObject } from '@nuxt/schema'
 import { ref, watchEffect } from 'vue'
 import type { MaybeComputedRef } from '@vueuse/head'
-import { useNuxtApp } from '#app'
+import { useHead } from '#imports'
 
 export function useMetaTags(metaTags: MaybeComputedRef<MetaFlatRef>) {
   const tags = ref([])
@@ -14,12 +13,4 @@ export function useMetaTags(metaTags: MaybeComputedRef<MetaFlatRef>) {
     })
   })
   return tags
-}
-
-export function useHead(meta: MaybeComputedRef<MetaObject>) {
-  useNuxtApp()._useHead(meta)
-}
-
-export function useMeta(meta: MetaObject) {
-  useHead(meta)
 }

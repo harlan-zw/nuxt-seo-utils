@@ -8,7 +8,6 @@ import options from '#build/nuxt-hedge-config.mjs'
 export default defineNuxtPlugin((nuxtApp) => {
   const { resolveAliases, seoOptimise } = options
 
-  console.log(nuxtApp.vueApp._context.provides.usehead)
   const head = nuxtApp.vueApp._context.provides.usehead
 
   head.hooks['resolved:tags'].push(async (tags) => {
@@ -52,7 +51,6 @@ export default defineNuxtPlugin((nuxtApp) => {
         if (tags[i].tag === 'title')
           title = tags[i].children
       }
-      console.log(metaProps)
       const meta = packMeta(metaProps)
       // ensure twitter card is set
       if (meta.ogImage && !meta.twitterCard) {

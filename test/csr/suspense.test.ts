@@ -32,7 +32,7 @@ describe('suspense', () => {
     })
 
     title = await page.title()
-    expect(title).toMatchInlineSnapshot('"Delayed title"')
+    expect(title).toMatchInlineSnapshot('"Delayed title - Nuxt module playground"')
 
   }, 10000)
 })

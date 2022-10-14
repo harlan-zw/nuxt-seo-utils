@@ -21,11 +21,15 @@ describe('component api', () => {
           name="viewport"
         />,
         <meta
+          content="description"
+          name="description"
+        />,
+        <meta
           content="/cover.png"
           property="og:image"
         />,
         <meta
-          content="3"
+          content="6"
           name="head:count"
         />,
       ]

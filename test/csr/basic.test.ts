@@ -12,13 +12,15 @@ describe('basic', () => {
       {
         "bodyAttrs": [],
         "bodyTags": {},
-        "headTagCount": 5,
+        "headTagCount": 7,
         "headTags": [
           "<meta charset=\\"utf-8\\">",
           "<meta name=\\"viewport\\" content=\\"width=device-width, initial-scale=1\\">",
           "<meta name=\\"description\\" content=\\"description\\">",
+          "<link href=\\"/\\">",
           "<link href=\\"https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap\\" rel=\\"stylesheet\\">",
-          "<meta name=\\"head:count\\" content=\\"5\\">",
+          "<link href=\\"https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap\\" rel=\\"stylesheet\\">",
+          "<meta name=\\"head:count\\" content=\\"7\\">",
         ],
         "htmlAttrs": [],
         "title": "test 0 - Nuxt module playground",
@@ -43,10 +45,13 @@ describe('basic', () => {
           },
         ],
         "bodyTags": {},
-        "headTagCount": 2,
+        "headTagCount": 5,
         "headTags": [
           "<meta charset=\\"utf-8\\">",
           "<meta name=\\"viewport\\" content=\\"width=device-width, initial-scale=1\\">",
+          "<meta name=\\"description\\" content=\\"description\\">",
+          "<link href=\\"/\\">",
+          "<link href=\\"https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap\\" rel=\\"stylesheet\\">",
         ],
         "htmlAttrs": [
           {
@@ -66,7 +71,7 @@ describe('basic', () => {
             "value": "style,lang,dir",
           },
         ],
-        "title": "Html: limegreen Body: lightskyblue",
+        "title": "Html: limegreen Body: lightskyblue - Nuxt module playground",
       }
     `)
 
@@ -86,10 +91,13 @@ describe('basic', () => {
           },
         ],
         "bodyTags": {},
-        "headTagCount": 2,
+        "headTagCount": 5,
         "headTags": [
           "<meta charset=\\"utf-8\\">",
           "<meta name=\\"viewport\\" content=\\"width=device-width, initial-scale=1\\">",
+          "<meta name=\\"description\\" content=\\"description\\">",
+          "<link href=\\"/\\">",
+          "<link href=\\"https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap\\" rel=\\"stylesheet\\">",
         ],
         "htmlAttrs": [
           {
@@ -109,7 +117,7 @@ describe('basic', () => {
             "value": "style,lang,dir",
           },
         ],
-        "title": "Html: lightskyblue Body: yellow",
+        "title": "Html: lightskyblue Body: yellow - Nuxt module playground",
       }
     `)
   }, 30000)
@@ -120,7 +128,7 @@ describe('basic', () => {
     await page.waitForLoadState('networkidle')
     let htmlAttrs = await page.evaluate('[...document.children[0].attributes].map(f => ({ name: f.name, value: f.value }))')
     let title = await page.title()
-    expect(title).toMatchInlineSnapshot('"red"')
+    expect(title).toMatchInlineSnapshot('"red - Nuxt module playground"')
     expect(htmlAttrs).toMatchInlineSnapshot(`
       [
         {

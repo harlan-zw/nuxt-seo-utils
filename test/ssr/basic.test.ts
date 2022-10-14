@@ -21,7 +21,7 @@ describe('pages', () => {
           name="description"
         />,
         <meta
-          content="5"
+          content="7"
           name="head:count"
         />,
       ]

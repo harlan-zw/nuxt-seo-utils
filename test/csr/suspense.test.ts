@@ -33,6 +33,5 @@ describe('suspense', () => {
 
     title = await page.title()
     expect(title).toMatchInlineSnapshot('"Delayed title"')
-
   }, 10000)
 })

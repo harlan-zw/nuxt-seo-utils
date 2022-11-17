@@ -1,9 +1,7 @@
 <script setup lang="ts">
 const count = ref(0)
 
-useHead({
-  title: () => `test ${count.value}`,
-  titleTemplate: '%s - Nuxt module playground',
+useServerHead({
   link: [
     {
       href: 'https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap',
@@ -24,6 +22,11 @@ useHead({
   base: {
     href: '/',
   },
+})
+
+useHead({
+  titleTemplate: '%s - Nuxt module playground',
+  title: () => `test ${count.value}`,
 })
 </script>
 

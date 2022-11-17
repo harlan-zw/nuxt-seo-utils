@@ -1,18 +1,18 @@
 {
-  "name": "nuxt-hedge",
+  "name": "nuxt-unhead",
   "type": "module",
-  "version": "0.5.3",
+  "version": "0.6.1",
   "packageManager": "pnpm@7.8.0",
   "license": "MIT",
   "funding": "https://github.com/sponsors/harlan-zw",
-  "homepage": "https://github.com/harlan-zw/nuxt-hedge#readme",
+  "homepage": "https://github.com/harlan-zw/nuxt-unhead#readme",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/harlan-zw/nuxt-hedge.git",
+    "url": "git+https://github.com/harlan-zw/nuxt-unhead.git",
     "directory": "packages/zhead"
   },
   "bugs": {
-    "url": "https://github.com/harlan-zw/nuxt-hedge/issues"
+    "url": "https://github.com/harlan-zw/nuxt-unhead/issues"
   },
   "exports": {
     ".": {
@@ -37,27 +37,26 @@
   },
   "dependencies": {
     "@nuxt/kit": "npm:@nuxt/kit-edge@latest",
-    "@zhead/schema-vue": "^0.9.5",
-    "@zhead/vue": "^0.9.5",
+    "@unhead/addons": "^1.0.1",
+    "@unhead/ssr": "^1.0.1",
+    "@vueuse/head": "^1.0.16",
     "fast-glob": "^3.2.12",
-    "pathe": "^0.3.9",
-    "zhead": "^0.9.5"
+    "pathe": "^1.0.0",
+    "unplugin-ast": "^0.5.5",
+    "zhead": "1.0.2"
   },
   "devDependencies": {
-    "@antfu/eslint-config": "^0.27.0",
-    "@nuxt/module-builder": "latest",
-    "@nuxt/schema": "npm:@nuxt/schema-edge@latest",
-    "@nuxt/test-utils": "npm:@nuxt/test-utils-edge@latest",
-    "@nuxtjs/eslint-config-typescript": "latest",
+    "@antfu/eslint-config": "^0.31.0",
+    "@nuxt/kit": "3.0.0-rc.13",
+    "@nuxt/module-builder": "^0.2.1",
+    "@nuxt/test-utils": "3.0.0",
+    "@nuxtjs/eslint-config-typescript": "^12.0.0",
     "bumpp": "^8.2.1",
     "cheerio": "1.0.0-rc.12",
-    "eslint": "8.25.0",
-    "nuxt": "npm:nuxt3@latest",
-    "playwright": "^1.27.1",
-    "sass": "^1.55.0",
-    "vitest": "^0.24.1"
-  },
-  "resolutions": {
-    "@nuxt/kit": "npm:@nuxt/kit-edge@latest"
+    "eslint": "8.27.0",
+    "nuxt": "^3.0.0",
+    "playwright": "^1.28.0",
+    "sass": "^1.56.1",
+    "vitest": "^0.25.2"
   }
 }

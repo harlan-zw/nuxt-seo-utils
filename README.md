@@ -1,16 +1,16 @@
-<h1 align='center'>🌳 nuxt-hedge</h1>
+<h1 align='center'>△ nuxt-unhead</h1>
 
 <p align="center">
-<a href='https://github.com/harlan-zw/nuxt-hedge/actions/workflows/test.yml'>
+<a href='https://github.com/harlan-zw/nuxt-unhead/actions/workflows/test.yml'>
 </a>
-<a href="https://www.npmjs.com/package/nuxt-hedge" target="__blank"><img src="https://img.shields.io/npm/v/nuxt-hedge?style=flat&colorA=002438&colorB=28CF8D" alt="NPM version"></a>
-<a href="https://www.npmjs.com/package/nuxt-hedge" target="__blank"><img alt="NPM Downloads" src="https://img.shields.io/npm/dm/nuxt-hedge?flat&colorA=002438&colorB=28CF8D"></a>
-<a href="https://github.com/harlan-zw/nuxt-hedge" target="__blank"><img alt="GitHub stars" src="https://img.shields.io/github/stars/harlan-zw/nuxt-hedge?flat&colorA=002438&colorB=28CF8D"></a>
+<a href="https://www.npmjs.com/package/nuxt-unhead" target="__blank"><img src="https://img.shields.io/npm/v/nuxt-unhead?style=flat&colorA=002438&colorB=28CF8D" alt="NPM version"></a>
+<a href="https://www.npmjs.com/package/nuxt-unhead" target="__blank"><img alt="NPM Downloads" src="https://img.shields.io/npm/dm/nuxt-unhead?flat&colorA=002438&colorB=28CF8D"></a>
+<a href="https://github.com/harlan-zw/nuxt-unhead" target="__blank"><img alt="GitHub stars" src="https://img.shields.io/github/stars/harlan-zw/nuxt-unhead?flat&colorA=002438&colorB=28CF8D"></a>
 </p>
 
 
 <p align="center">
-Nuxt v3 head-edge module to play with new experimental features.
+Experimental head module for Nuxt v3, powered by [unhead](https://github.com/harlan-zw/unhead).
 </p>
 
 <p align="center">
@@ -29,18 +29,14 @@ Nuxt v3 head-edge module to play with new experimental features.
 
 ## Features
 
-- 💎 Latest [@vueuse/head](https://github.com/vueuse/head): Computed getters, XSS protection, improved performance and more
-- 🧙 Define your meta tags as a flat object `useMetaTags`
+Unlock all [unhead](https://unhead.harlanzw.com/) features and more:
+- 🖥️ 0kb runtime tags `useServerHead`
+- 🧙 Define your meta tags as a flat object `useSeoMeta`
 - ✨ Automatic social share meta tags
 - 🤖 Debug head tags component `DebugHead`
-- 🍣 Handle raw un-encoded tags with `useHeadRaw`
 - 🌳 Fully typed Head Schema with `href` and `src` file auto-completion
 - 🪝 Runtime hooks: `head:tags`, `head:entries`
-
-Coming soon:
-- 🪝 More runtime hooks: `head:dom:render`, `head:ssr:render`
-- 📦 Support resolving aliases
-- 🖥️ Server Only Head tags
+- 📦 Load your asset files directly using aliases `href: '~/assets/style.css'`
 
 ## Background
 
@@ -54,10 +50,10 @@ While it should be relatively safe for production use, it will be updated freque
 ## Install
 
 ```bash
-npm install --save-dev nuxt-hedge
+npm install --save-dev nuxt-unhead
 
 # Using yarn
-yarn add --dev nuxt-hedge
+yarn add --dev nuxt-unhead
 ```
 
 ## Register Module 
@@ -68,16 +64,9 @@ _nuxt.config.ts_
 
 ```ts
 export default defineNuxtConfig({
-  // ...
-  hooks: {
-    'modules:before': async ({ nuxt }) => {
-      // swap out the nuxt internal module for nuxt-hedge
-      for (const k in nuxt.options._modules) {
-        if (typeof nuxt.options._modules[k] === 'function' && (await nuxt.options._modules[k].getMeta()).name === 'meta')
-          nuxt.options._modules[k] = 'nuxt-hedge'
-      }
-    },
-  },
+  modules: [
+    'nuxt-unhead',
+  ],
 })
 ```
 
@@ -98,30 +87,7 @@ export default defineNuxtConfig({
 
 ## Composables
 
-### useHead
-
-Usage of the composable remains mostly the same. This version offers better TypeScript and XSS presentation support.
-
-The `children` property is has been deprecated in favor of `textContent`.
-
-Read the [useHead](https://v3.nuxtjs.org/api/composables/use-head) docs for more details.
-
-```ts
-useHead({
-  link: [
-    { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' },
-  ],
-  style: [
-    {
-      textContent: 'body { background-color: red; }',
-    }
-  ]
-})
-```
-
-### useHeadRaw
-
-### useMetaTags
+### useSeoMeta
 
 Define your meta tags as a flat object. This function is automatically imported for you.
 
@@ -130,7 +96,7 @@ Behind the scenes, this unpacks your meta tags and adds them as if you used `use
 Powered by [packrup](https://github.com/harlan-zw/packrup) and [zhead](https://github.com/harlan-zw/zhead).
 
 ```ts
-useMetaTags({
+useSeoMeta({
   ogImage: "https://nuxtjs.org/meta_400.png",
   ogUrl: "https://nuxtjs.org",
   ogSiteName: "NuxtJS",
@@ -147,7 +113,7 @@ useMetaTags({
 
 A component to debug your head tags.
 
-<img src="https://raw.githubusercontent.com/harlan-zw/nuxt-hedge/main/.github/component.png" alt="DebugHead Component preview">
+<img src="https://raw.githubusercontent.com/harlan-zw/nuxt-unhead/main/.github/component.png" alt="DebugHead Component preview">
 
 ```vue
 <template>

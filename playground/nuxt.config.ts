@@ -1,19 +1,15 @@
 import { resolve } from 'pathe'
+import { defineNuxtConfig } from 'nuxt/config'
 
 export default defineNuxtConfig({
   alias: {
-    'nuxt-hedge': resolve(__dirname, '../src/module'),
+    'nuxt-unhead': resolve(__dirname, '../src/module'),
   },
   modules: [
-    'nuxt-hedge',
+    'nuxt-unhead',
   ],
   app: {
     head: {
-      link: [
-        {
-          href: '/',
-        },
-      ],
       viewport: 'width=device-width, initial-scale=1',
     },
   },

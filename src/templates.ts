@@ -3,7 +3,7 @@ import type { Nuxt, NuxtTemplate } from '@nuxt/schema'
 export interface PathsTemplateContext {
   nuxt: Nuxt
   options: {
-    getPaths: () => Promise<Record<'public', string[]>>
+    getPaths: () => Promise<Record<'public' | 'assets', string[]>>
   }
 }
 
@@ -24,15 +24,16 @@ declare module '#app/nuxt' {
   }
 }
 
-type PublicFiles = ${paths.public.map(path => `'/${path}'`).join('|')} | string
+type PublicFiles = ${paths.public.map(path => `'/${path}'`).join('|')}
+type AssetFiles = ${paths.assets.map(path => `'~/${path}'`).join('|')}
 
 declare module '@nuxt/schema' {
   interface HeadAugmentations {
     link: {
-      href: PublicFiles
+      href: PublicFiles | AssetFiles
     }
     script: {
-      src: PublicFiles
+      src: PublicFiles | AssetFiles
     }
   }
 }

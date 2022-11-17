@@ -1,7 +1,8 @@
 import { fileURLToPath } from 'url'
-import { addComponent, addImports, addPlugin, addTemplate, defineNuxtModule } from '@nuxt/kit'
+import { addComponent, addPlugin, addTemplate, addVitePlugin, defineNuxtModule } from '@nuxt/kit'
 import { resolve } from 'pathe'
 import fg from 'fast-glob'
+import UnheadVite from '@unhead/addons/vite'
 import { headTypeTemplate } from './templates'
 
 export interface ModuleOptions {
@@ -19,43 +20,60 @@ export interface ModuleOptions {
 
 export default defineNuxtModule<ModuleOptions>({
   meta: {
-    name: 'nuxt-hedge',
+    name: 'nuxt-unhead',
     configKey: 'head',
     compatibility: {
-      nuxt: '>=3.0.0-rc.12',
+      nuxt: '3.0.0',
     },
   },
   defaults: {
     seoOptimise: true,
     resolveAliases: false,
   },
+  // @ts-expect-error type missing
   async setup(options, nuxt) {
     const runtimeDir = fileURLToPath(new URL('./runtime', import.meta.url))
 
     addTemplate({
-      filename: 'nuxt-hedge-config.mjs',
+      filename: 'nuxt-unhead-config.mjs',
       getContents: () => `export default ${JSON.stringify(options)}`,
     })
 
     const getPaths = async () => ({
       public: await fg(['**/*'], { cwd: resolve(nuxt.options.srcDir, 'public') }),
+      assets: await fg(['**/*'], { cwd: resolve(nuxt.options.srcDir, 'assets') }),
     })
     // paths.d.ts
     addTemplate({ ...headTypeTemplate, options: { getPaths } })
 
+    // @ts-expect-error type missing
     nuxt.hooks.hook('prepare:types', ({ references }) => {
       references.push({ path: resolve(nuxt.options.buildDir, 'head.d.ts') })
     })
 
-    addImports({
-      name: 'useMetaTags',
-      from: `${runtimeDir}/composables`,
+    // remove useServerHead in client build
+    addVitePlugin(UnheadVite(nuxt.options.rootDir), {
+      server: false,
+      client: true,
     })
 
     await addComponent({
       name: 'DebugHead',
       mode: 'client',
       filePath: `${runtimeDir}/components/DebugHead.client.vue`,
+    })
+
+    // add non useHead composables
+    // @ts-expect-error type missing
+    nuxt.hooks.hook('imports:sources', (sources) => {
+      sources.push({
+        from: '@vueuse/head',
+        imports: [
+          'useServerHead',
+          'useSeoMeta',
+          'injectHead',
+        ],
+      })
     })
 
     addPlugin({ src: resolve(runtimeDir, 'plugin') })

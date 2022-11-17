@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-useMetaTags({
+useSeoMeta({
   ogImage: 'https://harlanzw.com/og.png',
   ogUrl: 'https://harlanzw.com',
   ogSiteName: 'Harlan Wilton',

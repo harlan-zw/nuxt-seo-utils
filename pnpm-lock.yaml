@@ -6,8 +6,8 @@ specifiers:
   '@nuxt/module-builder': ^0.2.1
   '@nuxt/test-utils': 3.0.0
   '@nuxtjs/eslint-config-typescript': ^12.0.0
-  '@unhead/addons': ^1.0.1
-  '@unhead/ssr': ^1.0.1
+  '@unhead/addons': ^1.0.2
+  '@unhead/ssr': ^1.0.2
   '@vueuse/head': ^1.0.16
   bumpp: ^8.2.1
   cheerio: 1.0.0-rc.12
@@ -19,17 +19,17 @@ specifiers:
   sass: ^1.56.1
   unplugin-ast: ^0.5.5
   vitest: ^0.25.2
-  zhead: 1.0.2
+  zhead: 1.0.3
 
 dependencies:
   '@nuxt/kit': 3.0.0
-  '@unhead/addons': 1.0.1
-  '@unhead/ssr': 1.0.1
+  '@unhead/addons': 1.0.2
+  '@unhead/ssr': 1.0.2
   '@vueuse/head': 1.0.16
   fast-glob: 3.2.12
   pathe: 1.0.0
   unplugin-ast: 0.5.5
-  zhead: 1.0.2
+  zhead: 1.0.3
 
 devDependencies:
   '@antfu/eslint-config': 0.31.0_eslint@8.27.0
@@ -1246,12 +1246,12 @@ packages:
       eslint-visitor-keys: 3.3.0
     dev: true
 
-  /@unhead/addons/1.0.1:
-    resolution: {integrity: sha512-Cip11LoJaqpkzwTvwMwERQ9EECNyduQsKSymsM1iCpZm+SdpRV0rHhWNT8L7/DoYYwBC8wnbZIvIYls+c381uw==}
+  /@unhead/addons/1.0.2:
+    resolution: {integrity: sha512-eHwWtfHRw1T/VDwvOCv27ybE7kIRBt0YUojI2IFOlnFdqwuWxlLyHa3D6ygMWSMAZWybFEDAbGf5n5KspbFpYA==}
     dependencies:
       '@rollup/pluginutils': 5.0.2
-      '@unhead/schema': 1.0.1
-      unhead: 1.0.1
+      '@unhead/schema': 1.0.2
+      unhead: 1.0.2
       unplugin: 1.0.0
       unplugin-ast: 0.5.5
     transitivePeerDependencies:
@@ -1263,16 +1263,28 @@ packages:
     dependencies:
       '@unhead/schema': 1.0.1
 
+  /@unhead/dom/1.0.2:
+    resolution: {integrity: sha512-AAiYzDmwTTePJu5ZBypPIJidQMDS2WrCXQfe6KJIJtgLss0oXNllve4XVjPEDVh31lfAna89KfVPb/2z0g71pg==}
+    dependencies:
+      '@unhead/schema': 1.0.2
+    dev: false
+
   /@unhead/schema/1.0.1:
     resolution: {integrity: sha512-aUEC8NwAPRb33J/19tna0u9YDMWW0O6KVi48XKf+OJVTr3UKrk34E8xzuv4G5WZl/oZ6gIjpbPymV34VirV/bQ==}
     dependencies:
       '@zhead/schema': 1.0.1
       hookable: 5.4.2
 
-  /@unhead/ssr/1.0.1:
-    resolution: {integrity: sha512-IBP48cDMfKp6bIMXmSv55chRlQ73jGw79EJ5WBQHl+e4jt5sTjeo2ditPiBjoIgQdpdSlybuiYyvk8+cJHCsVw==}
+  /@unhead/schema/1.0.2:
+    resolution: {integrity: sha512-/LyNATQ6zHxZBgnTvTQwYJTZLJjx69/2DvaCcikyEj+y6rjhd77osqUb4Qmt2GxYPbVjuL6J5i5wIyES51RZhw==}
     dependencies:
-      '@unhead/schema': 1.0.1
+      '@zhead/schema': 1.0.3
+      hookable: 5.4.2
+
+  /@unhead/ssr/1.0.2:
+    resolution: {integrity: sha512-OZSuYm/BkiZXgU1bAK7Oc/KfJrtrGLSHE7u95UYLhd3vobWvznfTOZM1ZHkORaCzm1twe4nIMHm1ion73M/9Gg==}
+    dependencies:
+      '@unhead/schema': 1.0.2
 
   /@unhead/vue/1.0.1:
     resolution: {integrity: sha512-MiiKk5R02r+iQeY+Jz2uOxy+QuJFCraDi+U4QSnDFnMkBo9Pix7IuHDQQGJjZoZoZnR/xvJBk/esV3lhKjTk8w==}
@@ -1455,7 +1467,7 @@ packages:
     dependencies:
       '@unhead/dom': 1.0.1
       '@unhead/schema': 1.0.1
-      '@unhead/ssr': 1.0.1
+      '@unhead/ssr': 1.0.2
       '@unhead/vue': 1.0.1
     dev: false
 
@@ -1466,7 +1478,7 @@ packages:
     dependencies:
       '@unhead/dom': 1.0.1
       '@unhead/schema': 1.0.1
-      '@unhead/ssr': 1.0.1
+      '@unhead/ssr': 1.0.2
       '@unhead/vue': 1.0.1_vue@3.2.45
       vue: 3.2.45
     dev: true
@@ -1474,9 +1486,8 @@ packages:
   /@zhead/schema/1.0.1:
     resolution: {integrity: sha512-n6BDs+MjSOesuv6krG2QGyCPfdndxWX0M/G2wEGu1SPHc5jLHHi3EY1+vQvudFVXRVXquZHKsDPE7pSyeyGgHg==}
 
-  /@zhead/schema/1.0.2:
-    resolution: {integrity: sha512-QLwVY7pyZ7LLTihigjNsrFHzpzNtnOdTjbt7OEIergnG5IRoqiSrHuxHkjgHSUdIOOlnrno0VEYk/PcvSGJAJA==}
-    dev: false
+  /@zhead/schema/1.0.3:
+    resolution: {integrity: sha512-hpG+fENrSV82trtmtO7sAdPTQLnfhZIGtqvgN4fIUfEuyILF1GwAYjgFT/FdUaZ8yBSsYt5U47O35tOE2Ts1HA==}
 
   /abbrev/1.1.1:
     resolution: {integrity: sha512-nne9/IiQ/hzIhY6pdDnbBtz7DjPTKrY00P/zvPSm5pOFkl6xuGrGnXn/VtTNNfNtAfZ9/1RtehkszU9qcTii0Q==}
@@ -4758,7 +4769,7 @@ packages:
       '@nuxt/telemetry': 2.1.8
       '@nuxt/ui-templates': 1.0.0
       '@nuxt/vite-builder': 3.0.0_zlnvgczwjkvwnxpefwmxdq75mm
-      '@unhead/ssr': 1.0.1
+      '@unhead/ssr': 1.0.2
       '@vue/reactivity': 3.2.45
       '@vue/shared': 3.2.45
       '@vueuse/head': 1.0.16_vue@3.2.45
@@ -6375,6 +6386,15 @@ packages:
       '@unhead/dom': 1.0.1
       '@unhead/schema': 1.0.1
       hookable: 5.4.2
+    dev: true
+
+  /unhead/1.0.2:
+    resolution: {integrity: sha512-tran349dUu3ERvK3HxzHstwbUc7hSJa4EvYDJ0+sZ0bRIQPVP+2sjzRIHkHVo80WLVc75ul+KylJBwkhsDvcPQ==}
+    dependencies:
+      '@unhead/dom': 1.0.2
+      '@unhead/schema': 1.0.2
+      hookable: 5.4.2
+    dev: false
 
   /unimport/1.0.1:
     resolution: {integrity: sha512-SEPKl3uyqUvi6c0MnyCmUF9H07CuC9j9p2p33F03LmegU0sxjpnjL0fLKAhh7BTfcKaJKj+1iOiAFtg7P3m5mQ==}
@@ -6923,10 +6943,10 @@ packages:
     engines: {node: '>=10'}
     dev: true
 
-  /zhead/1.0.2:
-    resolution: {integrity: sha512-uuZuoheD5NgVfa62ZzbyQpAbTCsEbJZWh0iWV0C1TZBiiSzkNhW3v2kFBjv4Rx/PqVv8IxvLDlaDjyJPEup2Zw==}
+  /zhead/1.0.3:
+    resolution: {integrity: sha512-cgOk347gp+FJMXJOnIJrXLYHDZIW1V8cKSp4HmmdF5RvN4KSqPoJaHlDf5ji0rfx98iHc6lfaBwFVXmdbUSF3w==}
     dependencies:
-      '@zhead/schema': 1.0.2
+      '@zhead/schema': 1.0.3
     dev: false
 
   /zip-stream/4.1.0:

@@ -1,6 +1,4 @@
 <script lang="ts" setup>
-import { useHead, useSeoMeta, useServerHead } from '@vueuse/head'
-
 useServerHead({
   link: [
     {
@@ -16,7 +14,6 @@ useServerHead({
 
 const route = useRouter().currentRoute
 
-console.log(route)
 useHead({
   htmlAttrs: {
     class: () => route.value.name,

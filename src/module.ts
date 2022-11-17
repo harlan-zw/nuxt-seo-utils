@@ -1,5 +1,5 @@
 import { fileURLToPath } from 'url'
-import { addComponent, addPlugin, addTemplate, addVitePlugin, defineNuxtModule } from '@nuxt/kit'
+import { addComponent, addImportsSources, addPlugin, addTemplate, addVitePlugin, defineNuxtModule } from '@nuxt/kit'
 import { resolve } from 'pathe'
 import fg from 'fast-glob'
 import UnheadVite from '@unhead/addons/vite'
@@ -28,9 +28,9 @@ export default defineNuxtModule<ModuleOptions>({
   },
   defaults: {
     seoOptimise: true,
-    resolveAliases: false,
+    resolveAliases: true,
   },
-  // @ts-expect-error type missing
+  // @ts-expect-error untyped
   async setup(options, nuxt) {
     const runtimeDir = fileURLToPath(new URL('./runtime', import.meta.url))
 
@@ -46,16 +46,13 @@ export default defineNuxtModule<ModuleOptions>({
     // paths.d.ts
     addTemplate({ ...headTypeTemplate, options: { getPaths } })
 
-    // @ts-expect-error type missing
+    // @ts-expect-error untyped
     nuxt.hooks.hook('prepare:types', ({ references }) => {
       references.push({ path: resolve(nuxt.options.buildDir, 'head.d.ts') })
     })
 
     // remove useServerHead in client build
-    addVitePlugin(UnheadVite(nuxt.options.rootDir), {
-      server: false,
-      client: true,
-    })
+    addVitePlugin(UnheadVite({ root: nuxt.options.rootDir }))
 
     await addComponent({
       name: 'DebugHead',
@@ -64,16 +61,13 @@ export default defineNuxtModule<ModuleOptions>({
     })
 
     // add non useHead composables
-    // @ts-expect-error type missing
-    nuxt.hooks.hook('imports:sources', (sources) => {
-      sources.push({
-        from: '@vueuse/head',
-        imports: [
-          'useServerHead',
-          'useSeoMeta',
-          'injectHead',
-        ],
-      })
+    addImportsSources({
+      from: '@vueuse/head',
+      imports: [
+        'useServerHead',
+        'useSeoMeta',
+        'injectHead',
+      ],
     })
 
     addPlugin({ src: resolve(runtimeDir, 'plugin') })

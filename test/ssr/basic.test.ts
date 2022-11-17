@@ -17,12 +17,17 @@ describe('pages', () => {
           name="viewport"
         />,
         <meta
-          content="description"
+          content="My site description"
           name="description"
         />,
         <meta
-          content="5"
-          name="head:count"
+          content="https://nuxtjs.org/meta_400.png"
+          property="og:image"
+        />,
+        <meta
+          content="description"
+          data-h-71bc24a=""
+          name="description"
         />,
       ]
     `)

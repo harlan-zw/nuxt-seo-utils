@@ -10,7 +10,7 @@
 
 
 <p align="center">
-Experimental head module for Nuxt v3, powered by [unhead](https://github.com/harlan-zw/unhead).
+Experimental head module for Nuxt v3, powered by <a href="https://github.com/unjs/unhead">unhead</a>.
 </p>
 
 <p align="center">

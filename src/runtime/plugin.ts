@@ -1,4 +1,3 @@
-import { inferSeoMetaTags } from 'zhead'
 import { injectHead } from '@vueuse/head'
 import { InferSeoMetaPlugin } from '@unhead/addons'
 import { defineNuxtPlugin } from '#app'
@@ -17,7 +16,7 @@ export default defineNuxtPlugin((nuxtApp) => {
     return
 
   if (seoOptimise)
-    head.hooks.addHooks(InferSeoMetaPlugin().hooks!)
+    head.use(InferSeoMetaPlugin())
 
   if (resolveAliases) {
     head.hooks.hook('tags:resolve', async (ctx) => {
@@ -40,9 +39,6 @@ export default defineNuxtPlugin((nuxtApp) => {
 
       // filter out aliases
       ctx.tags = validTags
-
-      if (seoOptimise)
-        ctx.tags = inferSeoMetaTags(ctx.tags)
     })
   }
 })

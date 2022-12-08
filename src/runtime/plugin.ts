@@ -25,13 +25,18 @@ export default defineNuxtPlugin((nuxtApp) => {
       for (const tag of ctx.tags) {
         let isValid = true
         for (const prop of resolveAliasProps) {
-          if (!(tag.props?.[prop] && /^[~@]+\//.test(tag.props[prop])))
+          if (!tag.props[prop] || !(tag.props?.[prop] && /^[~@]+\//.test(tag.props[prop])))
             continue
 
-          if (process.server)
-            tag.props[prop] = (await import(/* @vite-ignore */ `${tag.props[prop]}?url`)).default
-          else
-            isValid = false
+          if (process.server) {
+            let moduleUrl = tag.props[prop]
+            try {
+              moduleUrl = (await import(/* @vite-ignore */ `${tag.props[prop]}?url`)).default
+            }
+            catch (e) {}
+            tag.props[prop] = moduleUrl
+          }
+          else { isValid = false }
         }
         if (isValid)
           validTags.push(tag)

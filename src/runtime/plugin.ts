@@ -15,8 +15,11 @@ export default defineNuxtPlugin((nuxtApp) => {
   if (!head)
     return
 
-  if (seoOptimise)
-    head.use(InferSeoMetaPlugin())
+  if (seoOptimise) {
+    head.use(InferSeoMetaPlugin({
+      robots: false,
+    }))
+  }
 
   if (resolveAliases) {
     head.hooks.hook('tags:resolve', async (ctx) => {

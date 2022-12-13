@@ -10,7 +10,7 @@
 
 
 <p align="center">
-Experimental features for Nuxt v3 head management. Powered by <a href="https://github.com/unjs/unhead">unhead</a>.
+Experimental features for Nuxt v3 head management. Powered by <a href="https://github.com/unjs/unhead">Unhead</a>.
 </p>
 
 <p align="center">

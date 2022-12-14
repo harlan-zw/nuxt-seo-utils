@@ -23,7 +23,7 @@ export default defineNuxtModule<ModuleOptions>({
     name: 'nuxt-unhead',
     configKey: 'head',
     compatibility: {
-      nuxt: '3.0.0',
+      nuxt: '^3.0.0',
     },
   },
   defaults: {

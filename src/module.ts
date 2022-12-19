@@ -11,9 +11,7 @@ export interface ModuleOptions {
    */
   seoOptimise: boolean
   /**
-   * Not supported yet, waiting for v1 @vueuse/head.
-   *
-   * @deprecated not ready
+   * Allows you to resolve aliasing when linking internal files.
    */
   resolveAliases: boolean
   /**
@@ -37,6 +35,8 @@ export default defineNuxtModule<ModuleOptions>({
   defaults: {
     seoOptimise: true,
     resolveAliases: true,
+    ogTitleTemplate: '%s',
+    ogDescriptionTemplate: '%s',
   },
   // @ts-expect-error untyped
   async setup(options, nuxt) {

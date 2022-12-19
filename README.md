@@ -29,7 +29,7 @@ Experimental features for Nuxt v3 head management. Powered by <a href="https://g
 
 ## Features
 
-Unlock all [unhead](https://unhead.harlanzw.com/) features and more:
+Unlock all [Unhead](https://unhead.harlanzw.com/) features and more:
 - 🖥️ 0kb runtime tags `useServerHead`
 - 🧙 Define your meta tags as a flat object `useSeoMeta`
 - ✨ Automatic social share meta tags
@@ -84,6 +84,74 @@ export default defineNuxtConfig({
   ensure a `twitter:card` is set to `summary_large_image` if not set.
   
   This will do more in the future.
+
+### `resolveAliases`
+
+- Type: `boolean`
+- Default: `true`
+
+  Resolve aliases in `href` and `src` attributes. This will allow you to load your asset files directly using aliases.
+
+  ```vue
+  <script lang="ts" setup>
+  useHead({
+    link: [
+      {
+        rel: 'stylesheet',
+        href: '~/assets/style.css',
+      },
+    ]
+  })
+  </script>
+  ```
+  
+### ogTitleTemplate
+
+- Type: `string`
+- Default: `%s`
+
+  Template for the `og:title` meta tag. This will be used when inferring the og:title from title.
+
+  ```ts
+  defineNuxtConfig({
+    unhead: {
+      ogTitleTemplate: '%s - My cool site',
+    },
+  })
+  ```
+
+  ```vue
+  <script lang="ts" setup>
+  useHead({
+    // og:title will be "My Title - My cool site"
+    title: 'My Title',
+  })
+  </script>
+  ```
+
+### ogDescriptionTemplate
+
+- Type: `string`
+- Default: `%s`
+
+  Template for the `og:description` meta tag. This will be used when inferring the og:description from description.
+
+  ```ts
+  defineNuxtConfig({
+    unhead: {
+      ogDescriptionTemplate: '%s. Check out my cool site',
+    },
+  })
+  ```
+
+  ```vue
+  <script lang="ts" setup>
+  useHead({
+    // og:description will be "My Description. Check out my cool site"
+    meta: [ { name: 'description', content: 'My Description' } ],
+  })
+  </script>
+  ```
 
 ## Composables
 

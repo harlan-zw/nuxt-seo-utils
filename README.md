@@ -73,7 +73,7 @@ export default defineNuxtConfig({
 
 ## Config
 
-### `seoOptimise`
+### seoOptimise
 
 - Type: `boolean`
 - Default: `true`
@@ -85,7 +85,7 @@ export default defineNuxtConfig({
   
   This will do more in the future.
 
-### `resolveAliases`
+### resolveAliases
 
 - Type: `boolean`
 - Default: `true`

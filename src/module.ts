@@ -16,6 +16,14 @@ export interface ModuleOptions {
    * @deprecated not ready
    */
   resolveAliases: boolean
+  /**
+   * The template used to render the og:title. Use %s to insert the og:title.
+   */
+  ogTitleTemplate: string
+  /**
+   * The template used to render the og:title. Use %s to insert the og:description.
+   */
+  ogDescriptionTemplate: string
 }
 
 export default defineNuxtModule<ModuleOptions>({

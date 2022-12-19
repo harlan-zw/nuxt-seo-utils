@@ -18,6 +18,8 @@ export default defineNuxtPlugin((nuxtApp) => {
   if (seoOptimise) {
     head.use(InferSeoMetaPlugin({
       robots: false,
+      ogTitle: options.ogTitleTemplate || '%s',
+      ogDescription: options.ogDescriptionTemplate || '%s',
     }))
   }
 

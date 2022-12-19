@@ -49,10 +49,10 @@
     "@nuxtjs/eslint-config-typescript": "^12.0.0",
     "bumpp": "^8.2.1",
     "cheerio": "1.0.0-rc.12",
-    "eslint": "8.29.0",
+    "eslint": "8.30.0",
     "nuxt": "^3.0.0",
-    "playwright": "^1.28.1",
-    "sass": "^1.56.2",
-    "vitest": "^0.25.7"
+    "playwright": "^1.29.0",
+    "sass": "^1.57.0",
+    "vitest": "^0.26.0"
   }
 }

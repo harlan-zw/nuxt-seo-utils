@@ -27,6 +27,8 @@ Experimental features for Nuxt v3 head management. Powered by <a href="https://g
 </table>
 </p>
 
+ℹ️ Looking for a complete SEO solution? Check out [nuxt-seo-kit](https://github.com/harlan-zw/nuxt-seo-kit).
+
 ## Features
 
 Unlock all [Unhead](https://unhead.harlanzw.com/) features and more:

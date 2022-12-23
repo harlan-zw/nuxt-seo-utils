@@ -2,9 +2,7 @@
 import type { Ref } from 'vue'
 import { nextTick, onBeforeUnmount, ref } from 'vue'
 
-const els: Ref<any> = ref(document.querySelectorAll('head > *'))
-const head = ref([...document.querySelector('html').attributes])
-const body = ref([...document.querySelector('body').attributes])
+const els: Ref<any> = ref([])
 
 const filter = ref('')
 
@@ -33,13 +31,13 @@ nextTick(() => {
     els.value = [
       {
         tagName: 'HTML',
-        attributes: [...document.querySelector('html').attributes],
+        attributes: [...(document.querySelector('html')?.attributes || {})],
       },
       {
         tagName: 'BODY',
-        attributes: [...document.querySelector('body').attributes],
+        attributes: [...(document.querySelector('body')?.attributes || {})],
       },
-      ...document.querySelectorAll('head > *'),
+      ...(document.querySelectorAll('head > *') || {}),
     ]
   }
 

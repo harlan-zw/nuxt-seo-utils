@@ -4,7 +4,7 @@ import { nextTick, onBeforeUnmount, ref } from 'vue'
 
 const els: Ref<any> = ref([])
 
-const filter = ref('')
+const filter: Ref<string | null> = ref('')
 
 const tagColour = (tag: string) => {
   switch (tag) {
@@ -31,11 +31,12 @@ nextTick(() => {
     els.value = [
       {
         tagName: 'HTML',
-        attributes: [...(document.querySelector('html')?.attributes || {})],
+        //
+        attributes: [...(document.querySelector('html')?.attributes || [])],
       },
       {
         tagName: 'BODY',
-        attributes: [...(document.querySelector('body')?.attributes || {})],
+        attributes: [...(document.querySelector('body')?.attributes || [])],
       },
       ...(document.querySelectorAll('head > *') || {}),
     ]
@@ -59,7 +60,7 @@ onBeforeUnmount(() => {
   observer?.disconnect()
 })
 
-const setFilter = (val) => {
+const setFilter = (val: string | null) => {
   filter.value = val
 }
 </script>
@@ -69,7 +70,8 @@ const setFilter = (val) => {
     <div style="display: flex; margin: 20px 0 30px 0;">
       <div style="display: flex;">
         <button
-          v-for="type in ['META', 'LINK', 'STYLE', 'SCRIPT']" class="debug-head__tag"
+          v-for="type in ['META', 'LINK', 'STYLE', 'SCRIPT']" :key="type"
+          class="debug-head__tag"
           style="width: 50px; cursor: pointer; margin: 0 5px;"
           :style="{ backgroundColor: !filter || filter === type ? tagColour(type) : '' }"
           @click="setFilter(type)"
@@ -81,7 +83,7 @@ const setFilter = (val) => {
         </button>
       </div>
     </div>
-    <div v-for="el in els">
+    <div v-for="(el, _k) in els" :key="_k">
       <div v-if="!filter || el.tagName === filter" class="debug-head__inner">
         <div class="debug-head__tag" :style="{ backgroundColor: tagColour(el.tagName) }">
           {{ el.tagName }}

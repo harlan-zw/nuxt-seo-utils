@@ -38,7 +38,6 @@ export default defineNuxtModule<ModuleOptions>({
     ogTitleTemplate: '%s',
     ogDescriptionTemplate: '%s',
   },
-  // @ts-expect-error untyped
   async setup(options, nuxt) {
     const runtimeDir = fileURLToPath(new URL('./runtime', import.meta.url))
 
@@ -54,9 +53,8 @@ export default defineNuxtModule<ModuleOptions>({
     // paths.d.ts
     addTemplate({ ...headTypeTemplate, options: { getPaths } })
 
-    // @ts-expect-error untyped
     nuxt.hooks.hook('prepare:types', ({ references }) => {
-      references.push({ path: resolve(nuxt.options.buildDir, 'head.d.ts') })
+      references.push({ path: resolve(nuxt.options.buildDir, 'nuxt-unhead.d.ts') })
     })
 
     // remove useServerHead in client build

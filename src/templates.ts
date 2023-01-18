@@ -9,7 +9,7 @@ export interface PathsTemplateContext {
 }
 
 export const headTypeTemplate: NuxtTemplate<PathsTemplateContext> = {
-  filename: 'head.d.ts',
+  filename: 'nuxt-unhead.d.ts',
   getContents: async ({ options }) => {
     const paths: PathsRes = await options.getPaths()
 
@@ -38,7 +38,9 @@ declare module '@nuxt/schema' {
     }
   }
 }
-`
+
+// ensures we augment
+export {}`
     return output
   },
 }

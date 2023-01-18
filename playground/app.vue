@@ -9,6 +9,10 @@ useServerHead({
       href: '~/assets/my-css-file.scss',
       rel: 'stylesheet',
     },
+    {
+      href: '~/assets/some-missing-file',
+      rel: 'stylesheet',
+    },
   ],
 })
 

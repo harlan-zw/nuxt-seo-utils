@@ -27,7 +27,7 @@ export interface ModuleOptions {
 export default defineNuxtModule<ModuleOptions>({
   meta: {
     name: 'nuxt-unhead',
-    configKey: 'head',
+    configKey: 'unhead',
     compatibility: {
       nuxt: '^3.0.0',
     },

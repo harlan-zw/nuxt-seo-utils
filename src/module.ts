@@ -27,7 +27,7 @@ export interface ModuleOptions {
 export default defineNuxtModule<ModuleOptions>({
   meta: {
     name: 'nuxt-unhead',
-    configKey: 'unhead',
+    configKey: 'head',
     compatibility: {
       nuxt: '^3.0.0',
     },
@@ -40,6 +40,8 @@ export default defineNuxtModule<ModuleOptions>({
   },
   async setup(options, nuxt) {
     const runtimeDir = fileURLToPath(new URL('./runtime', import.meta.url))
+
+    options = Object.assign({}, options, nuxt.options.unhead)
 
     addTemplate({
       filename: 'nuxt-unhead-config.mjs',

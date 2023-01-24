@@ -58,9 +58,7 @@ npm install --save-dev nuxt-unhead
 yarn add --dev nuxt-unhead
 ```
 
-## Register Module 
-
-This module replaces the internal Nuxt `meta` module, so the setup is slightly different.
+## Setup
 
 _nuxt.config.ts_
 
@@ -71,6 +69,7 @@ export default defineNuxtConfig({
   ],
 })
 ```
+
 ## Module Configuration
 
 Config key: `unhead`

@@ -13,8 +13,12 @@ export default defineNuxtConfig({
       viewport: 'width=device-width, initial-scale=1',
     },
   },
+
+  unhead: {},
+
   workspaceDir: resolve(__dirname, '../'),
   imports: {
     autoImport: true,
   },
 })
+

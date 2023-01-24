@@ -9,19 +9,19 @@ export interface ModuleOptions {
   /**
    * Whether meta tags should be optimised for SEO.
    */
-  seoOptimise: boolean
+  seoOptimise?: boolean
   /**
    * Allows you to resolve aliasing when linking internal files.
    */
-  resolveAliases: boolean
+  resolveAliases?: boolean
   /**
    * The template used to render the og:title. Use %s to insert the og:title.
    */
-  ogTitleTemplate: string
+  ogTitleTemplate?: string
   /**
    * The template used to render the og:title. Use %s to insert the og:description.
    */
-  ogDescriptionTemplate: string
+  ogDescriptionTemplate?: string
 }
 
 export default defineNuxtModule<ModuleOptions>({
@@ -40,6 +40,8 @@ export default defineNuxtModule<ModuleOptions>({
   },
   async setup(options, nuxt) {
     const runtimeDir = fileURLToPath(new URL('./runtime', import.meta.url))
+
+    options = Object.assign({}, options, nuxt.options.unhead)
 
     addTemplate({
       filename: 'nuxt-unhead-config.mjs',
@@ -80,3 +82,13 @@ export default defineNuxtModule<ModuleOptions>({
     addPlugin({ src: resolve(runtimeDir, 'plugin') })
   },
 })
+
+
+declare module '@nuxt/schema' {
+  interface NuxtConfig {
+    unhead?: ModuleOptions
+  }
+  interface NuxtOptions {
+    unhead?: ModuleOptions
+  }
+}

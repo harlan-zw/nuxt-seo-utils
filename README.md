@@ -71,7 +71,22 @@ export default defineNuxtConfig({
   ],
 })
 ```
+## Module Configuration
 
+Config key: `unhead`
+
+_nuxt.config.ts_
+
+```ts
+export default defineNuxtConfig({
+  modules: ['nuxt-unhead'],
+
+  unhead: {
+    // config (see below)
+  },
+  //...
+})
+```
 
 ## Config
 

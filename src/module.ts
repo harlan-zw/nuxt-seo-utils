@@ -4,24 +4,25 @@ import { resolve } from 'pathe'
 import fg from 'fast-glob'
 import UnheadVite from '@unhead/addons/vite'
 import { headTypeTemplate } from './templates'
+import { exposeModuleConfig } from './nuxt-utils'
 
 export interface ModuleOptions {
   /**
    * Whether meta tags should be optimised for SEO.
    */
-  seoOptimise?: boolean
+  seoOptimise: boolean
   /**
    * Allows you to resolve aliasing when linking internal files.
    */
-  resolveAliases?: boolean
+  resolveAliases: boolean
   /**
    * The template used to render the og:title. Use %s to insert the og:title.
    */
-  ogTitleTemplate?: string
+  ogTitleTemplate: string
   /**
    * The template used to render the og:title. Use %s to insert the og:description.
    */
-  ogDescriptionTemplate?: string
+  ogDescriptionTemplate: string
 }
 
 export default defineNuxtModule<ModuleOptions>({
@@ -38,17 +39,14 @@ export default defineNuxtModule<ModuleOptions>({
     ogTitleTemplate: '%s',
     ogDescriptionTemplate: '%s',
   },
-  async setup(options, nuxt) {
+  async setup(config, nuxt) {
     const runtimeDir = fileURLToPath(new URL('./runtime', import.meta.url))
 
     // support the previous config key
     // @ts-expect-error untyped
     config = Object.assign({}, config, nuxt.options.head)
 
-    addTemplate({
-      filename: 'nuxt-unhead-config.mjs',
-      getContents: () => `export default ${JSON.stringify(options)}`,
-    })
+    exposeModuleConfig('nuxt-unhead', config)
 
     const getPaths = async () => ({
       public: await fg(['**/*'], { cwd: resolve(nuxt.options.srcDir, 'public') }),
@@ -84,13 +82,3 @@ export default defineNuxtModule<ModuleOptions>({
     addPlugin({ src: resolve(runtimeDir, 'plugin') })
   },
 })
-
-
-declare module '@nuxt/schema' {
-  interface NuxtConfig {
-    unhead?: ModuleOptions
-  }
-  interface NuxtOptions {
-    unhead?: ModuleOptions
-  }
-}

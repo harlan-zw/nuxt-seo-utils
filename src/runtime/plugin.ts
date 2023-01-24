@@ -1,15 +1,12 @@
 import { injectHead } from '@vueuse/head'
 import { InferSeoMetaPlugin } from '@unhead/addons'
 import { defineNuxtPlugin } from '#app'
-// @ts-expect-error untyped
-import options from '#build/nuxt-unhead-config.mjs'
+import { ogDescriptionTemplate, ogTitleTemplate, resolveAliases, seoOptimise } from '#nuxt-unhead/config'
 
 // Note: This should always be a partial match to nuxt's internal vueuse-head plugin
 const resolveAliasProps = ['href', 'src']
 
 export default defineNuxtPlugin((nuxtApp) => {
-  const { resolveAliases, seoOptimise } = options
-
   const head = injectHead()
 
   if (!head)
@@ -18,8 +15,8 @@ export default defineNuxtPlugin((nuxtApp) => {
   if (seoOptimise) {
     head.use(InferSeoMetaPlugin({
       robots: false,
-      ogTitle: options.ogTitleTemplate || '%s',
-      ogDescription: options.ogDescriptionTemplate || '%s',
+      ogTitle: ogTitleTemplate || '%s',
+      ogDescription: ogDescriptionTemplate || '%s',
     }))
   }
 

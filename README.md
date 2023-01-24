@@ -42,12 +42,8 @@ Unlock all [Unhead](https://unhead.harlanzw.com/) features and more:
 
 ## Background
 
-I'm the maintainer of [@vueuse/head](https://github.com/vueuse/head) and [zhead](https://github.com/harlan-zw/zhead).
-
 This module was built to test bug fixes as well as experimental new features which may
 land into the Nuxt core.
-
-While it should be relatively safe for production use, it will be updated frequently and may lose parity with the Nuxt meta module, use with caution.
 
 ## Install
 

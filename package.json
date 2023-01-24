@@ -27,7 +27,7 @@
     "dist"
   ],
   "scripts": {
-    "lint": "eslint \"**/*.{ts,vue,json,yml}\"",
+    "lint": "eslint \"**/*.{ts,vue,json,yml}\" --fix",
     "build": "nuxi prepare playground && nuxt-module-build",
     "dev": "nuxi dev playground",
     "dev:build": "nuxi build playground",
@@ -37,9 +37,9 @@
   },
   "dependencies": {
     "@nuxt/kit": "3.0.0",
-    "@unhead/addons": "^1.0.17",
+    "@unhead/addons": "^1.0.18",
     "fast-glob": "^3.2.12",
-    "pathe": "^1.0.0"
+    "pathe": "^1.1.0"
   },
   "devDependencies": {
     "@antfu/eslint-config": "^0.34.1",
@@ -53,6 +53,6 @@
     "nuxt": "^3.0.0",
     "playwright": "^1.29.2",
     "sass": "^1.57.1",
-    "vitest": "^0.27.2"
+    "vitest": "^0.28.1"
   }
 }

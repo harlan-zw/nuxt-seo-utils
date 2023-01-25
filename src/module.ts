@@ -30,7 +30,8 @@ export default defineNuxtModule<ModuleOptions>({
     name: 'nuxt-unhead',
     configKey: 'unhead',
     compatibility: {
-      nuxt: '^3.0.0',
+      nuxt: '^3.1.0',
+      bridge: false,
     },
   },
   defaults: {
@@ -74,7 +75,6 @@ export default defineNuxtModule<ModuleOptions>({
       from: '@vueuse/head',
       imports: [
         'useServerHead',
-        'useSeoMeta',
         'injectHead',
       ],
     })

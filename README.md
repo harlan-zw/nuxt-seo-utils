@@ -33,7 +33,6 @@ Experimental features for Nuxt v3 head management. Powered by <a href="https://g
 
 Unlock all [Unhead](https://unhead.harlanzw.com/) features and more:
 - 🖥️ 0kb runtime tags `useServerHead`
-- 🧙 Define your meta tags as a flat object `useSeoMeta`
 - ✨ Automatic social share meta tags
 - 🤖 Debug head tags component `DebugHead`
 - 🌳 Fully typed Head Schema with `href` and `src` file auto-completion
@@ -164,28 +163,6 @@ export default defineNuxtConfig({
   })
   </script>
   ```
-
-## Composables
-
-### useSeoMeta
-
-Define your meta tags as a flat object. This function is automatically imported for you.
-
-Behind the scenes, this unpacks your meta tags and adds them as if you used `useHead` directly.
-
-Powered by [packrup](https://github.com/harlan-zw/packrup) and [zhead](https://github.com/harlan-zw/zhead).
-
-```ts
-useSeoMeta({
-  ogImage: "https://nuxtjs.org/meta_400.png",
-  ogUrl: "https://nuxtjs.org",
-  ogSiteName: "NuxtJS",
-  ogType: "website",
-  ogLocale: "en_US",
-  ogLocaleAlternate: "fr_FR",
-  twitterSite: "@nuxt_js",
-})
-```
 
 ## Components
 

@@ -14,9 +14,6 @@ useHead({
   htmlAttrs: {
     class: () => route.value.name,
   },
-  // convert slug name to title case
-  title: () => route.value.meta.title
-    || `${route.value.name?.charAt(0).toUpperCase()}${route.value.name?.slice(1)}`
 })
 
 useSeoMeta({

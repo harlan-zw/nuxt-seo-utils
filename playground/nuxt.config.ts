@@ -12,7 +12,7 @@ export default defineNuxtConfig({
   app: {
     head: {
       // DEV - My page title - My cool site
-      titleTemplate: `%envName %titleSeperator %s %titleSeperator %siteName`,
+      titleTemplate: `%s %titleSeparator %siteName`,
       meta: [
         {
           name: 'description',

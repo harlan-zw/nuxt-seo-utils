@@ -25,7 +25,7 @@ useServerHead({
 })
 
 useHead({
-  title: () => `test ${count.value}`,
+  title: null,
 })
 </script>
 

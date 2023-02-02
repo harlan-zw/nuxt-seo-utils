@@ -27,12 +27,13 @@ function processTitleTemplateTokens(s: string, config: { titleSeparator: string 
     .replace(/%(\w+\.?\w+)%/g, replacer())
     .replace(/%(\w+\.?\w+)/g, replacer(true))
     .trim()
+
   if (config.titleSeparator) {
     // avoid the title ending with a separator
     if (template.endsWith(config.titleSeparator))
-      template = template.slice(0, -config.titleSeparator.length)
+      template = template.slice(0, -config.titleSeparator.length).trim()
     if (template.startsWith(config.titleSeparator))
-      template = template.slice(config.titleSeparator.length)
+      template = template.slice(config.titleSeparator.length).trim()
   }
   return template
 }
@@ -60,6 +61,23 @@ export default defineNuxtPlugin(() => {
     if (tag.tag === 'meta' && tag.props.content)
       tag.props.content = processTitleTemplateTokens(tag.props.content, config)
   })
+
+  if (config.titleSeparator) {
+    // in case the page title was null, we need to strip the separator
+    head.hooks.hook('tags:resolve', async ({ tags }) => {
+      for (const tag of tags) {
+        if (tag.tag === 'title' && tag.children) {
+          // trim
+          tag.children = tag.children.trim()
+          // avoid the title ending with a separator
+          if (tag.children.endsWith(config.titleSeparator))
+            tag.children = tag.children.slice(0, -config.titleSeparator.length).trim()
+          if (tag.children.startsWith(config.titleSeparator))
+            tag.children = tag.children.slice(config.titleSeparator.length).trim()
+        }
+      }
+    })
+  }
 
   if (resolveAliases) {
     head.hooks.hook('tags:resolve', async (ctx) => {

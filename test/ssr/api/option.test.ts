@@ -30,7 +30,7 @@ describe('option api', () => {
   it('function works', async () => {
     const $ = await $fetchPath('/api/option/function')
     const title = $('title').toString()
-    expect(title).toMatchInlineSnapshot('"<title>Api-option-function - Nuxt module playground</title>"')
+    expect(title).toMatchInlineSnapshot('"<title>Api-option-function – Nuxt Playground</title>"')
     const metaTags = $('head > meta').toArray()
     expect(metaTags).toMatchInlineSnapshot(`
       [

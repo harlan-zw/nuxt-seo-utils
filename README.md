@@ -112,6 +112,8 @@ export default defineNuxtConfig({
 })
 ```
 
+The `titleSeperator` token is unique in that it will be trimmed from the start and end of the title.
+
 If you'd like to change the template for your titles, you can do so in your nuxt.config or using `useHead`.
 
 _nuxt.config.ts_

@@ -6,7 +6,7 @@ import { ogDescriptionTemplate, ogTitleTemplate, resolveAliases, seoOptimise } f
 // Note: This should always be a partial match to nuxt's internal vueuse-head plugin
 const resolveAliasProps = ['href', 'src']
 
-function processTitleTemplateTokens(s: string, config: { titleSeparator: string; siteName?: string } & Record<string, string>) {
+function processTitleTemplateTokens(s: string, config: { titleSeparator: string } & Record<string, string>) {
   // for each %<word> token replace it with the corresponding runtime config or an empty value
   let template = s
     .replace(/%(\w+)/g, (_, token) => {
@@ -15,9 +15,13 @@ function processTitleTemplateTokens(s: string, config: { titleSeparator: string;
       return config[token] || ''
     })
     .trim()
-  // avoid the title ending with a separator
-  if (config.titleSeparator && template.endsWith(config.titleSeparator))
-    template = template.slice(0, -config.titleSeparator.length)
+  if (config.titleSeparator) {
+    // avoid the title ending with a separator
+    if (template.endsWith(config.titleSeparator))
+      template = template.slice(0, -config.titleSeparator.length)
+    if (template.startsWith(config.titleSeparator))
+      template = template.slice(config.titleSeparator.length)
+  }
   return template
 }
 

@@ -8,17 +8,27 @@ export default defineNuxtConfig({
   modules: [
     'nuxt-unhead',
   ],
+
   app: {
     head: {
-      titleTemplate: `%envName %pageTitle %titleSeparator %siteName`,
-      viewport: 'width=device-width, initial-scale=1',
-    },
+      // DEV - My page title - My cool site
+      titleTemplate: `%envName %titleSeperator %s %titleSeperator %siteName`,
+      meta: [
+        {
+          name: 'description',
+          content: 'Hi, welcome to the %envName v%app.version of %siteName.',
+        }
+      ]
+    }
   },
-
 
   runtimeConfig: {
     public: {
-      envName: process.env.NODE_ENV === 'development' ? 'DEV' : '',
+      app: {
+        version: process.env.npm_package_version,
+      },
+      titleSeparator: '|',
+      envName: process.env.NODE_ENV === 'development' ? 'dev' : 'live',
       siteName: 'Nuxt Playground',
     },
   },

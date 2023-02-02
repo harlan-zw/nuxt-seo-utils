@@ -20,7 +20,6 @@ useHead({
 })
 
 useSeoMeta({
-  description: 'My site description',
   ogImage: 'https://nuxtjs.org/meta_400.png',
 })
 </script>

@@ -85,17 +85,17 @@ export default defineNuxtConfig({
 
 ## Usage
 
-### Title template tokens
+### Runtime Config Template Tokens
 
-When defining your title template as a string, you can use any public runtime key as a token. 
-Any missing tokens will be replaced with an empty string.
+When defining your `titleTemplate`, `title` or `meta` content as strings,
+you can use tokens to reference values from your resolved runtime config.
 
 For example, the default title template introduced by this module is `%s %titleSeparator %siteName`. 
 
 This uses the following:
 - `%s` - The title of the page.
+- `%titleSeparator` - `runtimeConfig.public.titleSeparator`
 - `%siteName` - `runtimeConfig.public.siteName`
-- `%separator` - `runtimeConfig.public.titleSeparator`
 
 To provide the values for these tokens, you can update them in your nuxt config.
 
@@ -112,9 +112,7 @@ export default defineNuxtConfig({
 })
 ```
 
-The `titleSeperator` token is unique in that it will be trimmed from the start and end of the title.
-
-If you'd like to change the template for your titles, you can do so in your nuxt.config or using `useHead`.
+Taking this further, we can see how we can handle complex tokenization.
 
 _nuxt.config.ts_
 
@@ -122,17 +120,34 @@ _nuxt.config.ts_
 export default defineNuxtConfig({
   app: {
     head: {
-      // add DEV - to local page titles
+      // dev | My page title | My cool site
       titleTemplate: `%envName %titleSeperator %s %titleSeperator %siteName`,
+      meta: [
+        {
+          name: 'description',
+          // Hi, welcome to the dev v1.3.1 of Nuxt Playground.
+          content: 'Hi, welcome to the %envName v%app.version of %siteName.',
+        }
+      ]
     }
   },
   runtimeConfig: {
     public: {
-      envName: process.env.NODE_ENV === 'development' ? 'DEV' : '',
+      app: {
+        version: process.env.npm_package_version,
+      },
+      titleSeparator: '|',
+      siteName: 'My cool site',
+      envName: process.env.NODE_ENV === 'development' ? 'dev' : 'live',
     }
   }
 })
 ```
+
+The `titleSeperator` token is unique in that it will be trimmed from the start and end of the title.
+
+Any missing tokens will be replaced with an empty string.
+
 
 ## Config
 

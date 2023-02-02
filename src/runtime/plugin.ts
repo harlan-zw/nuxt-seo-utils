@@ -8,12 +8,24 @@ const resolveAliasProps = ['href', 'src']
 
 function processTitleTemplateTokens(s: string, config: { titleSeparator: string } & Record<string, string>) {
   // for each %<word> token replace it with the corresponding runtime config or an empty value
+  const replacer = (preserveToken?: boolean) => (_: unknown, token: string) => {
+    if (token === 'pageTitle' || token === 's')
+      return '%s'
+
+    let val
+    // support . notation
+    if (token.includes('.')) {
+      // @ts-expect-error untyped
+      val = token.split('.').reduce((acc, key) => acc[key] || {}, config)
+    }
+    else {
+      val = config[token]
+    }
+    return val || (preserveToken ? token : '')
+  }
   let template = s
-    .replace(/%(\w+)/g, (_, token) => {
-      if (token === 'pageTitle' || token === 's')
-        return '%s'
-      return config[token] || ''
-    })
+    .replace(/%(\w+\.?\w+)%/g, replacer())
+    .replace(/%(\w+\.?\w+)/g, replacer(true))
     .trim()
   if (config.titleSeparator) {
     // avoid the title ending with a separator
@@ -43,8 +55,10 @@ export default defineNuxtPlugin(() => {
   }
 
   head.hooks.hook('tag:normalise', async ({ tag }) => {
-    if (tag.tag === 'titleTemplate' && tag.children)
+    if (['titleTemplate', 'title'].includes(tag.tag) && tag.children)
       tag.children = processTitleTemplateTokens(tag.children, config)
+    if (tag.tag === 'meta' && tag.props.content)
+      tag.props.content = processTitleTemplateTokens(tag.props.content, config)
   })
 
   if (resolveAliases) {

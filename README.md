@@ -37,7 +37,7 @@ Unlock all [Unhead](https://unhead.harlanzw.com/) features and more:
 - 🤖 Debug head tags component `DebugHead`
 - 🌳 Fully typed Head Schema with `href` and `src` file auto-completion
 - 🪝 Runtime hooks: `head:tags`, `head:entries`
-- 📦 Load your asset files directly using aliases `href: '~/assets/style.css'`
+- 📦 Load your asset files directly using aliases `href: '~/assets/style.css'` (Experimental)
 
 ## Background
 
@@ -96,10 +96,10 @@ export default defineNuxtConfig({
   
   This will do more in the future.
 
-### resolveAliases
+### resolveAliases - EXPERIMENTAL
 
 - Type: `boolean`
-- Default: `true`
+- Default: `false`
 
   Resolve aliases in `href` and `src` attributes. This will allow you to load your asset files directly using aliases.
 

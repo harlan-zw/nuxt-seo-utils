@@ -16,6 +16,7 @@ export default defineNuxtConfig({
       meta: [
         {
           name: 'description',
+          // Hi, welcome to the dev v0.0.0 of Nuxt Playground.
           content: 'Hi, welcome to the %envName v%app.version of %siteName.',
         }
       ]

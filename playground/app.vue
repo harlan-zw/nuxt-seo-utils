@@ -16,8 +16,16 @@ useHead({
   },
 })
 
+// works with useSeoMeta
 useSeoMeta({
-  ogImage: 'https://nuxtjs.org/meta_400.png',
+  description: 'Hi, welcome to the %envName v%app.version of %siteName.'
+})
+
+// works with useHead
+useHead({
+  meta: [
+
+  ]
 })
 </script>
 

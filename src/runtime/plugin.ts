@@ -6,7 +6,7 @@ import { ogDescriptionTemplate, ogTitleTemplate, resolveAliases, seoOptimise } f
 // Note: This should always be a partial match to nuxt's internal vueuse-head plugin
 const resolveAliasProps = ['href', 'src']
 
-function processTitleTemplateTokens(s: string, config: { titleSeparator: string } & Record<string, string>) {
+function processRuntimeConfigTokens(s: string, config: { titleSeparator: string } & Record<string, string>) {
   // for each %<word> token replace it with the corresponding runtime config or an empty value
   const replacer = (preserveToken?: boolean) => (_: unknown, token: string) => {
     if (token === 'pageTitle' || token === 's')
@@ -49,17 +49,17 @@ export default defineNuxtPlugin(() => {
     head.use(
       InferSeoMetaPlugin({
         robots: false,
-        ogTitle: processTitleTemplateTokens(ogTitleTemplate, config),
-        ogDescription: processTitleTemplateTokens(ogDescriptionTemplate, config),
+        ogTitle: processRuntimeConfigTokens(ogTitleTemplate, config),
+        ogDescription: processRuntimeConfigTokens(ogDescriptionTemplate, config),
       }),
     )
   }
 
   head.hooks.hook('tag:normalise', async ({ tag }) => {
-    if (['titleTemplate', 'title'].includes(tag.tag) && tag.children)
-      tag.children = processTitleTemplateTokens(tag.children, config)
-    if (tag.tag === 'meta' && tag.props.content)
-      tag.props.content = processTitleTemplateTokens(tag.props.content, config)
+    if (['titleTemplate', 'title'].includes(tag.tag) && typeof tag.children === 'string')
+      tag.children = processRuntimeConfigTokens(tag.children, config)
+    if (tag.tag === 'meta' && typeof tag.props.content === 'string')
+      tag.props.content = processRuntimeConfigTokens(tag.props.content, config)
   })
 
   if (config.titleSeparator) {

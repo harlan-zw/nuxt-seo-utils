@@ -95,7 +95,7 @@ export function setupTestCSR(config: any = {}) {
   })
 }
 
-export async function queryHeadState(page: Page, wait?: boolean) {
+export async function queryHeadState(page: Page) {
   const htmlAttrs = await page.evaluate('[...document.children[0].attributes].map(f => ({ name: f.name, value: f.value }))')
   const bodyAttrs = await page.evaluate('[...document.querySelector(\'body\').attributes].map(f => ({ name: f.name, value: f.value }))')
   const title = await page.title()

@@ -10,7 +10,16 @@ export default defineNuxtConfig({
   ],
   app: {
     head: {
+      titleTemplate: `%envName %pageTitle %titleSeparator %siteName`,
       viewport: 'width=device-width, initial-scale=1',
+    },
+  },
+
+
+  runtimeConfig: {
+    public: {
+      envName: process.env.NODE_ENV === 'development' ? 'DEV' : '',
+      siteName: 'Nuxt Playground',
     },
   },
 

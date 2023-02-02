@@ -1,24 +1,47 @@
 import { injectHead } from '@vueuse/head'
 import { InferSeoMetaPlugin } from '@unhead/addons'
-import { defineNuxtPlugin } from '#app'
+import { defineNuxtPlugin, useRuntimeConfig } from '#app'
 import { ogDescriptionTemplate, ogTitleTemplate, resolveAliases, seoOptimise } from '#nuxt-unhead/config'
 
 // Note: This should always be a partial match to nuxt's internal vueuse-head plugin
 const resolveAliasProps = ['href', 'src']
 
-export default defineNuxtPlugin((nuxtApp) => {
+function processTitleTemplateTokens(s: string, config: { titleSeparator: string; siteName?: string } & Record<string, string>) {
+  // for each %<word> token replace it with the corresponding runtime config or an empty value
+  let template = s
+    .replace(/%(\w+)/g, (_, token) => {
+      if (token === 'pageTitle' || token === 's')
+        return '%s'
+      return config[token] || ''
+    })
+    .trim()
+  // avoid the title ending with a separator
+  if (config.titleSeparator && template.endsWith(config.titleSeparator))
+    template = template.slice(0, -config.titleSeparator.length)
+  return template
+}
+
+export default defineNuxtPlugin(() => {
   const head = injectHead()
+  const config = useRuntimeConfig().public
 
   if (!head)
     return
 
   if (seoOptimise) {
-    head.use(InferSeoMetaPlugin({
-      robots: false,
-      ogTitle: ogTitleTemplate || '%s',
-      ogDescription: ogDescriptionTemplate || '%s',
-    }))
+    head.use(
+      InferSeoMetaPlugin({
+        robots: false,
+        ogTitle: processTitleTemplateTokens(ogTitleTemplate, config),
+        ogDescription: processTitleTemplateTokens(ogDescriptionTemplate, config),
+      }),
+    )
   }
+
+  head.hooks.hook('tag:normalise', async ({ tag }) => {
+    if (tag.tag === 'titleTemplate' && tag.children)
+      tag.children = processTitleTemplateTokens(tag.children, config)
+  })
 
   if (resolveAliases) {
     head.hooks.hook('tags:resolve', async (ctx) => {

@@ -25,7 +25,6 @@ useServerHead({
 })
 
 useHead({
-  titleTemplate: '%s - Nuxt module playground',
   title: () => `test ${count.value}`,
 })
 </script>

@@ -16,7 +16,13 @@ export interface ModuleOptions {
    */
   resolveAliases: boolean
   /**
+   * The template used to render the title. Use %s to insert the title.
+   */
+  titleTemplate: string
+  /**
    * The template used to render the og:title. Use %s to insert the og:title.
+   *
+   * @default `app.head.titleTemplate` || '%pageTitle %separator %siteName'
    */
   ogTitleTemplate: string
   /**
@@ -34,14 +40,22 @@ export default defineNuxtModule<ModuleOptions>({
       bridge: false,
     },
   },
-  defaults: {
-    seoOptimise: true,
-    resolveAliases: true,
-    ogTitleTemplate: '%s',
-    ogDescriptionTemplate: '%s',
+  defaults(nuxt) {
+    const titleTemplate = (nuxt.options.app.head.titleTemplate as string | undefined) || '%pageTitle %titleSeparator %siteName'
+    return {
+      seoOptimise: true,
+      resolveAliases: false,
+      titleTemplate,
+      ogTitleTemplate: titleTemplate,
+      ogDescriptionTemplate: '%s',
+    }
   },
   async setup(config, nuxt) {
     const runtimeDir = fileURLToPath(new URL('./runtime', import.meta.url))
+
+    // set a default title template
+    nuxt.options.app.head.titleTemplate = nuxt.options.app.head.titleTemplate || config.titleTemplate
+    nuxt.options.runtimeConfig.public.titleSeparator = nuxt.options.runtimeConfig.public.titleSeparator || '–'
 
     // support the previous config key
     // @ts-expect-error untyped

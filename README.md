@@ -36,6 +36,7 @@ Unlock all [Unhead](https://unhead.harlanzw.com/) features and more:
 - ✨ Automatic social share meta tags
 - 🤖 Debug head tags component `DebugHead`
 - 🌳 Fully typed Head Schema with `href` and `src` file auto-completion
+- 🧩 Title template tokens: Use public runtime config in your templates: `%s %titleSeperator %siteName`.
 - 🪝 Runtime hooks: `head:tags`, `head:entries`
 - 📦 Load your asset files directly using aliases `href: '~/assets/style.css'` (Experimental)
 
@@ -79,6 +80,55 @@ export default defineNuxtConfig({
     // config (see below)
   },
   //...
+})
+```
+
+## Usage
+
+### Title template tokens
+
+When defining your title template as a string, you can use any public runtime key as a token. 
+Any missing tokens will be replaced with an empty string.
+
+For example, the default title template introduced by this module is `%s %titleSeparator %siteName`. 
+
+This uses the following:
+- `%s` - The title of the page.
+- `%siteName` - `runtimeConfig.public.siteName`
+- `%separator` - `runtimeConfig.public.titleSeparator`
+
+To provide the values for these tokens, you can update them in your nuxt config.
+
+_nuxt.config.ts_
+
+```ts
+export default defineNuxtConfig({
+  runtimeConfig: {
+    public: {
+      siteName: 'My cool site',
+      titleSeparator: '|',
+    }
+  },
+})
+```
+
+If you'd like to change the template for your titles, you can do so in your nuxt.config or using `useHead`.
+
+_nuxt.config.ts_
+
+```ts
+export default defineNuxtConfig({
+  app: {
+    head: {
+      // add DEV - to local page titles
+      titleTemplate: `%envName %titleSeperator %s %titleSeperator %siteName`,
+    }
+  },
+  runtimeConfig: {
+    public: {
+      envName: process.env.NODE_ENV === 'development' ? 'DEV' : '',
+    }
+  }
 })
 ```
 
@@ -126,7 +176,7 @@ export default defineNuxtConfig({
   ```ts
   defineNuxtConfig({
     unhead: {
-      ogTitleTemplate: '%s - My cool site',
+      ogTitleTemplate: '%pageTitle - %siteName',
     },
   })
   ```

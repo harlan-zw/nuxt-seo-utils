@@ -21,7 +21,7 @@ describe('component api', () => {
           name="viewport"
         />,
         <meta
-          content="Hi, welcome to the live v1.3.2 of Nuxt Playground."
+          content="Hi, welcome to the live v1.3.4 of Nuxt Playground."
           name="description"
         />,
         <meta

@@ -17,12 +17,8 @@ describe('option api', () => {
           name="viewport"
         />,
         <meta
-          content="Hi, welcome to the live v1.3.2 of Nuxt Playground."
+          content="Hi, welcome to the live v1.3.4 of Nuxt Playground."
           name="description"
-        />,
-        <meta
-          content="https://nuxtjs.org/meta_400.png"
-          property="og:image"
         />,
       ]
     `)
@@ -42,12 +38,8 @@ describe('option api', () => {
           name="viewport"
         />,
         <meta
-          content="Hi, welcome to the live v1.3.2 of Nuxt Playground."
+          content="Hi, welcome to the live v1.3.4 of Nuxt Playground."
           name="description"
-        />,
-        <meta
-          content="https://nuxtjs.org/meta_400.png"
-          property="og:image"
         />,
       ]
     `)

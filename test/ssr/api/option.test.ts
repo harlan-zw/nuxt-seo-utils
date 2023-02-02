@@ -17,7 +17,7 @@ describe('option api', () => {
           name="viewport"
         />,
         <meta
-          content="My site description"
+          content="Hi, welcome to the live v1.3.2 of Nuxt Playground."
           name="description"
         />,
         <meta
@@ -30,7 +30,7 @@ describe('option api', () => {
   it('function works', async () => {
     const $ = await $fetchPath('/api/option/function')
     const title = $('title').toString()
-    expect(title).toMatchInlineSnapshot('"<title>Api-option-function – Nuxt Playground</title>"')
+    expect(title).toMatchInlineSnapshot('"<title>Nuxt Playground</title>"')
     const metaTags = $('head > meta').toArray()
     expect(metaTags).toMatchInlineSnapshot(`
       [
@@ -42,7 +42,7 @@ describe('option api', () => {
           name="viewport"
         />,
         <meta
-          content="My site description"
+          content="Hi, welcome to the live v1.3.2 of Nuxt Playground."
           name="description"
         />,
         <meta

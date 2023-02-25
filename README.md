@@ -85,7 +85,7 @@ export default defineNuxtConfig({
 
 ## Usage
 
-### Runtime Config Template Tokens
+### Template Params
 
 When defining your `titleTemplate`, `title` or `meta` content as strings,
 you can use tokens to reference values from your resolved runtime config.
@@ -112,42 +112,7 @@ export default defineNuxtConfig({
 })
 ```
 
-Taking this further, we can see how we can handle complex tokenization.
-
-_nuxt.config.ts_
-
-```ts
-export default defineNuxtConfig({
-  app: {
-    head: {
-      // dev | My page title | My cool site
-      titleTemplate: `%envName %titleSeperator %s %titleSeperator %siteName`,
-      meta: [
-        {
-          name: 'description',
-          // Hi, welcome to the dev v1.3.1 of Nuxt Playground.
-          content: 'Hi, welcome to the %envName v%app.version of %siteName.',
-        }
-      ]
-    }
-  },
-  runtimeConfig: {
-    public: {
-      app: {
-        version: process.env.npm_package_version,
-      },
-      titleSeparator: '|',
-      siteName: 'My cool site',
-      envName: process.env.NODE_ENV === 'development' ? 'dev' : 'live',
-    }
-  }
-})
-```
-
-The `titleSeperator` token is unique in that it will be trimmed from the start and end of the title.
-
-Any missing tokens will be replaced with an empty string.
-
+You can read more about this feature on the docs: [Unhead Template Params](https://unhead.harlanzw.com/guide/guides/template-params).
 
 ## Config
 

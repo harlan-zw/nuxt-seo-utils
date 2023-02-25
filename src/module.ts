@@ -4,7 +4,6 @@ import { resolve } from 'pathe'
 import fg from 'fast-glob'
 import UnheadVite from '@unhead/addons/vite'
 import { headTypeTemplate } from './templates'
-import { exposeModuleConfig } from './nuxt-utils'
 
 export interface ModuleOptions {
   /**
@@ -61,7 +60,7 @@ export default defineNuxtModule<ModuleOptions>({
     // @ts-expect-error untyped
     config = Object.assign({}, config, nuxt.options.head)
 
-    exposeModuleConfig('nuxt-unhead', config)
+    nuxt.options.runtimeConfig.public['nuxt-unhead'] = config
 
     const getPaths = async () => ({
       public: await fg(['**/*'], { cwd: resolve(nuxt.options.srcDir, 'public') }),

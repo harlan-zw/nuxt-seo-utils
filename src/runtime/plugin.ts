@@ -42,6 +42,8 @@ export default defineNuxtPlugin(() => {
   const head = injectHead()
   const config = useRuntimeConfig().public
 
+  const { ogDescriptionTemplate, ogTitleTemplate, resolveAliases, seoOptimise } = config['nuxt-unhead']
+
   if (!head)
     return
 

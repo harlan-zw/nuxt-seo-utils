@@ -20,11 +20,6 @@ describe('pages', () => {
           content="Hi, welcome to the live v1.3.4 of Nuxt Playground."
           name="description"
         />,
-        <meta
-          content="description"
-          data-h-71bc24a=""
-          name="description"
-        />,
       ]
     `)
   })

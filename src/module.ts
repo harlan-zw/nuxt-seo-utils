@@ -75,7 +75,7 @@ export default defineNuxtModule<ModuleOptions>({
 
     // remove useServerHead in client build
     // @ts-expect-error vite version mismatch
-    addVitePlugin(UnheadVite({ root: nuxt.options.rootDir }))
+    addVitePlugin(UnheadVite())
 
     await addComponent({
       name: 'DebugHead',

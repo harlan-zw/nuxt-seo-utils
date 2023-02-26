@@ -11,8 +11,8 @@ specifiers:
   '@nuxt/module-builder': ^0.2.1
   '@nuxt/test-utils': 3.2.2
   '@nuxtjs/eslint-config-typescript': ^12.0.0
-  '@unhead/addons': ^1.1.8
-  '@vueuse/head': ^1.1.8
+  '@unhead/addons': ^1.1.5
+  '@vueuse/head': ^1.1.5
   bumpp: ^9.0.0
   cheerio: 1.0.0-rc.12
   eslint: 8.34.0
@@ -21,7 +21,7 @@ specifiers:
   pathe: ^1.1.0
   playwright: ^1.31.1
   sass: ^1.58.3
-  unhead: ^1.1.8
+  unhead: ^1.1.5
   vitest: ^0.29.1
 
 dependencies:
@@ -5879,7 +5879,7 @@ packages:
     resolution: {integrity: sha512-jHv9HB+Ho7dj6ItwppRDDl0iZRYBD0jsakHXtFgoLr+cHSF6xC+QL54sJmWxyGxOLYSHm0afhXhXcQDQqH9z8g==}
     dependencies:
       jsonc-parser: 3.2.0
-      mlly: 1.1.0
+      mlly: 1.1.1
       pathe: 1.1.0
     dev: true
 

@@ -62,6 +62,9 @@ export default defineNuxtModule<ModuleOptions>({
 
     nuxt.options.runtimeConfig.public['nuxt-unhead'] = config
 
+    // avoid vue version conflicts
+    nuxt.options.build.transpile.push('@unhead/vue')
+
     const getPaths = async () => ({
       public: await fg(['**/*'], { cwd: resolve(nuxt.options.srcDir, 'public') }),
       assets: await fg(['**/*'], { cwd: resolve(nuxt.options.srcDir, 'assets') }),

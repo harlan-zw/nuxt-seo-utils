@@ -21,12 +21,15 @@ export default defineNuxtPlugin(() => {
     )
   }
 
+  const separator = config.separator || config.titleSeparator || '|'
   head.push({
     templateParams: {
       // @ts-expect-error untyped
       ...config,
       // @ts-expect-error untyped
-      separator: config.separator || config.titleSeparator,
+      separator,
+      // @ts-expect-error untyped
+      titleSeparator,
     },
   })
 

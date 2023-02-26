@@ -37,11 +37,11 @@
   },
   "dependencies": {
     "@nuxt/kit": "3.2.2",
-    "@unhead/addons": "^1.1.7",
-    "@vueuse/head": "^1.1.7",
+    "@unhead/addons": "^1.1.8",
+    "@vueuse/head": "^1.1.8",
     "fast-glob": "^3.2.12",
     "pathe": "^1.1.0",
-    "unhead": "^1.1.7"
+    "unhead": "^1.1.8"
   },
   "devDependencies": {
     "@antfu/eslint-config": "^0.35.3",

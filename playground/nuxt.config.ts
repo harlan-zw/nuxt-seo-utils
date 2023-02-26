@@ -2,11 +2,8 @@ import { resolve } from 'pathe'
 import { defineNuxtConfig } from 'nuxt/config'
 
 export default defineNuxtConfig({
-  alias: {
-    'nuxt-unhead': resolve(__dirname, '../src/module'),
-  },
   modules: [
-    'nuxt-unhead',
+    resolve(__dirname, '../src/module')
   ],
 
   app: {

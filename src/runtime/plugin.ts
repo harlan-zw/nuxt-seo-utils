@@ -26,7 +26,7 @@ export default defineNuxtPlugin(() => {
       // @ts-expect-error untyped
       separator,
       // @ts-expect-error untyped
-      titleSeparator,
+      titleSeparator: separator,
     },
   })
 

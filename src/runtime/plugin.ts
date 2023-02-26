@@ -1,13 +1,10 @@
-import { injectHead } from '@vueuse/head'
+import { injectHead } from '@unhead/vue'
 import { InferSeoMetaPlugin } from '@unhead/addons'
 import { defineNuxtPlugin, useRuntimeConfig } from '#app'
 
 export default defineNuxtPlugin(() => {
   const head = injectHead()
   const config = useRuntimeConfig().public
-
-  if (!head)
-    return
 
   const { ogDescriptionTemplate, ogTitleTemplate, resolveAliases, seoOptimise } = config['nuxt-unhead']
 

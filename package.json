@@ -37,11 +37,11 @@
   },
   "dependencies": {
     "@nuxt/kit": "3.2.2",
-    "@unhead/addons": "^1.1.5",
+    "@unhead/addons": "^1.1.6",
     "@vueuse/head": "^1.1.5",
     "fast-glob": "^3.2.12",
     "pathe": "^1.1.0",
-    "unhead": "^1.1.5"
+    "unhead": "^1.1.6"
   },
   "devDependencies": {
     "@antfu/eslint-config": "^0.35.3",
@@ -54,7 +54,7 @@
     "nuxt": "^3.2.2",
     "playwright": "^1.31.1",
     "sass": "^1.58.3",
-    "vitest": "^0.28.5"
+    "vitest": "^0.29.1"
   },
   "resolutions": {
     "unhead": "^1.1.5",

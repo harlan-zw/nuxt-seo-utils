@@ -90,6 +90,8 @@ export default defineNuxtModule<ModuleOptions>({
     addImportsSources({
       from: '@vueuse/head',
       imports: [
+        'useServerHeadSafe',
+        'useHeadSafe',
         'useServerHead',
         'injectHead',
       ],

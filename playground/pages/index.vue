@@ -12,12 +12,6 @@ useServerHead({
     {
       charset: () => 'utf-8',
     },
-    {
-      name: 'description',
-      content: ref('description'),
-      hid: 'test',
-      vmid: 'test',
-    },
   ],
   base: {
     href: '/',

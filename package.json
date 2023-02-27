@@ -57,8 +57,8 @@
     "vitest": "^0.29.1"
   },
   "resolutions": {
-    "unhead": "^1.1.5",
-    "@unhead/addons": "^1.1.5",
-    "@vueuse/head": "^1.1.5"
+    "unhead": "^1.1.9",
+    "@unhead/addons": "^1.1.9",
+    "@vueuse/head": "^1.1.9"
   }
 }

@@ -37,11 +37,11 @@
   },
   "dependencies": {
     "@nuxt/kit": "3.2.2",
-    "@unhead/addons": "^1.1.8",
-    "@vueuse/head": "^1.1.8",
+    "@unhead/addons": "^1.1.9",
+    "@vueuse/head": "^1.1.9",
     "fast-glob": "^3.2.12",
     "pathe": "^1.1.0",
-    "unhead": "^1.1.8"
+    "unhead": "^1.1.9"
   },
   "devDependencies": {
     "@antfu/eslint-config": "^0.35.3",
@@ -50,7 +50,7 @@
     "@nuxtjs/eslint-config-typescript": "^12.0.0",
     "bumpp": "^9.0.0",
     "cheerio": "1.0.0-rc.12",
-    "eslint": "8.34.0",
+    "eslint": "8.35.0",
     "nuxt": "^3.2.2",
     "playwright": "^1.31.1",
     "sass": "^1.58.3",

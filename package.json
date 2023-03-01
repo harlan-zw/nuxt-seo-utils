@@ -36,25 +36,25 @@
     "test": "vitest ssr"
   },
   "dependencies": {
-    "@nuxt/kit": "3.2.2",
-    "@unhead/addons": "^1.1.9",
+    "@nuxt/kit": "3.2.3",
+    "@unhead/addons": "^1.1.14",
     "@vueuse/head": "^1.1.9",
     "fast-glob": "^3.2.12",
     "pathe": "^1.1.0",
-    "unhead": "^1.1.9"
+    "unhead": "^1.1.14"
   },
   "devDependencies": {
     "@antfu/eslint-config": "^0.35.3",
     "@nuxt/module-builder": "^0.2.1",
-    "@nuxt/test-utils": "3.2.2",
+    "@nuxt/test-utils": "3.2.3",
     "@nuxtjs/eslint-config-typescript": "^12.0.0",
     "bumpp": "^9.0.0",
     "cheerio": "1.0.0-rc.12",
     "eslint": "8.35.0",
-    "nuxt": "^3.2.2",
+    "nuxt": "^3.2.3",
     "playwright": "^1.31.1",
     "sass": "^1.58.3",
-    "vitest": "^0.29.1"
+    "vitest": "^0.29.2"
   },
   "resolutions": {
     "unhead": "^1.1.9",

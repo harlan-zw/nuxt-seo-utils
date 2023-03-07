@@ -1,8 +1,8 @@
 lockfileVersion: 5.4
 
 overrides:
-  unhead: ^1.1.19
-  '@unhead/addons': ^1.1.19
+  unhead: ^1.1.20
+  '@unhead/addons': ^1.1.20
   '@vueuse/head': ^1.1.19
 
 specifiers:
@@ -11,7 +11,7 @@ specifiers:
   '@nuxt/module-builder': ^0.2.1
   '@nuxt/test-utils': 3.2.3
   '@nuxtjs/eslint-config-typescript': ^12.0.0
-  '@unhead/addons': ^1.1.19
+  '@unhead/addons': ^1.1.20
   '@vueuse/head': ^1.1.19
   bumpp: ^9.0.0
   cheerio: 1.0.0-rc.12
@@ -21,16 +21,16 @@ specifiers:
   pathe: ^1.1.0
   playwright: ^1.31.2
   sass: ^1.58.3
-  unhead: ^1.1.19
+  unhead: ^1.1.20
   vitest: ^0.29.2
 
 dependencies:
   '@nuxt/kit': 3.2.3
-  '@unhead/addons': 1.1.19
+  '@unhead/addons': 1.1.20
   '@vueuse/head': 1.1.19
   fast-glob: 3.2.12
   pathe: 1.1.0
-  unhead: 1.1.19
+  unhead: 1.1.20
 
 devDependencies:
   '@antfu/eslint-config': 0.36.0_eslint@8.35.0
@@ -2286,16 +2286,16 @@ packages:
       eslint-visitor-keys: 3.3.0
     dev: true
 
-  /@unhead/addons/1.1.19:
-    resolution: {integrity: sha512-uqKT+UWE2HrAnAjx7auWN2rgc0v7xNx9oScg5ygfDHH0S4cNh90wdVvFlQxXjbn/M1mvPL01kMG+ncU5d8slFQ==}
+  /@unhead/addons/1.1.20:
+    resolution: {integrity: sha512-IfLhwopCKTqbHfvn+kRd8NmkjyDbhj5Hno9zxCl5PmhxvebLJA1/xCu/R6I0OQ154mN426vveRknOzKCuTIObw==}
     dependencies:
       '@rollup/pluginutils': 5.0.2
-      '@unhead/schema': 1.1.19
-      '@unhead/shared': 1.1.19
+      '@unhead/schema': 1.1.20
+      '@unhead/shared': 1.1.20
       magic-string: 0.30.0
       mlly: 1.1.1
       ufo: 1.1.1
-      unhead: 1.1.19
+      unhead: 1.1.20
       unplugin: 1.1.0
       unplugin-ast: 0.7.0
     transitivePeerDependencies:
@@ -2307,6 +2307,12 @@ packages:
     dependencies:
       '@unhead/schema': 1.1.19
       '@unhead/shared': 1.1.19
+
+  /@unhead/dom/1.1.20:
+    resolution: {integrity: sha512-LKd3Wq1myQmhea/5ysa9LsWWYFgtRhJ8D75PQfsIz9SOvjAUs6gNJi2Tv9adXr5gfFGXd0s2EMTLk/0IPTBwdg==}
+    dependencies:
+      '@unhead/schema': 1.1.20
+      '@unhead/shared': 1.1.20
 
   /@unhead/schema/1.1.14:
     resolution: {integrity: sha512-oxC9JyMJGjhFpRJRzD78sJutdVzkPnmxAse+9s2GCBmYiLuBbkzaTUozutjor6Y7/DkoD3MsqPGEIOo+H/UsUw==}
@@ -2321,6 +2327,12 @@ packages:
       hookable: 5.4.2
       zhead: 2.0.4
 
+  /@unhead/schema/1.1.20:
+    resolution: {integrity: sha512-XAMPCJjE+AhOW+HCYgxwNT7KX1Ch0y/byduJvM3kdwk4oA5lHRxF7M+s98FTZPpGJmlJr07CdW3l3w+qxmaJLQ==}
+    dependencies:
+      hookable: 5.4.2
+      zhead: 2.0.4
+
   /@unhead/shared/1.1.14:
     resolution: {integrity: sha512-V230FvL39gkMqDHocI7cDg1oFSyn/bQa8xbKVNOrDVRVDc9QKoMccLMyE0T7cwXWcA4tAwJF2NlLRZbowpwFcw==}
     dependencies:
@@ -2331,6 +2343,11 @@ packages:
     resolution: {integrity: sha512-4CKfeNAr9mE9dquAvdcPDZJ5iU5rhNNLXxmmg6w9jecLBjShzOIJU8RwdMXxNKMxybqwPIfKhMOlBSGyglmNBw==}
     dependencies:
       '@unhead/schema': 1.1.19
+
+  /@unhead/shared/1.1.20:
+    resolution: {integrity: sha512-8fJ1hB8bRw7JM9Lq98OSmLeDmajHHA9ymg8y7aDBC/R5lq+/WWSMtmXs+JNs4rsl+1gHPdl4YbjdEHp6OvcnpA==}
+    dependencies:
+      '@unhead/schema': 1.1.20
 
   /@unhead/ssr/1.1.14:
     resolution: {integrity: sha512-t7TBISnDj9xgqBPlSxahx7kzJs+eaDBjcINsv+2CY7Q7A7XpZ4bJiOSem86/rY1nBNV+Gx/WPdLs9D81y8DO+Q==}
@@ -2353,7 +2370,7 @@ packages:
       '@unhead/schema': 1.1.19
       '@unhead/shared': 1.1.19
       hookable: 5.4.2
-      unhead: 1.1.19
+      unhead: 1.1.20
     dev: false
 
   /@unhead/vue/1.1.19_vue@3.2.47:
@@ -2364,7 +2381,7 @@ packages:
       '@unhead/schema': 1.1.19
       '@unhead/shared': 1.1.19
       hookable: 5.4.2
-      unhead: 1.1.19
+      unhead: 1.1.20
       vue: 3.2.47
     dev: true
 
@@ -6065,7 +6082,7 @@ packages:
       ufo: 1.1.1
       unctx: 2.1.2
       unenv: 1.2.1
-      unhead: 1.1.19
+      unhead: 1.1.20
       unimport: 2.2.4
       unplugin: 1.1.0
       untyped: 1.2.2
@@ -7718,12 +7735,12 @@ packages:
       pathe: 1.1.0
     dev: true
 
-  /unhead/1.1.19:
-    resolution: {integrity: sha512-35ePpj3orODzvXqxTGv+mksYp/Dc5qX49AKSbU5/iZVwHwDseYCki42Z2Dejxym/EJuZnMm8/OzbtZM46oJMng==}
+  /unhead/1.1.20:
+    resolution: {integrity: sha512-fic5YOINP2BD5PvyF05FIayIRaRYjujhuJ2uo2dIpLItAIBHYmBsTEkljsrwC+EULNfeC3Rf4UHxmr8u0EewCA==}
     dependencies:
-      '@unhead/dom': 1.1.19
-      '@unhead/schema': 1.1.19
-      '@unhead/shared': 1.1.19
+      '@unhead/dom': 1.1.20
+      '@unhead/schema': 1.1.20
+      '@unhead/shared': 1.1.20
       hookable: 5.4.2
 
   /unimport/2.2.4:

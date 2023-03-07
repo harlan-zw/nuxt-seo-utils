@@ -14,20 +14,6 @@ export interface ModuleOptions {
    * Allows you to resolve aliasing when linking internal files.
    */
   resolveAliases: boolean
-  /**
-   * The template used to render the title. Use %s to insert the title.
-   */
-  titleTemplate: string
-  /**
-   * The template used to render the og:title. Use %s to insert the og:title.
-   *
-   * @default `app.head.titleTemplate` || '%pageTitle %separator %siteName'
-   */
-  ogTitleTemplate: string
-  /**
-   * The template used to render the og:title. Use %s to insert the og:description.
-   */
-  ogDescriptionTemplate: string
 }
 
 export default defineNuxtModule<ModuleOptions>({
@@ -39,21 +25,15 @@ export default defineNuxtModule<ModuleOptions>({
       bridge: false,
     },
   },
-  defaults(nuxt) {
-    const titleTemplate = (nuxt.options.app.head.titleTemplate as string | undefined) || '%pageTitle %titleSeparator %siteName'
-    return {
-      seoOptimise: true,
-      resolveAliases: false,
-      titleTemplate,
-      ogTitleTemplate: titleTemplate,
-      ogDescriptionTemplate: '%s',
-    }
+  defaults: {
+    seoOptimise: true,
+    resolveAliases: false,
   },
   async setup(config, nuxt) {
     const runtimeDir = fileURLToPath(new URL('./runtime', import.meta.url))
 
     // set a default title template
-    nuxt.options.app.head.titleTemplate = nuxt.options.app.head.titleTemplate || config.titleTemplate
+    nuxt.options.app.head.titleTemplate = nuxt.options.app.head.titleTemplate || '%s %separator %siteName'
     nuxt.options.runtimeConfig.public.titleSeparator = nuxt.options.runtimeConfig.public.titleSeparator || '–'
 
     // support the previous config key

@@ -10,16 +10,10 @@ export default defineNuxtPlugin(() => {
   if (!head)
     return
 
-  const { ogDescriptionTemplate, ogTitleTemplate, resolveAliases, seoOptimise } = config['nuxt-unhead']
+  const { resolveAliases, seoOptimise } = config['nuxt-unhead']
 
   if (seoOptimise) {
-    head.use(
-      InferSeoMetaPlugin({
-        robots: false,
-        ogTitle: ogTitleTemplate,
-        ogDescription: ogDescriptionTemplate,
-      }),
-    )
+    head.use(InferSeoMetaPlugin())
   }
 
   const separator = config.separator || config.titleSeparator || '|'

@@ -147,54 +147,6 @@ You can read more about this feature on the docs: [Unhead Template Params](https
   })
   </script>
   ```
-  
-### ogTitleTemplate
-
-- Type: `string`
-- Default: `%s`
-
-  Template for the `og:title` meta tag. This will be used when inferring the og:title from title.
-
-  ```ts
-  defineNuxtConfig({
-    unhead: {
-      ogTitleTemplate: '%pageTitle - %siteName',
-    },
-  })
-  ```
-
-  ```vue
-  <script lang="ts" setup>
-  useHead({
-    // og:title will be "My Title - My cool site"
-    title: 'My Title',
-  })
-  </script>
-  ```
-
-### ogDescriptionTemplate
-
-- Type: `string`
-- Default: `%s`
-
-  Template for the `og:description` meta tag. This will be used when inferring the og:description from description.
-
-  ```ts
-  defineNuxtConfig({
-    unhead: {
-      ogDescriptionTemplate: '%s. Check out my cool site',
-    },
-  })
-  ```
-
-  ```vue
-  <script lang="ts" setup>
-  useHead({
-    // og:description will be "My Description. Check out my cool site"
-    meta: [ { name: 'description', content: 'My Description' } ],
-  })
-  </script>
-  ```
 
 ## Components
 

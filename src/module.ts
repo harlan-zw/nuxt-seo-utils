@@ -1,5 +1,5 @@
 import { fileURLToPath } from 'url'
-import { addComponent, addImportsSources, addPlugin, addTemplate, addVitePlugin, defineNuxtModule } from '@nuxt/kit'
+import { addComponent, addImportsSources, addPlugin, addTemplate, addVitePlugin, defineNuxtModule, hasNuxtCompatibility } from '@nuxt/kit'
 import { resolve } from 'pathe'
 import fg from 'fast-glob'
 import UnheadVite from '@unhead/addons/vite'
@@ -43,7 +43,7 @@ export default defineNuxtModule<ModuleOptions>({
     nuxt.options.runtimeConfig.public['nuxt-unhead'] = config
 
     // avoid vue version conflicts
-    nuxt.options.build.transpile.push('@unhead/vue')
+    nuxt.options.build.transpile.push('@unhead/vue', 'unhead')
 
     const getPaths = async () => ({
       public: await fg(['**/*'], { cwd: resolve(nuxt.options.srcDir, 'public') }),
@@ -65,16 +65,18 @@ export default defineNuxtModule<ModuleOptions>({
       filePath: `${runtimeDir}/components/DebugHead.client.vue`,
     })
 
-    // add non useHead composables
-    addImportsSources({
-      from: '@vueuse/head',
-      imports: [
-        'useServerHeadSafe',
-        'useHeadSafe',
-        'useServerHead',
-        'injectHead',
-      ],
-    })
+    // add non useHead composables for non 3.3 Nuxt
+    if (await hasNuxtCompatibility({ nuxt: '< 3.3.0' })) {
+      addImportsSources({
+        from: '@vueuse/head',
+        imports: [
+          'useServerHeadSafe',
+          'useHeadSafe',
+          'useServerHead',
+          'injectHead',
+        ],
+      })
+    }
 
     addPlugin({ src: resolve(runtimeDir, 'plugin') })
   },

@@ -12,9 +12,8 @@ export default defineNuxtPlugin(() => {
 
   const { resolveAliases, seoOptimise } = config['nuxt-unhead']
 
-  if (seoOptimise) {
+  if (seoOptimise)
     head.use(InferSeoMetaPlugin())
-  }
 
   const separator = config.separator || config.titleSeparator || '|'
   head.push({

@@ -1,4 +1,4 @@
-import { fileURLToPath } from 'url'
+import { fileURLToPath } from 'node:url'
 import { addComponent, addImportsSources, addPlugin, addTemplate, addVitePlugin, defineNuxtModule, hasNuxtCompatibility } from '@nuxt/kit'
 import { resolve } from 'pathe'
 import fg from 'fast-glob'

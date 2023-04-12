@@ -6,7 +6,7 @@ const els: Ref<any> = ref([])
 
 const filter: Ref<string | null> = ref('')
 
-const tagColour = (tag: string) => {
+function tagColour(tag: string) {
   switch (tag) {
     case 'META':
       return '#dcfce7'
@@ -60,7 +60,7 @@ onBeforeUnmount(() => {
   observer?.disconnect()
 })
 
-const setFilter = (val: string | null) => {
+function setFilter(val: string | null) {
   filter.value = val
 }
 </script>

@@ -2,7 +2,7 @@
   "name": "nuxt-unhead",
   "type": "module",
   "version": "1.4.16",
-  "packageManager": "pnpm@8.1.0",
+  "packageManager": "pnpm@8.3.1",
   "license": "MIT",
   "funding": "https://github.com/sponsors/harlan-zw",
   "homepage": "https://github.com/harlan-zw/nuxt-unhead#readme",
@@ -36,23 +36,23 @@
     "test": "vitest ssr"
   },
   "dependencies": {
-    "@nuxt/kit": "3.4.0",
-    "@unhead/addons": "^1.1.25",
-    "@vueuse/head": "^1.1.23",
+    "@nuxt/kit": "3.4.2",
+    "@unhead/addons": "^1.1.26",
+    "@vueuse/head": "^1.1.26",
     "fast-glob": "^3.2.12",
     "pathe": "^1.1.0",
-    "unhead": "^1.1.25"
+    "unhead": "^1.1.26"
   },
   "devDependencies": {
-    "@antfu/eslint-config": "^0.38.4",
+    "@antfu/eslint-config": "^0.38.5",
     "@nuxt/module-builder": "^0.3.0",
-    "@nuxt/test-utils": "3.4.0",
+    "@nuxt/test-utils": "3.4.2",
     "@nuxtjs/eslint-config-typescript": "^12.0.0",
     "bumpp": "^9.1.0",
     "cheerio": "1.0.0-rc.12",
-    "eslint": "8.38.0",
-    "nuxt": "^3.4.0",
-    "playwright": "^1.31.2",
+    "eslint": "8.39.0",
+    "nuxt": "^3.4.2",
+    "playwright": "^1.32.3",
     "sass": "^1.62.0",
     "vitest": "^0.30.1"
   },

@@ -10,7 +10,7 @@ export default defineNuxtPlugin(() => {
   if (!head)
     return
 
-  const { resolveAliases, seoOptimise } = config['nuxt-unhead']
+  const { seoOptimise } = config['nuxt-seo-experiments']
 
   if (seoOptimise)
     head.use(InferSeoMetaPlugin())

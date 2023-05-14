@@ -18,8 +18,8 @@ export interface ModuleOptions {
 
 export default defineNuxtModule<ModuleOptions>({
   meta: {
-    name: 'nuxt-unhead',
-    configKey: 'unhead',
+    name: 'nuxt-seo-experiments',
+    configKey: 'seoExperiments',
     compatibility: {
       nuxt: '^3.1.0',
       bridge: false,
@@ -39,6 +39,7 @@ export default defineNuxtModule<ModuleOptions>({
     // support the previous config key
     // @ts-expect-error untyped
     config = Object.assign({}, config, nuxt.options.head)
+    nuxt.options.runtimeConfig.public['nuxt-seo-experiments'] = config
 
     nuxt.options.runtimeConfig.public['nuxt-unhead'] = config
 
@@ -53,7 +54,7 @@ export default defineNuxtModule<ModuleOptions>({
     addTemplate({ ...headTypeTemplate, options: { getPaths } })
 
     nuxt.hooks.hook('prepare:types', ({ references }) => {
-      references.push({ path: resolve(nuxt.options.buildDir, 'nuxt-unhead.d.ts') })
+      references.push({ path: resolve(nuxt.options.buildDir, 'nuxt-seo-experiments.d.ts') })
     })
 
     // remove useServerHead in client build

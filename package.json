@@ -1,18 +1,18 @@
 {
-  "name": "nuxt-unhead",
+  "name": "nuxt-seo-experiments",
   "type": "module",
   "version": "1.4.17",
   "packageManager": "pnpm@8.3.1",
   "license": "MIT",
   "funding": "https://github.com/sponsors/harlan-zw",
-  "homepage": "https://github.com/harlan-zw/nuxt-unhead#readme",
+  "homepage": "https://github.com/harlan-zw/nuxt-seo-experiments#readme",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/harlan-zw/nuxt-unhead.git",
+    "url": "git+https://github.com/harlan-zw/nuxt-seo-experiments.git",
     "directory": "packages/zhead"
   },
   "bugs": {
-    "url": "https://github.com/harlan-zw/nuxt-unhead/issues"
+    "url": "https://github.com/harlan-zw/nuxt-seo-experiments/issues"
   },
   "exports": {
     ".": {

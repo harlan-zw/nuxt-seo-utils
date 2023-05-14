@@ -21,7 +21,7 @@ export default defineNuxtModule<ModuleOptions>({
     name: 'nuxt-seo-experiments',
     configKey: 'seoExperiments',
     compatibility: {
-      nuxt: '^3.1.0',
+      nuxt: '^3.4.0',
       bridge: false,
     },
   },
@@ -65,19 +65,6 @@ export default defineNuxtModule<ModuleOptions>({
       mode: 'client',
       filePath: `${runtimeDir}/components/DebugHead.client.vue`,
     })
-
-    // add non useHead composables for non 3.3 Nuxt
-    if (await hasNuxtCompatibility({ nuxt: '< 3.3.0' })) {
-      addImportsSources({
-        from: '@vueuse/head',
-        imports: [
-          'useServerHeadSafe',
-          'useHeadSafe',
-          'useServerHead',
-          'injectHead',
-        ],
-      })
-    }
 
     addPlugin({ src: resolve(runtimeDir, 'plugin') })
   },

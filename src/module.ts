@@ -4,6 +4,7 @@ import { resolve } from 'pathe'
 import fg from 'fast-glob'
 import UnheadVite from '@unhead/addons/vite'
 import { headTypeTemplate } from './templates'
+import inferTagsFromFiles from './features/inferTagsFromFiles'
 
 export interface ModuleOptions {
   /**
@@ -11,9 +12,11 @@ export interface ModuleOptions {
    */
   seoOptimise: boolean
   /**
-   * Allows you to resolve aliasing when linking internal files.
+   * Should the files in the public directory be used to infer tags.
+   *
+   * @default true
    */
-  resolveAliases: boolean
+  inferTagsFromFiles: boolean
 }
 
 export default defineNuxtModule<ModuleOptions>({
@@ -26,8 +29,8 @@ export default defineNuxtModule<ModuleOptions>({
     },
   },
   defaults: {
+    inferTagsFromFiles: true,
     seoOptimise: true,
-    resolveAliases: false,
   },
   async setup(config, nuxt) {
     const runtimeDir = fileURLToPath(new URL('./runtime', import.meta.url))
@@ -41,7 +44,9 @@ export default defineNuxtModule<ModuleOptions>({
     config = Object.assign({}, config, nuxt.options.head)
     nuxt.options.runtimeConfig.public['nuxt-seo-experiments'] = config
 
-    nuxt.options.runtimeConfig.public['nuxt-unhead'] = config
+
+    if (config.inferTagsFromFiles)
+      await inferTagsFromFiles(nuxt)
 
     // avoid vue version conflicts
     nuxt.options.build.transpile.push('@unhead/vue', 'unhead')

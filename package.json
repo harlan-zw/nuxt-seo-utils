@@ -40,6 +40,7 @@
     "@unhead/addons": "^1.1.26",
     "@vueuse/head": "^1.1.26",
     "fast-glob": "^3.2.12",
+    "image-size": "^1.0.2",
     "pathe": "^1.1.0",
     "unhead": "^1.1.26"
   },

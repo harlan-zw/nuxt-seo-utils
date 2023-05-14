@@ -4,7 +4,7 @@ import { basename, resolve } from 'pathe'
 import { withBase } from 'ufo'
 import { getImageDimensions, getImageDimensionsToSizes, hasLinkRel, hasMetaProperty } from '../util'
 
-export default async function inferTagsFromFiles(nuxt: Nuxt) {
+export default async function inferTagsFromFiles(nuxt: Nuxt, { siteUrl }: { siteUrl: string }) {
   // @todo support dynamic public dirs
   const publicDirPath = resolve(nuxt.options.srcDir, 'public')
   // do fg only one level deep
@@ -25,11 +25,6 @@ export default async function inferTagsFromFiles(nuxt: Nuxt) {
   headConfig.htmlAttrs = headConfig.htmlAttrs || {}
   headConfig.link = headConfig.link || []
   headConfig.meta = headConfig.meta || []
-
-  let siteUrl = nuxt.options.runtimeConfig.public.siteUrl || process.env.NUXT_PUBLIC_SITE_URL
-  // make sure the siteUrl includes the baseUrl
-  if (!siteUrl.endsWith(nuxt.options.nitro.baseURL))
-    siteUrl = withBase(nuxt.options.nitro.baseURL || '/', siteUrl)
 
   // if no lang has been set on htmlAttrs we default to `en`
   if (!headConfig.htmlAttrs.lang)
@@ -52,19 +47,19 @@ export default async function inferTagsFromFiles(nuxt: Nuxt) {
     headConfig.link.push(
       ...await Promise.all([
         ...rootPublicFiles
-          .filter(file => file.startsWith('icon'))
+          .filter(file => file.startsWith('icon') || file.startsWith('favicon-'))
           .sort()
           .map(async (iconFile) => {
             const iconFileExt = iconFile.split('.').pop()
             const sizes = await getImageDimensionsToSizes(resolve(publicDirPath, iconFile))
             return {
               rel: 'icon',
-              href: `/icon.${iconFileExt}`,
+              href: `/${iconFile}`,
               type: `image/${iconFileExt}`,
               sizes,
             }
           }),
-        ...rootPublicFiles.filter(file => file.startsWith('apple-icon'))
+        ...rootPublicFiles.filter(file => file.startsWith('apple-icon') || file.startsWith('apple-touch-icon'))
           .sort()
           .map(async (appleIconFile) => {
             const appleIconFileExt = appleIconFile.split('.').pop()
@@ -94,13 +89,12 @@ export default async function inferTagsFromFiles(nuxt: Nuxt) {
     if (twitterImageFiles.length) {
       headConfig.meta.push(
         ...(await Promise.all(twitterImageFiles.map(async (twitterImageFile) => {
-          const twitterImageFileExt = twitterImageFile.split('.').pop()
           const twitterImageFileSizes = await getImageDimensions(resolve(publicDirPath, twitterImageFile))
           return [
             {
               name: 'twitter:image',
               // needs to be absolute, use runtimeConfig.public.siteUrl
-              content: withBase(`twitter-image.${twitterImageFileExt}`, siteUrl),
+              content: withBase(twitterImageFile, siteUrl),
             },
             {
               name: 'twitter:image:width',
@@ -125,12 +119,11 @@ export default async function inferTagsFromFiles(nuxt: Nuxt) {
     if (ogImageFiles.length) {
       headConfig.meta.push(
         ...(await Promise.all(ogImageFiles.map(async (ogImageFile) => {
-          const ogImageFileExt = ogImageFile.split('.').pop()
           const ogImageFileSizes = await getImageDimensions(resolve(publicDirPath, ogImageFile))
           const tags = [
             {
               property: 'og:image',
-              content: withBase(`og-image.${ogImageFileExt}`, siteUrl),
+              content: withBase(ogImageFile, siteUrl),
             },
             {
               property: 'og:image:width',
@@ -145,7 +138,7 @@ export default async function inferTagsFromFiles(nuxt: Nuxt) {
             tags.push(...[
               {
                 name: 'twitter:image',
-                content: `/og-image.${ogImageFileExt}`,
+                content: withBase(ogImageFile, siteUrl),
               },
               {
                 name: 'twitter:image:width',

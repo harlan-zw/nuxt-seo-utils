@@ -42,6 +42,8 @@
     "fast-glob": "^3.2.12",
     "image-size": "^1.0.2",
     "pathe": "^1.1.0",
+    "pkg-types": "^1.0.3",
+    "ufo": "^1.1.2",
     "unhead": "^1.1.26"
   },
   "devDependencies": {

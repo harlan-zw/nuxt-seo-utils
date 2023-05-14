@@ -43,6 +43,7 @@
     "image-size": "^1.0.2",
     "pathe": "^1.1.0",
     "pkg-types": "^1.0.3",
+    "playwright": "^1.33.0",
     "ufo": "^1.1.2",
     "unhead": "^1.1.26"
   },

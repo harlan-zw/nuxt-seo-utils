@@ -17,6 +17,30 @@ describe('pages', () => {
           name="viewport"
         />,
         <meta
+          content="http://127.0.0.1:44195/og-image.png"
+          property="og:image"
+        />,
+        <meta
+          content="1270"
+          property="og:image:width"
+        />,
+        <meta
+          content="630"
+          property="og:image:height"
+        />,
+        <meta
+          content="http://127.0.0.1:44195/og-image.png"
+          name="twitter:image"
+        />,
+        <meta
+          content="1270"
+          name="twitter:image:width"
+        />,
+        <meta
+          content="630"
+          name="twitter:image:height"
+        />,
+        <meta
           content="Hi, welcome to the live v1.3.4 of Nuxt Playground."
           name="description"
         />,

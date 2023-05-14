@@ -12,7 +12,7 @@ describe('suspense', () => {
 
     // check page title
     let title = await page.title()
-    expect(title).toMatchInlineSnapshot('"test 0 - Nuxt module playground"')
+    expect(title).toMatchInlineSnapshot('"Nuxt Playground"')
 
     // wait 500ms
     await new Promise<void>((resolve) => {
@@ -22,7 +22,7 @@ describe('suspense', () => {
     })
     // check page title
     title = await page.title()
-    expect(title).toMatchInlineSnapshot('"test 0 - Nuxt module playground"')
+    expect(title).toMatchInlineSnapshot('"Nuxt Playground"')
 
     // wait 5s, page should be updated
     await new Promise<void>((resolve) => {
@@ -32,6 +32,6 @@ describe('suspense', () => {
     })
 
     title = await page.title()
-    expect(title).toMatchInlineSnapshot('"Delayed title"')
+    expect(title).toMatchInlineSnapshot('"Delayed title | Nuxt Playground"')
   }, 10000)
 })

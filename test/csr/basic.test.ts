@@ -12,16 +12,19 @@ describe('basic', () => {
       {
         "bodyAttrs": [],
         "bodyTags": {},
-        "headTagCount": 5,
-        "headTags": [
-          "<meta charset=\\"utf-8\\">",
-          "<meta name=\\"viewport\\" content=\\"width=device-width, initial-scale=1\\">",
-          "<meta name=\\"description\\" content=\\"description\\">",
-          "<link href=\\"https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap\\" rel=\\"stylesheet\\">",
-          "<meta name=\\"head:count\\" content=\\"5\\">",
+        "headTagCount": 0,
+        "headTags": [],
+        "htmlAttrs": [
+          {
+            "name": "lang",
+            "value": "en",
+          },
+          {
+            "name": "class",
+            "value": "index",
+          },
         ],
-        "htmlAttrs": [],
-        "title": "test 0 - Nuxt module playground",
+        "title": "Nuxt Playground",
       }
     `)
     await expectNoClientErrors('/')
@@ -37,36 +40,29 @@ describe('basic', () => {
             "name": "style",
             "value": "background: lightskyblue; margin: 50px 100px; padding: 20px;",
           },
-          {
-            "name": "data-head-attrs",
-            "value": "style",
-          },
         ],
         "bodyTags": {},
-        "headTagCount": 2,
-        "headTags": [
-          "<meta charset=\\"utf-8\\">",
-          "<meta name=\\"viewport\\" content=\\"width=device-width, initial-scale=1\\">",
-        ],
+        "headTagCount": 0,
+        "headTags": [],
         "htmlAttrs": [
-          {
-            "name": "style",
-            "value": "background: limegreen",
-          },
           {
             "name": "lang",
             "value": "en-AU",
           },
           {
+            "name": "class",
+            "value": "api-composition-reactivity",
+          },
+          {
+            "name": "style",
+            "value": "background: limegreen",
+          },
+          {
             "name": "dir",
             "value": "ltr",
           },
-          {
-            "name": "data-head-attrs",
-            "value": "style,lang,dir",
-          },
         ],
-        "title": "Html: limegreen Body: lightskyblue",
+        "title": "Html: limegreen Body: lightskyblue | Nuxt Playground",
       }
     `)
 
@@ -80,36 +76,29 @@ describe('basic', () => {
             "name": "style",
             "value": "background: yellow; margin: 50px 100px; padding: 20px;",
           },
-          {
-            "name": "data-head-attrs",
-            "value": "style",
-          },
         ],
         "bodyTags": {},
-        "headTagCount": 2,
-        "headTags": [
-          "<meta charset=\\"utf-8\\">",
-          "<meta name=\\"viewport\\" content=\\"width=device-width, initial-scale=1\\">",
-        ],
+        "headTagCount": 0,
+        "headTags": [],
         "htmlAttrs": [
-          {
-            "name": "style",
-            "value": "background: lightskyblue",
-          },
           {
             "name": "lang",
             "value": "en-AU",
           },
           {
+            "name": "class",
+            "value": "api-composition-reactivity",
+          },
+          {
+            "name": "style",
+            "value": "background: lightskyblue",
+          },
+          {
             "name": "dir",
             "value": "ltr",
           },
-          {
-            "name": "data-head-attrs",
-            "value": "style,lang,dir",
-          },
         ],
-        "title": "Html: lightskyblue Body: yellow",
+        "title": "Html: lightskyblue Body: yellow | Nuxt Playground",
       }
     `)
   }, 30000)
@@ -120,16 +109,20 @@ describe('basic', () => {
     await page.waitForLoadState('networkidle')
     let htmlAttrs = await page.evaluate('[...document.children[0].attributes].map(f => ({ name: f.name, value: f.value }))')
     let title = await page.title()
-    expect(title).toMatchInlineSnapshot('"red"')
+    expect(title).toMatchInlineSnapshot('"Nuxt Playground"')
     expect(htmlAttrs).toMatchInlineSnapshot(`
       [
         {
-          "name": "style",
-          "value": "background: red",
+          "name": "lang",
+          "value": "en",
         },
         {
-          "name": "data-head-attrs",
-          "value": "style",
+          "name": "class",
+          "value": "examples-red",
+        },
+        {
+          "name": "style",
+          "value": "background: red",
         },
       ]
     `)
@@ -138,7 +131,7 @@ describe('basic', () => {
 
     htmlAttrs = await page.evaluate('[...document.children[0].attributes].map(f => ({ name: f.name, value: f.value }))')
     title = await page.title()
-    expect(title).toMatchInlineSnapshot('"test 0 - Nuxt module playground"')
+    expect(title).toMatchInlineSnapshot('"Nuxt Playground"')
     expect(htmlAttrs.length === 0).toBeTruthy()
   }, 10000)
 })

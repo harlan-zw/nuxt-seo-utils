@@ -27,6 +27,9 @@ dependencies:
   pkg-types:
     specifier: ^1.0.3
     version: 1.0.3
+  playwright:
+    specifier: ^1.33.0
+    version: 1.33.0
   ufo:
     specifier: ^1.1.2
     version: 1.1.2
@@ -43,7 +46,7 @@ devDependencies:
     version: 0.3.1(sass@1.62.1)
   '@nuxt/test-utils':
     specifier: 3.4.3
-    version: 3.4.3(rollup@3.21.7)(vitest@0.31.0)(vue@3.3.2)
+    version: 3.4.3(playwright@1.33.0)(rollup@3.21.7)(vitest@0.31.0)(vue@3.3.2)
   '@nuxtjs/eslint-config-typescript':
     specifier: ^12.0.0
     version: 12.0.0(eslint@8.40.0)(typescript@5.0.4)
@@ -64,7 +67,7 @@ devDependencies:
     version: 1.62.1
   vitest:
     specifier: ^0.31.0
-    version: 0.31.0(sass@1.62.1)
+    version: 0.31.0(playwright@1.33.0)(sass@1.62.1)
 
 packages:
 
@@ -930,7 +933,7 @@ packages:
       - supports-color
     dev: true
 
-  /@nuxt/test-utils@3.4.3(rollup@3.21.7)(vitest@0.31.0)(vue@3.3.2):
+  /@nuxt/test-utils@3.4.3(playwright@1.33.0)(rollup@3.21.7)(vitest@0.31.0)(vue@3.3.2):
     resolution: {integrity: sha512-qy9nxPvcRTqgiosP4X8XBs7OU0qCxRTJ4k+I7NVQwz/761pOwVPNh2oKXroSiPQkWRt4Y/bysi3Gxx7K/+DsBA==}
     engines: {node: ^14.18.0 || >=16.10.0}
     peerDependencies:
@@ -954,8 +957,9 @@ packages:
       get-port-please: 3.0.1
       ofetch: 1.0.1
       pathe: 1.1.0
+      playwright: 1.33.0
       ufo: 1.1.2
-      vitest: 0.31.0(sass@1.62.1)
+      vitest: 0.31.0(playwright@1.33.0)(sass@1.62.1)
       vue: 3.3.2
     transitivePeerDependencies:
       - rollup
@@ -5506,6 +5510,19 @@ packages:
       mlly: 1.2.1
       pathe: 1.1.0
 
+  /playwright-core@1.33.0:
+    resolution: {integrity: sha512-aizyPE1Cj62vAECdph1iaMILpT0WUDCq3E6rW6I+dleSbBoGbktvJtzS6VHkZ4DKNEOG9qJpiom/ZxO+S15LAw==}
+    engines: {node: '>=14'}
+    hasBin: true
+
+  /playwright@1.33.0:
+    resolution: {integrity: sha512-+zzU3V2TslRX2ETBRgQKsKytYBkJeLZ2xzUj4JohnZnxQnivoUvOvNbRBYWSYykQTO0Y4zb8NwZTYFUO+EpPBQ==}
+    engines: {node: '>=14'}
+    hasBin: true
+    requiresBuild: true
+    dependencies:
+      playwright-core: 1.33.0
+
   /pluralize@8.0.0:
     resolution: {integrity: sha512-Nc3IT5yHzflTfbjgqWcCPpo7DaKy4FnpB0l/zCAW0Tc7jxAiuqSxHasntB3D7887LSrA93kDJ9IXovxJYxyLCA==}
     engines: {node: '>=4'}
@@ -7061,7 +7078,7 @@ packages:
       fsevents: 2.3.2
     dev: true
 
-  /vitest@0.31.0(sass@1.62.1):
+  /vitest@0.31.0(playwright@1.33.0)(sass@1.62.1):
     resolution: {integrity: sha512-JwWJS9p3GU9GxkG7eBSmr4Q4x4bvVBSswaCFf1PBNHiPx00obfhHRJfgHcnI0ffn+NMlIh9QGvG75FlaIBdKGA==}
     engines: {node: '>=v14.18.0'}
     hasBin: true
@@ -7110,6 +7127,7 @@ packages:
       magic-string: 0.30.0
       pathe: 1.1.0
       picocolors: 1.0.0
+      playwright: 1.33.0
       std-env: 3.3.3
       strip-literal: 1.0.1
       tinybench: 2.5.0

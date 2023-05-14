@@ -1,7 +1,7 @@
 import { injectHead } from '@unhead/vue'
 import { defineNuxtPlugin, useRequestEvent } from '#app'
-import {getRequestHost, getRequestProtocol} from 'h3'
-import { withBase, withHttp, withHttps } from 'ufo'
+import { getRequestHost, getRequestProtocol } from 'h3'
+import { withBase } from 'ufo'
 
 export default defineNuxtPlugin(() => {
   const head = injectHead()

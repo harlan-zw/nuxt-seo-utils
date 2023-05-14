@@ -29,7 +29,7 @@ describe('component api', () => {
           property="og:image:height"
         />,
         <meta
-          content="http://127.0.0.1:46137/og-image.png"
+          content="https://harlanzw.com/og-image.png"
           name="twitter:image"
         />,
         <meta
@@ -45,7 +45,7 @@ describe('component api', () => {
           name="description"
         />,
         <meta
-          content="http://127.0.0.1:46137/cover.png"
+          content="http://127.0.0.1:43175/cover.png"
           property="og:image"
         />,
       ]

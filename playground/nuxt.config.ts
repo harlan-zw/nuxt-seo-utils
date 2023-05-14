@@ -22,7 +22,7 @@ export default defineNuxtConfig({
 
   runtimeConfig: {
     public: {
-      // siteUrl: 'https://harlanzw.com',
+      siteUrl: 'https://harlanzw.com', // allows tests to pass
       app: {
         version: '1.3.4',
       },

@@ -17,7 +17,7 @@ describe('pages', () => {
           name="viewport"
         />,
         <meta
-          content="http://127.0.0.1:44195/og-image.png"
+          content="https://harlanzw.com/og-image.png"
           property="og:image"
         />,
         <meta
@@ -29,7 +29,7 @@ describe('pages', () => {
           property="og:image:height"
         />,
         <meta
-          content="http://127.0.0.1:44195/og-image.png"
+          content="https://harlanzw.com/og-image.png"
           name="twitter:image"
         />,
         <meta

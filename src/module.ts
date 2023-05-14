@@ -71,6 +71,7 @@ export default defineNuxtModule<ModuleOptions>({
       filePath: `${runtimeDir}/components/DebugHead.client.vue`,
     })
 
-    addPlugin({ src: resolve(runtimeDir, 'plugin') })
+    addPlugin({ src: resolve(runtimeDir, 'plugins', 'unheadAddons') })
+    addPlugin({ src: resolve(runtimeDir, 'plugins', 'provideHostBaseToTags.server'), mode: 'server' })
   },
 })

@@ -22,6 +22,7 @@ export default defineNuxtConfig({
 
   runtimeConfig: {
     public: {
+      // siteUrl: 'https://harlanzw.com',
       app: {
         version: '1.3.4',
       },

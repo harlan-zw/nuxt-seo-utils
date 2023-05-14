@@ -37,6 +37,8 @@ It has been renamed to nuxt-seo-experiments to better reflect the scope of the p
 - ✨ Automatic social share meta tags
 - 🧙 Automatic SEO tags based on public files
 - 🌳 TypeScript autocompletion for tag `href` and `src` attributes
+- Fix tags that need to be absolute (og:image, twitter:image)
+- 📦 Infer data from package.json
 - Public runtime data exposed to Template Params `NUXT_PUBLIC_SITE_TITLE=test` -> `title: %siteTitle`
 
 ## Background

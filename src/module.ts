@@ -14,6 +14,7 @@ import { withBase } from 'ufo'
 import { readPackageJSON } from 'pkg-types'
 import { headTypeTemplate } from './templates'
 import inferTagsFromFiles from './features/inferTagsFromFiles'
+import moreDefaultTags from './features/moreDefaultTags'
 
 export interface ModuleOptions {
   /**
@@ -76,6 +77,8 @@ export default defineNuxtModule<ModuleOptions>({
 
     if (config.inferTagsFromFiles)
       await inferTagsFromFiles(nuxt, { siteUrl })
+
+    moreDefaultTags(nuxt)
 
     // avoid vue version conflicts
     nuxt.options.build.transpile.push('@unhead/vue', 'unhead')

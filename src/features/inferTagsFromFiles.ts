@@ -15,20 +15,9 @@ export default async function inferTagsFromFiles(nuxt: Nuxt, { siteUrl }: { site
   // outlined in this site: https://nextjs.org/docs/app/api-reference/file-conventions/metadata/app-icons
   const headConfig = nuxt.options.app.head
   headConfig.link = headConfig.link || []
-  // based on Yoast
-  if (!hasLinkRel(headConfig, 'profile')) {
-    headConfig.link.push({
-      rel: 'profile',
-      href: 'https://gmpg.org/xfn/11',
-    })
-  }
   headConfig.htmlAttrs = headConfig.htmlAttrs || {}
   headConfig.link = headConfig.link || []
   headConfig.meta = headConfig.meta || []
-
-  // if no lang has been set on htmlAttrs we default to `en`
-  if (!headConfig.htmlAttrs.lang)
-    headConfig.htmlAttrs.lang = 'en'
 
   // We are going to infer the icon based on the root public files, the rules are as follows:
   // - When we have a favicon.ic we add a <link rel="icon" href="/favicon.ico" sizes="any" />

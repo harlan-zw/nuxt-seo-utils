@@ -58,6 +58,7 @@ export async function expectNoClientErrors(path: string) {
 }
 
 export function setupTestSSR(config: any = {}) {
+  process.env.NODE_ENV = 'production'
   return setup({
     rootDir: fileURLToPath(new URL('../playground', import.meta.url)),
     server: true,

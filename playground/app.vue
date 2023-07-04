@@ -18,24 +18,21 @@ useHead({
 
 // works with useSeoMeta
 useSeoMeta({
-  description: 'Hi, welcome to the %envName v%app.version of %siteName.'
+  description: 'Hi, welcome to the %envName v%app.version of %siteName.',
 })
 
 // works with useHead
 useHead({
   meta: [
 
-  ]
+  ],
 })
 </script>
 
 <template>
-<div>
   <div>
-    <NuxtPage />
+    <div>
+      <NuxtPage />
+    </div>
   </div>
-  <div style="margin-top: 30px;">
-    <DebugHead />
-  </div>
-</div>
 </template>

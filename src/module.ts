@@ -1,32 +1,75 @@
-import { fileURLToPath } from 'node:url'
 import {
-  addComponent,
   addPlugin,
-  addTemplate,
+  addServerHandler,
   addVitePlugin,
-  defineNuxtModule,
-  useLogger,
+  createResolver,
+  defineNuxtModule, useLogger,
 } from '@nuxt/kit'
-import { dirname, resolve } from 'pathe'
-import fg from 'fast-glob'
 import UnheadVite from '@unhead/addons/vite'
-import { withBase } from 'ufo'
-import { readPackageJSON } from 'pkg-types'
-import { headTypeTemplate } from './templates'
-import inferTagsFromFiles from './features/inferTagsFromFiles'
-import moreDefaultTags from './features/moreDefaultTags'
+import { installNuxtSiteConfig, requireSiteConfig } from 'nuxt-site-config-kit'
+import generateTagsFromPublicFiles from './features/generateTagsFromPublicFiles'
+import setupNuxtConfigAppHeadWithMoreDefaults from './features/setupNuxtConfigAppHeadWithMoreDefaults'
+import extendNuxtConfigAppHeadSeoMeta from './features/extendNuxtConfigAppHeadSeoMeta'
+import extendNuxtConfigAppHeadTypes from './features/extendNuxtConfigAppHeadTypes'
+import generateTagsFromPageDirImages from './features/generateTagsFromPageDirImages'
+import { extendTypes } from './kit'
 
 export interface ModuleOptions {
   /**
-   * Whether meta tags should be optimised for SEO.
+   * Whether the SEO experiements should run.
+   *
+   * @default true
    */
-  seoOptimise: boolean
+  enabled: boolean
   /**
    * Should the files in the public directory be used to infer tags.
    *
    * @default true
    */
-  inferTagsFromFiles: boolean
+  metaDataFiles: boolean
+  /**
+   * Should head data be inferred from the current input to fill in the gaps.
+   *
+   * For example:
+   * - If you supply a title, this will automatically add an og:title.
+   * - If you provide an og:image, it will automatically add a twitter:image.
+   */
+  automaticOgAndTwitterTags: boolean
+  /**
+   * Attempts to treeshake the `useSeoMeta` function.
+   *
+   * Can save around 5kb in the client bundle.
+   */
+  treeShakeUseSeoMeta: boolean
+  mergeWithSiteConfig: boolean
+
+  extendRouteRules: boolean
+
+  fixRequiredAbsoluteMetaTagsLinks: boolean
+
+  extendNuxtConfigAppHeadSeoMeta: boolean
+
+  extendNuxtConfigAppHeadTypes: boolean
+
+  setupNuxtConfigAppHeadWithMoreDefaults: boolean
+
+  /**
+   * Enables debug logs and a debug endpoint.
+   *
+   * @default false
+   */
+  debug: boolean
+  // deprecations
+  /**
+   * Whether meta tags should be optimised for SEO.
+   *
+   * @deprecated Use `inferTagsFromFiles` instead.
+   */
+  seoOptimise?: boolean
+  /**
+   * @deprecated Use `automaticTagsFromFiles` instead.
+   */
+  inferTagsFromFiles?: boolean
 }
 
 export default defineNuxtModule<ModuleOptions>({
@@ -34,76 +77,114 @@ export default defineNuxtModule<ModuleOptions>({
     name: 'nuxt-seo-experiments',
     configKey: 'seoExperiments',
     compatibility: {
-      nuxt: '^3.4.0',
+      nuxt: '^3.6.1',
       bridge: false,
     },
   },
   defaults: {
-    inferTagsFromFiles: true,
-    seoOptimise: true,
+    enabled: true,
+    debug: false,
+    metaDataFiles: true,
+    mergeWithSiteConfig: true,
+    extendRouteRules: true,
+    fixRequiredAbsoluteMetaTagsLinks: true,
+    extendNuxtConfigAppHeadSeoMeta: true,
+    treeShakeUseSeoMeta: true,
+    extendNuxtConfigAppHeadTypes: true,
+    setupNuxtConfigAppHeadWithMoreDefaults: true,
+    automaticOgAndTwitterTags: true,
   },
   async setup(config, nuxt) {
-    const runtimeDir = fileURLToPath(new URL('./runtime', import.meta.url))
-
     const logger = useLogger('nuxt-seo-experiments')
+    logger.level = (config.debug || nuxt.options.debug) ? 4 : 3
+    if (config.enabled === false) {
+      logger.debug('The module is disabled, skipping setup.')
+      return
+    }
+    const { resolve } = createResolver(import.meta.url)
 
-    // no siteUrl is okay, we presume they are SSR and we'll infer it from the request
-    let siteUrl = nuxt.options.runtimeConfig.public.siteUrl || process.env.NUXT_PUBLIC_SITE_URL || ''
-    if (nuxt.options.nitro.baseURL && !siteUrl.endsWith(nuxt.options.nitro.baseURL))
-      siteUrl = withBase(nuxt.options.nitro.baseURL || '/', siteUrl)
+    await installNuxtSiteConfig()
+    requireSiteConfig('nuxt-seo-experiments', {
+      url: 'Required to generate absolute URLs for the og:image.',
+    }, { prerender: true })
 
-    if (nuxt.options._generate && !siteUrl)
-      logger.warn('You are prerendering your site without a siteUrl, this may cause issues with some SEO tags.')
+    if (config.metaDataFiles) {
+      // we need ssr to resolve the tags to the absolute path
+      await generateTagsFromPublicFiles()
+      await generateTagsFromPageDirImages()
 
-    // set a default title template
-    nuxt.options.app.head.titleTemplate = nuxt.options.app.head.titleTemplate || '%s %separator %siteName'
-    nuxt.options.runtimeConfig.public.titleSeparator = nuxt.options.runtimeConfig.public.titleSeparator || '–'
-    // let's infer from stuff from package.json because why not
-    nuxt.options.app.head.templateParams = nuxt.options.app.head.templateParams || {}
-    const pkgJson = await readPackageJSON()
-    nuxt.options.app.head.templateParams.siteName = nuxt.options.app.head.templateParams.siteName || pkgJson?.name || dirname(nuxt.options.srcDir)
-    // infer description from package.json description if set
-    nuxt.options.app.head.meta = nuxt.options.app.head.meta || []
-    if (!nuxt.options.app.head.meta.find(meta => meta.name === 'description')) {
-      const description = pkgJson.description
-      if (description)
-        nuxt.options.app.head.meta.push({ name: 'description', content: description })
+      if (nuxt.options.dev) {
+        addServerHandler({
+          handler: resolve('runtime/nitro/middleware/resolveImagesInPagesDir'),
+        })
+      }
     }
 
-    // support the previous config key
-    // @ts-expect-error untyped
-    config = Object.assign({}, config, nuxt.options.head)
-    nuxt.options.runtimeConfig.public['nuxt-seo-experiments'] = config
+    if (config.extendNuxtConfigAppHeadSeoMeta)
+      extendNuxtConfigAppHeadSeoMeta()
 
-    if (config.inferTagsFromFiles)
-      await inferTagsFromFiles(nuxt, { siteUrl })
+    if (config.setupNuxtConfigAppHeadWithMoreDefaults)
+      setupNuxtConfigAppHeadWithMoreDefaults(nuxt)
 
-    moreDefaultTags(nuxt)
+    if (config.extendNuxtConfigAppHeadTypes)
+      extendNuxtConfigAppHeadTypes()
 
     // avoid vue version conflicts
     nuxt.options.build.transpile.push('@unhead/vue', 'unhead')
 
-    const getPaths = async () => ({
-      public: await fg(['**/*'], { cwd: resolve(nuxt.options.srcDir, 'public') }),
-      assets: await fg(['**/*'], { cwd: resolve(nuxt.options.srcDir, 'assets') }),
-    })
-    // paths.d.ts
-    addTemplate({ ...headTypeTemplate, options: { getPaths } })
+    // add types for the route rules
+    extendTypes('nuxt-seo-experiments', async () => {
+      // route rules and app config
+      return `
+import type { UseSeoMetaInput } from 'unhead'
+import type { Head } from '@unhead/schema'
 
-    nuxt.hooks.hook('prepare:types', ({ references }) => {
-      references.push({ path: resolve(nuxt.options.buildDir, 'nuxt-seo-experiments.d.ts') })
+interface NuxtSimpleRobotsNitroRules {
+  seoMeta?: UseSeoMetaInput
+  head?: Head
+}
+declare module 'nitropack' {
+  interface NitroRouteRules extends NuxtSimpleRobotsNitroRules {}
+  interface NitroRouteConfig extends NuxtSimpleRobotsNitroRules {}
+}
+
+declare module 'nuxt/schema' {
+  interface NuxtAppConfig {
+    seoMeta?: UseSeoMetaInput
+  }
+  interface ConfigSchema {
+    app: {
+      seoMeta?: UseSeoMetaInput
+    }
+  }
+}
+declare module '@nuxt/schema' {
+  interface NuxtAppConfig {
+    seoMeta?: UseSeoMetaInput
+  }
+  interface ConfigSchema {
+    app: {
+      seoMeta?: UseSeoMetaInput
+    }
+  }
+}
+`
     })
 
+    const runtimeDir = resolve('./runtime')
     // remove useServerHead in client build
-    addVitePlugin(UnheadVite())
+    if (config.treeShakeUseSeoMeta)
+      addVitePlugin(UnheadVite())
+    if (config.automaticOgAndTwitterTags)
+      addPlugin({ src: resolve(runtimeDir, 'plugins', 'inferSeoMetaPlugin') })
 
-    await addComponent({
-      name: 'DebugHead',
-      mode: 'client',
-      filePath: `${runtimeDir}/components/DebugHead.client.vue`,
-    })
+    if (config.mergeWithSiteConfig)
+      addPlugin({ src: resolve(runtimeDir, 'plugins', 'siteConfig') })
 
-    addPlugin({ src: resolve(runtimeDir, 'plugins', 'unheadAddons') })
-    addPlugin({ src: resolve(runtimeDir, 'plugins', 'provideHostBaseToTags.server'), mode: 'server' })
+    if (config.extendRouteRules)
+      addPlugin({ src: resolve(runtimeDir, 'plugins', '0.routeRules.server'), mode: 'server' })
+
+    if (config.fixRequiredAbsoluteMetaTagsLinks)
+      addPlugin({ src: resolve(runtimeDir, 'plugins', '1.absoluteImageUrls.server'), mode: 'server' })
   },
 })

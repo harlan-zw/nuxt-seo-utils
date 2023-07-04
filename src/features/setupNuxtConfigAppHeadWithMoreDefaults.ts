@@ -1,7 +1,8 @@
 import type { Nuxt } from '@nuxt/schema'
-import { hasLinkRel, hasMetaProperty } from '../util'
+import { useNuxt } from '@nuxt/kit'
+import { hasMetaProperty } from '../util'
 
-export default function moreDefaultTags(nuxt: Nuxt) {
+export default function setupNuxtConfigAppHeadWithMoreDefaults(nuxt: Nuxt = useNuxt()) {
   // from the root public let's find which ones we can infer SEO meta and link tags from, following the Next.js convention
   // outlined in this site: https://nextjs.org/docs/app/api-reference/file-conventions/metadata/app-icons
   const headConfig = nuxt.options.app.head
@@ -9,14 +10,6 @@ export default function moreDefaultTags(nuxt: Nuxt) {
   headConfig.htmlAttrs = headConfig.htmlAttrs || {}
   headConfig.link = headConfig.link || []
   headConfig.meta = headConfig.meta || []
-
-  // based on Yoast
-  if (!hasLinkRel(headConfig, 'profile')) {
-    headConfig.link.push({
-      rel: 'profile',
-      href: 'https://gmpg.org/xfn/11',
-    })
-  }
 
   if (!hasMetaProperty(headConfig, 'og:type')) {
     headConfig.meta.push({

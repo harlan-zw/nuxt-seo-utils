@@ -10,7 +10,7 @@
 
 
 <p align="center">
-Experimental SEO for Nuxt.
+Powerful SEO DX improvements that may or may not land in the Nuxt core.
 </p>
 
 <p align="center">
@@ -18,7 +18,7 @@ Experimental SEO for Nuxt.
 <tbody>
 <td align="center">
 <img width="800" height="0" /><br>
-<i>Status:</i> Experimental</b> <br>
+<i>Status:</i> <a href="https://github.com/harlan-zw/nuxt-seo-experiments/releases/tag/v3.0.0">v3 Released</a> <br>
 <sup> Please report any issues 🐛</sup><br>
 <sub>Made possible by my <a href="https://github.com/sponsors/harlan-zw">Sponsor Program 💖</a><br> Follow me <a href="https://twitter.com/harlan_zw">@harlan_zw</a> 🐦 • Join <a href="https://discord.gg/275MBUBvgP">Discord</a> for help</sub><br>
 <img width="800" height="0" />
@@ -27,88 +27,39 @@ Experimental SEO for Nuxt.
 </table>
 </p>
 
-ℹ️ Looking for a complete SEO solution? Check out [Nuxt SEO Kit](https://github.com/harlan-zw/nuxt-seo-kit).
-
-⚠️ This package was previously called nuxt-unhead.
-It has been renamed to nuxt-seo-experiments to better reflect the scope of the package.
-
 ## Features
 
-- ✨ Automatic social share meta tags
-- 🧙 Automatic SEO tags based on public files
-- 🌳 TypeScript autocompletion for tag `href` and `src` attributes
-- Fix tags that need to be absolute (og:image, twitter:image)
-- 📦 Infer data from package.json
-- Public runtime data exposed to Template Params `NUXT_PUBLIC_SITE_TITLE=test` -> `title: %siteTitle`
+- ▲ Next.js inspired [Metadata Files](https://nextjs.org/docs/app/api-reference/file-conventions/metadata)
+- ✨ Use SEO meta in your nuxt.config (`app.seoMeta`) and route rules
+- 🤖 Adds meta tags (`og:title`, `og:description`, etc.) from page title and description
+- 🧙 Correct tags that need to be absolute (i.e `og:image`)
+- 🧩 Site config template params `useHead({ title: '%site.title' })`
 
-## Background
+## Installation
 
-This module was built to test bug fixes as well as experimental new features which may
-land into the Nuxt core.
-
-## Install
+1. Install `nuxt-seo-experiments` dependency to your project:
 
 ```bash
-npm install --save-dev nuxt-seo-experiments
-
-# Using yarn
-yarn add --dev nuxt-seo-experiments
+#
+yarn add -D nuxt-seo-experiments
+#
+npm install -D nuxt-seo-experiments
+#
+pnpm i -D nuxt-seo-experiments
 ```
 
-## Setup
 
-_nuxt.config.ts_
+2. Add it to your `modules` section in your `nuxt.config`:
 
 ```ts
 export default defineNuxtConfig({
-  modules: [
-    'nuxt-seo-experiments',
-  ],
+  modules: ['nuxt-seo-experiments']
 })
 ```
 
-## Module Configuration
+# Documentation
 
-Config key: `seoExperiments`
-
-_nuxt.config.ts_
-
-```ts
-export default defineNuxtConfig({
-  modules: ['nuxt-seo-experiments'],
-
-  seoExperiments: {
-    // config (see below)
-  },
-  //...
-})
-```
-
-## Usage
-
-## Config
-
-### inferTagsFromFiles
-
-- Type: `boolean`
-- Default: `true`
-
-  Automatically infer meta tags from public files. 
-  
-  For example, if you have a `favicon.ico` in your `public` directory, it will automatically infer the `favicon` meta tag.
-
-### seoOptimise
-
-- Type: `boolean`
-- Default: `true`
-
-  Automatically optimise meta tags for SEO. 
-  
-  It will automatically infer the `og:title`, `og:description` when a title and description are set respectively. It will
-  ensure a `twitter:card` is set to `summary_large_image` if not set.
-  
-  This will do more in the future.
-
+[📖 Read the full documentation](https://nuxtseo.com/experiments) for more information.
 
 ## Sponsors
 
@@ -117,7 +68,6 @@ export default defineNuxtConfig({
     <img src='https://raw.githubusercontent.com/harlan-zw/static/main/sponsors.svg'/>
   </a>
 </p>
-
 
 ## License
 

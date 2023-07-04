@@ -12,6 +12,7 @@ export default defineNuxtPlugin(() => {
 
   const separator = siteConfig.separator || siteConfig.titleSeparator
   const input: Head = {
+    meta: [],
     templateParams: {
       ...useRuntimeConfig().public,
       site: siteConfig,

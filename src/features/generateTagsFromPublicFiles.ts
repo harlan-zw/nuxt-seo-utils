@@ -31,7 +31,7 @@ export default async function generateTagsFromPublicFiles(nuxt: Nuxt = useNuxt()
     headConfig.link.push(
       ...await Promise.all([
         ...rootPublicFiles
-          .filter(file => file.startsWith('icon.'))
+          .filter(file => file.includes('icon') && !file.endsWith('.ico'))
           .sort()
           .map(async (iconFile) => {
             const iconFileExt = iconFile.split('.').pop()
@@ -97,6 +97,7 @@ export default async function generateTagsFromPublicFiles(nuxt: Nuxt = useNuxt()
       headConfig.meta.push(
         ...(await Promise.all(ogImageFiles.map(async (src) => {
           const meta = await getImageMeta(publicDirPath, src)
+          delete meta.sizes
           const seoMeta: UseSeoMetaInput = {
             ogImage: {
               url: src,

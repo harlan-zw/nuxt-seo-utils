@@ -1,6 +1,6 @@
 import type { Head } from '@unhead/vue'
 import { injectHead } from '@unhead/vue'
-import { defineNuxtPlugin, useSiteConfig } from '#imports'
+import { defineNuxtPlugin, useRuntimeConfig, useSiteConfig } from '#imports'
 
 export default defineNuxtPlugin(() => {
   const head = injectHead()

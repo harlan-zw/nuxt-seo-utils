@@ -33,12 +33,16 @@ export interface ModuleOptions {
    * For example:
    * - If you supply a title, this will automatically add an og:title.
    * - If you provide an og:image, it will automatically add a twitter:image.
+   *
+   * @default true
    */
   automaticOgAndTwitterTags: boolean
   /**
    * Attempts to treeshake the `useSeoMeta` function.
    *
    * Can save around 5kb in the client bundle.
+   *
+   * @default true
    */
   treeShakeUseSeoMeta: boolean
   mergeWithSiteConfig: boolean

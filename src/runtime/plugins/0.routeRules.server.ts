@@ -2,7 +2,6 @@ import { injectHead } from '@unhead/vue'
 import { unpackMeta } from 'unhead'
 import { defineNuxtPlugin, useRequestEvent } from '#imports'
 
-// @ts-expect-error untyped
 export default defineNuxtPlugin({
   enforce: 'post',
   async setup() {

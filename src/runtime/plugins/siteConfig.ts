@@ -1,6 +1,6 @@
 import type { Head } from '@unhead/vue'
 import { injectHead } from '@unhead/vue'
-import { defineNuxtPlugin, useRuntimeConfig, useSiteConfig } from '#imports'
+import { defineNuxtPlugin, useSiteConfig } from '#imports'
 
 export default defineNuxtPlugin(() => {
   const head = injectHead()
@@ -8,13 +8,13 @@ export default defineNuxtPlugin(() => {
   if (!head)
     return
 
-  const siteConfig = useSiteConfig()
+  const siteConfig = { ...useSiteConfig() }
+  delete siteConfig._context
 
   const separator = siteConfig.separator || siteConfig.titleSeparator
   const input: Head = {
     meta: [],
     templateParams: {
-      ...useRuntimeConfig().public,
       site: siteConfig,
       separator,
       titleSeparator: separator,

@@ -41,24 +41,11 @@ export default async function generateTagsFromPageDirImages(nuxt: Nuxt = useNuxt
         },
       }
     }
-    else if (['opengraph-image', 'og-image'].includes(keyword)) {
+    else {
       appendRouteRules[`${path}/**`] = {
         seoMeta: <UseSeoMetaInput> {
-          ogImage: [{ url: src, ...meta, sizes: undefined }],
+          [['opengraph-image', 'og-image'].includes(keyword) ? 'ogImage' : 'twitterImage']: [{ url: src, ...meta, sizes: undefined }],
         },
-      }
-    }
-    else {
-      const twitterImage: UseSeoMetaInput = {
-        twitterImage: src,
-        twitterImageWidth: meta.width,
-        twitterImageHeight: meta.height,
-      }
-      if (meta.alt)
-        twitterImage.twitterImageAlt = meta.alt
-
-      appendRouteRules[`${path}/**`] = {
-        seoMeta: twitterImage,
       }
     }
     devMiddlewareMap[src] = resolve(pagesDir, file)

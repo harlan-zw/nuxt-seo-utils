@@ -67,21 +67,13 @@ export default async function generateTagsFromPublicFiles(nuxt: Nuxt = useNuxt()
       headConfig.meta.push(
         ...(await Promise.all(twitterImageFiles.map(async (twitterImageFile) => {
           const twitterImageFileSizes = await getImageDimensions(resolve(publicDirPath, twitterImageFile))
-          return [
-            {
-              name: 'twitter:image',
-              // needs to be absolute, use runtimeConfig.public.siteUrl
-              content: twitterImageFile,
+          delete twitterImageFileSizes.sizes
+          return unpackMeta({
+            twitterImage: {
+              url: twitterImageFile,
+              ...twitterImageFileSizes,
             },
-            {
-              name: 'twitter:image:width',
-              content: twitterImageFileSizes.width,
-            },
-            {
-              name: 'twitter:image:height',
-              content: twitterImageFileSizes.height,
-            },
-          ]
+          })
         }))
         )
           .flat(),
@@ -105,11 +97,10 @@ export default async function generateTagsFromPublicFiles(nuxt: Nuxt = useNuxt()
             },
           }
           if (!hasTwitterImage) {
-            seoMeta.twitterImage = src
-            seoMeta.twitterImageWidth = meta.width
-            seoMeta.twitterImageHeight = meta.height
-            if (meta.alt)
-              seoMeta.twitterImageAlt = meta.alt
+            seoMeta.twitterImage = {
+              url: src,
+              ...meta,
+            }
           }
           return unpackMeta(seoMeta)
         }))

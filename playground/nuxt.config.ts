@@ -4,11 +4,20 @@ import NuxtSeoExperiments from '../src/module'
 
 export default defineNuxtConfig({
   modules: [
+    '@nuxtjs/i18n',
+    '@nuxthq/ui',
+    'nuxt-icon',
     NuxtSeoExperiments,
   ],
 
+  site: {
+    name: 'SEO Experiments',
+    tagline: 'test',
+  },
+
   app: {
     head: {
+      title: '%site.tagline',
       // DEV - My page title - My cool site
       titleTemplate: '%s %separator %site.name',
       meta: [
@@ -23,7 +32,6 @@ export default defineNuxtConfig({
 
   runtimeConfig: {
     public: {
-      siteUrl: 'https://harlanzw.com', // allows tests to pass
       app: {
         version: '1.3.4',
       },

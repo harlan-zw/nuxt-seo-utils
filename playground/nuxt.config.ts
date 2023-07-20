@@ -16,17 +16,13 @@ export default defineNuxtConfig({
   },
 
   app: {
+    seoMeta: {
+      description: 'Hi, welcome to the %envName v%app.version of %siteName.',
+    },
     head: {
       title: '%site.tagline',
       // DEV - My page title - My cool site
       titleTemplate: '%s %separator %site.name',
-      meta: [
-        {
-          name: 'description',
-          // Hi, welcome to the dev v0.0.0 of Nuxt Playground.
-          content: 'Hi, welcome to the %envName v%app.version of %siteName.',
-        },
-      ],
     },
   },
 

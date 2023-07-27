@@ -6,10 +6,8 @@ import { extendTypes } from '../kit'
 
 export default function extendNuxtConfigAppHeadTypes(nuxt: Nuxt = useNuxt()) {
   extendTypes('nuxt-seo-experiments.assets', async () => {
-    const paths = {
-      public: await fg(['**/*'], { cwd: resolve(nuxt.options.srcDir, 'public') }),
-      assets: await fg(['**/*'], { cwd: resolve(nuxt.options.srcDir, 'assets') }),
-    }
+    const paths = (await fg(['**/*'], { cwd: resolve(nuxt.options.srcDir, 'public') })).map(p => `/${p}`)
+    const jsPaths = paths.filter(p => p.endsWith('.js') || p.endsWith('.mjs'))
     return `
 declare module '#app/nuxt' {
   import { HeadEntry, HeadTag } from '@unhead/schema'
@@ -19,17 +17,17 @@ declare module '#app/nuxt' {
     'head:entries': (entries: HeadEntry[]) => Promise<void> | void
   }
 }
+declare module '@unhead/schema' {
 
-type PublicFiles = ${[...paths.public.map(path => `'/${path}'`), '(string & Record<never, never>)'].join(' | ')}
-type AssetFiles = ${[...paths.assets.map(path => `'~/${path}'`), '(string & Record<never, never>)'].join(' | ')}
+  type PublicFiles = ${[...paths.map(p => `'${p}'`), '(string & Record<never, never>)'].join(' | ')}
+  type JsFiles = ${[...jsPaths.map(p => `'${p}'`), '(string & Record<never, never>)'].join(' | ')}
 
-declare module '@nuxt/schema' {
-  interface HeadAugmentations {
-    link: {
-      href: PublicFiles | AssetFiles
+  interface SchemaAugmentations {
+    link: import('@unhead/schema').UserTagConfigWithoutInnerContent & {
+      href: PublicFiles
     }
-    script: {
-      src: PublicFiles | AssetFiles
+    script: import('@unhead/schema').TagUserProperties & {
+      src: JsFiles
     }
   }
 }`

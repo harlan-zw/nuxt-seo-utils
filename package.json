@@ -37,8 +37,8 @@
   },
   "dependencies": {
     "@nuxt/kit": "^3.6.5",
-    "@unhead/addons": "^1.3.0-beta.2",
-    "@unhead/shared": "^1.3.0-beta.2",
+    "@unhead/addons": "^1.3.0",
+    "@unhead/shared": "^1.3.0",
     "defu": "^6.1.2",
     "escape-string-regexp": "^5.0.0",
     "fast-glob": "^3.3.1",
@@ -47,7 +47,7 @@
     "nuxt-site-config-kit": "^1.0.10",
     "pathe": "^1.1.1",
     "ufo": "^1.2.0",
-    "unhead": "^1.2.2"
+    "unhead": "^1.3.0"
   },
   "devDependencies": {
     "@antfu/eslint-config": "^0.40.2",

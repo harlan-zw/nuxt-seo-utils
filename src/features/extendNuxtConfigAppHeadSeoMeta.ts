@@ -1,5 +1,5 @@
 import type { Nuxt } from '@nuxt/schema'
-import { unpackMeta } from 'unhead'
+import { unpackMeta } from '@unhead/shared'
 import { useNuxt } from '@nuxt/kit'
 
 export default function extendNuxtConfigAppHeadSeoMeta(nuxt: Nuxt = useNuxt()) {

@@ -140,7 +140,7 @@ export default defineNuxtModule<ModuleOptions>({
     extendTypes('nuxt-seo-experiments', async () => {
       // route rules and app config
       return `
-import { UseSeoMetaInput } from 'unhead'
+import { UseSeoMetaInput } from '@unhead/shared'
 import { Head } from '@unhead/schema'
 
 declare module 'nitropack' {

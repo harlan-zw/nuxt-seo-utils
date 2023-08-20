@@ -19,7 +19,7 @@ useServerHead({
 })
 
 useHead({
-  title: null,
+  title: () => String(count.value),
 })
 </script>
 

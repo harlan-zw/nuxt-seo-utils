@@ -22,15 +22,15 @@ describe('seoMetaAppHeadKey', () => {
         "meta": [
           {
             "content": "test",
+            "property": "og:image",
+          },
+          {
+            "content": "test",
             "name": "title",
           },
           {
             "content": "test",
             "name": "description",
-          },
-          {
-            "content": "test",
-            "property": "og:image",
           },
           {
             "content": "test",
@@ -70,16 +70,16 @@ describe('seoMetaAppHeadKey', () => {
             "property": "og:image",
           },
           {
+            "content": "app.seoMeta",
+            "property": "og:image",
+          },
+          {
             "content": "test",
             "name": "title",
           },
           {
             "content": "test",
             "name": "description",
-          },
-          {
-            "content": "app.seoMeta",
-            "property": "og:image",
           },
           {
             "content": "test",

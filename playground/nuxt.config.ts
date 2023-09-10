@@ -5,7 +5,7 @@ import NuxtSeoExperiments from '../src/module'
 export default defineNuxtConfig({
   modules: [
     '@nuxtjs/i18n',
-    '@nuxthq/ui',
+    '@nuxt/ui',
     'nuxt-icon',
     NuxtSeoExperiments,
   ],

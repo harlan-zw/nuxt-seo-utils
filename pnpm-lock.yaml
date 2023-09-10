@@ -9,11 +9,11 @@ dependencies:
     specifier: ^3.7.1
     version: 3.7.1(rollup@3.29.1)
   '@unhead/addons':
-    specifier: ^1.6.1
-    version: 1.6.1(rollup@3.29.1)
+    specifier: ^1.6.2
+    version: 1.6.2(rollup@3.29.1)
   '@unhead/shared':
-    specifier: ^1.6.1
-    version: 1.6.1
+    specifier: ^1.6.2
+    version: 1.6.2
   defu:
     specifier: ^6.1.2
     version: 6.1.2
@@ -39,8 +39,8 @@ dependencies:
     specifier: ^1.3.0
     version: 1.3.0
   unhead:
-    specifier: ^1.6.1
-    version: 1.6.1
+    specifier: ^1.6.2
+    version: 1.6.2
 
 devDependencies:
   '@antfu/eslint-config':
@@ -53,7 +53,7 @@ devDependencies:
     specifier: ^3.7.1
     version: 3.7.1(playwright-core@1.37.1)(rollup@3.29.1)(vitest@0.34.4)(vue@3.3.4)
   '@nuxt/ui':
-    specifier: ^2.8.0
+    specifier: ^2.8.1
     version: 2.8.1(rollup@3.29.1)(vue@3.3.4)(webpack@5.88.1)
   '@nuxtjs/eslint-config-typescript':
     specifier: ^12.1.0
@@ -268,6 +268,7 @@ packages:
       '@jridgewell/gen-mapping': 0.3.3
       '@jridgewell/trace-mapping': 0.3.18
       jsesc: 2.5.2
+    dev: true
 
   /@babel/helper-annotate-as-pure@7.22.5:
     resolution: {integrity: sha512-LvBTxu8bQSQkcyKOU+a1btnNFQ1dMAd0R6PyW3arXes06F6QLWLIrd681bxRPIXlrMGR3XYnW9JyML7dP3qgxg==}
@@ -2778,12 +2779,12 @@ packages:
       eslint-visitor-keys: 3.4.3
     dev: true
 
-  /@unhead/addons@1.6.1(rollup@3.29.1):
-    resolution: {integrity: sha512-HcWHr20p+NRTkVB7790iISNZnLPuSIItk5cVeCVZqV27GRQ/bOGj6ciyXiy/IcuTplPlzn4VcZL/5GfW4wmCFQ==}
+  /@unhead/addons@1.6.2(rollup@3.29.1):
+    resolution: {integrity: sha512-tQUAxoeDpTQsieJ80sZ1WM9xRmk81Iq8aI5lk/oOyLoH2nXQX58ZhSpmJramSqmyquh4s93zNSDClg7w0iVw+w==}
     dependencies:
       '@rollup/pluginutils': 5.0.4(rollup@3.29.1)
-      '@unhead/schema': 1.6.1
-      '@unhead/shared': 1.6.1
+      '@unhead/schema': 1.6.2
+      '@unhead/shared': 1.6.2
       magic-string: 0.30.3
       mlly: 1.4.2
       ufo: 1.3.0
@@ -2798,17 +2799,40 @@ packages:
     dependencies:
       '@unhead/schema': 1.6.1
       '@unhead/shared': 1.6.1
+    dev: true
+
+  /@unhead/dom@1.6.2:
+    resolution: {integrity: sha512-xOFZx0kAYdgXn17G1eNpGXPbClKGuzeFP40LHZG9PDxe8W2OVTAVlhPnamaPumwSYPcif0au6libawtp1bTvxA==}
+    dependencies:
+      '@unhead/schema': 1.6.2
+      '@unhead/shared': 1.6.2
+    dev: false
 
   /@unhead/schema@1.6.1:
     resolution: {integrity: sha512-03lw5Zum3soHHbhwE/mMuG3z9LHX6DDMjrVjLBCQ0qtUh1HoIN1/JdqXKIwfXYQlZSQhdBUx+jjpQMi1sihg8w==}
     dependencies:
       hookable: 5.5.3
       zhead: 2.1.1
+    dev: true
+
+  /@unhead/schema@1.6.2:
+    resolution: {integrity: sha512-yOjL4i1nm7xQ8XWOhRnO/Uf66lIJP48D4lT+Fl1tPTw3isYzopKGqkyHRrVL5PqunC37jQnwBb/ZRqZr5uGLAg==}
+    dependencies:
+      hookable: 5.5.3
+      zhead: 2.1.1
+    dev: false
 
   /@unhead/shared@1.6.1:
     resolution: {integrity: sha512-mOW75xFChDKW8GK4EIqVO3klzroFwxq9nX95d4N99DAETaydBCNayI1P2CL6EWUdykidxp2opaYfBf94PES+Dw==}
     dependencies:
       '@unhead/schema': 1.6.1
+    dev: true
+
+  /@unhead/shared@1.6.2:
+    resolution: {integrity: sha512-4+tvNwulccD1f4NOOU1SEpfJ1YepOsetaogZzPhwdHiUud/LV7YI37FAUx4dKfr3pn1/BeFzj4BH/aPOABRdyg==}
+    dependencies:
+      '@unhead/schema': 1.6.2
+    dev: false
 
   /@unhead/ssr@1.6.1:
     resolution: {integrity: sha512-qhGOnGK3DrSAd2EPdJA+fuy+/MEm0QZuP/iE0OU5BOpzYr+QOB8u+hYoodZYETOeVqiCLK0qGuvEykt511J9wA==}
@@ -4970,7 +4994,7 @@ packages:
       ignore: 5.2.4
       minimatch: 3.1.2
       resolve: 1.22.3
-      semver: 6.3.0
+      semver: 6.3.1
     dev: true
 
   /eslint-plugin-promise@6.1.1(eslint@8.49.0):
@@ -9107,6 +9131,16 @@ packages:
       '@unhead/schema': 1.6.1
       '@unhead/shared': 1.6.1
       hookable: 5.5.3
+    dev: true
+
+  /unhead@1.6.2:
+    resolution: {integrity: sha512-vAkjsjs6SPq/LHzuxOgyNvR4LsGau3CRKke9A6ErQEFm8mNKf50WIyd//ZNEBx8Zg+Iyn7FHyYZdgzpdPwC+Mw==}
+    dependencies:
+      '@unhead/dom': 1.6.2
+      '@unhead/schema': 1.6.2
+      '@unhead/shared': 1.6.2
+      hookable: 5.5.3
+    dev: false
 
   /unimport@3.3.0(rollup@3.29.1):
     resolution: {integrity: sha512-3jhq3ZG5hFZzrWGDCpx83kjPzefP/EeuKkIO1T0MA4Zwj+dO/Og1mFvZ4aZ5WSDm0FVbbdVIRH1zKBG7c4wOpg==}
@@ -9141,8 +9175,8 @@ packages:
     engines: {node: '>=16.14.0'}
     dependencies:
       '@antfu/utils': 0.7.5
-      '@babel/generator': 7.22.9
-      '@babel/parser': 7.22.7
+      '@babel/generator': 7.22.15
+      '@babel/parser': 7.22.16
       '@rollup/pluginutils': 5.0.4(rollup@3.29.1)
       ast-kit: 0.6.9(rollup@3.29.1)
       magic-string-ast: 0.1.2

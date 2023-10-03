@@ -60,6 +60,7 @@
     "@nuxt/ui": "^2.9.0",
     "@nuxtjs/eslint-config-typescript": "^12.1.0",
     "@nuxtjs/i18n": "8.0.0-rc.5",
+    "@unhead/shared": "^1.7.4",
     "bumpp": "^9.2.0",
     "cheerio": "1.0.0-rc.12",
     "eslint": "^8.50.0",

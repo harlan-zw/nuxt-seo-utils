@@ -3,10 +3,11 @@ import {
   addServerHandler,
   addVitePlugin,
   createResolver,
-  defineNuxtModule, useLogger,
+  defineNuxtModule,
+  useLogger,
 } from '@nuxt/kit'
 import UnheadVite from '@unhead/addons/vite'
-import { installNuxtSiteConfig, requireSiteConfig } from 'nuxt-site-config-kit'
+import { installNuxtSiteConfig } from 'nuxt-site-config-kit'
 import generateTagsFromPublicFiles from './features/generateTagsFromPublicFiles'
 import setupNuxtConfigAppHeadWithMoreDefaults from './features/setupNuxtConfigAppHeadWithMoreDefaults'
 import extendNuxtConfigAppHeadSeoMeta from './features/extendNuxtConfigAppHeadSeoMeta'
@@ -106,11 +107,7 @@ export default defineNuxtModule<ModuleOptions>({
       return
     }
     const { resolve } = createResolver(import.meta.url)
-
     await installNuxtSiteConfig()
-    requireSiteConfig('nuxt-seo-experiments', {
-      url: 'Required to generate absolute URLs for the og:image.',
-    }, { prerender: true })
 
     if (config.metaDataFiles) {
       // we need ssr to resolve the tags to the absolute path

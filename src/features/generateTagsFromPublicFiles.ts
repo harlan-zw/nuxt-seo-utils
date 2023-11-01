@@ -3,7 +3,7 @@ import fg from 'fast-glob'
 import { basename, resolve } from 'pathe'
 import { useNuxt } from '@nuxt/kit'
 import { defu } from 'defu'
-import type { UseSeoMetaInput } from '@unhead/shared'
+import type { UseSeoMetaInput } from '@unhead/schema'
 import { unpackMeta } from '@unhead/shared'
 import { getImageDimensions, getImageDimensionsToSizes, getImageMeta, hasLinkRel, hasMetaProperty } from '../util'
 import { MetaTagFileGlobs } from '../const'
@@ -73,12 +73,12 @@ export default async function generateTagsFromPublicFiles(nuxt: Nuxt = useNuxt()
     if (twitterImageFiles.length) {
       headConfig.meta.push(
         ...(await Promise.all(twitterImageFiles.map(async (twitterImageFile) => {
-          const twitterImageFileSizes = await getImageDimensions(resolve(publicDirPath, twitterImageFile))
-          delete twitterImageFileSizes.sizes
+          const dimensions = await getImageDimensions(resolve(publicDirPath, twitterImageFile))
           return unpackMeta({
             twitterImage: {
               url: twitterImageFile,
-              ...twitterImageFileSizes,
+              width: dimensions.width,
+              height: dimensions.height,
             },
           })
         }))

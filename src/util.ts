@@ -15,12 +15,12 @@ export function hasMetaProperty(input: Head, property: string) {
 export async function getImageMeta(base: string, path: string) {
   const absolutePath = resolve(base, path)
   const file = absolutePath.split('/').pop()
-  const keyword = file.split('.')[0]
+  const keyword = file!.split('.')[0]
   let ext = absolutePath.split('.').pop()
   if (ext === 'jpg')
     ext = 'jpeg'
   const { width, height } = await getImageDimensions(absolutePath)
-  const payload = {
+  const payload: Record<string, undefined | number | string> = {
     width,
     height,
     sizes: `${width}x${height}`,

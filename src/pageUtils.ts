@@ -39,7 +39,7 @@ export function generateNuxtPageFromFile(file: string, pagesDir: string): NuxtPa
   }
 
   // Array where routes should be added, useful when adding child routes
-  let parent = []
+  let parent: NuxtPage[] = []
 
   for (let i = 0; i < segments.length; i++) {
     const segment = segments[i]

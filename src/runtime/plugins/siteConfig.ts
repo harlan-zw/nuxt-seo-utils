@@ -8,7 +8,7 @@ export default defineNuxtPlugin(() => {
   if (!head)
     return
 
-  const siteConfig = { ...useSiteConfig() }
+  const siteConfig = { ...useSiteConfig() } as Record<string, any>
   delete siteConfig._context
 
   const separator = siteConfig.separator || siteConfig.titleSeparator
@@ -21,10 +21,10 @@ export default defineNuxtPlugin(() => {
       // support legacy
       siteUrl: siteConfig.url,
       siteName: siteConfig.name,
-      siteDescription: siteConfig.description,
     },
   }
   if (siteConfig.description) {
+    input.templateParams!.siteDescription = siteConfig.description
     // we can setup a meta description
     input.meta!.push(
       {

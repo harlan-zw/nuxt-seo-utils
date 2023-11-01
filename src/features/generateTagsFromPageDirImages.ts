@@ -5,7 +5,7 @@ import { basename, dirname, resolve } from 'pathe'
 import { useNuxt } from '@nuxt/kit'
 import { defu } from 'defu'
 import { joinURL } from 'ufo'
-import type { UseSeoMetaInput } from '@unhead/shared'
+import type { UseSeoMetaInput } from '@unhead/schema'
 import { getImageMeta } from '../util'
 import { generateNuxtPageFromFile } from '../pageUtils'
 import { MetaTagFileGlobs } from '../const'
@@ -17,9 +17,9 @@ export default async function generateTagsFromPageDirImages(nuxt: Nuxt = useNuxt
   // within the pages folder, we need to find all images
   const files = (await fg(MetaTagFileGlobs, { cwd: pagesDir, onlyFiles: true }))
 
-  const appendRouteRules = {}
-  const devMiddlewareMap = {}
-  const nitroOutputMap = []
+  const appendRouteRules: Record<string, any> = {}
+  const devMiddlewareMap: Record<string, string> = {}
+  const nitroOutputMap: { src: string; dest: string }[] = []
   for (const file of files) {
     const fileName = basename(file)
     const keyword = fileName.split('.')[0]

@@ -13,6 +13,7 @@ export default defineNuxtConfig({
   site: {
     name: 'SEO Experiments',
     tagline: 'test',
+    debug: true,
   },
 
   app: {
@@ -33,7 +34,6 @@ export default defineNuxtConfig({
       },
       titleSeparator: '|',
       envName: process.env.NODE_ENV === 'development' ? 'dev' : 'live',
-      siteName: 'Nuxt Playground',
     },
   },
 

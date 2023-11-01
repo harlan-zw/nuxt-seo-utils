@@ -5,5 +5,6 @@ export const MetaTagFileGlobs = [
   '**/*icon.{ico,jpg,jpeg,png,svg}',
   '**/*icon-*.{ico,jpg,jpeg,png,svg}',
   '**/*apple-icon.{jpg,jpeg,png}',
+  '**/*apple-touch.{jpg,jpeg,png}',
   '**/*apple-touch-icon.{jpg,jpeg,png}',
 ]

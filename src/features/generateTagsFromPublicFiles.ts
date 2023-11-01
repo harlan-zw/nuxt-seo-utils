@@ -29,15 +29,15 @@ export default async function generateTagsFromPublicFiles(nuxt: Nuxt = useNuxt()
       })
     }
 
-    const isIcon = (file: string) => file.includes('icon') && !file.endsWith('.ico');
-    const isAppleIcon = (file: string) => (
-      !isIcon(file) && (file.startsWith('apple-icon.') || file.startsWith('apple-touch-icon.'))
-    );
+    const isIcon = (file: string) => file.includes('icon') && !file.endsWith('.ico')
+    const isAppleTouchIcon = (file: string) => (
+      (file.startsWith('apple-icon.') || file.startsWith('apple-touch-icon.') || file.startsWith('apple-touch.'))
+    )
 
     headConfig.link.push(
       ...await Promise.all([
         ...rootPublicFiles
-          .filter(file => isIcon(file))
+          .filter(file => isIcon(file) && !isAppleTouchIcon(file))
           .sort()
           .map(async (iconFile) => {
             const iconFileExt = iconFile.split('.').pop()
@@ -50,7 +50,7 @@ export default async function generateTagsFromPublicFiles(nuxt: Nuxt = useNuxt()
             }
           }),
         ...rootPublicFiles
-          .filter(file => isAppleIcon(file))
+          .filter(file => isAppleTouchIcon(file))
           .sort()
           .map(async (appleIconFile) => {
             const appleIconFileExt = appleIconFile.split('.').pop()

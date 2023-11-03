@@ -14,6 +14,7 @@ export default defineNuxtConfig({
     name: 'SEO Experiments',
     tagline: 'test',
     debug: true,
+    titleSeparator: 'l',
   },
 
   app: {
@@ -21,6 +22,9 @@ export default defineNuxtConfig({
       description: 'Hi, welcome to the %envName v%app.version of %siteName.',
     },
     head: {
+      templateParams: {
+        separator: 'x',
+      },
       title: '%site.tagline',
       // DEV - My page title - My cool site
       titleTemplate: '%s %separator %site.name',
@@ -32,7 +36,6 @@ export default defineNuxtConfig({
       app: {
         version: '1.3.4',
       },
-      titleSeparator: '|',
       envName: process.env.NODE_ENV === 'development' ? 'dev' : 'live',
     },
   },

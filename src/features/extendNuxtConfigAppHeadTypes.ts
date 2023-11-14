@@ -9,7 +9,7 @@ export default function extendNuxtConfigAppHeadTypes(nuxt: Nuxt = useNuxt()) {
     const paths = (await fg(['**/*'], { cwd: resolve(nuxt.options.srcDir, 'public') })).map(p => `/${p}`)
     const jsPaths = paths.filter(p => p.endsWith('.js') || p.endsWith('.mjs'))
     return `
-declare module '#app/nuxt' {
+declare module '#app' {
   import { HeadEntry, HeadTag } from '@unhead/schema'
 
   interface RuntimeNuxtHooks {

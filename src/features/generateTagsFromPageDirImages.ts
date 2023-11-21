@@ -19,7 +19,7 @@ export default async function generateTagsFromPageDirImages(nuxt: Nuxt = useNuxt
 
   const appendRouteRules: Record<string, any> = {}
   const devMiddlewareMap: Record<string, string> = {}
-  const nitroOutputMap: { src: string; dest: string }[] = []
+  const nitroOutputMap: { src: string, dest: string }[] = []
   for (const file of files) {
     const fileName = basename(file)
     const keyword = fileName.split('.')[0]

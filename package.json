@@ -40,7 +40,7 @@
     "dev:build": "nuxi build playground",
     "dev:prepare": "nuxt-module-build --stub && nuxi prepare playground",
     "release": "bumpp && pnpm -r publish",
-    "test": "vitest"
+    "test": "nuxi prepare playground && vitest"
   },
   "dependencies": {
     "@nuxt/kit": "^3.9.0",

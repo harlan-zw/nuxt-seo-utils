@@ -12,18 +12,21 @@ export default defineNuxtConfig({
 
   site: {
     name: 'SEO Experiments',
+    url: 'https://nuxtseo.com',
     tagline: 'test',
     debug: true,
-    titleSeparator: 'l',
   },
 
   app: {
     seoMeta: {
-      description: 'Hi, welcome to the %envName v%app.version of %siteName.',
+      description: 'Hi, welcome to the %site.env v%app.version of %siteName.',
     },
     head: {
       templateParams: {
         separator: 'x',
+        app: {
+          version: '1.3.4',
+        },
       },
       title: '%site.tagline',
       // DEV - My page title - My cool site
@@ -33,9 +36,6 @@ export default defineNuxtConfig({
 
   runtimeConfig: {
     public: {
-      app: {
-        version: '1.3.4',
-      },
       envName: process.env.NODE_ENV === 'development' ? 'dev' : 'live',
     },
   },
@@ -47,7 +47,4 @@ export default defineNuxtConfig({
   },
 
   workspaceDir: resolve(__dirname, '../'),
-  imports: {
-    autoImport: true,
-  },
 })

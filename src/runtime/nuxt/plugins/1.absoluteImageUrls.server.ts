@@ -12,7 +12,7 @@ export default defineNuxtPlugin({
     const resolver = createSitePathResolver({
       withBase: true,
       absolute: true,
-      canonical: false,
+      canonical: true,
     })
     head.use({
       hooks: {

@@ -8,7 +8,6 @@
 <a href="https://github.com/harlan-zw/nuxt-seo-experiments" target="__blank"><img alt="GitHub stars" src="https://img.shields.io/github/stars/harlan-zw/nuxt-seo-experiments?flat&colorA=002438&colorB=28CF8D"></a>
 </p>
 
-
 <p align="center">
 Powerful SEO DX improvements that may or may not land in the Nuxt core.
 </p>
@@ -47,7 +46,6 @@ npm install -D nuxt-seo-experiments
 #
 pnpm i -D nuxt-seo-experiments
 ```
-
 
 2. Add it to your `modules` section in your `nuxt.config`:
 

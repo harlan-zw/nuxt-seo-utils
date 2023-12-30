@@ -8,9 +8,7 @@ export default defineNuxtPlugin(() => {
   if (!head)
     return
 
-  const siteConfig = { ...useSiteConfig() } as Record<string, any>
-  delete siteConfig._context
-
+  const siteConfig = useSiteConfig()
   const input: Head = {
     meta: [],
     templateParams: {

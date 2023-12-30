@@ -165,7 +165,7 @@ declare module 'nuxt/schema' {
 `
     })
 
-    const runtimeDir = resolve('./runtime')
+    const runtimeDir = resolve('./runtime/nuxt')
     // remove useServerHead in client build
     if (config.treeShakeUseSeoMeta)
       addVitePlugin(UnheadVite())

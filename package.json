@@ -1,7 +1,7 @@
 {
   "name": "nuxt-seo-experiments",
   "type": "module",
-  "version": "4.0.0-rc.0",
+  "version": "4.0.0-rc.1",
   "packageManager": "pnpm@8.15.1",
   "description": "Powerful SEO DX improvements that may or may not land in the Nuxt core.",
   "license": "MIT",

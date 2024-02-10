@@ -1,7 +1,7 @@
 {
   "name": "nuxt-seo-experiments",
   "type": "module",
-  "version": "4.0.0-rc.3",
+  "version": "4.0.0-rc.4",
   "packageManager": "pnpm@8.15.1",
   "description": "Powerful SEO DX improvements that may or may not land in the Nuxt core.",
   "license": "MIT",
@@ -39,7 +39,7 @@
     "dev": "nuxi dev playground",
     "dev:build": "nuxi build playground",
     "dev:prepare": "nuxt-module-build --stub && nuxi prepare playground",
-    "release": "bumpp && pnpm -r publish",
+    "release": "pnpm build && bumpp && pnpm -r publish",
     "test": "nuxi prepare playground && vitest"
   },
   "dependencies": {

@@ -42,10 +42,16 @@ export default async function generateTagsFromPublicFiles(nuxt: Nuxt = useNuxt()
           .map(async (iconFile) => {
             const iconFileExt = iconFile.split('.').pop()
             const sizes = await getImageDimensionsToSizes(resolve(publicDirPath, iconFile))
+            let media
+            if (iconFile.includes('.dark'))
+              media = '(prefers-color-scheme: dark)'
+            else if (iconFile.includes('.light'))
+              media = '(prefers-color-scheme: light)'
             return {
               rel: 'icon',
               href: `/${iconFile}`,
               type: `image/${iconFileExt}`,
+              media,
               sizes,
             }
           }),

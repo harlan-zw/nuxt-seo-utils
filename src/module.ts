@@ -130,9 +130,6 @@ export default defineNuxtModule<ModuleOptions>({
     if (config.extendNuxtConfigAppHeadTypes)
       extendNuxtConfigAppHeadTypes()
 
-    // avoid vue version conflicts
-    nuxt.options.build.transpile.push('@unhead/vue', 'unhead')
-
     // add types for the route rules
     extendTypes('nuxt-seo-experiments', async () => {
       // route rules and app config

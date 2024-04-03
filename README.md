@@ -39,12 +39,7 @@ Powerful SEO DX improvements that may or may not land in the Nuxt core.
 1. Install `nuxt-seo-experiments` dependency to your project:
 
 ```bash
-#
-yarn add -D nuxt-seo-experiments
-#
-npm install -D nuxt-seo-experiments
-#
-pnpm i -D nuxt-seo-experiments
+npx nuxi@latest module add seo-experiments
 ```
 
 2. Add it to your `modules` section in your `nuxt.config`:

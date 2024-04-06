@@ -5,9 +5,9 @@ import { useNuxt } from '@nuxt/kit'
 import { defu } from 'defu'
 import type { UseSeoMetaInput } from '@unhead/schema'
 import { unpackMeta } from '@unhead/shared'
+import { joinURL } from 'ufo'
 import { getImageDimensions, getImageDimensionsToSizes, getImageMeta, hasLinkRel, hasMetaProperty } from '../util'
 import { MetaTagFileGlobs } from '../const'
-import {joinURL} from "ufo";
 
 export default async function generateTagsFromPublicFiles(nuxt: Nuxt = useNuxt()) {
   // @todo support layer public dirs

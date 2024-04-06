@@ -7,6 +7,7 @@ import type { UseSeoMetaInput } from '@unhead/schema'
 import { unpackMeta } from '@unhead/shared'
 import { getImageDimensions, getImageDimensionsToSizes, getImageMeta, hasLinkRel, hasMetaProperty } from '../util'
 import { MetaTagFileGlobs } from '../const'
+import {joinURL} from "ufo";
 
 export default async function generateTagsFromPublicFiles(nuxt: Nuxt = useNuxt()) {
   // @todo support layer public dirs
@@ -24,7 +25,7 @@ export default async function generateTagsFromPublicFiles(nuxt: Nuxt = useNuxt()
     if (rootPublicFiles.includes('favicon.ico')) {
       headConfig.link.push({
         rel: 'icon',
-        href: '/favicon.ico',
+        href: joinURL(nuxt.options.app.baseURL, 'favicon.ico'),
         sizes: 'any',
       })
     }
@@ -49,7 +50,7 @@ export default async function generateTagsFromPublicFiles(nuxt: Nuxt = useNuxt()
               media = '(prefers-color-scheme: light)'
             return {
               rel: 'icon',
-              href: `/${iconFile}`,
+              href: joinURL(nuxt.options.app.baseURL, iconFile),
               type: `image/${iconFileExt}`,
               media,
               sizes,
@@ -63,7 +64,7 @@ export default async function generateTagsFromPublicFiles(nuxt: Nuxt = useNuxt()
             const sizes = await getImageDimensionsToSizes(resolve(publicDirPath, appleIconFile))
             return {
               rel: 'apple-touch-icon',
-              href: `/${appleIconFile}`,
+              href: joinURL(nuxt.options.app.baseURL, appleIconFile),
               type: `image/${appleIconFileExt}`,
               sizes,
             }

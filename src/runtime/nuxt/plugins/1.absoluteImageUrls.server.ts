@@ -24,7 +24,7 @@ export default defineNuxtPlugin({
               continue
             if (tag.props.property !== 'og:image:url' && tag.props.property !== 'og:image' && tag.props.name !== 'twitter:image')
               continue
-            if (!tag.props.content || tag.props.content.startsWith('http') || tag.props.content.startsWith('//'))
+            if (typeof tag.props.content !== 'string' || !tag.props.content.trim() || tag.props.content.startsWith('http') || tag.props.content.startsWith('//'))
               continue
             tag.props.content = unref(resolver(tag.props.content))
           }

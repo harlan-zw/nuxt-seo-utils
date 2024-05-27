@@ -43,7 +43,7 @@ importers:
         specifier: ^2.19.0
         version: 2.19.0(@vue/compiler-sfc@3.4.27)(eslint@9.3.0)(typescript@5.4.5)(vitest@1.6.0(@types/node@20.12.12)(sass@1.77.2)(terser@5.31.0))
       '@nuxt/module-builder':
-        specifier: 0.7.0
+        specifier: ^0.7.0
         version: 0.7.0(@nuxt/kit@3.11.2(rollup@4.14.0))(nuxi@3.11.1)(sass@1.77.2)(typescript@5.4.5)
       '@nuxt/test-utils':
         specifier: ^3.13.1
@@ -55,7 +55,7 @@ importers:
         specifier: ^12.1.0
         version: 12.1.0(eslint@9.3.0)(typescript@5.4.5)
       '@nuxtjs/i18n':
-        specifier: 8.3.1
+        specifier: ^8.3.1
         version: 8.3.1(rollup@4.14.0)(vue@3.4.21(typescript@5.4.5))
       '@unhead/shared':
         specifier: ^1.9.11

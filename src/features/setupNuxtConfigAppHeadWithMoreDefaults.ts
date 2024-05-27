@@ -18,8 +18,5 @@ export default function setupNuxtConfigAppHeadWithMoreDefaults(nuxt: Nuxt = useN
     })
   }
 
-  // if no lang has been set on htmlAttrs we default to `en`
-  if (!headConfig.htmlAttrs.lang)
-    headConfig.htmlAttrs.lang = 'en'
   nuxt.options.app.head = headConfig
 }

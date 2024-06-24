@@ -82,7 +82,7 @@ export default defineNuxtModule<ModuleOptions>({
     name: 'nuxt-seo-experiments',
     configKey: 'seoExperiments',
     compatibility: {
-      nuxt: '^3.6.1',
+      nuxt: '>=3.6.1',
       bridge: false,
     },
   },

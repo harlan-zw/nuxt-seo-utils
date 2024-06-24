@@ -30,6 +30,14 @@ describe('default', () => {
 
 
 
+
+
+
+
+
+
+
+
       <meta property="og:image" content="https://nuxtseo.com/og-image.png">
       <meta property="og:image:alt" content="hello world">
       <meta property="og:image:type" content="image/png">

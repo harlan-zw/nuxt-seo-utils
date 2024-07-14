@@ -2,7 +2,7 @@
   "name": "nuxt-seo-experiments",
   "type": "module",
   "version": "4.0.0-rc.10",
-  "packageManager": "pnpm@9.4.0",
+  "packageManager": "pnpm@9.5.0",
   "description": "Powerful SEO DX improvements that may or may not land in the Nuxt core.",
   "license": "MIT",
   "funding": "https://github.com/sponsors/harlan-zw",
@@ -49,8 +49,8 @@
     "escape-string-regexp": "^5.0.0",
     "fast-glob": "^3.3.2",
     "image-size": "^1.1.1",
-    "nuxt-site-config": "^2.2.13",
-    "nuxt-site-config-kit": "^2.2.13",
+    "nuxt-site-config": "^2.2.14",
+    "nuxt-site-config-kit": "^2.2.14",
     "pathe": "^1.1.2",
     "ufo": "^1.5.3"
   },
@@ -64,11 +64,11 @@
     "@unhead/shared": "^1.9.15",
     "bumpp": "^9.4.1",
     "cheerio": "1.0.0-rc.12",
-    "eslint": "^9.6.0",
+    "eslint": "^9.7.0",
     "nuxt": "^3.12.3",
     "playwright-core": "^1.45.1",
-    "sass": "^1.77.6",
+    "sass": "^1.77.8",
     "typescript": "5.4.5",
-    "vitest": "^1.6.0"
+    "vitest": "^2.0.2"
   }
 }

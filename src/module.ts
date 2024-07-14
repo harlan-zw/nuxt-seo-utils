@@ -134,30 +134,27 @@ export default defineNuxtModule<ModuleOptions>({
     extendTypes('nuxt-seo-experiments', async () => {
       // route rules and app config
       return `
-import { UseSeoMetaInput } from '@unhead/shared'
-import { Head } from '@unhead/schema'
-
 declare module 'nitropack' {
   interface NitroRouteRules {
-     seoMeta?: UseSeoMetaInput
-     head?: Head
+     seoMeta?: import('@unhead/schema').UseSeoMetaInput
+     head?: import('@unhead/schema').Head
   }
   interface NitroRouteConfig {
-    seoMeta?: UseSeoMetaInput
-    head?: Head
+    seoMeta?: import('@unhead/schema').UseSeoMetaInput
+    head?: import('@unhead/schema').Head
   }
 }
 
 declare module '@nuxt/schema' {
-  interface NuxtAppConfig { seoMeta?: UseSeoMetaInput }
-  interface NuxtConfig { app?: ConfigSchema['app'] & { seoMeta?: UseSeoMetaInput } }
-  interface NuxtOptions { app: ConfigSchema['app'] & { seoMeta?: UseSeoMetaInput } }
+  interface NuxtAppConfig { seoMeta?: import('@unhead/schema').UseSeoMetaInput }
+  interface NuxtConfig { app?: ConfigSchema['app'] & { seoMeta?: import('@unhead/schema').UseSeoMetaInput } }
+  interface NuxtOptions { app: ConfigSchema['app'] & { seoMeta?: import('@unhead/schema').UseSeoMetaInput } }
 }
 
 declare module 'nuxt/schema' {
-  interface NuxtAppConfig { seoMeta?: UseSeoMetaInput }
-  interface NuxtConfig { app?: ConfigSchema['app'] & { seoMeta?: UseSeoMetaInput } }
-  interface NuxtOptions { app: ConfigSchema['app'] & { seoMeta?: UseSeoMetaInput } }
+  interface NuxtAppConfig { seoMeta?: import('@unhead/schema').UseSeoMetaInput }
+  interface NuxtConfig { app?: import('@nuxt/schema').ConfigSchema['app'] & { seoMeta?: import('@unhead/schema').UseSeoMetaInput } }
+  interface NuxtOptions { app: import('@nuxt/schema').ConfigSchema['app'] & { seoMeta?: import('@unhead/schema').UseSeoMetaInput } }
 }
 `
     })

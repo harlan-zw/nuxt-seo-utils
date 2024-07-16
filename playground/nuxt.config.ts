@@ -46,4 +46,5 @@ export default defineNuxtConfig({
   },
 
   workspaceDir: resolve(__dirname, '../'),
+  compatibilityDate: '2024-07-16',
 })

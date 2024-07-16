@@ -69,6 +69,6 @@
     "playwright-core": "^1.45.1",
     "sass": "^1.77.8",
     "typescript": "5.4.5",
-    "vitest": "^2.0.2"
+    "vitest": "^2.0.3"
   }
 }

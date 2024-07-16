@@ -21,24 +21,10 @@ describe('default', () => {
     const headWithoutStyles = head?.replace(/<style[\s\S]*?<\/style>/g, '')
     const headWithoutScripts = headWithoutStyles?.replace(/<script[\s\S]*?<\/script>/g, '')
     const headWithoutLinks = headWithoutScripts?.replace(/<link[\s\S]*?>/g, '')
-    expect(headWithoutLinks.trim()).toMatchInlineSnapshot(`
+    expect(headWithoutLinks.split('\n').filter(Boolean).join('\n').trim()).toMatchInlineSnapshot(`
       "<meta charset="utf-8">
       <meta name="viewport" content="width=device-width, initial-scale=1">
-
       <title>Home x SEO Experiments</title>
-
-
-
-
-
-
-
-
-
-
-
-
-
       <meta property="og:image" content="https://nuxtseo.com/og-image.png">
       <meta property="og:image:alt" content="hello world">
       <meta property="og:image:type" content="image/png">

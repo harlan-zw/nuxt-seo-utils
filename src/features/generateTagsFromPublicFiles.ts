@@ -6,7 +6,7 @@ import { defu } from 'defu'
 import type { UseSeoMetaInput } from '@unhead/schema'
 import { unpackMeta } from '@unhead/shared'
 import { joinURL } from 'ufo'
-import { getImageDimensions, getImageDimensionsToSizes, getImageMeta, hasLinkRel, hasMetaProperty } from '../util'
+import { getImageDimensions, getImageMeta, hasLinkRel, hasMetaProperty } from '../util'
 import { MetaTagFileGlobs } from '../const'
 
 export default async function generateTagsFromPublicFiles(nuxt: Nuxt = useNuxt()) {
@@ -22,6 +22,14 @@ export default async function generateTagsFromPublicFiles(nuxt: Nuxt = useNuxt()
   })
 
   if (!hasLinkRel(headConfig, 'icon')) {
+    if (rootPublicFiles.includes('favicon.ico') && nuxt.options.app.baseURL !== '/') {
+      headConfig.link.push({
+        rel: 'icon',
+        href: joinURL(nuxt.options.app.baseURL, 'favicon.ico'),
+        sizes: 'any',
+      })
+    }
+
     const isIcon = (file: string) => file.includes('icon') && !file.endsWith('.ico')
     const isAppleTouchIcon = (file: string) => (
       (file.startsWith('apple-icon.') || file.startsWith('apple-touch-icon.') || file.startsWith('apple-touch.'))

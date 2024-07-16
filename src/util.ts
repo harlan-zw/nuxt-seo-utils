@@ -12,7 +12,7 @@ export function hasMetaProperty(input: Head, property: string) {
   return input.meta?.some(meta => meta.property === property)
 }
 
-export async function getImageMeta(base: string, path: string) {
+export async function getImageMeta(base: string, path: string, isIcon = false) {
   const absolutePath = resolve(base, path)
   const file = absolutePath.split('/').pop()
   const keyword = file!.split('.')[0]
@@ -21,16 +21,26 @@ export async function getImageMeta(base: string, path: string) {
     ext = 'jpeg'
   const { width, height } = await getImageDimensions(absolutePath)
   const payload: Record<string, undefined | number | string> = {
-    width,
-    height,
-    sizes: `${width}x${height}`,
-    type: `image/${ext}`,
+    type: ext === 'svg' ? `image/svg+xml` : `image/${ext}`,
   }
-  const altTextPath = resolve(dirname(absolutePath), `${keyword}.alt.txt`)
-  if (fs.existsSync(altTextPath)) {
-    payload.alt = fs.readFileSync(altTextPath, 'utf8')
-    // need to normalise alt for og:image:alt
-    payload.alt = payload.alt.replace(/\n/g, ' ').trim()
+  if (!isIcon) {
+    payload.width = width
+    payload.height = height
+    const altTextPath = resolve(dirname(absolutePath), `${keyword}.alt.txt`)
+    if (fs.existsSync(altTextPath)) {
+      payload.alt = fs.readFileSync(altTextPath, 'utf8')
+      // need to normalise alt for og:image:alt
+      payload.alt = payload.alt.replace(/\n/g, ' ').trim()
+    }
+  }
+  else {
+    if (path.includes('.dark') || path.includes('-dark'))
+      payload.media = '(prefers-color-scheme: dark)'
+    else if (path.includes('.light') || path.includes('-light'))
+      payload.media = '(prefers-color-scheme: light)'
+    if (ext !== 'svg') {
+      payload.sizes = `${width}x${height}`
+    }
   }
   return payload
 }

@@ -33,32 +33,23 @@ export default async function generateTagsFromPublicFiles(nuxt: Nuxt = useNuxt()
           .filter(file => isIcon(file) && !isAppleTouchIcon(file))
           .sort()
           .map(async (iconFile) => {
-            const iconFileExt = iconFile.split('.').pop()
-            const sizes = await getImageDimensionsToSizes(resolve(publicDirPath, iconFile))
-            let media
-            if (iconFile.includes('.dark') || iconFile.includes('-dark'))
-              media = '(prefers-color-scheme: dark)'
-            else if (iconFile.includes('.light') || iconFile.includes('-light'))
-              media = '(prefers-color-scheme: light)'
+            const meta = await getImageMeta(publicDirPath, iconFile, true)
+            delete meta.sizes
             return {
               rel: 'icon',
               href: joinURL(nuxt.options.app.baseURL, iconFile),
-              type: `image/${iconFileExt}`,
-              media,
-              sizes,
+              ...meta,
             }
           }),
         ...rootPublicFiles
           .filter(file => isAppleTouchIcon(file))
           .sort()
           .map(async (appleIconFile) => {
-            const appleIconFileExt = appleIconFile.split('.').pop()
-            const sizes = await getImageDimensionsToSizes(resolve(publicDirPath, appleIconFile))
+            const meta = await getImageMeta(publicDirPath, appleIconFile, true)
             return {
               rel: 'apple-touch-icon',
               href: joinURL(nuxt.options.app.baseURL, appleIconFile),
-              type: `image/${appleIconFileExt}`,
-              sizes,
+              ...meta,
             }
           }),
       ]),
@@ -94,7 +85,7 @@ export default async function generateTagsFromPublicFiles(nuxt: Nuxt = useNuxt()
     if (ogImageFiles.length) {
       headConfig.meta.push(
         ...(await Promise.all(ogImageFiles.map(async (src) => {
-          const meta = await getImageMeta(publicDirPath, src)
+          const meta = await getImageMeta(publicDirPath, src, false)
           delete meta.sizes
           const seoMeta: UseSeoMetaInput = {
             ogImage: {

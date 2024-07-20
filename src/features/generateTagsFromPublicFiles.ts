@@ -42,7 +42,6 @@ export default async function generateTagsFromPublicFiles(nuxt: Nuxt = useNuxt()
           .sort()
           .map(async (iconFile) => {
             const meta = await getImageMeta(publicDirPath, iconFile, true)
-            delete meta.sizes
             return {
               rel: 'icon',
               href: joinURL(nuxt.options.app.baseURL, iconFile),

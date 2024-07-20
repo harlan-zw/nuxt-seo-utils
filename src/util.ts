@@ -41,6 +41,9 @@ export async function getImageMeta(base: string, path: string, isIcon = false) {
     if (ext !== 'svg') {
       payload.sizes = `${width}x${height}`
     }
+    else {
+      payload.sizes = 'any'
+    }
   }
   return payload
 }

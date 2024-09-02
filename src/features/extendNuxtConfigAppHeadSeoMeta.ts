@@ -5,7 +5,8 @@ import { useNuxt } from '@nuxt/kit'
 export default function extendNuxtConfigAppHeadSeoMeta(nuxt: Nuxt = useNuxt()) {
   // from the root public let's find which ones we can infer SEO meta and link tags from, following the Next.js convention
   // outlined in this site: https://nextjs.org/docs/app/api-reference/file-conventions/metadata/app-icons
-  const seoMeta = nuxt.options.app?.seoMeta || false
+  // nuxt.options.app.seoMeta  is deprecated due to type complexities
+  const seoMeta = nuxt.options.app?.seoMeta || nuxt.options.app?.head?.seoMeta || false
   if (!seoMeta)
     return
   nuxt.options.app.head = nuxt.options.app.head || {}
@@ -16,5 +17,6 @@ export default function extendNuxtConfigAppHeadSeoMeta(nuxt: Nuxt = useNuxt()) {
       ...unpackMeta(seoMeta),
     ],
   }
+  delete nuxt.options.app.seoMeta
   return nuxt.options.app.head
 }

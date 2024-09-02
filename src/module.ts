@@ -146,15 +146,11 @@ declare module 'nitropack' {
 }
 
 declare module '@nuxt/schema' {
-  interface NuxtAppConfig { seoMeta?: import('@unhead/schema').UseSeoMetaInput }
-  interface NuxtConfig { app?: ConfigSchema['app'] & { seoMeta?: import('@unhead/schema').UseSeoMetaInput } }
-  interface NuxtOptions { app: ConfigSchema['app'] & { seoMeta?: import('@unhead/schema').UseSeoMetaInput } }
+  interface MetaObjectRaw { seoMeta?: import('@unhead/schema').UseSeoMetaInput }
 }
 
 declare module 'nuxt/schema' {
-  interface NuxtAppConfig { seoMeta?: import('@unhead/schema').UseSeoMetaInput }
-  interface NuxtConfig { app?: import('@nuxt/schema').ConfigSchema['app'] & { seoMeta?: import('@unhead/schema').UseSeoMetaInput } }
-  interface NuxtOptions { app: import('@nuxt/schema').ConfigSchema['app'] & { seoMeta?: import('@unhead/schema').UseSeoMetaInput } }
+  interface MetaObjectRaw { seoMeta?: import('@unhead/schema').UseSeoMetaInput }
 }
 `
     })

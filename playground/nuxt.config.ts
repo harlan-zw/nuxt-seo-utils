@@ -17,10 +17,10 @@ export default defineNuxtConfig({
   },
 
   app: {
-    seoMeta: {
-      description: 'Hi, welcome to the %site.env v%app.version of %siteName.',
-    },
     head: {
+      seoMeta: {
+        description: 'Hi, welcome to the %site.env v%app.version of %siteName.',
+      },
       templateParams: {
         separator: 'x',
         app: {

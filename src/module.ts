@@ -25,7 +25,8 @@ export interface ModuleOptions {
    */
   enabled: boolean
   /**
-   * Should the files in the public directory be used to infer tags.
+   * Should the files in the public directory be used to infer tags such as favicon, apple-touch-icon, and
+   * open graph images.
    *
    * @default true
    */
@@ -41,23 +42,44 @@ export interface ModuleOptions {
    */
   automaticOgAndTwitterTags: boolean
   /**
-   * Attempts to treeshake the `useSeoMeta` function.
-   *
-   * Can save around 5kb in the client bundle.
+   * Attempts to treeshake the `useSeoMeta` function. Can save around 5kb in the client bundle.
    *
    * @default true
    */
   treeShakeUseSeoMeta: boolean
+  /**
+   * Injects site config into the `useHead` composable such as setting the title template
+   *
+   * @default true
+   */
   mergeWithSiteConfig: boolean
-
+  /**
+   * Adds `head` and `seoMeta` to the route rules and app config.
+   *
+   * @default true
+   */
   extendRouteRules: boolean
-
+  /**
+   * Tries to convert relative image paths to absolute paths in meta tags.
+   *
+   * @default true
+   */
   fixRequiredAbsoluteMetaTagsLinks: boolean
-
+  /**
+   * Extends the `head` in the Nuxt config with the `seoMeta` object.
+   *
+   * @default true
+   */
   extendNuxtConfigAppHeadSeoMeta: boolean
-
+  /**
+   * Augments the head schema with `/public` files making it easier to reference them in the head.
+   *
+   * @default true
+   */
   extendNuxtConfigAppHeadTypes: boolean
-
+  /**
+   * @dead
+   */
   setupNuxtConfigAppHeadWithMoreDefaults: boolean
 
   /**
@@ -94,17 +116,6 @@ export interface ModuleOptions {
    * @default false
    */
   debug: boolean
-  // deprecations
-  /**
-   * Whether meta tags should be optimised for SEO.
-   *
-   * @deprecated Use `inferTagsFromFiles` instead.
-   */
-  seoOptimise?: boolean
-  /**
-   * @deprecated Use `automaticTagsFromFiles` instead.
-   */
-  inferTagsFromFiles?: boolean
 }
 
 export default defineNuxtModule<ModuleOptions>({

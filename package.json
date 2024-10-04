@@ -1,7 +1,7 @@
 {
   "name": "nuxt-seo-utils",
   "type": "module",
-  "version": "4.0.1",
+  "version": "5.0.0",
   "packageManager": "pnpm@9.12.0",
   "description": "SEO utilities to improve your Nuxt sites discoverability and shareability",
   "license": "MIT",
@@ -39,7 +39,7 @@
     "dev": "nuxi dev playground",
     "dev:build": "nuxi build playground",
     "dev:prepare": "nuxt-module-build build --stub && nuxt-module-build prepare && nuxi prepare playground",
-    "release": "pnpm build && bumpp && pnpm -r publish",
+    "release": "pnpm build && bumpp -x \"npx changelogen --output=CHANGELOG.log\" && pnpm publish",
     "lint:docs": "markdownlint ./docs/content && case-police 'docs/content/**/*.md' *.md",
     "lint:docs:fix": "markdownlint ./docs/content --fix && case-police 'docs/content/**/*.md' *.md --fix",
     "twoslash:verify": "nuxt-content-twoslash verify --content-dir docs/content",

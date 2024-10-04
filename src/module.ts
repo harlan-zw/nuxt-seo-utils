@@ -191,20 +191,23 @@ export default defineNuxtModule<ModuleOptions>({
     //   nuxt.options.experimental.defaults.nuxtLink.trailingSlash = siteConfig.trailingSlash ? 'append' : 'remove'
 
     // if user disables certain modules we need to pollyfill the imports
-    const polyfills: Record<string, string[]> = {
-      schemaOrg: ['useSchemaOrg', 'defineWebSite', 'defineWebPage'],
-    }
-    for (const [module, composables] of Object.entries(polyfills)) {
-      if (nuxt.options[module as keyof typeof nuxt.options]?.enable === false) {
-        composables.forEach((name) => {
-          // add pollyfill
-          addImports({
-            from: resolve('./runtime/nuxt/composables/polyfills'),
-            name,
-          })
-        })
-      }
-    }
+    const polyfills = [
+      ...((!hasNuxtModule('nuxt-schema-org') || nuxt.options.schemaOrg?.enable === false)
+        ? [
+            'useSchemaOrg',
+            'defineWebSite',
+            'defineWebPage',
+            'defineBreadcrumb',
+          ]
+        : []),
+    ]
+    polyfills.forEach((name) => {
+      // add pollyfill
+      addImports({
+        from: resolve('./runtime/nuxt/composables/polyfills'),
+        name,
+      })
+    })
     nuxt.options.experimental.headNext = true
 
     // add redirect middleware

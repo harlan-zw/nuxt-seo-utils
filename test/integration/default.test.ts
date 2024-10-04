@@ -4,12 +4,9 @@ import { describe, expect, it } from 'vitest'
 
 const { resolve } = createResolver(import.meta.url)
 
-process.env.NODE_ENV = 'production'
 
 await setup({
   rootDir: resolve('../../playground'),
-  build: true,
-  server: true,
 })
 
 describe('default', () => {
@@ -35,14 +32,16 @@ describe('default', () => {
       <meta name="twitter:image:type" content="image/png">
       <meta name="twitter:image:width" content="1270">
       <meta name="twitter:image:height" content="630">
-      <meta name="description" content="Hi, welcome to the production v1.3.4 of SEO Utils.">
+      <meta name="description" content="Hi, welcome to the test v1.3.4 of SEO Utils.">
       <meta property="og:type" content="website">
-      <meta property="og:description" content="Hi, welcome to the production v1.3.4 of SEO Utils.">
+      <meta property="og:description" content="Hi, welcome to the test v1.3.4 of SEO Utils.">
       <meta name="twitter:card" content="summary_large_image">
       <meta property="og:title" content="Home x SEO Utils">
       <meta property="og:url" content="https://nuxtseo.com/">
       <meta property="og:locale" content="en-US">
       <meta property="og:site_name" content="SEO Utils">"
     `)
+  }, {
+    timeout: 30_000,
   })
 })

@@ -40,10 +40,11 @@
     "dev:build": "nuxi build playground",
     "dev:prepare": "nuxt-module-build build --stub && nuxt-module-build prepare && nuxi prepare playground",
     "release": "pnpm build && bumpp && pnpm -r publish",
-    "test": "nuxi prepare playground && vitest",
     "lint:docs": "markdownlint ./docs/content && case-police 'docs/content/**/*.md' *.md",
     "lint:docs:fix": "markdownlint ./docs/content --fix && case-police 'docs/content/**/*.md' *.md --fix",
-    "twoslash:verify": "nuxt-content-twoslash verify --content-dir docs/content"
+    "twoslash:verify": "nuxt-content-twoslash verify --content-dir docs/content",
+    "test": "pnpm dev:prepare && vitest --run --exclude **/__runtime__ && pnpm test:runtime",
+    "test:runtime": "cd test/fixtures/basic && vitest --run"
   },
   "dependencies": {
     "@nuxt/kit": "^3.13.2",
@@ -66,10 +67,12 @@
     "@nuxtjs/eslint-config-typescript": "^12.1.0",
     "@nuxtjs/i18n": "^8.5.5",
     "@unhead/shared": "^1.11.7",
+    "@vue/test-utils": "^2.4.6",
     "bumpp": "^9.6.1",
     "case-police": "^0.7.0",
     "cheerio": "1.0.0",
     "eslint": "^9.11.1",
+    "happy-dom": "^15.7.4",
     "markdownlint-cli": "^0.42.0",
     "nuxt": "^3.13.2",
     "nuxt-content-twoslash": "^0.1.1",

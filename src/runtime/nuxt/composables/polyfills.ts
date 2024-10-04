@@ -4,6 +4,7 @@ import { ref } from 'vue'
 export function useSchemaOrg() {}
 export function defineWebSite() {}
 export function defineWebPage() {}
+export function defineBreadcrumb() {}
 
 export function useI18n() {
   const siteConfig = useSiteConfig()

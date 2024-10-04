@@ -1,2 +1,2 @@
 imports.autoImport=false
-modules[]=nuxt-seo-experiments
+modules[]=nuxt-seo-utils

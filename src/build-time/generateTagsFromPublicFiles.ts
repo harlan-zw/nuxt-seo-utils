@@ -1,13 +1,13 @@
 import type { Nuxt } from '@nuxt/schema'
+import type { UseSeoMetaInput } from '@unhead/schema'
+import { useNuxt } from '@nuxt/kit'
+import { unpackMeta } from '@unhead/shared'
+import { defu } from 'defu'
 import fg from 'fast-glob'
 import { basename, resolve } from 'pathe'
-import { useNuxt } from '@nuxt/kit'
-import { defu } from 'defu'
-import type { UseSeoMetaInput } from '@unhead/schema'
-import { unpackMeta } from '@unhead/shared'
 import { joinURL } from 'ufo'
-import { getImageDimensions, getImageMeta, hasLinkRel, hasMetaProperty } from '../util'
 import { MetaTagFileGlobs } from '../const'
+import { getImageDimensions, getImageMeta, hasLinkRel, hasMetaProperty } from '../util'
 
 export default async function generateTagsFromPublicFiles(nuxt: Nuxt = useNuxt()) {
   // @todo support layer public dirs

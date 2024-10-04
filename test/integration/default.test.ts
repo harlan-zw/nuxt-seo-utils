@@ -1,6 +1,6 @@
-import { describe, expect, it } from 'vitest'
 import { createResolver } from '@nuxt/kit'
 import { $fetch, setup } from '@nuxt/test-utils/e2e'
+import { describe, expect, it } from 'vitest'
 
 const { resolve } = createResolver(import.meta.url)
 
@@ -24,7 +24,7 @@ describe('default', () => {
     expect(headWithoutLinks.split('\n').filter(Boolean).join('\n').trim()).toMatchInlineSnapshot(`
       "<meta charset="utf-8">
       <meta name="viewport" content="width=device-width, initial-scale=1">
-      <title>Home x SEO Experiments</title>
+      <title>Home x SEO Utils</title>
       <meta property="og:image" content="https://nuxtseo.com/og-image.png">
       <meta property="og:image:alt" content="hello world">
       <meta property="og:image:type" content="image/png">
@@ -35,11 +35,14 @@ describe('default', () => {
       <meta name="twitter:image:type" content="image/png">
       <meta name="twitter:image:width" content="1270">
       <meta name="twitter:image:height" content="630">
-      <meta name="description" content="Hi, welcome to the production v1.3.4 of SEO Experiments.">
+      <meta name="description" content="Hi, welcome to the production v1.3.4 of SEO Utils.">
       <meta property="og:type" content="website">
-      <meta property="og:description" content="Hi, welcome to the production v1.3.4 of SEO Experiments.">
+      <meta property="og:description" content="Hi, welcome to the production v1.3.4 of SEO Utils.">
       <meta name="twitter:card" content="summary_large_image">
-      <meta property="og:title" content="Home x SEO Experiments">"
+      <meta property="og:title" content="Home x SEO Utils">
+      <meta property="og:url" content="https://nuxtseo.com/">
+      <meta property="og:locale" content="en-US">
+      <meta property="og:site_name" content="SEO Utils">"
     `)
   })
 })

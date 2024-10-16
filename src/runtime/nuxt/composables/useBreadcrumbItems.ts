@@ -46,16 +46,16 @@ export interface BreadcrumbProps {
    * Append additional breadcrumb items to the end of the list. This is applied
    * after the `overrides` option.
    */
-  append?: BreadcrumbItemProps[]
+  append?: MaybeRefOrGetter<BreadcrumbItemProps[]>
   /**
    * Prepend additional breadcrumb items to the start of the list. This is applied
    * after the `overrides` option.
    */
-  prepend?: BreadcrumbItemProps[]
+  prepend?: MaybeRefOrGetter<BreadcrumbItemProps[]>
   /**
    * Override any of the breadcrumb items based on the index.
    */
-  overrides?: (BreadcrumbItemProps | false | undefined)[]
+  overrides?: MaybeRefOrGetter<(BreadcrumbItemProps | false | undefined)[]>
   /**
    * Should the schema.org breadcrumb be generated.
    * @default true
@@ -136,7 +136,7 @@ export function useBreadcrumbItems(options: BreadcrumbProps = {}) {
     }
     const current = withoutQuery(withoutTrailingSlash(toValue(options.path || router.currentRoute.value?.path) || rootNode))
     // apply overrides
-    const overrides = options.overrides || []
+    const overrides = toValue(options.overrides) || []
     const segments = pathBreadcrumbSegments(current, rootNode)
       .map((path, index) => {
         let item = <BreadcrumbItemProps> {
@@ -151,9 +151,9 @@ export function useBreadcrumbItems(options: BreadcrumbProps = {}) {
       })
     // apply prepends and appends
     if (options.prepend)
-      segments.unshift(...options.prepend)
+      segments.unshift(...toValue(options.prepend))
     if (options.append)
-      segments.push(...options.append)
+      segments.push(...toValue(options.append))
     return (segments.filter(Boolean) as BreadcrumbItemProps[])
       .map((item) => {
         // @ts-expect-error untyped

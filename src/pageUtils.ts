@@ -1,7 +1,7 @@
-import { extname, relative } from 'pathe'
-import { encodePath } from 'ufo'
 import type { NuxtPage } from '@nuxt/schema'
 import escapeRE from 'escape-string-regexp'
+import { extname, relative } from 'pathe'
+import { encodePath } from 'ufo'
 
 // copied from nuxt/src/pages/utils.ts
 

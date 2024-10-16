@@ -1,3 +1,16 @@
+import NuxtSeoUtils from '../../../src/module'
+
 export default defineNuxtConfig({
-  devtools: { enabled: false },
+  modules: [
+    NuxtSeoUtils,
+    '@nuxt/test-utils/module',
+  ],
+
+  nitro: {
+    prerender: {
+      failOnError: false,
+    },
+  },
+
+  compatibilityDate: '2024-08-07',
 })

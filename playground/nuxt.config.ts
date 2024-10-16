@@ -1,19 +1,22 @@
-import { resolve } from 'pathe'
 import { defineNuxtConfig } from 'nuxt/config'
-import NuxtSeoExperiments from '../src/module'
+import Module from '../src/module'
 
 export default defineNuxtConfig({
   modules: [
     '@nuxtjs/i18n',
     '@nuxt/ui',
-    NuxtSeoExperiments,
+    Module,
   ],
 
   site: {
-    name: 'SEO Experiments',
+    name: 'SEO Utils',
     url: 'https://nuxtseo.com',
     tagline: 'test',
     debug: true,
+  },
+
+  tailwindcss: {
+    viewer: false,
   },
 
   app: {
@@ -45,6 +48,9 @@ export default defineNuxtConfig({
     },
   },
 
-  workspaceDir: resolve(__dirname, '../'),
+  typescript: {
+    includeWorkspace: true,
+  },
+
   compatibilityDate: '2024-07-16',
 })

@@ -1,15 +1,11 @@
-import { describe, expect, it } from 'vitest'
 import { createResolver } from '@nuxt/kit'
 import { $fetch, setup } from '@nuxt/test-utils/e2e'
+import { describe, expect, it } from 'vitest'
 
 const { resolve } = createResolver(import.meta.url)
 
-process.env.NODE_ENV = 'production'
-
 await setup({
   rootDir: resolve('../fixtures/basic'),
-  build: true,
-  server: true,
   nuxtConfig: {
     app: {
       baseURL: '/base',

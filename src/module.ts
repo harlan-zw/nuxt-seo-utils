@@ -1,18 +1,20 @@
 import {
+  addImports,
   addPlugin,
   addServerHandler,
   addVitePlugin,
   createResolver,
   defineNuxtModule,
+  hasNuxtModule,
   useLogger,
 } from '@nuxt/kit'
 import UnheadVite from '@unhead/addons/vite'
 import { installNuxtSiteConfig } from 'nuxt-site-config-kit'
-import generateTagsFromPublicFiles from './features/generateTagsFromPublicFiles'
-import setupNuxtConfigAppHeadWithMoreDefaults from './features/setupNuxtConfigAppHeadWithMoreDefaults'
-import extendNuxtConfigAppHeadSeoMeta from './features/extendNuxtConfigAppHeadSeoMeta'
-import extendNuxtConfigAppHeadTypes from './features/extendNuxtConfigAppHeadTypes'
-import generateTagsFromPageDirImages from './features/generateTagsFromPageDirImages'
+import extendNuxtConfigAppHeadSeoMeta from './build-time/extendNuxtConfigAppHeadSeoMeta'
+import extendNuxtConfigAppHeadTypes from './build-time/extendNuxtConfigAppHeadTypes'
+import generateTagsFromPageDirImages from './build-time/generateTagsFromPageDirImages'
+import generateTagsFromPublicFiles from './build-time/generateTagsFromPublicFiles'
+import setupNuxtConfigAppHeadWithMoreDefaults from './build-time/setupNuxtConfigAppHeadWithMoreDefaults'
 import { extendTypes } from './kit'
 
 export interface ModuleOptions {
@@ -23,7 +25,8 @@ export interface ModuleOptions {
    */
   enabled: boolean
   /**
-   * Should the files in the public directory be used to infer tags.
+   * Should the files in the public directory be used to infer tags such as favicon, apple-touch-icon, and
+   * open graph images.
    *
    * @default true
    */
@@ -39,24 +42,73 @@ export interface ModuleOptions {
    */
   automaticOgAndTwitterTags: boolean
   /**
-   * Attempts to treeshake the `useSeoMeta` function.
-   *
-   * Can save around 5kb in the client bundle.
+   * Attempts to treeshake the `useSeoMeta` function. Can save around 5kb in the client bundle.
    *
    * @default true
    */
   treeShakeUseSeoMeta: boolean
+  /**
+   * Injects site config into the `useHead` composable such as setting the title template
+   *
+   * @default true
+   */
   mergeWithSiteConfig: boolean
-
+  /**
+   * Adds `head` and `seoMeta` to the route rules and app config.
+   *
+   * @default true
+   */
   extendRouteRules: boolean
-
+  /**
+   * Tries to convert relative image paths to absolute paths in meta tags.
+   *
+   * @default true
+   */
   fixRequiredAbsoluteMetaTagsLinks: boolean
-
+  /**
+   * Extends the `head` in the Nuxt config with the `seoMeta` object.
+   *
+   * @default true
+   */
   extendNuxtConfigAppHeadSeoMeta: boolean
-
+  /**
+   * Augments the head schema with `/public` files making it easier to reference them in the head.
+   *
+   * @default true
+   */
   extendNuxtConfigAppHeadTypes: boolean
-
+  /**
+   * @dead
+   */
   setupNuxtConfigAppHeadWithMoreDefaults: boolean
+
+  /**
+   * Will ensure a title is always set by providing a fallback title based on the casing the last slug segment.
+   *
+   * @default true
+   */
+  fallbackTitle?: boolean
+  /**
+   * Will set up a number of defaults for meta tags and Schema.org, if the modules and config are available.
+   *
+   * @default true
+   */
+  automaticDefaults?: boolean
+  /**
+   * When enabled, it will whitelist the query parameters that are allowed in the canonical URL.
+   */
+  canonicalQueryWhitelist?: string[]
+  /**
+   * When enabled, it will redirect any request to the canonical domain (site url) using a 301 redirect on non-dev environments.
+   *
+   * E.g if the site url is 'www.example.com' and the user visits 'example.com',
+   * they will be redirected to 'www.example.com'.
+   *
+   * This is useful for SEO as it prevents duplicate content and consolidates page rank.
+   *
+   * @default false
+   */
+  redirectToCanonicalSiteUrl?: boolean
 
   /**
    * Enables debug logs and a debug endpoint.
@@ -64,23 +116,12 @@ export interface ModuleOptions {
    * @default false
    */
   debug: boolean
-  // deprecations
-  /**
-   * Whether meta tags should be optimised for SEO.
-   *
-   * @deprecated Use `inferTagsFromFiles` instead.
-   */
-  seoOptimise?: boolean
-  /**
-   * @deprecated Use `automaticTagsFromFiles` instead.
-   */
-  inferTagsFromFiles?: boolean
 }
 
 export default defineNuxtModule<ModuleOptions>({
   meta: {
-    name: 'nuxt-seo-experiments',
-    configKey: 'seoExperiments',
+    name: 'nuxt-seo-utils',
+    configKey: 'seo',
     compatibility: {
       nuxt: '>=3.6.1',
       bridge: false,
@@ -89,6 +130,9 @@ export default defineNuxtModule<ModuleOptions>({
   defaults: {
     enabled: true,
     debug: false,
+    redirectToCanonicalSiteUrl: false,
+    automaticDefaults: true,
+    fallbackTitle: true,
     metaDataFiles: true,
     mergeWithSiteConfig: true,
     extendRouteRules: true,
@@ -100,7 +144,7 @@ export default defineNuxtModule<ModuleOptions>({
     automaticOgAndTwitterTags: true,
   },
   async setup(config, nuxt) {
-    const logger = useLogger('nuxt-seo-experiments')
+    const logger = useLogger('nuxt-seo-utils')
     logger.level = (config.debug || nuxt.options.debug) ? 4 : 3
     if (config.enabled === false) {
       logger.debug('The module is disabled, skipping setup.')
@@ -116,9 +160,86 @@ export default defineNuxtModule<ModuleOptions>({
 
       if (nuxt.options.dev) {
         addServerHandler({
-          handler: resolve('runtime/nitro/middleware/resolveImagesInPagesDir'),
+          middleware: true,
+          handler: resolve('runtime/nitro/middleware/resolveImagesInPagesDir.dev'),
         })
       }
+    }
+
+    if (config.automaticDefaults) {
+      // i18n complicates things, we need to run the server plugin at the right time, client is fine
+      if (hasNuxtModule('@nuxtjs/i18n')) {
+        addPlugin({
+          src: resolve(`./runtime/nuxt/plugins/defaultsWaitI18n`),
+        })
+      }
+      else {
+        addPlugin({
+          src: resolve(`./runtime/nuxt/plugins/defaults`),
+        })
+      }
+    }
+    if (config.fallbackTitle) {
+      addPlugin({
+        src: resolve('./runtime/nuxt/plugins/titles'),
+      })
+    }
+
+    if (!hasNuxtModule('@nuxtjs/i18n')) {
+      addImports({
+        from: resolve(`./runtime/nuxt/composables/polyfills`),
+        name: 'useI18n',
+      })
+    }
+
+    addImports({
+      from: resolve(`./runtime/nuxt/composables/useBreadcrumbItems`),
+      name: 'useBreadcrumbItems',
+    })
+
+    // TODO blocked by https://github.com/nuxt/nuxt/issues/25532
+    // if (nuxt.options.experimental?.defaults?.nuxtLink && typeof nuxt.options.experimental?.defaults?.nuxtLink?.trailingSlash == 'undefined')
+    //   nuxt.options.experimental.defaults.nuxtLink.trailingSlash = siteConfig.trailingSlash ? 'append' : 'remove'
+
+    // if user disables certain modules we need to pollyfill the imports
+    const polyfills = [
+      // @ts-expect-error runtime type
+      ...((!hasNuxtModule('nuxt-schema-org') || nuxt.options.schemaOrg?.enable === false)
+        ? [
+            'useSchemaOrg',
+            'defineWebSite',
+            'defineWebPage',
+            'defineBreadcrumb',
+          ]
+        : []),
+    ]
+    polyfills.forEach((name) => {
+      // add pollyfill
+      addImports({
+        from: resolve('./runtime/nuxt/composables/polyfills'),
+        name,
+      })
+    })
+    nuxt.options.experimental.headNext = true
+
+    // add redirect middleware
+    if (!nuxt.options.dev && config.redirectToCanonicalSiteUrl) {
+      addServerHandler({
+        handler: resolve('./runtime/nitro/middleware/redirect'),
+        middleware: true,
+      })
+    }
+
+    nuxt.options.runtimeConfig.public['nuxt-seo'] = {
+      canonicalQueryWhitelist: config.canonicalQueryWhitelist || [
+        'page',
+        'sort',
+        'filter',
+        'search',
+        'q',
+        'category',
+        'tag',
+      ],
     }
 
     if (config.extendNuxtConfigAppHeadSeoMeta)
@@ -131,7 +252,7 @@ export default defineNuxtModule<ModuleOptions>({
       extendNuxtConfigAppHeadTypes()
 
     // add types for the route rules
-    extendTypes('nuxt-seo-experiments', async () => {
+    extendTypes('nuxt-seo-utils', async () => {
       // route rules and app config
       return `
 declare module 'nitropack' {

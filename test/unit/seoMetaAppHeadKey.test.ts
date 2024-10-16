@@ -1,7 +1,7 @@
-import { describe, expect, it } from 'vitest'
 import type { Nuxt } from '@nuxt/schema'
-import type { UseSeoMetaInput } from 'unhead'
-import extendNuxtConfigAppHeadSeoMeta from '../../src/features/extendNuxtConfigAppHeadSeoMeta'
+import type { UseSeoMetaInput } from '@unhead/schema'
+import { describe, expect, it } from 'vitest'
+import extendNuxtConfigAppHeadSeoMeta from '../../src/build-time/extendNuxtConfigAppHeadSeoMeta'
 
 describe('seoMetaAppHeadKey', () => {
   it('simple ', async () => {

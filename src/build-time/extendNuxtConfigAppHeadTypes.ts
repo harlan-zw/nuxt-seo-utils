@@ -1,11 +1,11 @@
-import { useNuxt } from '@nuxt/kit'
 import type { Nuxt } from '@nuxt/schema'
+import { useNuxt } from '@nuxt/kit'
 import fg from 'fast-glob'
 import { resolve } from 'pathe'
 import { extendTypes } from '../kit'
 
 export default function extendNuxtConfigAppHeadTypes(nuxt: Nuxt = useNuxt()) {
-  extendTypes('nuxt-seo-experiments.assets', async () => {
+  extendTypes('nuxt-seo-utils.assets', async () => {
     const paths = (await fg(['**/*'], { cwd: resolve(nuxt.options.srcDir, 'public') })).map(p => `/${p}`)
     const jsPaths = paths.filter(p => p.endsWith('.js') || p.endsWith('.mjs'))
     return `

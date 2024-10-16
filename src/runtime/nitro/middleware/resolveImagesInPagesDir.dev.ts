@@ -1,9 +1,10 @@
 import fs from 'node:fs'
-import { parseURL } from 'ufo'
-import { setHeader } from 'h3'
 import { defineEventHandler } from '#imports'
-import { fileMapping } from '#nuxt-seo-experiments/pageDirImages'
+import { fileMapping } from '#nuxt-seo-utils/pageDirImages'
+import { setHeader } from 'h3'
+import { parseURL } from 'ufo'
 
+// Note: this only runs in dev
 export default defineEventHandler(async (e) => {
   const path = parseURL(e.path).pathname
   if (fileMapping[path]) {

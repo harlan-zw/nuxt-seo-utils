@@ -1,6 +1,6 @@
-import { readFile } from 'node:fs/promises'
-import fs from 'node:fs'
 import type { Head } from '@unhead/schema'
+import fs from 'node:fs'
+import { readFile } from 'node:fs/promises'
 import imageSize from 'image-size'
 import { dirname, resolve } from 'pathe'
 

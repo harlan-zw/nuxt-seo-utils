@@ -1,14 +1,14 @@
-import fs from 'node:fs'
 import type { Nuxt } from '@nuxt/schema'
-import fg from 'fast-glob'
-import { basename, dirname, resolve } from 'pathe'
+import type { UseSeoMetaInput } from '@unhead/schema'
+import fs from 'node:fs'
 import { useNuxt } from '@nuxt/kit'
 import { defu } from 'defu'
+import fg from 'fast-glob'
+import { basename, dirname, resolve } from 'pathe'
 import { joinURL } from 'ufo'
-import type { UseSeoMetaInput } from '@unhead/schema'
-import { getImageMeta } from '../util'
-import { generateNuxtPageFromFile } from '../pageUtils'
 import { MetaTagFileGlobs } from '../const'
+import { generateNuxtPageFromFile } from '../pageUtils'
+import { getImageMeta } from '../util'
 
 export default async function generateTagsFromPageDirImages(nuxt: Nuxt = useNuxt()) {
   // @todo support layer public dirs
@@ -61,7 +61,7 @@ export default async function generateTagsFromPageDirImages(nuxt: Nuxt = useNuxt
   if (nuxt.options.dev) {
     // add a virtual nitro file to expose the file mapping
     nuxt.hooks.hook('nitro:config', async (nitroConfig) => {
-      nitroConfig.virtual!['#nuxt-seo-experiments/pageDirImages'] = `export const fileMapping = ${JSON.stringify(devMiddlewareMap)}`
+      nitroConfig.virtual!['#nuxt-seo-utils/pageDirImages'] = `export const fileMapping = ${JSON.stringify(devMiddlewareMap)}`
     })
   }
 

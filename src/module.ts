@@ -166,9 +166,10 @@ export default defineNuxtModule<ModuleOptions>({
       }
     }
 
+    const hasI18n = hasNuxtModule('@nuxtjs/i18n') || hasNuxtModule('nuxt-i18n-micro')
     if (config.automaticDefaults) {
       // i18n complicates things, we need to run the server plugin at the right time, client is fine
-      if (hasNuxtModule('@nuxtjs/i18n')) {
+      if (hasI18n) {
         addPlugin({
           src: resolve(`./runtime/nuxt/plugins/defaultsWaitI18n`),
         })
@@ -185,7 +186,7 @@ export default defineNuxtModule<ModuleOptions>({
       })
     }
 
-    if (!hasNuxtModule('@nuxtjs/i18n') && !hasNuxtModule("nuxt-i18n-micro")) {
+    if (!hasI18n) {
       addImports({
         from: resolve(`./runtime/nuxt/composables/polyfills`),
         name: 'useI18n',

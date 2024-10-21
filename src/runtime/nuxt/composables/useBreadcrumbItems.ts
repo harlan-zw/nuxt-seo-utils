@@ -161,7 +161,7 @@ export function useBreadcrumbItems(options: BreadcrumbProps = {}) {
         const routeMeta = (route?.meta || {}) as RouteMeta & { title?: string, breadcrumbLabel: string }
         const routeName = route ? String(route.name || route.path) : (item.to === '/' ? 'index' : 'unknown')
         let [name] = routeName.split('___')
-        if (name === 'unknown' || name.includes('/'))
+        if (name === 'unknown' || name.includes('/') || route.path?.includes(':'))
           name = (item.to || '').split('/').pop() || '' // fallback to last path segment
         // merge with the route meta
         if (routeMeta.breadcrumb) {

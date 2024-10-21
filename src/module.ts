@@ -185,7 +185,7 @@ export default defineNuxtModule<ModuleOptions>({
       })
     }
 
-    if (!hasNuxtModule('@nuxtjs/i18n')) {
+    if (!hasNuxtModule('@nuxtjs/i18n') && !hasNuxtModule("nuxt-i18n-micro")) {
       addImports({
         from: resolve(`./runtime/nuxt/composables/polyfills`),
         name: 'useI18n',

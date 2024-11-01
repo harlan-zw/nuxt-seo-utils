@@ -156,13 +156,10 @@ export function useBreadcrumbItems(options: BreadcrumbProps = {}) {
       segments.push(...toValue(options.append))
     return (segments.filter(Boolean) as BreadcrumbItemProps[])
       .map((item) => {
-        // @ts-expect-error untyped
         const route = router.resolve(item.to)?.matched?.[0] || router.currentRoute.value // fallback to current route
         const routeMeta = (route?.meta || {}) as RouteMeta & { title?: string, breadcrumbLabel: string }
-        const routeName = route ? String(route.name || route.path) : (item.to === '/' ? 'index' : 'unknown')
-        let [name] = routeName.split('___')
-        if (name === 'unknown' || name.includes('/') || route.path?.includes(':'))
-          name = (item.to || '').split('/').pop() || '' // fallback to last path segment
+        const routeName = route ? String(route.name.split('___')) : (item.to === '/' ? 'index' : null)
+        const fallbackLabel = titleCase(routeName === 'index' ? 'Home' : (item.to || '').split('/').pop() || '') // fallback to last path segment
         // merge with the route meta
         if (routeMeta.breadcrumb) {
           item = {
@@ -172,13 +169,8 @@ export function useBreadcrumbItems(options: BreadcrumbProps = {}) {
         }
         // allow opt-out of label normalise with `false` value
         // @ts-expect-error untyped
-        item.label = item.label || routeMeta.breadcrumbTitle || routeMeta.title
-        if (typeof item.label === 'undefined') {
-          item.label = i18n.t(`breadcrumb.items.${name}.label`, name === 'index' ? 'Home' : titleCase(name), { missingWarn: false })
-        }
-        if (typeof item.ariaLabel === 'undefined') {
-          item.ariaLabel = i18n.t(`breadcrumb.items.${name}.ariaLabel`, item.label, { missingWarn: false }) || item.label
-        }
+        item.label = item.label || routeMeta.title || routeMeta.breadcrumbTitle || i18n.t(`breadcrumb.items.${routeName}.label`, fallbackLabel, { missingWarn: false })
+        item.ariaLabel = item.ariaLabel || i18n.t(`breadcrumb.items.${routeName}.ariaLabel`, item.label, { missingWarn: false }) || item.label
         // mark the current based on the options
         item.current = item.current || item.to === current
         if (toValue(options.hideCurrent) && item.current)

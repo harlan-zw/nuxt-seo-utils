@@ -140,4 +140,56 @@ describe('useBreadcrumbItems', () => {
       ]
     `)
   })
+
+  it('catch-all #2', async () => {
+    // change the path
+    useRouterMock.mockImplementation(() => {
+      return {
+        currentRoute: {
+          value: {
+            name: 'docs-slug',
+            path: '/docs/seo-utils/getting-started/installation',
+          },
+        },
+        resolve() {
+          return null
+        },
+      }
+    })
+    const breadcrumbs = useBreadcrumbItems()
+    expect(breadcrumbs.value).toMatchInlineSnapshot(`
+      [
+        {
+          "ariaLabel": "",
+          "current": false,
+          "label": "",
+          "to": "/",
+        },
+        {
+          "ariaLabel": "Docs",
+          "current": false,
+          "label": "Docs",
+          "to": "/docs",
+        },
+        {
+          "ariaLabel": "Seo Utils",
+          "current": false,
+          "label": "Seo Utils",
+          "to": "/docs/seo-utils",
+        },
+        {
+          "ariaLabel": "Getting Started",
+          "current": false,
+          "label": "Getting Started",
+          "to": "/docs/seo-utils/getting-started",
+        },
+        {
+          "ariaLabel": "Installation",
+          "current": true,
+          "label": "Installation",
+          "to": "/docs/seo-utils/getting-started/installation",
+        },
+      ]
+    `)
+  })
 })

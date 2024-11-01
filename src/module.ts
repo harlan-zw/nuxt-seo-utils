@@ -230,7 +230,7 @@ export default defineNuxtModule<ModuleOptions>({
         middleware: true,
       })
     }
-
+    nuxt.options.alias['#seo-utils'] = resolve('./runtime')
     nuxt.options.runtimeConfig.public['nuxt-seo'] = {
       canonicalQueryWhitelist: config.canonicalQueryWhitelist || [
         'page',

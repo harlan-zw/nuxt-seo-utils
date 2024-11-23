@@ -1,26 +1,20 @@
-<h1 align='center'>nuxt-seo-utils</h1>
+<h1>nuxt-seo-utils</h1>
 
-<p align="center">
-<a href='https://github.com/harlan-zw/nuxt-seo-utils/actions/workflows/test.yml'>
-</a>
-<a href="https://www.npmjs.com/package/nuxt-seo-utils" target="__blank"><img src="https://img.shields.io/npm/v/nuxt-seo-utils?style=flat&colorA=002438&colorB=28CF8D" alt="NPM version"></a>
-<a href="https://www.npmjs.com/package/nuxt-seo-utils" target="__blank"><img alt="NPM Downloads" src="https://img.shields.io/npm/dm/nuxt-seo-utils?flat&colorA=002438&colorB=28CF8D"></a>
-<a href="https://github.com/harlan-zw/nuxt-seo-utils" target="__blank"><img alt="GitHub stars" src="https://img.shields.io/github/stars/harlan-zw/nuxt-seo-utils?flat&colorA=002438&colorB=28CF8D"></a>
-</p>
+[![npm version][npm-version-src]][npm-version-href]
+[![npm downloads][npm-downloads-src]][npm-downloads-href]
+[![License][license-src]][license-href]
+[![Nuxt][nuxt-src]][nuxt-href]
 
-<p align="center">
-SEO utilities for Nuxt to help you make your site more discoverable and shareable.
-</p>
+Nuxt SEO Utils is a collection of defaults and utilities to improve your Nuxt site's discoverability and shareability.
+
+While there are several features covering many aspects of SEO, it covers important defaults such as [automatic canonical URLs](https://nuxtseo.com/learn/controlling-crawlers/canonical-urls) and
+[open graph tags](https://nuxtseo.com/learn/mastering-meta/open-graph).
 
 <p align="center">
 <table>
 <tbody>
 <td align="center">
-<img width="800" height="0" /><br>
-<i>Status:</i> <a href="https://github.com/harlan-zw/nuxt-seo-utils/releases/tag/v3.0.0">v3 Released</a> <br>
-<sup> Please report any issues 🐛</sup><br>
 <sub>Made possible by my <a href="https://github.com/sponsors/harlan-zw">Sponsor Program 💖</a><br> Follow me <a href="https://twitter.com/harlan_zw">@harlan_zw</a> 🐦 • Join <a href="https://discord.gg/275MBUBvgP">Discord</a> for help</sub><br>
-<img width="800" height="0" />
 </td>
 </tbody>
 </table>
@@ -44,9 +38,15 @@ Install `nuxt-seo-utils` dependency to your project:
 npx nuxi@latest module add nuxt-seo-utils
 ```
 
-# Documentation
+💡 Need a complete SEO solution for Nuxt? Check out [Nuxt SEO](https://nuxtseo.com).
+
+## Documentation
 
 [📖 Read the full documentation](https://nuxtseo.com/docs/utils) for more information.
+
+## Demos
+
+[Basic](https://stackblitz.com/edit/nuxt-starter-vbay3q?file=app.vue)
 
 ## Sponsors
 
@@ -58,4 +58,17 @@ npx nuxi@latest module add nuxt-seo-utils
 
 ## License
 
-MIT License © 2022-PRESENT [Harlan Wilton](https://github.com/harlan-zw)
+Licensed under the [MIT license](https://github.com/harlan-zw/nuxt-seo-utils/blob/main/LICENSE.md).
+
+<!-- Badges -->
+[npm-version-src]: https://img.shields.io/npm/v/nuxt-seo-utils/latest.svg?style=flat&colorA=18181B&colorB=28CF8D
+[npm-version-href]: https://npmjs.com/package/nuxt-seo-utils
+
+[npm-downloads-src]: https://img.shields.io/npm/dm/nuxt-seo-utils.svg?style=flat&colorA=18181B&colorB=28CF8D
+[npm-downloads-href]: https://npmjs.com/package/nuxt-seo-utils
+
+[license-src]: https://img.shields.io/github/license/harlan-zw/nuxt-seo-utils.svg?style=flat&colorA=18181B&colorB=28CF8D
+[license-href]: https://github.com/harlan-zw/nuxt-seo-utils/blob/main/LICENSE.md
+
+[nuxt-src]: https://img.shields.io/badge/Nuxt-18181B?logo=nuxt.js
+[nuxt-href]: https://nuxt.com

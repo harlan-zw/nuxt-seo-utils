@@ -2,20 +2,18 @@ import type { NuxtLinkProps } from 'nuxt/app'
 import type { MaybeRefOrGetter } from 'vue'
 import type { RouteMeta } from 'vue-router'
 import {
-  computed,
   createSitePathResolver,
   defineBreadcrumb,
-  toValue,
   useI18n,
-  useRouter,
   useSchemaOrg,
   useSiteConfig,
 } from '#imports'
 import { defu } from 'defu'
-import { fixSlashes } from 'site-config-stack/urls'
+import { useRouter } from 'nuxt/app'
 import { fixSlashes } from 'nuxt-site-config/urls'
 import { withoutTrailingSlash } from 'ufo'
-import { pathBreadcrumbSegments } from '../../pure/breadcrumbs'
+import { computed, toValue } from 'vue'
+import { pathBreadcrumbSegments } from '../../shared/breadcrumbs'
 
 interface NuxtUIBreadcrumbItem extends NuxtLinkProps {
   label: string

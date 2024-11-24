@@ -1,12 +1,9 @@
 import type { UseHeadOptions } from '@unhead/vue'
-import {
-  computed,
-  defineNuxtPlugin,
-  useHead,
-  useRoute,
-} from '#imports'
+import { useHead } from '@unhead/vue'
+import { defineNuxtPlugin, useRoute } from 'nuxt/app'
 import { titleCase } from 'scule'
 import { withoutTrailingSlash } from 'ufo'
+import { computed } from 'vue'
 
 export default defineNuxtPlugin({
   name: 'nuxt-seo:fallback-titles',

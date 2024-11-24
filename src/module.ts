@@ -9,7 +9,7 @@ import {
   useLogger,
 } from '@nuxt/kit'
 import UnheadVite from '@unhead/addons/vite'
-import { installNuxtSiteConfig } from 'nuxt-site-config-kit'
+import { defu } from 'defu'
 import { installNuxtSiteConfig } from 'nuxt-site-config/kit'
 import extendNuxtConfigAppHeadSeoMeta from './build-time/extendNuxtConfigAppHeadSeoMeta'
 import extendNuxtConfigAppHeadTypes from './build-time/extendNuxtConfigAppHeadTypes'
@@ -162,7 +162,7 @@ export default defineNuxtModule<ModuleOptions>({
       if (nuxt.options.dev) {
         addServerHandler({
           middleware: true,
-          handler: resolve('runtime/nitro/middleware/resolveImagesInPagesDir.dev'),
+          handler: resolve('./runtime/server/middleware/resolveImagesInPagesDir'),
         })
       }
     }
@@ -172,30 +172,30 @@ export default defineNuxtModule<ModuleOptions>({
       // i18n complicates things, we need to run the server plugin at the right time, client is fine
       if (hasI18n) {
         addPlugin({
-          src: resolve(`./runtime/nuxt/plugins/defaultsWaitI18n`),
+          src: resolve(`./runtime/app/plugins/defaultsWaitI18n`),
         })
       }
       else {
         addPlugin({
-          src: resolve(`./runtime/nuxt/plugins/defaults`),
+          src: resolve(`./runtime/app/plugins/defaults`),
         })
       }
     }
     if (config.fallbackTitle) {
       addPlugin({
-        src: resolve('./runtime/nuxt/plugins/titles'),
+        src: resolve('./runtime/app/plugins/titles'),
       })
     }
 
     if (!hasI18n) {
       addImports({
-        from: resolve(`./runtime/nuxt/composables/polyfills`),
+        from: resolve(`./runtime/app/composables/polyfills`),
         name: 'useI18n',
       })
     }
 
     addImports({
-      from: resolve(`./runtime/nuxt/composables/useBreadcrumbItems`),
+      from: resolve(`./runtime/app/composables/useBreadcrumbItems`),
       name: 'useBreadcrumbItems',
     })
 
@@ -218,7 +218,7 @@ export default defineNuxtModule<ModuleOptions>({
     polyfills.forEach((name) => {
       // add pollyfill
       addImports({
-        from: resolve('./runtime/nuxt/composables/polyfills'),
+        from: resolve('./runtime/app/composables/polyfills'),
         name,
       })
     })
@@ -227,12 +227,12 @@ export default defineNuxtModule<ModuleOptions>({
     // add redirect middleware
     if (!nuxt.options.dev && config.redirectToCanonicalSiteUrl) {
       addServerHandler({
-        handler: resolve('./runtime/nitro/middleware/redirect'),
+        handler: resolve('./runtime/server/middleware/redirectCanonical'),
         middleware: true,
       })
     }
     nuxt.options.alias['#seo-utils'] = resolve('./runtime')
-    nuxt.options.runtimeConfig.public['nuxt-seo'] = {
+    nuxt.options.runtimeConfig.public['seo-utils'] = defu(nuxt.options.runtimeConfig.public['seo-utils'] || {}, {
       canonicalQueryWhitelist: config.canonicalQueryWhitelist || [
         'page',
         'sort',
@@ -242,7 +242,7 @@ export default defineNuxtModule<ModuleOptions>({
         'category',
         'tag',
       ],
-    }
+    })
 
     if (config.extendNuxtConfigAppHeadSeoMeta)
       extendNuxtConfigAppHeadSeoMeta()
@@ -278,7 +278,7 @@ declare module 'nuxt/schema' {
 `
     })
 
-    const runtimeDir = resolve('./runtime/nuxt')
+    const runtimeDir = resolve('./runtime/app')
     // remove useServerHead in client build
     if (config.treeShakeUseSeoMeta)
       addVitePlugin(UnheadVite())

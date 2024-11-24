@@ -1,6 +1,7 @@
-import { createSitePathResolver, unref } from '#imports'
+import { createSitePathResolver } from '#imports'
 import { injectHead } from '@unhead/vue'
 import { defineNuxtPlugin } from 'nuxt/app'
+import { unref } from 'vue'
 
 export default defineNuxtPlugin({
   enforce: 'post',

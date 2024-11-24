@@ -1,7 +1,6 @@
-import { useRequestEvent } from '#imports'
 import { unpackMeta } from '@unhead/shared'
 import { injectHead } from '@unhead/vue'
-import { defineNuxtPlugin } from 'nuxt/app'
+import { defineNuxtPlugin, useRequestEvent } from 'nuxt/app'
 
 export default defineNuxtPlugin({
   enforce: 'post',

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { useBreadcrumbItems } from '../../../src/runtime/nuxt/composables/useBreadcrumbItems'
+import { useBreadcrumbItems } from '#seo-utils/app/composables/useBreadcrumbItems'
 
 const breacrumb = useBreadcrumbItems()
 </script>

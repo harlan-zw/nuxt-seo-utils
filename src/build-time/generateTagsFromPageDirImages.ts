@@ -61,7 +61,7 @@ export default async function generateTagsFromPageDirImages(nuxt: Nuxt = useNuxt
   if (nuxt.options.dev) {
     // add a virtual nitro file to expose the file mapping
     nuxt.hooks.hook('nitro:config', async (nitroConfig) => {
-      nitroConfig.virtual!['#nuxt-seo-utils/pageDirImages'] = `export const fileMapping = ${JSON.stringify(devMiddlewareMap)}`
+      nitroConfig.virtual!['#seo-utils-virtual/pageDirImages'] = `export const fileMapping = ${JSON.stringify(devMiddlewareMap)}`
     })
   }
 

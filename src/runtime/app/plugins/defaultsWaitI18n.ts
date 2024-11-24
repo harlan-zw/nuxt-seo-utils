@@ -1,4 +1,6 @@
-import { defineNuxtPlugin, ref, useSiteConfig } from '#imports'
+import { useSiteConfig } from '#imports'
+import { defineNuxtPlugin } from 'nuxt/app'
+import { ref } from 'vue'
 import { applyDefaults } from '../logic/applyDefaults'
 
 export default defineNuxtPlugin({

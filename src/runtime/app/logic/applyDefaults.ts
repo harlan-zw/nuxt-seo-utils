@@ -2,19 +2,17 @@ import type { UseHeadOptions, UseSeoMetaInput } from '@unhead/vue'
 import type { QueryObject } from 'ufo'
 import type { Ref } from 'vue'
 import {
-  computed,
   createSitePathResolver,
-  useHead,
-  useRoute,
-  useRuntimeConfig,
-  useSeoMeta,
   useSiteConfig,
 } from '#imports'
+import { useHead, useSeoMeta } from '@unhead/vue'
+import { useRoute, useRuntimeConfig } from 'nuxt/app'
 import { stringifyQuery } from 'ufo'
+import { computed } from 'vue'
 
 export function applyDefaults(i18n: { locale: Ref<string> }) {
   // get the head instance
-  const { canonicalQueryWhitelist } = useRuntimeConfig().public['nuxt-seo']
+  const { canonicalQueryWhitelist } = useRuntimeConfig().public['seo-utils']
   const siteConfig = useSiteConfig()
   const route = useRoute()
   const resolveUrl = createSitePathResolver({ withBase: true, absolute: true })

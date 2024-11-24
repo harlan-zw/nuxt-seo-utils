@@ -13,6 +13,7 @@ import {
 } from '#imports'
 import { defu } from 'defu'
 import { fixSlashes } from 'site-config-stack/urls'
+import { fixSlashes } from 'nuxt-site-config/urls'
 import { withoutTrailingSlash } from 'ufo'
 import { pathBreadcrumbSegments } from '../../pure/breadcrumbs'
 

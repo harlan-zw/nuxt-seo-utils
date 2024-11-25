@@ -1,3 +1,4 @@
+import type { UseSeoMetaInput } from '@unhead/schema'
 import {
   addImports,
   addPlugin,
@@ -19,7 +20,6 @@ import generateTagsFromPageDirImages from './build-time/generateTagsFromPageDirI
 import generateTagsFromPublicFiles from './build-time/generateTagsFromPublicFiles'
 import setupNuxtConfigAppHeadWithMoreDefaults from './build-time/setupNuxtConfigAppHeadWithMoreDefaults'
 import { extendTypes } from './kit'
-import type {UseSeoMetaInput} from "@unhead/schema";
 
 export interface ModuleOptions {
   /**
@@ -263,7 +263,13 @@ export default defineNuxtModule<ModuleOptions>({
 
     // add types for the route rules
     extendTypes('nuxt-seo-utils', async () => {
-      const unheadSchemaPath = relative(resolve(nuxt!.options.rootDir, nuxt!.options.buildDir, 'module'), await resolvePath('@unhead/schema'))
+      let unheadSchemaPath: string
+      try {
+        unheadSchemaPath = relative(resolve(nuxt!.options.rootDir, nuxt!.options.buildDir, 'module'), await resolvePath('@unhead/schema', { url: import.meta.url }))
+      }
+      catch {
+        unheadSchemaPath = '@unhead/schema'
+      }
       // route rules and app config
       return `
 declare module 'nitropack' {

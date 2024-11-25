@@ -49,6 +49,7 @@
   "dependencies": {
     "@nuxt/kit": "^3.14.1592",
     "@unhead/addons": "^1.11.11",
+    "@unhead/schema": "^1.11.11",
     "defu": "^6.1.4",
     "escape-string-regexp": "^5.0.0",
     "fast-glob": "^3.3.2",

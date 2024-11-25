@@ -10,13 +10,16 @@ import {
 } from '@nuxt/kit'
 import UnheadVite from '@unhead/addons/vite'
 import { defu } from 'defu'
+import { resolvePath } from 'mlly'
 import { installNuxtSiteConfig } from 'nuxt-site-config/kit'
+import { relative } from 'pathe'
 import extendNuxtConfigAppHeadSeoMeta from './build-time/extendNuxtConfigAppHeadSeoMeta'
 import extendNuxtConfigAppHeadTypes from './build-time/extendNuxtConfigAppHeadTypes'
 import generateTagsFromPageDirImages from './build-time/generateTagsFromPageDirImages'
 import generateTagsFromPublicFiles from './build-time/generateTagsFromPublicFiles'
 import setupNuxtConfigAppHeadWithMoreDefaults from './build-time/setupNuxtConfigAppHeadWithMoreDefaults'
 import { extendTypes } from './kit'
+import type {UseSeoMetaInput} from "@unhead/schema";
 
 export interface ModuleOptions {
   /**
@@ -110,6 +113,11 @@ export interface ModuleOptions {
    * @default false
    */
   redirectToCanonicalSiteUrl?: boolean
+
+  /**
+   * The SEO meta object to be used as defaults.
+   */
+  meta: UseSeoMetaInput
 
   /**
    * Enables debug logs and a debug endpoint.
@@ -255,25 +263,26 @@ export default defineNuxtModule<ModuleOptions>({
 
     // add types for the route rules
     extendTypes('nuxt-seo-utils', async () => {
+      const unheadSchemaPath = relative(resolve(nuxt!.options.rootDir, nuxt!.options.buildDir, 'module'), await resolvePath('@unhead/schema'))
       // route rules and app config
       return `
 declare module 'nitropack' {
   interface NitroRouteRules {
-     seoMeta?: import('@unhead/schema').UseSeoMetaInput
-     head?: import('@unhead/schema').Head
+     seoMeta?: import('${unheadSchemaPath}').UseSeoMetaInput
+     head?: import('${unheadSchemaPath}').Head
   }
   interface NitroRouteConfig {
-    seoMeta?: import('@unhead/schema').UseSeoMetaInput
-    head?: import('@unhead/schema').Head
+    seoMeta?: import('${unheadSchemaPath}').UseSeoMetaInput
+    head?: import('${unheadSchemaPath}').Head
   }
 }
 
 declare module '@nuxt/schema' {
-  interface MetaObjectRaw { seoMeta?: import('@unhead/schema').UseSeoMetaInput }
+  interface AppHeadMetaObject { seoMeta?: import('${unheadSchemaPath}').UseSeoMetaInput }
 }
 
 declare module 'nuxt/schema' {
-  interface MetaObjectRaw { seoMeta?: import('@unhead/schema').UseSeoMetaInput }
+  interface AppHeadMetaObject { seoMeta?: import('${unheadSchemaPath}').UseSeoMetaInput }
 }
 `
     })

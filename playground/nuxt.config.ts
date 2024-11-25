@@ -19,8 +19,15 @@ export default defineNuxtConfig({
     viewer: false,
   },
 
+  seo: {
+    seoMeta: {
+      description: 'Hi, welcome to the %site.env v%app.version of %siteName.',
+    },
+  },
+
   app: {
     head: {
+      // @ts-expect-error untyped
       seoMeta: {
         description: 'Hi, welcome to the %site.env v%app.version of %siteName.',
       },

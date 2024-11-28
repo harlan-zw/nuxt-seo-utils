@@ -15,10 +15,10 @@ export default defineNuxtPlugin({
       head.push(event.context._nitro.routeRules.head, { mode: 'server', tagPriority: -9 })
 
     if (event.context._nitro.routeRules.seoMeta) {
-      const meta = unpackMeta({ ...event.context._nitro.routeRules.seoMeta, tagPriority: -9 })
+      const meta = unpackMeta({ ...event.context._nitro.routeRules.seoMeta })
       head.push({
         meta,
-      }, { mode: 'server' })
+      }, { mode: 'server', tagPriority: -9 })
     }
   },
 })

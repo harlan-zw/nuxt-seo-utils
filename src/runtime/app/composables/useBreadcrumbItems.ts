@@ -159,10 +159,6 @@ export function useBreadcrumbItems(options: BreadcrumbProps = {}) {
         const routeMeta = (route?.meta || {}) as RouteMeta & { title?: string, breadcrumbLabel: string }
         const routeName = route ? String(route.name?.split('___')) : (item.to === '/' ? 'index' : null)
         const fallbackLabel = titleCase(routeName === 'index' ? 'Home' : (item.to || '').split('/').pop() || '') // fallback to last path segment
-
-        if (!route?.name) {
-          console.warn(`[useBreadcrumbItems] Route name is undefined for path: ${item.to}`);
-        }
         
         // merge with the route meta
         if (routeMeta.breadcrumb) {

@@ -9,8 +9,8 @@ import {
   useSiteConfig,
 } from '#imports'
 import { defu } from 'defu'
-import { useRouter } from 'nuxt/app'
 import { fixSlashes } from 'nuxt-site-config/urls'
+import { useRouter } from 'nuxt/app'
 import { withoutTrailingSlash } from 'ufo'
 import { computed, toValue } from 'vue'
 import { pathBreadcrumbSegments } from '../../shared/breadcrumbs'
@@ -159,7 +159,7 @@ export function useBreadcrumbItems(options: BreadcrumbProps = {}) {
         const routeMeta = (route?.meta || {}) as RouteMeta & { title?: string, breadcrumbLabel: string }
         const routeName = route ? String(route.name?.split('___')) : (item.to === '/' ? 'index' : null)
         const fallbackLabel = titleCase(routeName === 'index' ? 'Home' : (item.to || '').split('/').pop() || '') // fallback to last path segment
-        
+
         // merge with the route meta
         if (routeMeta.breadcrumb) {
           item = {

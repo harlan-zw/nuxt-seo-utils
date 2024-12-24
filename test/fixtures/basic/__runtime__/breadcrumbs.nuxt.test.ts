@@ -59,6 +59,13 @@ describe('useBreadcrumbItems', () => {
   `)
   })
   it('subpath', async () => {
+    useI18nMock.mockImplementation(() => {
+      return {
+        t: vi.fn().mockImplementation((s: string, fallback: string) => {
+          return fallback
+        })
+      }
+    })
     // change the path
     useRouterMock.mockImplementation(() => {
       return {
@@ -94,6 +101,16 @@ describe('useBreadcrumbItems', () => {
     `)
   })
   it('i18n', async () => {
+    useI18nMock.mockImplementation(() => {
+      return {
+        t: vi.fn().mockImplementation((s: string, fallback: string) => {
+          if (s === 'breadcrumb.items.about.label') {
+            return 'About I18n'
+          }
+          return fallback
+        }),
+      }
+    })
     useRouterMock.mockImplementation(() => {
       return {
         currentRoute: {
@@ -136,6 +153,13 @@ describe('useBreadcrumbItems', () => {
     `)
   })
   it('catch-all', async () => {
+    useI18nMock.mockImplementation(() => {
+      return {
+        t: vi.fn().mockImplementation((s: string, fallback: string) => {
+          return fallback
+        })
+      }
+    })
     // change the path
     useRouterMock.mockImplementation(() => {
       return {
@@ -197,6 +221,13 @@ describe('useBreadcrumbItems', () => {
   })
 
   it('catch-all #2', async () => {
+    useI18nMock.mockImplementation(() => {
+      return {
+        t: vi.fn().mockImplementation((s: string, fallback: string) => {
+          return fallback
+        })
+      }
+    })
     // change the path
     useRouterMock.mockImplementation(() => {
       return {

@@ -12,7 +12,11 @@ export default defineNuxtPlugin({
   },
   setup() {
     const route = useRoute()
+    const err = useError()
     const title = computed(() => {
+      if ([404, 500].includes(err.value?.statusCode)) {
+        return `${err.value.statusCode} - ${err.value.message}`
+      }
       if (typeof route.meta?.title === 'string')
         return route.meta?.title
       // if no title has been set then we should use the last segment of the URL path and title case it

@@ -63,7 +63,7 @@ describe('useBreadcrumbItems', () => {
       return {
         t: vi.fn().mockImplementation((s: string, fallback: string) => {
           return fallback
-        })
+        }),
       }
     })
     // change the path
@@ -157,7 +157,7 @@ describe('useBreadcrumbItems', () => {
       return {
         t: vi.fn().mockImplementation((s: string, fallback: string) => {
           return fallback
-        })
+        }),
       }
     })
     // change the path
@@ -225,7 +225,7 @@ describe('useBreadcrumbItems', () => {
       return {
         t: vi.fn().mockImplementation((s: string, fallback: string) => {
           return fallback
-        })
+        }),
       }
     })
     // change the path

@@ -1,6 +1,6 @@
 import type { UseHeadOptions } from '@unhead/vue'
 import { useHead } from '@unhead/vue'
-import { defineNuxtPlugin, useRoute } from 'nuxt/app'
+import { defineNuxtPlugin, useError, useRoute } from 'nuxt/app'
 import { titleCase } from 'scule'
 import { withoutTrailingSlash } from 'ufo'
 import { computed } from 'vue'

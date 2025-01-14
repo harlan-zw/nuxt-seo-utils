@@ -155,22 +155,30 @@ export function useBreadcrumbItems(options: BreadcrumbProps = {}) {
       segments.push(...toValue(options.append))
     return (segments.filter(Boolean) as BreadcrumbItemProps[])
       .map((item) => {
-        const route = router.resolve(item.to)?.matched?.[0] || router.currentRoute.value // fallback to current route
-        const routeMeta = (route?.meta || {}) as RouteMeta & { title?: string, breadcrumbLabel: string }
-        const routeName = route ? String(route.name?.split('___')[0]) : (item.to === '/' ? 'index' : null)
-        const fallbackLabel = titleCase(routeName === 'index' ? 'Home' : (item.to || '').split('/').pop() || '') // fallback to last path segment
-
-        // merge with the route meta
-        if (routeMeta.breadcrumb) {
-          item = {
-            ...item,
-            ...routeMeta.breadcrumb,
+        let fallbackLabel = titleCase(String((item.to || '').split('/').pop()))
+        let fallbackAriaLabel = ''
+        const route = router.resolve(item.to as string)?.matched?.[0]
+        if (route) {
+          const routeMeta = (route?.meta || {}) as RouteMeta & { title?: string, breadcrumbLabel: string, breadcrumbTitle: string }
+          // merge with the route meta
+          if (routeMeta.breadcrumb) {
+            item = {
+              ...item,
+              ...routeMeta.breadcrumb,
+            }
           }
+          const routeName = String(route.name).split('___')[0]
+          if (routeName === 'index') {
+            fallbackLabel = 'Home'
+          }
+          fallbackLabel = routeMeta.breadcrumbLabel || routeMeta.breadcrumbTitle || routeMeta.title || fallbackLabel
+          fallbackLabel = i18n.t(`breadcrumb.items.${routeName}.label`, fallbackLabel, { missingWarn: true })
+          fallbackAriaLabel = i18n.t(`breadcrumb.items.${routeName}.ariaLabel`, fallbackAriaLabel, { missingWarn: false })
         }
+
         // allow opt-out of label normalise with `false` value
-        // @ts-expect-error untyped
-        item.label = item.label || routeMeta.title || routeMeta.breadcrumbTitle || i18n.t(`breadcrumb.items.${routeName}.label`, fallbackLabel, { missingWarn: false })
-        item.ariaLabel = item.ariaLabel || i18n.t(`breadcrumb.items.${routeName}.ariaLabel`, item.label, { missingWarn: false }) || item.label
+        item.label = item.label || fallbackLabel
+        item.ariaLabel = item.ariaLabel || fallbackAriaLabel || item.label
         // mark the current based on the options
         item.current = item.current || item.to === current
         if (toValue(options.hideCurrent) && item.current)

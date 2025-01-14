@@ -3,8 +3,18 @@ import { useBreadcrumbItems } from '#imports'
 import { mockNuxtImport } from '@nuxt/test-utils/runtime'
 import { afterEach, describe, expect, it, vi } from 'vitest'
 
-const { useRouterMock } = vi.hoisted(() => {
+const { useRouterMock, useI18nMock } = vi.hoisted(() => {
   return {
+    useI18nMock: vi.fn().mockImplementation(() => {
+      return {
+        t: vi.fn().mockImplementation((s: string, fallback: string) => {
+          if (s === 'breadcrumb.items.about.label') {
+            return 'About I18n'
+          }
+          return fallback
+        }),
+      }
+    }),
     useRouterMock: vi.fn().mockImplementation(() => {
       return {
         resolve: vi.fn().mockImplementation((s: string) => {
@@ -26,6 +36,9 @@ const { useRouterMock } = vi.hoisted(() => {
 mockNuxtImport('useRouter', () => {
   return useRouterMock
 })
+mockNuxtImport('useI18n', () => {
+  return useI18nMock
+})
 
 afterEach(() => {
   vi.resetAllMocks()
@@ -46,6 +59,13 @@ describe('useBreadcrumbItems', () => {
   `)
   })
   it('subpath', async () => {
+    useI18nMock.mockImplementation(() => {
+      return {
+        t: vi.fn().mockImplementation((s: string, fallback: string) => {
+          return fallback
+        }),
+      }
+    })
     // change the path
     useRouterMock.mockImplementation(() => {
       return {
@@ -80,7 +100,66 @@ describe('useBreadcrumbItems', () => {
       ]
     `)
   })
+  it('i18n', async () => {
+    useI18nMock.mockImplementation(() => {
+      return {
+        t: vi.fn().mockImplementation((s: string, fallback: string) => {
+          if (s === 'breadcrumb.items.about.label') {
+            return 'About I18n'
+          }
+          return fallback
+        }),
+      }
+    })
+    useRouterMock.mockImplementation(() => {
+      return {
+        currentRoute: {
+          value: {
+            name: 'about___en',
+            path: '/about',
+          },
+        },
+        resolve(s: string) {
+          if (s !== '/') {
+            return {
+              matched: [
+                {
+                  name: 'about___en',
+                  path: '/about',
+                },
+              ],
+            }
+          }
+          return { matched: [{ name: 'index' }] }
+        },
+      }
+    })
+    const breadcrumbs = useBreadcrumbItems()
+    expect(breadcrumbs.value).toMatchInlineSnapshot(`
+      [
+        {
+          "ariaLabel": "Home",
+          "current": false,
+          "label": "Home",
+          "to": "/",
+        },
+        {
+          "ariaLabel": "About I18n",
+          "current": true,
+          "label": "About I18n",
+          "to": "/about",
+        },
+      ]
+    `)
+  })
   it('catch-all', async () => {
+    useI18nMock.mockImplementation(() => {
+      return {
+        t: vi.fn().mockImplementation((s: string, fallback: string) => {
+          return fallback
+        }),
+      }
+    })
     // change the path
     useRouterMock.mockImplementation(() => {
       return {
@@ -142,6 +221,13 @@ describe('useBreadcrumbItems', () => {
   })
 
   it('catch-all #2', async () => {
+    useI18nMock.mockImplementation(() => {
+      return {
+        t: vi.fn().mockImplementation((s: string, fallback: string) => {
+          return fallback
+        }),
+      }
+    })
     // change the path
     useRouterMock.mockImplementation(() => {
       return {

@@ -8,6 +8,10 @@ export default defineEventHandler((e) => {
   if (path.startsWith('/_nuxt') || path.startsWith('/api')) {
     return
   }
+  // ignore files
+  if (path.split('/').pop()?.includes('.')) {
+    return
+  }
   const siteConfig = useSiteConfig(e)
   if (!siteConfig.url) {
     return
@@ -15,7 +19,7 @@ export default defineEventHandler((e) => {
   const siteConfigHostName = new URL(e.path, siteConfig.url).host
   const host = getRequestHost(e, { xForwardedHost: true })
   // check for redirect header
-  if (e.headers.get('x-nuxt-seo-redirected')) {
+  if (e.headers.get('x-nuxt-seo-redirected') || host.includes('http') || host.replace('https://', '').includes(':')) {
     return
   }
   // if origin doesn't match site, do a redirect

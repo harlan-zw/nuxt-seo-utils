@@ -1,2 +1,3 @@
 imports.autoImport=false
 modules[]=nuxt-seo-utils
+modules[]=nuxt-site-config

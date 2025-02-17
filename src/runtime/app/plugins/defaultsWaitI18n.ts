@@ -1,4 +1,4 @@
-import { useSiteConfig } from '#imports'
+import { useSiteConfig } from '#site-config/app/composables/useSiteConfig'
 import { defineNuxtPlugin } from 'nuxt/app'
 import { ref } from 'vue'
 import { applyDefaults } from '../logic/applyDefaults'

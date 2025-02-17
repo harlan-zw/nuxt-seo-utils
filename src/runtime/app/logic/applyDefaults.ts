@@ -1,10 +1,8 @@
 import type { UseHeadOptions, UseSeoMetaInput } from '@unhead/vue'
 import type { QueryObject } from 'ufo'
 import type { Ref } from 'vue'
-import {
-  createSitePathResolver,
-  useSiteConfig,
-} from '#imports'
+import { useSiteConfig } from '#site-config/app/composables/useSiteConfig'
+import { createSitePathResolver } from '#site-config/app/composables/utils'
 import { useHead, useSeoMeta } from '@unhead/vue'
 import { useRoute, useRuntimeConfig } from 'nuxt/app'
 import { stringifyQuery } from 'ufo'

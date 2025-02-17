@@ -1,4 +1,4 @@
-import { useSiteConfig } from '#imports'
+import { useSiteConfig } from '#site-config/app/composables/useSiteConfig'
 import { ref } from 'vue'
 
 export function useSchemaOrg() {}

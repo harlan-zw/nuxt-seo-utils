@@ -2,12 +2,12 @@ import type { NuxtLinkProps } from 'nuxt/app'
 import type { MaybeRefOrGetter } from 'vue'
 import type { RouteMeta } from 'vue-router'
 import {
-  createSitePathResolver,
   defineBreadcrumb,
   useI18n,
   useSchemaOrg,
-  useSiteConfig,
 } from '#imports'
+import { useSiteConfig } from '#site-config/app/composables/useSiteConfig'
+import { createSitePathResolver } from '#site-config/app/composables/utils'
 import { defu } from 'defu'
 import { fixSlashes } from 'nuxt-site-config/urls'
 import { useRouter } from 'nuxt/app'

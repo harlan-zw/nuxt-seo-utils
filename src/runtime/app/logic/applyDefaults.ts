@@ -6,7 +6,7 @@ import { createSitePathResolver } from '#site-config/app/composables/utils'
 import { useHead, useSeoMeta } from '@unhead/vue'
 import { useError, useRoute, useRuntimeConfig } from 'nuxt/app'
 import { stringifyQuery } from 'ufo'
-import { computed } from 'vue'
+import { computed, ref, watch } from 'vue'
 
 export function applyDefaults(i18n: { locale: Ref<string> }) {
   // get the head instance
@@ -29,6 +29,14 @@ export function applyDefaults(i18n: { locale: Ref<string> }) {
       ? `${url}?${stringifyQuery(filteredQuery)}`
       : url
   })
+  const templateParams = ref({ site: siteConfig, siteName: siteConfig.name })
+  if (import.meta.client) {
+    watch(siteConfig, (v) => {
+      templateParams.value = { site: v, siteName: v.name || '' }
+    }, {
+      deep: true,
+    })
+  }
 
   const minimalPriority: UseHeadOptions = {
     // give nuxt.config values higher priority
@@ -38,7 +46,7 @@ export function applyDefaults(i18n: { locale: Ref<string> }) {
   // needs higher priority
   useHead({
     htmlAttrs: { lang: i18n.locale },
-    templateParams: { site: siteConfig, siteName: siteConfig.name || '' },
+    templateParams,
     titleTemplate: '%s %separator %siteName',
     link: [{ rel: 'canonical', href: () => canonicalUrl.value }],
   }, minimalPriority)
@@ -47,10 +55,10 @@ export function applyDefaults(i18n: { locale: Ref<string> }) {
     ogType: 'website',
     ogUrl: () => canonicalUrl.value,
     ogLocale: () => i18n.locale.value,
-    ogSiteName: siteConfig.name,
+    ogSiteName: '%siteName',
+    ogDescription: '%site.description',
   }
-  if (siteConfig.description)
-    seoMeta.description = siteConfig.description
+  seoMeta.description = '%site.description'
   if (siteConfig.twitter) {
     // id must have the @ in it
     const id = siteConfig.twitter.startsWith('@')

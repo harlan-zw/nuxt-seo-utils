@@ -10,13 +10,7 @@ export default defineNuxtPlugin({
   },
   // we need to wait for the i18n plugin to run first
   // @ts-expect-error dynamic
-  dependsOn: import.meta.server
-    ? [
-        'nuxt-site-config:i18n',
-      ]
-    : [
-        'i18n:plugin',
-      ],
+  dependsOn: ['nuxt-site-config:i18n'],
   setup(nuxtApp) {
     const siteConfig = useSiteConfig()
     // @ts-expect-error untyped

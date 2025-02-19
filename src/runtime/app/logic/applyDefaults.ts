@@ -4,7 +4,7 @@ import type { Ref } from 'vue'
 import { useSiteConfig } from '#site-config/app/composables/useSiteConfig'
 import { createSitePathResolver } from '#site-config/app/composables/utils'
 import { useHead, useSeoMeta } from '@unhead/vue'
-import { useRoute, useRuntimeConfig } from 'nuxt/app'
+import { useError, useRoute, useRuntimeConfig } from 'nuxt/app'
 import { stringifyQuery } from 'ufo'
 import { computed } from 'vue'
 
@@ -14,7 +14,11 @@ export function applyDefaults(i18n: { locale: Ref<string> }) {
   const siteConfig = useSiteConfig()
   const route = useRoute()
   const resolveUrl = createSitePathResolver({ withBase: true, absolute: true })
-  const canonicalUrl = computed<string>(() => {
+  const err = useError()
+  const canonicalUrl = computed<string | null>(() => {
+    if (err.value) {
+      return null
+    }
     const { query } = route
     const url = resolveUrl(route.path || '/').value || route.path
     // apply canonicalQueryWhitelist to query

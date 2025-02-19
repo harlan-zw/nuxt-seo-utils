@@ -20,7 +20,7 @@ describe('default', () => {
     expect(headWithoutLinks.split('\n').filter(Boolean).join('\n').trim()).toMatchInlineSnapshot(`
       "<meta charset="utf-8">
       <meta name="viewport" content="width=device-width, initial-scale=1">
-      <title>Home x SEO Utils</title>
+      <title>Home x en name</title>
       <meta property="og:image" content="https://nuxtseo.com/og-image.png">
       <meta property="og:image:alt" content="hello world">
       <meta property="og:image:type" content="image/png">
@@ -31,16 +31,14 @@ describe('default', () => {
       <meta name="twitter:image:type" content="image/png">
       <meta name="twitter:image:width" content="1270">
       <meta name="twitter:image:height" content="630">
-      <meta name="description" content="Hi, welcome to the test v1.3.4 of SEO Utils.">
+      <meta name="description" content="Hi, welcome to the test v1.3.4 of en name.">
       <meta property="og:type" content="website">
-      <meta property="og:description" content="Hi, welcome to the test v1.3.4 of SEO Utils.">
+      <meta property="og:description" content="Hi, welcome to the test v1.3.4 of en name.">
       <meta name="twitter:card" content="summary_large_image">
-      <meta property="og:title" content="Home x SEO Utils">
+      <meta property="og:title" content="Home x en name">
       <meta property="og:url" content="https://nuxtseo.com/">
-      <meta property="og:locale" content="en-US">
-      <meta property="og:site_name" content="SEO Utils">"
+      <meta property="og:locale" content="en">
+      <meta property="og:site_name" content="en name">"
     `)
-  }, {
-    timeout: 30_000,
-  })
+  }, 30_000)
 })

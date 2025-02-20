@@ -55,10 +55,10 @@ export function applyDefaults(i18n: { locale: Ref<string> }) {
     ogType: 'website',
     ogUrl: () => canonicalUrl.value,
     ogLocale: () => i18n.locale.value,
-    ogSiteName: '%siteName',
-    ogDescription: '%site.description',
+    ogSiteName: siteConfig.name,
   }
-  seoMeta.description = '%site.description'
+  if (siteConfig.description)
+    seoMeta.description = siteConfig.description
   if (siteConfig.twitter) {
     // id must have the @ in it
     const id = siteConfig.twitter.startsWith('@')

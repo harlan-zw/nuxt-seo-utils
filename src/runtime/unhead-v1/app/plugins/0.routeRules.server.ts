@@ -1,5 +1,5 @@
-import { unpackMeta } from '@unhead/shared'
 import { injectHead } from '@unhead/vue'
+import { unpackMeta } from '@unhead/vue/utils'
 import { defineNuxtPlugin, useRequestEvent } from 'nuxt/app'
 
 export default defineNuxtPlugin({

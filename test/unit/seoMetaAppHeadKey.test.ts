@@ -1,5 +1,6 @@
 import type { Nuxt } from '@nuxt/schema'
 import type { UseSeoMetaInput } from '@unhead/schema'
+import { unpackMeta } from '@unhead/vue/utils'
 import { describe, expect, it } from 'vitest'
 import extendNuxtConfigAppHeadSeoMeta from '../../src/build-time/extendNuxtConfigAppHeadSeoMeta'
 
@@ -17,7 +18,7 @@ describe('seoMetaAppHeadKey', () => {
         },
       },
     } as any as Nuxt
-    extendNuxtConfigAppHeadSeoMeta(mockNuxt)
+    extendNuxtConfigAppHeadSeoMeta(unpackMeta, mockNuxt)
     expect(mockNuxt.options.app.head).toMatchInlineSnapshot(`
       {
         "meta": [
@@ -63,7 +64,7 @@ describe('seoMetaAppHeadKey', () => {
         },
       },
     } as any as Nuxt
-    extendNuxtConfigAppHeadSeoMeta(mockNuxt)
+    extendNuxtConfigAppHeadSeoMeta(unpackMeta, mockNuxt)
     expect(mockNuxt.options.app.head).toMatchInlineSnapshot(`
       {
         "meta": [

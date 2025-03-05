@@ -17,6 +17,7 @@ export default defineNuxtPlugin({
       canonical: true,
     })
     head.use({
+      key: 'absoluteImageUrls',
       hooks: {
         'tags:resolve': async ({ tags }) => {
           // iterate through tags that require absolute URLs and add the host base

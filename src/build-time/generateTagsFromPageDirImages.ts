@@ -1,5 +1,5 @@
 import type { Nuxt } from '@nuxt/schema'
-import type { UseSeoMetaInput } from '@unhead/schema'
+import type { UseSeoMetaInput } from '@unhead/vue/types'
 import fs from 'node:fs'
 import { useNuxt } from '@nuxt/kit'
 import { defu } from 'defu'

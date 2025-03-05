@@ -7,19 +7,22 @@ import {
   createResolver,
   defineNuxtModule,
   hasNuxtModule,
+  resolvePath,
   useLogger,
 } from '@nuxt/kit'
 import UnheadVite from '@unhead/addons/vite'
 import { defu } from 'defu'
-import { resolvePath } from 'mlly'
 import { installNuxtSiteConfig } from 'nuxt-site-config/kit'
-import { relative } from 'pathe'
+import { dirname, join, relative } from 'pathe'
+import { readPackageJSON } from 'pkg-types'
+import { gte } from 'semver'
 import extendNuxtConfigAppHeadSeoMeta from './build-time/extendNuxtConfigAppHeadSeoMeta'
 import extendNuxtConfigAppHeadTypes from './build-time/extendNuxtConfigAppHeadTypes'
 import generateTagsFromPageDirImages from './build-time/generateTagsFromPageDirImages'
 import generateTagsFromPublicFiles from './build-time/generateTagsFromPublicFiles'
 import setupNuxtConfigAppHeadWithMoreDefaults from './build-time/setupNuxtConfigAppHeadWithMoreDefaults'
 import { extendTypes } from './kit'
+import { resolveUnpackMeta } from './util'
 
 export interface ModuleOptions {
   /**
@@ -162,15 +165,30 @@ export default defineNuxtModule<ModuleOptions>({
     const { resolve } = createResolver(import.meta.url)
     await installNuxtSiteConfig()
 
+    let isUnheadV2 = false
+    const unheadPath = await resolvePath('@unhead/vue')
+      .catch(() => undefined)
+      // compatibility
+      .then(p => p?.endsWith('index.mjs') ? dirname(p) : p)
+    // couldn't be found for some reason, assume compatibility
+    if (unheadPath) {
+      const { version: unheadVersion } = await readPackageJSON(join(unheadPath, 'package.json'))
+      if (gte(unheadVersion!, '2.0.0-rc.1')) {
+        isUnheadV2 = true
+      }
+    }
+
+    const runtimeDir = isUnheadV2 ? resolve('./runtime/unhead-v2') : './runtime/unhead-v1'
+    const unpackMeta = await resolveUnpackMeta(isUnheadV2)
     if (config.metaDataFiles) {
       // we need ssr to resolve the tags to the absolute path
-      await generateTagsFromPublicFiles()
+      await generateTagsFromPublicFiles(unpackMeta)
       await generateTagsFromPageDirImages()
 
       if (nuxt.options.dev) {
         addServerHandler({
           middleware: true,
-          handler: resolve('./runtime/server/middleware/resolveImagesInPagesDir'),
+          handler: resolve(runtimeDir, 'server/middleware/resolveImagesInPagesDir'),
         })
       }
     }
@@ -180,30 +198,30 @@ export default defineNuxtModule<ModuleOptions>({
       // i18n complicates things, we need to run the server plugin at the right time, client is fine
       if (hasI18n) {
         addPlugin({
-          src: resolve(`./runtime/app/plugins/defaultsWaitI18n`),
+          src: resolve(runtimeDir, `./app/plugins/defaultsWaitI18n`),
         })
       }
       else {
         addPlugin({
-          src: resolve(`./runtime/app/plugins/defaults`),
+          src: resolve(runtimeDir, `./app/plugins/defaults`),
         })
       }
     }
     if (config.fallbackTitle) {
       addPlugin({
-        src: resolve('./runtime/app/plugins/titles'),
+        src: resolve(runtimeDir, './app/plugins/titles'),
       })
     }
 
     if (!hasI18n) {
       addImports({
-        from: resolve(`./runtime/app/composables/polyfills`),
+        from: resolve(runtimeDir, `./app/composables/polyfills`),
         name: 'useI18n',
       })
     }
 
     addImports({
-      from: resolve(`./runtime/app/composables/useBreadcrumbItems`),
+      from: resolve(runtimeDir, `./app/composables/useBreadcrumbItems`),
       name: 'useBreadcrumbItems',
     })
 
@@ -226,7 +244,7 @@ export default defineNuxtModule<ModuleOptions>({
     polyfills.forEach((name) => {
       // add pollyfill
       addImports({
-        from: resolve('./runtime/app/composables/polyfills'),
+        from: resolve(runtimeDir, './app/composables/polyfills'),
         name,
       })
     })
@@ -235,11 +253,11 @@ export default defineNuxtModule<ModuleOptions>({
     // add redirect middleware
     if (!nuxt.options.dev && config.redirectToCanonicalSiteUrl) {
       addServerHandler({
-        handler: resolve('./runtime/server/middleware/redirectCanonical'),
+        handler: resolve(runtimeDir, './server/middleware/redirectCanonical'),
         middleware: true,
       })
     }
-    nuxt.options.alias['#seo-utils'] = resolve('./runtime')
+    nuxt.options.alias['#seo-utils'] = runtimeDir
     nuxt.options.runtimeConfig.public['seo-utils'] = defu(nuxt.options.runtimeConfig.public['seo-utils'] || {}, {
       canonicalQueryWhitelist: config.canonicalQueryWhitelist || [
         'page',
@@ -253,7 +271,7 @@ export default defineNuxtModule<ModuleOptions>({
     })
 
     if (config.extendNuxtConfigAppHeadSeoMeta)
-      extendNuxtConfigAppHeadSeoMeta()
+      extendNuxtConfigAppHeadSeoMeta(unpackMeta)
 
     if (config.setupNuxtConfigAppHeadWithMoreDefaults)
       setupNuxtConfigAppHeadWithMoreDefaults(nuxt)
@@ -263,12 +281,13 @@ export default defineNuxtModule<ModuleOptions>({
 
     // add types for the route rules
     extendTypes('nuxt-seo-utils', async () => {
+      const pkg = isUnheadV2 ? '@unhead/vue/types' : '@unhead/schema'
       let unheadSchemaPath: string
       try {
-        unheadSchemaPath = relative(resolve(nuxt!.options.rootDir, nuxt!.options.buildDir, 'module'), await resolvePath('@unhead/schema', { url: import.meta.url }))
+        unheadSchemaPath = relative(resolve(nuxt!.options.rootDir, nuxt!.options.buildDir, 'module'), await resolvePath(pkg))
       }
       catch {
-        unheadSchemaPath = '@unhead/schema'
+        unheadSchemaPath = pkg
       }
       // route rules and app config
       return `
@@ -293,20 +312,20 @@ declare module 'nuxt/schema' {
 `
     })
 
-    const runtimeDir = resolve('./runtime/app')
+    const appRuntimeDir = resolve(runtimeDir, './app')
     // remove useServerHead in client build
     if (config.treeShakeUseSeoMeta)
       addVitePlugin(UnheadVite())
     if (config.automaticOgAndTwitterTags)
-      addPlugin({ src: resolve(runtimeDir, 'plugins', 'inferSeoMetaPlugin') })
+      addPlugin({ src: resolve(appRuntimeDir, 'plugins', 'inferSeoMetaPlugin') })
 
     if (config.mergeWithSiteConfig)
-      addPlugin({ src: resolve(runtimeDir, 'plugins', 'siteConfig') })
+      addPlugin({ src: resolve(appRuntimeDir, 'plugins', 'siteConfig') })
 
     if (config.extendRouteRules)
-      addPlugin({ src: resolve(runtimeDir, 'plugins', '0.routeRules.server'), mode: 'server' })
+      addPlugin({ src: resolve(appRuntimeDir, 'plugins', '0.routeRules.server'), mode: 'server' })
 
     if (config.fixRequiredAbsoluteMetaTagsLinks)
-      addPlugin({ src: resolve(runtimeDir, 'plugins', '1.absoluteImageUrls.server'), mode: 'server' })
+      addPlugin({ src: resolve(appRuntimeDir, 'plugins', '1.absoluteImageUrls.server'), mode: 'server' })
   },
 })

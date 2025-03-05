@@ -1,8 +1,20 @@
-import type { Head } from '@unhead/schema'
+import type { Head } from '@unhead/vue'
 import fs from 'node:fs'
 import { readFile } from 'node:fs/promises'
 import imageSize from 'image-size'
 import { dirname, resolve } from 'pathe'
+
+export async function resolveUnpackMeta(unheadV2: boolean) {
+  try {
+    const unhead = await import(String(unheadV2 ? '@unhead/vue/util' : '@unhead/shared'))
+    return unhead.unpackMeta
+  }
+  catch {
+    // inverse
+    const unhead = await import(String(!unheadV2 ? '@unhead/vue/util' : '@unhead/shared'))
+    return unhead.unpackMeta
+  }
+}
 
 export function hasLinkRel(input: Head, rel: string) {
   return input.link?.some(link => link.rel === rel)

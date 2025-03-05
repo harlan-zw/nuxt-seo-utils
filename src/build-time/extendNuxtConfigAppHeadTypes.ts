@@ -10,7 +10,7 @@ export default function extendNuxtConfigAppHeadTypes(nuxt: Nuxt = useNuxt()) {
     const jsPaths = paths.filter(p => p.endsWith('.js') || p.endsWith('.mjs'))
     return `
 declare module '#app' {
-  import { HeadEntry, HeadTag } from '@unhead/schema'
+  import { HeadEntry, HeadTag } from '@unhead/vue/types'
 
   interface RuntimeNuxtHooks {
     'head:tags': (tag: HeadTag[]) => Promise<void> | void

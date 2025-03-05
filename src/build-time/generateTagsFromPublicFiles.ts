@@ -1,7 +1,5 @@
 import type { Nuxt } from '@nuxt/schema'
-import type { UseSeoMetaInput } from '@unhead/schema'
 import { useNuxt } from '@nuxt/kit'
-import { unpackMeta } from '@unhead/shared'
 import { defu } from 'defu'
 import fg from 'fast-glob'
 import { basename, resolve } from 'pathe'
@@ -9,7 +7,7 @@ import { joinURL } from 'ufo'
 import { MetaTagFileGlobs } from '../const'
 import { getImageDimensions, getImageMeta, hasLinkRel, hasMetaProperty } from '../util'
 
-export default async function generateTagsFromPublicFiles(nuxt: Nuxt = useNuxt()) {
+export default async function generateTagsFromPublicFiles(unpackMeta: any, nuxt: Nuxt = useNuxt()) {
   // @todo support layer public dirs
   const publicDirPath = resolve(nuxt.options.rootDir, nuxt.options.dir.public)
   // do fg only one level deep
@@ -94,7 +92,7 @@ export default async function generateTagsFromPublicFiles(nuxt: Nuxt = useNuxt()
         ...(await Promise.all(ogImageFiles.map(async (src) => {
           const meta = await getImageMeta(publicDirPath, src, false)
           delete meta.sizes
-          const seoMeta: UseSeoMetaInput = {
+          const seoMeta: any = {
             ogImage: {
               url: src,
               ...meta,

@@ -1,11 +1,14 @@
+import { createResolver } from '@nuxt/kit'
 import { defineNuxtConfig } from 'nuxt/config'
 import Module from '../src/module'
 
+const resolver = createResolver(import.meta.url)
+
 export default defineNuxtConfig({
   modules: [
+    Module,
     '@nuxtjs/i18n',
     '@nuxt/ui',
-    Module,
   ],
 
   site: {
@@ -23,18 +26,18 @@ export default defineNuxtConfig({
     locales: [
       {
         code: 'en',
-        iso: 'en-US',
-        file: 'en.ts',
+        language: 'en-US',
+        file: resolver.resolve('i18n/locales/en.ts'),
       },
       {
         code: 'es',
-        iso: 'es-ES',
-        file: 'es.ts',
+        language: 'es-ES',
+        file: resolver.resolve('i18n/locales/es.ts'),
       },
       {
         code: 'fr',
-        iso: 'fr-FR',
-        file: 'fr.ts',
+        language: 'fr-FR',
+        file: resolver.resolve('i18n/locales/fr.ts'),
       },
     ],
   },
@@ -51,10 +54,6 @@ export default defineNuxtConfig({
 
   app: {
     head: {
-      // @ts-expect-error untyped
-      seoMeta: {
-        description: 'Hi, welcome to the %site.env v%app.version of %siteName.',
-      },
       templateParams: {
         separator: 'x',
         app: {

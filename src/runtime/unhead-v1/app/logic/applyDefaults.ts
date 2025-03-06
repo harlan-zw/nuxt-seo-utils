@@ -10,7 +10,7 @@ import { computed, ref, watch } from 'vue'
 
 export function applyDefaults(i18n: { locale: Ref<string> }) {
   // get the head instance
-  const { canonicalQueryWhitelist } = useRuntimeConfig().public['seo-utils']
+  const { canonicalQueryWhitelist, canonicalLowercase } = useRuntimeConfig().public['seo-utils']
   const siteConfig = useSiteConfig()
   const route = useRoute()
   const resolveUrl = createSitePathResolver({ withBase: true, absolute: true })
@@ -20,7 +20,10 @@ export function applyDefaults(i18n: { locale: Ref<string> }) {
       return null
     }
     const { query } = route
-    const url = resolveUrl(route.path || '/').value || route.path
+    let url = (resolveUrl(route.path || '/').value || route.path)
+    if (canonicalLowercase) {
+      url = url.toLocaleLowerCase(siteConfig.currentLocale)
+    }
     // apply canonicalQueryWhitelist to query
     const filteredQuery = Object.fromEntries(
       Object.entries(query).filter(([key]) => canonicalQueryWhitelist.includes(key)),

@@ -106,6 +106,12 @@ export interface ModuleOptions {
    */
   canonicalQueryWhitelist?: string[]
   /**
+   * When enabled, it will lowercase the canonical URL.
+   *
+   * @default true
+   */
+  canonicalLowercase?: boolean
+  /**
    * When enabled, it will redirect any request to the canonical domain (site url) using a 301 redirect on non-dev environments.
    *
    * E.g if the site url is 'www.example.com' and the user visits 'example.com',
@@ -154,6 +160,7 @@ export default defineNuxtModule<ModuleOptions>({
     extendNuxtConfigAppHeadTypes: true,
     setupNuxtConfigAppHeadWithMoreDefaults: true,
     automaticOgAndTwitterTags: true,
+    canonicalLowercase: true,
   },
   async setup(config, nuxt) {
     const logger = useLogger('nuxt-seo-utils')
@@ -268,6 +275,7 @@ export default defineNuxtModule<ModuleOptions>({
         'category',
         'tag',
       ],
+      canonicalLowercase: config.canonicalLowercase,
     })
 
     if (config.extendNuxtConfigAppHeadSeoMeta)

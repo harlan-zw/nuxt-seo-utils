@@ -1,0 +1,383 @@
+{
+  telemetry: { enabled: false },
+  hub: { userToken: 'user_nxqJdsfTU5jBaZhgJPNnxx55bZ1Urf' },
+  imports: { autoImport: true, global: false, scan: true, dirs: [] },
+  modules: [
+    [AsyncFunction: normalizedModule] {
+      getMeta: [Function (anonymous)],
+      getOptions: [AsyncFunction: getOptions]
+    },
+    '@nuxtjs/i18n',
+    '@nuxt/ui',
+    'nuxt-seo-utils',
+    'nuxt-site-config'
+  ],
+  site: {
+    name: 'SEO Utils',
+    url: 'https://nuxtseo.com',
+    tagline: 'test',
+    debug: true
+  },
+  i18n: {
+    baseUrl: 'https://nuxtseo.com',
+    defaultLocale: 'en',
+    strategy: 'prefix_except_default',
+    langDir: 'locales/',
+    locales: [ [Object], [Object], [Object] ]
+  },
+  tailwindcss: { viewer: false },
+  seo: {
+    seoMeta: {
+      description: 'Hi, welcome to the %site.env v%app.version of %siteName.'
+    }
+  },
+  app: {
+    head: {
+      meta: [Array],
+      link: [],
+      style: [],
+      script: [],
+      noscript: [],
+      templateParams: [Object],
+      title: '%site.tagline',
+      titleTemplate: '%s %separator %site.name'
+    },
+    baseURL: '/',
+    buildAssetsDir: '/_nuxt/',
+    cdnURL: '',
+    layoutTransition: false,
+    pageTransition: false,
+    viewTransition: false,
+    keepalive: false,
+    rootId: '__nuxt',
+    rootTag: 'div',
+    rootAttrs: { id: '__nuxt' },
+    teleportTag: 'div',
+    teleportId: 'teleports',
+    teleportAttrs: { id: 'teleports' },
+    spaLoaderTag: 'div',
+    spaLoaderAttrs: { id: '__nuxt-loader' }
+  },
+  runtimeConfig: {
+    public: { envName: 'live' },
+    app: {
+      buildId: '467537dc-9b7b-40c9-8c35-3a69cb5681ef',
+      baseURL: '/',
+      buildAssetsDir: '/_nuxt/',
+      cdnURL: ''
+    }
+  },
+  routeRules: { '/blog/**': { seoMeta: [Object] } },
+  typescript: {
+    includeWorkspace: true,
+    tsConfig: {},
+    strict: true,
+    builder: null,
+    hoist: [
+      'nitropack/types',
+      'nitropack/runtime',
+      'nitropack',
+      'defu',
+      'h3',
+      'consola',
+      'ofetch',
+      '@unhead/vue',
+      '@nuxt/devtools',
+      'vue',
+      '@vue/runtime-core',
+      '@vue/compiler-sfc',
+      'vue-router',
+      'vue-router/auto-routes',
+      'unplugin-vue-router/client',
+      '@nuxt/schema',
+      'nuxt'
+    ],
+    typeCheck: false,
+    shim: false
+  },
+  compatibilityDate: '2024-07-16',
+  rootDir: '/home/harlan/packages/nuxt-seo-utils/playground',
+  _nuxtConfigFile: '/home/harlan/packages/nuxt-seo-utils/playground/nuxt.config.ts',
+  _nuxtConfigFiles: [ '/home/harlan/packages/nuxt-seo-utils/playground/nuxt.config.ts' ],
+  _layers: [
+    {
+      config: [Object],
+      configFile: 'nuxt.config',
+      cwd: '/home/harlan/packages/nuxt-seo-utils/playground'
+    }
+  ],
+  components: { dirs: [ [Object], '~/components' ] },
+  pages: undefined,
+  devtools: {},
+  vue: {
+    transformAssetUrls: {
+      video: [Array],
+      source: [Array],
+      img: [Array],
+      image: [Array],
+      use: [Array]
+    },
+    compilerOptions: {},
+    runtimeCompiler: false,
+    propsDestructure: true,
+    config: {}
+  },
+  experimental: {
+    runtimeVueCompiler: undefined,
+    decorators: false,
+    asyncEntry: false,
+    externalVue: true,
+    treeshakeClientOnly: true,
+    emitRouteChunkError: 'automatic',
+    templateRouteInjection: true,
+    restoreState: false,
+    renderJsonPayloads: true,
+    noVueServer: false,
+    payloadExtraction: true,
+    clientFallback: false,
+    crossOriginPrefetch: false,
+    viewTransition: false,
+    writeEarlyHints: false,
+    componentIslands: 'auto',
+    configSchema: true,
+    polyfillVueUseHead: false,
+    respectNoSSRHeader: false,
+    localLayerAliases: true,
+    typedPages: false,
+    appManifest: true,
+    checkOutdatedBuildInterval: 3600000,
+    watcher: 'chokidar-granular',
+    asyncContext: false,
+    headNext: true,
+    inlineRouteRules: false,
+    scanPageMeta: true,
+    extraPageMetaExtractionKeys: [],
+    sharedPrerenderData: false,
+    cookieStore: true,
+    defaults: { nuxtLink: [Object], useAsyncData: [Object], useFetch: {} },
+    clientNodeCompat: false,
+    compileTemplate: true,
+    templateUtils: true,
+    relativeWatchPaths: true,
+    resetAsyncDataToUndefined: true,
+    navigationRepaint: true,
+    buildCache: false,
+    normalizeComponentNames: false,
+    spaLoadingTemplateLocation: 'within',
+    browserDevtoolsTiming: false,
+    debugModuleMutation: false,
+    lazyHydration: true,
+    templateImportResolution: true
+  },
+  dev: false,
+  meta: undefined,
+  future: {
+    compatibilityVersion: 3,
+    multiApp: false,
+    typescriptBundlerResolution: true
+  },
+  srcDir: '/home/harlan/packages/nuxt-seo-utils/playground',
+  debug: false,
+  spaLoadingTemplate: null,
+  plugins: [],
+  css: [],
+  unhead: { legacy: false, renderSSRHeadOptions: { omitLineBreaks: false } },
+  vite: {
+    root: '/home/harlan/packages/nuxt-seo-utils/playground',
+    mode: 'production',
+    define: {
+      __VUE_PROD_HYDRATION_MISMATCH_DETAILS__: false,
+      'process.dev': false,
+      'import.meta.dev': false,
+      'process.test': false,
+      'import.meta.test': false
+    },
+    resolve: { extensions: [Array] },
+    publicDir: false,
+    vue: {
+      isProduction: true,
+      template: [Object],
+      script: [Object],
+      features: [Object]
+    },
+    vueJsx: { isCustomElement: undefined },
+    optimizeDeps: { esbuildOptions: [Object], exclude: [Array] },
+    esbuild: {
+      target: 'esnext',
+      jsxFactory: 'h',
+      jsxFragment: 'Fragment',
+      tsconfigRaw: {}
+    },
+    clearScreen: true,
+    build: { assetsDir: '_nuxt/', emptyOutDir: false },
+    server: { fs: [Object] },
+    cacheDir: '/home/harlan/packages/nuxt-seo-utils/playground/node_modules/.cache/vite'
+  },
+  esbuild: {
+    options: {
+      target: 'esnext',
+      jsxFactory: 'h',
+      jsxFragment: 'Fragment',
+      tsconfigRaw: {}
+    }
+  },
+  build: {
+    transpile: [],
+    templates: [],
+    analyze: {
+      template: 'treemap',
+      projectRoot: '/home/harlan/packages/nuxt-seo-utils/playground',
+      filename: '/home/harlan/packages/nuxt-seo-utils/playground/.nuxt/analyze/{name}.html'
+    },
+    cssSourceMap: undefined,
+    extractCSS: undefined
+  },
+  buildDir: '/home/harlan/packages/nuxt-seo-utils/playground/.nuxt',
+  modulesDir: [ '/home/harlan/packages/nuxt-seo-utils/playground/node_modules' ],
+  workspaceDir: '/home/harlan/packages/nuxt-seo-utils',
+  builder: '@nuxt/vite-builder',
+  sourcemap: { server: true, client: false },
+  logLevel: 'info',
+  analyzeDir: '/home/harlan/packages/nuxt-seo-utils/playground/.nuxt/analyze',
+  optimization: {
+    keyedComposables: [
+      [Object], [Object],
+      [Object], [Object],
+      [Object], [Object],
+      [Object]
+    ],
+    treeShake: { composables: [Object] },
+    asyncTransforms: { asyncFunctions: [Array], objectDefinitions: [Object] }
+  },
+  extends: undefined,
+  theme: undefined,
+  serverDir: '/home/harlan/packages/nuxt-seo-utils/playground/server',
+  appId: 'nuxt-app',
+  test: false,
+  buildId: '467537dc-9b7b-40c9-8c35-3a69cb5681ef',
+  ssr: true,
+  dir: {
+    app: 'app',
+    assets: 'assets',
+    layouts: 'layouts',
+    middleware: 'middleware',
+    modules: 'modules',
+    pages: 'pages',
+    plugins: 'plugins',
+    shared: 'shared',
+    static: 'public',
+    public: 'public'
+  },
+  extensions: [ '.js', '.jsx', '.mjs', '.ts', '.tsx', '.vue' ],
+  alias: {
+    '~': '/home/harlan/packages/nuxt-seo-utils/playground',
+    '@': '/home/harlan/packages/nuxt-seo-utils/playground',
+    '~~': '/home/harlan/packages/nuxt-seo-utils/playground',
+    '@@': '/home/harlan/packages/nuxt-seo-utils/playground',
+    '#shared': '/home/harlan/packages/nuxt-seo-utils/playground/shared',
+    assets: '/home/harlan/packages/nuxt-seo-utils/playground/assets',
+    public: '/home/harlan/packages/nuxt-seo-utils/playground/public',
+    '#build': '/home/harlan/packages/nuxt-seo-utils/playground/.nuxt',
+    '#internal/nuxt/paths': '/home/harlan/packages/nuxt-seo-utils/playground/.nuxt/paths.mjs'
+  },
+  ignoreOptions: undefined,
+  ignorePrefix: '-',
+  ignore: [
+    '**/*.stories.{js,cts,mts,ts,jsx,tsx}',
+    '**/*.{spec,test}.{js,cts,mts,ts,jsx,tsx}',
+    '**/*.d.{cts,mts,ts}',
+    '**/.{pnpm-store,vercel,netlify,output,git,cache,data}',
+    '.nuxt/analyze',
+    '.nuxt',
+    '**/-*.*'
+  ],
+  watch: [],
+  watchers: {
+    rewatchOnRawEvents: undefined,
+    webpack: { aggregateTimeout: 1000 },
+    chokidar: { ignoreInitial: true, ignorePermissionErrors: true }
+  },
+  hooks: undefined,
+  appConfig: { nuxt: {} },
+  devServer: {
+    https: false,
+    port: 3000,
+    host: undefined,
+    url: 'http://localhost:3000',
+    loadingTemplate: [Function: template],
+    cors: { origin: [Array] }
+  },
+  features: { inlineStyles: true, devLogs: false, noScripts: false },
+  generate: { routes: [], exclude: [] },
+  _majorVersion: 3,
+  _legacyGenerate: false,
+  _start: false,
+  _build: false,
+  _generate: false,
+  _prepare: false,
+  _cli: false,
+  _requiredModules: {},
+  appDir: '',
+  _installedModules: [],
+  _modules: [],
+  nitro: {
+    runtimeConfig: { public: [Object], app: [Object], nitro: [Object] },
+    routeRules: { '/blog/**': [Object] }
+  },
+  serverHandlers: [],
+  devServerHandlers: [],
+  postcss: {
+    order: [Function: autoprefixerAndCssnanoLast],
+    plugins: { autoprefixer: {}, cssnano: {} }
+  },
+  router: { options: { hashMode: false, scrollBehaviorType: 'auto' } },
+  webpack: {
+    analyze: {
+      template: 'treemap',
+      projectRoot: '/home/harlan/packages/nuxt-seo-utils/playground',
+      filename: '/home/harlan/packages/nuxt-seo-utils/playground/.nuxt/analyze/{name}.html'
+    },
+    profile: false,
+    extractCSS: true,
+    cssSourceMap: false,
+    serverURLPolyfill: 'url',
+    filenames: {
+      app: [Function: app],
+      chunk: [Function: chunk],
+      css: [Function: css],
+      img: [Function: img],
+      font: [Function: font],
+      video: [Function: video]
+    },
+    loaders: {
+      esbuild: [Object],
+      file: [Object],
+      fontUrl: [Object],
+      imgUrl: [Object],
+      pugPlain: {},
+      vue: [Object],
+      css: [Object],
+      cssModules: [Object],
+      less: [Object],
+      sass: [Object],
+      scss: [Object],
+      stylus: [Object],
+      vueStyle: [Object]
+    },
+    plugins: [],
+    aggressiveCodeRemoval: false,
+    optimizeCSS: false,
+    optimization: {
+      runtimeChunk: 'single',
+      minimize: true,
+      minimizer: undefined,
+      splitChunks: [Object]
+    },
+    postcss: { postcssOptions: [Object] },
+    devMiddleware: { stats: 'none' },
+    hotMiddleware: {},
+    friendlyErrors: true,
+    warningIgnoreFilters: [],
+    experiments: {}
+  }
+}

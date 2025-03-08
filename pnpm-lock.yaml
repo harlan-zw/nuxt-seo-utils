@@ -44,6 +44,9 @@ importers:
       semver:
         specifier: ^7.7.1
         version: 7.7.1
+      tinyexec:
+        specifier: ^0.3.2
+        version: 0.3.2
       ufo:
         specifier: ^1.5.4
         version: 1.5.4
@@ -4805,8 +4808,8 @@ packages:
     resolution: {integrity: sha512-+EUsqGPLsM+j/zdChZjsnX51g4XrHFOIXwfnCVPGlQk/k5giakcKsuxCObBRu6DSm9opw/O6slWbJdghQM4bBg==}
     engines: {node: '>= 0.6'}
 
-  nitropack-nightly@2.11.1-20250305-104627.47febf5c:
-    resolution: {integrity: sha512-z12NotKsefkM6Rks+izx9e1l6oc9PU382dTpv/XiC0M5pgPhBlF4s4T2LdaQxeUEsv6Njrcl/pr5TXHjNPzK7w==}
+  nitropack-nightly@2.11.2-20250305-192721.72225800:
+    resolution: {integrity: sha512-9ikw758jmTotWWD8gWlL5vUB+wPRR8yLtLylwBYdVB+ro8Toh/1NhlqwCqY/ucWAWMGghh9KPTnsJLkVunbB2Q==}
     engines: {node: ^16.11.0 || >=17.0.0}
     hasBin: true
     peerDependencies:
@@ -8111,7 +8114,7 @@ snapshots:
       klona: 2.0.6
       knitwork: 1.2.0
       mlly: 1.7.4
-      ohash: 2.0.10
+      ohash: 2.0.11
       pathe: 2.0.3
       pkg-types: 2.1.0
       scule: 1.3.0
@@ -8313,7 +8316,7 @@ snapshots:
       knitwork: 1.2.0
       magic-string: 0.30.17
       mlly: 1.7.4
-      ohash: 2.0.10
+      ohash: 2.0.11
       pathe: 2.0.3
       perfect-debounce: 1.0.0
       pkg-types: 2.1.0
@@ -12997,7 +13000,7 @@ snapshots:
 
   negotiator@0.6.3: {}
 
-  nitropack-nightly@2.11.1-20250305-104627.47febf5c(typescript@5.6.3):
+  nitropack-nightly@2.11.2-20250305-192721.72225800(typescript@5.6.3):
     dependencies:
       '@cloudflare/kv-asset-handler': 0.3.4
       '@netlify/functions': 3.0.0
@@ -13318,7 +13321,7 @@ snapshots:
       magic-string: 0.30.17
       mlly: 1.7.4
       nanotar: 0.2.0
-      nitropack: nitropack-nightly@2.11.1-20250305-104627.47febf5c(typescript@5.6.3)
+      nitropack: nitropack-nightly@2.11.2-20250305-192721.72225800(typescript@5.6.3)
       nypm: 0.6.0
       ofetch: 1.4.1
       ohash: 2.0.10
@@ -15754,7 +15757,7 @@ snapshots:
       ansis: 3.17.0
       debug: 4.4.0(supports-color@9.4.0)
       error-stack-parser-es: 1.0.5
-      ohash: 2.0.10
+      ohash: 2.0.11
       open: 10.1.0
       perfect-debounce: 1.0.0
       sirv: 3.0.1

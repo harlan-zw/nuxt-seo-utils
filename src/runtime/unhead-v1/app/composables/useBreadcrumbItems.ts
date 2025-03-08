@@ -1,5 +1,5 @@
 import type { NuxtLinkProps } from 'nuxt/app'
-import type { MaybeRefOrGetter } from 'vue'
+import type { MaybeRefOrGetter, Ref } from 'vue'
 import type { RouteMeta } from 'vue-router'
 import {
   defineBreadcrumb,
@@ -12,7 +12,7 @@ import { defu } from 'defu'
 import { fixSlashes } from 'nuxt-site-config/urls'
 import { useRouter } from 'nuxt/app'
 import { withoutTrailingSlash } from 'ufo'
-import { computed, toValue } from 'vue'
+import { computed, inject, onUnmounted, provide, ref, toRaw, toValue } from 'vue'
 import { pathBreadcrumbSegments } from '../../shared/breadcrumbs'
 
 interface NuxtUIBreadcrumbItem extends NuxtLinkProps {
@@ -77,6 +77,12 @@ export interface BreadcrumbProps {
    * Should the root breadcrumb be shown.
    */
   hideRoot?: MaybeRefOrGetter<boolean>
+  /**
+   * The root segment of the breadcrumb list.
+   *
+   * By default, this will be `/`, unless you're using Nuxt I18n with a prefix strategy.
+   */
+  rootSegment?: string
 }
 
 export interface BreadcrumbItemProps extends NuxtUIBreadcrumbItem {
@@ -110,6 +116,8 @@ function titleCase(s: string) {
     .replace(/\w\S*/g, w => w.charAt(0).toUpperCase() + w.substr(1).toLowerCase())
 }
 
+const BreadcrumbCtx = Symbol('BreadcrumbCtx')
+
 /**
  * Generate an automatic breadcrumb list that helps users to navigate between pages.
  *
@@ -119,7 +127,29 @@ function titleCase(s: string) {
  * @see https://github.com/harlan-zw/nuxt-seo/blob/main/src/runtime/nuxt/composables/useBreadcrumbItems.ts
  * @docs https://nuxtseo.com/nuxt-seo/api/breadcrumbs
  */
-export function useBreadcrumbItems(options: BreadcrumbProps = {}) {
+export function useBreadcrumbItems(_options: BreadcrumbProps = {}) {
+  let isCreatingState = false
+  let stateRef: Ref<Record<string, BreadcrumbProps[]>> | null = inject(BreadcrumbCtx, null)
+  if (!stateRef) {
+    stateRef = ref({})
+    provide(BreadcrumbCtx, stateRef)
+    isCreatingState = false
+  }
+  const id = 'breadcrumb'
+  const state = stateRef.value
+  if (!state[id]) {
+    state[id] = []
+  }
+  const idx = state[id].push(_options) - 1
+  stateRef.value = state
+  onUnmounted(() => {
+    stateRef.value = Object.fromEntries(Object.entries(stateRef.value).map(([k, v]) => {
+      if (k === id) {
+        return v.filter((_, i) => i !== idx)
+      }
+      return v
+    }))
+  })
   const router = useRouter()
   const i18n = useI18n()
   const siteResolver = createSitePathResolver({
@@ -128,36 +158,56 @@ export function useBreadcrumbItems(options: BreadcrumbProps = {}) {
   })
   const siteConfig = useSiteConfig()
   const items = computed(() => {
-    let rootNode = '/'
+    const optionStack = stateRef.value?.[id]
+    const flatOptions = toRaw([...optionStack]).reduce((acc, cur) => {
+      acc.rootSegment = acc.rootSegment || cur.rootSegment
+      acc.path = acc.path || cur.path
+      return acc
+    }, {})
+    let rootNode = flatOptions.rootSegment || '/'
     if (i18n) {
       if (i18n.strategy === 'prefix' || (i18n.strategy !== 'no_prefix' && toValue(i18n.defaultLocale) !== toValue(i18n.locale)))
-        rootNode = `/${toValue(i18n.locale)}`
+        rootNode = `${rootNode}${toValue(i18n.locale)}`
     }
-    const current = withoutQuery(withoutTrailingSlash(toValue(options.path || router.currentRoute.value?.path) || rootNode))
+    const current = withoutQuery(withoutTrailingSlash(toValue(flatOptions.path || router.currentRoute.value?.path) || rootNode))
     // apply overrides
-    const overrides = toValue(options.overrides) || []
+    const allOverrides = toRaw([...optionStack])?.map(opts => toValue(opts.overrides)).filter(Boolean)
+    const flatOverrides = allOverrides?.reduce((acc: (BreadcrumbItemProps | false | undefined)[], i) => {
+      // merge them based on index
+      if (i) {
+        i.forEach((item, index) => {
+          if (item !== undefined) {
+            acc[index] = item
+          }
+        })
+      }
+      return acc
+    }, []) || {}
     const segments = pathBreadcrumbSegments(current, rootNode)
       .map((path, index) => {
         let item = <BreadcrumbItemProps> {
           to: path,
         }
-        if (typeof overrides[index] !== 'undefined') {
-          if (overrides[index] === false)
+        if (typeof flatOverrides[index] !== 'undefined') {
+          if (flatOverrides[index] === false)
             return false
-          item = defu(overrides[index] as any as BreadcrumbItemProps, item)
+          item = defu(flatOverrides[index] as any as BreadcrumbItemProps, item)
         }
         return item
       })
+
+    const allPrepends = toRaw([...optionStack]).flatMap(opts => toValue(opts.prepend)).filter(Boolean) as any as BreadcrumbItemProps[]
+    const allAppends = toRaw([...optionStack]).flatMap(opts => toValue(opts.append)).filter(Boolean) as any as BreadcrumbItemProps[]
     // apply prepends and appends
-    if (options.prepend)
-      segments.unshift(...toValue(options.prepend))
-    if (options.append)
-      segments.push(...toValue(options.append))
+    if (allPrepends.length)
+      segments.unshift(...allPrepends)
+    if (allAppends.length)
+      segments.push(...allAppends)
     return (segments.filter(Boolean) as BreadcrumbItemProps[])
       .map((item) => {
         let fallbackLabel = titleCase(String((item.to || '').split('/').pop()))
         let fallbackAriaLabel = ''
-        const route = router.resolve(item.to as string)?.matched?.[0]
+        const route = item.to ? router.resolve(item.to as string)?.matched?.[0] : null
         if (route) {
           const routeMeta = (route?.meta || {}) as RouteMeta & { title?: string, breadcrumbLabel: string, breadcrumbTitle: string }
           // merge with the route meta
@@ -172,7 +222,7 @@ export function useBreadcrumbItems(options: BreadcrumbProps = {}) {
             fallbackLabel = 'Home'
           }
           fallbackLabel = routeMeta.breadcrumbLabel || routeMeta.breadcrumbTitle || routeMeta.title || fallbackLabel
-          fallbackLabel = i18n.t(`breadcrumb.items.${routeName}.label`, fallbackLabel, { missingWarn: true })
+          fallbackLabel = i18n.t(`breadcrumb.items.${routeName}.label`, fallbackLabel, { missingWarn: false })
           fallbackAriaLabel = i18n.t(`breadcrumb.items.${routeName}.ariaLabel`, fallbackAriaLabel, { missingWarn: false })
         }
 
@@ -181,14 +231,14 @@ export function useBreadcrumbItems(options: BreadcrumbProps = {}) {
         item.ariaLabel = item.ariaLabel || fallbackAriaLabel || item.label
         // mark the current based on the options
         item.current = item.current || item.to === current
-        if (toValue(options.hideCurrent) && item.current)
+        if (toValue(flatOptions.hideCurrent) && item.current)
           return false
         return item
       })
       .map((m) => {
         if (m && m.to) {
           m.to = fixSlashes(siteConfig.trailingSlash, m.to)
-          if (m.to === rootNode && toValue(options.hideRoot))
+          if (m.to === rootNode && toValue(flatOptions.hideRoot))
             return false
         }
         return m
@@ -196,12 +246,12 @@ export function useBreadcrumbItems(options: BreadcrumbProps = {}) {
       .filter(Boolean) as BreadcrumbItemProps[]
   })
 
-  const schemaOrgEnabled = typeof options.schemaOrg === 'undefined' ? true : options.schemaOrg
+  const schemaOrgEnabled = typeof _options.schemaOrg === 'undefined' ? true : _options.schemaOrg
   // TODO can probably drop this schemaOrgEnabled flag as we mock the function
-  if ((import.meta.dev || import.meta.server) && schemaOrgEnabled) {
+  if (isCreatingState && (import.meta.dev || import.meta.server || import.meta.env?.NODE_ENV === 'test') && schemaOrgEnabled) {
     useSchemaOrg([
       defineBreadcrumb({
-        id: `#${options.id || 'breadcrumb'}`,
+        id: `#${_options.id || 'breadcrumb'}`,
         itemListElement: computed(() => items.value.map(item => ({
           name: item.label || item.ariaLabel,
           item: item.to ? siteResolver(item.to) : undefined,

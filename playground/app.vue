@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { updateSiteConfig, useI18n, useRoute, useSiteConfig } from '#imports'
+import { useBreadcrumbItems } from '#seo-utils/app/composables/useBreadcrumbItems'
 
 const i18n = useI18n()
 
@@ -22,6 +23,14 @@ if (route.query.name) {
   })
 }
 
+useBreadcrumbItems({
+  overrides: [
+    { label: 'My Cool Site' },
+  ],
+  append: [
+    { label: 'this is appended' },
+  ],
+})
 const siteConfig = useSiteConfig()
 </script>
 

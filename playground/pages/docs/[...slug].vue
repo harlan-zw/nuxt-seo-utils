@@ -1,14 +1,18 @@
 <script setup lang="ts">
-import { useBreadcrumbItems } from '#seo-utils/app/composables/useBreadcrumbItems'
-
-const breacrumb = useBreadcrumbItems()
+const items = useBreadcrumbItems({
+  overrides: [
+    undefined,
+    { label: 'Documentation' },
+    { label: 'Intro - yo' },
+  ],
+})
 </script>
 
 <template>
   <div>
-    catch-all
+    docs slug catch-all
     <nav>
-      {{ breacrumb.map(item => item.label).join(' > ') }}
+      {{ items.map(item => item.label).join(' > ') }}
     </nav>
   </div>
 </template>

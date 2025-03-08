@@ -21,7 +21,11 @@
     }
   },
   "main": "./dist/module.mjs",
+  "bin": {
+    "nuxt-seo-utils": "./bin/nuxt-seo-utils.mjs"
+  },
   "files": [
+    "bin",
     "dist"
   ],
   "build": {

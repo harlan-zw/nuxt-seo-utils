@@ -129,16 +129,14 @@ const BreadcrumbCtx = Symbol('BreadcrumbCtx')
  */
 export function useBreadcrumbItems(_options: BreadcrumbProps = {}) {
   const vm = getCurrentInstance()
+  const id = _options.id || 'breadcrumb'
   let stateRef: Ref<Record<string, BreadcrumbProps[]>> | null = null
-    let isCreatingState = false
   if (vm) {
     stateRef = inject(BreadcrumbCtx, null)
     if (!stateRef) {
       stateRef = ref({})
       provide(BreadcrumbCtx, stateRef)
-      isCreatingState = false
     }
-    const id = 'breadcrumb'
     const state = stateRef.value
     if (!state[id]) {
       state[id] = []
@@ -252,10 +250,10 @@ export function useBreadcrumbItems(_options: BreadcrumbProps = {}) {
 
   const schemaOrgEnabled = typeof _options.schemaOrg === 'undefined' ? true : _options.schemaOrg
   // TODO can probably drop this schemaOrgEnabled flag as we mock the function
-  if (isCreatingState && (import.meta.dev || import.meta.server || import.meta.env?.NODE_ENV === 'test') && schemaOrgEnabled) {
+  if ((import.meta.dev || import.meta.server || import.meta.env?.NODE_ENV === 'test') && schemaOrgEnabled) {
     useSchemaOrg([
       defineBreadcrumb({
-        id: `#${_options.id || 'breadcrumb'}`,
+        id: `#${id}`,
         itemListElement: computed(() => items.value.map(item => ({
           name: item.label || item.ariaLabel,
           item: item.to ? siteResolver(item.to) : undefined,

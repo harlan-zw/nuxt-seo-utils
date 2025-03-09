@@ -22,15 +22,15 @@ describe('default', () => {
       <meta name="viewport" content="width=device-width, initial-scale=1">
       <title>Home x en name</title>
       <meta property="og:image" content="https://nuxtseo.com/og-image.png">
-      <meta property="og:image:alt" content="hello world">
       <meta property="og:image:type" content="image/png">
       <meta property="og:image:width" content="1270">
       <meta property="og:image:height" content="630">
+      <meta property="og:image:alt" content="hello world">
       <meta name="twitter:image" content="https://nuxtseo.com/og-image.png">
-      <meta name="twitter:image:alt" content="hello world">
       <meta name="twitter:image:type" content="image/png">
       <meta name="twitter:image:width" content="1270">
       <meta name="twitter:image:height" content="630">
+      <meta name="twitter:image:alt" content="hello world">
       <meta name="description" content="Hi, welcome to the test v1.3.4 of en name.">
       <meta property="og:type" content="website">
       <meta property="og:url" content="https://nuxtseo.com/">

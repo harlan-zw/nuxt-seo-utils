@@ -18,7 +18,7 @@ describe('seoMetaAppHeadKey', () => {
         },
       },
     } as any as Nuxt
-    extendNuxtConfigAppHeadSeoMeta(unpackMeta, mockNuxt)
+    extendNuxtConfigAppHeadSeoMeta(mockNuxt)
     expect(mockNuxt.options.app.head).toMatchInlineSnapshot(`
       {
         "meta": [
@@ -64,7 +64,7 @@ describe('seoMetaAppHeadKey', () => {
         },
       },
     } as any as Nuxt
-    extendNuxtConfigAppHeadSeoMeta(unpackMeta, mockNuxt)
+    extendNuxtConfigAppHeadSeoMeta(mockNuxt)
     expect(mockNuxt.options.app.head).toMatchInlineSnapshot(`
       {
         "meta": [

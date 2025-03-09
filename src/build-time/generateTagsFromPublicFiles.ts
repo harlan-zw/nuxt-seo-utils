@@ -1,5 +1,6 @@
 import type { Nuxt } from '@nuxt/schema'
 import { useNuxt } from '@nuxt/kit'
+import { unpackMeta } from '@unhead/vue/utils'
 import { defu } from 'defu'
 import fg from 'fast-glob'
 import { basename, resolve } from 'pathe'
@@ -7,7 +8,7 @@ import { joinURL } from 'ufo'
 import { MetaTagFileGlobs } from '../const'
 import { getImageDimensions, getImageMeta, hasLinkRel, hasMetaProperty } from '../util'
 
-export default async function generateTagsFromPublicFiles(unpackMeta: any, nuxt: Nuxt = useNuxt()) {
+export default async function generateTagsFromPublicFiles(nuxt: Nuxt = useNuxt()) {
   // @todo support layer public dirs
   const publicDirPath = resolve(nuxt.options.rootDir, nuxt.options.dir.public)
   // do fg only one level deep

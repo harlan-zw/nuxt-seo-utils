@@ -1,4 +1,4 @@
-import type { UseSeoMetaInput } from '@unhead/schema'
+import type { UseSeoMetaInput } from '@unhead/vue/types'
 import {
   addImports,
   addPlugin,
@@ -13,16 +13,13 @@ import {
 import UnheadVite from '@unhead/addons/vite'
 import { defu } from 'defu'
 import { installNuxtSiteConfig } from 'nuxt-site-config/kit'
-import { dirname, join, relative } from 'pathe'
-import { readPackageJSON } from 'pkg-types'
-import { gte } from 'semver'
+import { relative } from 'pathe'
 import extendNuxtConfigAppHeadSeoMeta from './build-time/extendNuxtConfigAppHeadSeoMeta'
 import extendNuxtConfigAppHeadTypes from './build-time/extendNuxtConfigAppHeadTypes'
 import generateTagsFromPageDirImages from './build-time/generateTagsFromPageDirImages'
 import generateTagsFromPublicFiles from './build-time/generateTagsFromPublicFiles'
 import setupNuxtConfigAppHeadWithMoreDefaults from './build-time/setupNuxtConfigAppHeadWithMoreDefaults'
 import { extendTypes } from './kit'
-import { resolveUnpackMeta } from './util'
 
 export interface ModuleOptions {
   /**
@@ -172,24 +169,10 @@ export default defineNuxtModule<ModuleOptions>({
     const { resolve } = createResolver(import.meta.url)
     await installNuxtSiteConfig()
 
-    let isUnheadV2 = false
-    const unheadPath = await resolvePath('@unhead/vue')
-      .catch(() => undefined)
-      // compatibility
-      .then(p => p?.endsWith('index.mjs') ? dirname(p) : p)
-    // couldn't be found for some reason, assume compatibility
-    if (unheadPath) {
-      const { version: unheadVersion } = await readPackageJSON(join(unheadPath, 'package.json'))
-      if (gte(unheadVersion!, '2.0.0-rc.1')) {
-        isUnheadV2 = true
-      }
-    }
-
     const runtimeDir = resolve('./runtime')
-    const unpackMeta = await resolveUnpackMeta(isUnheadV2)
     if (config.metaDataFiles) {
       // we need ssr to resolve the tags to the absolute path
-      await generateTagsFromPublicFiles(unpackMeta)
+      await generateTagsFromPublicFiles()
       await generateTagsFromPageDirImages()
 
       if (nuxt.options.dev) {
@@ -279,7 +262,7 @@ export default defineNuxtModule<ModuleOptions>({
     })
 
     if (config.extendNuxtConfigAppHeadSeoMeta)
-      extendNuxtConfigAppHeadSeoMeta(unpackMeta)
+      extendNuxtConfigAppHeadSeoMeta()
 
     if (config.setupNuxtConfigAppHeadWithMoreDefaults)
       setupNuxtConfigAppHeadWithMoreDefaults(nuxt)
@@ -289,7 +272,7 @@ export default defineNuxtModule<ModuleOptions>({
 
     // add types for the route rules
     extendTypes('nuxt-seo-utils', async () => {
-      const pkg = isUnheadV2 ? '@unhead/vue/types' : '@unhead/schema'
+      const pkg = '@unhead/vue/types'
       let unheadSchemaPath: string
       try {
         unheadSchemaPath = relative(resolve(nuxt!.options.rootDir, nuxt!.options.buildDir, 'module'), await resolvePath(pkg))

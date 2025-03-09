@@ -10,9 +10,9 @@ import { useSiteConfig } from '#site-config/app/composables/useSiteConfig'
 import { createSitePathResolver } from '#site-config/app/composables/utils'
 import { defu } from 'defu'
 import { fixSlashes } from 'nuxt-site-config/urls'
-import { useRouter,  useNuxtApp} from 'nuxt/app'
+import { useRouter } from 'nuxt/app'
 import { withoutTrailingSlash } from 'ufo'
-import { computed, inject, onUnmounted, getCurrentInstance, provide, ref, toRaw, toValue } from 'vue'
+import { computed, getCurrentInstance, inject, onUnmounted, provide, ref, toRaw, toValue } from 'vue'
 import { pathBreadcrumbSegments } from '../../shared/breadcrumbs'
 
 interface NuxtUIBreadcrumbItem extends NuxtLinkProps {
@@ -129,9 +129,10 @@ const BreadcrumbCtx = Symbol('BreadcrumbCtx')
  */
 export function useBreadcrumbItems(_options: BreadcrumbProps = {}) {
   const vm = getCurrentInstance()
-  let isCreatingState = false
+  let stateRef: Ref<Record<string, BreadcrumbProps[]>> | null = null
+    let isCreatingState = false
   if (vm) {
-    let stateRef: Ref<Record<string, BreadcrumbProps[]>> | null = inject(BreadcrumbCtx, null)
+    stateRef = inject(BreadcrumbCtx, null)
     if (!stateRef) {
       stateRef = ref({})
       provide(BreadcrumbCtx, stateRef)
@@ -161,7 +162,7 @@ export function useBreadcrumbItems(_options: BreadcrumbProps = {}) {
   })
   const siteConfig = useSiteConfig()
   const items = computed(() => {
-    const optionStack = stateRef.value?.[id]
+    const optionStack = stateRef?.value?.[id] || [_options]
     const flatOptions = toRaw([...optionStack]).reduce((acc, cur) => {
       acc.rootSegment = acc.rootSegment || cur.rootSegment
       acc.path = acc.path || cur.path

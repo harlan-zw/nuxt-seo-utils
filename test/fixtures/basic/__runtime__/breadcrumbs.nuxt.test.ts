@@ -1,9 +1,7 @@
 import { useBreadcrumbItems } from '#imports'
 // @vitest-environment nuxt
-import { mockNuxtImport, mountSuspended } from '@nuxt/test-utils/runtime'
+import { mockNuxtImport } from '@nuxt/test-utils/runtime'
 import { afterEach, describe, expect, it, vi } from 'vitest'
-import { toValue } from 'vue'
-import {useNuxtApp} from "nuxt/app";
 
 const { useRouterMock, useI18nMock, useSchemaOrgMock, defineBreadcrumbMock } = vi.hoisted(() => {
   return {
@@ -33,7 +31,6 @@ const { useRouterMock, useI18nMock, useSchemaOrgMock, defineBreadcrumbMock } = v
       }
     }),
     useSchemaOrgMock: vi.fn().mockImplementation((args) => {
-      console.log('mock schema.org')
       return args
     }),
     defineBreadcrumbMock: vi.fn().mockImplementation((args) => {

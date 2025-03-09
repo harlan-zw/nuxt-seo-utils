@@ -17,7 +17,7 @@ export const headTypeTemplate: NuxtTemplate<PathsTemplateContext> = {
 
     output += `
 declare module '#app' {
-  import { HeadEntry, HeadTag } from '@unhead/schema'
+  import { HeadEntry, HeadTag } from '@unhead/vue/types'
 
   interface RuntimeNuxtHooks {
     'head:tags': (tag: HeadTag[]) => Promise<void> | void

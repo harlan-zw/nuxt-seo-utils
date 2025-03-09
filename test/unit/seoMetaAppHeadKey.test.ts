@@ -1,6 +1,5 @@
 import type { Nuxt } from '@nuxt/schema'
 import type { UseSeoMetaInput } from '@unhead/schema'
-import { unpackMeta } from '@unhead/vue/utils'
 import { describe, expect, it } from 'vitest'
 import extendNuxtConfigAppHeadSeoMeta from '../../src/build-time/extendNuxtConfigAppHeadSeoMeta'
 

@@ -185,7 +185,7 @@ export default defineNuxtModule<ModuleOptions>({
       }
     }
 
-    const runtimeDir = isUnheadV2 ? resolve('./runtime/unhead-v2') : './runtime/unhead-v1'
+    const runtimeDir = resolve('./runtime')
     const unpackMeta = await resolveUnpackMeta(isUnheadV2)
     if (config.metaDataFiles) {
       // we need ssr to resolve the tags to the absolute path

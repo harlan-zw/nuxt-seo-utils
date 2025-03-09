@@ -10,9 +10,9 @@ import { useSiteConfig } from '#site-config/app/composables/useSiteConfig'
 import { createSitePathResolver } from '#site-config/app/composables/utils'
 import { defu } from 'defu'
 import { fixSlashes } from 'nuxt-site-config/urls'
-import { useRouter } from 'nuxt/app'
+import { useRouter,  useNuxtApp} from 'nuxt/app'
 import { withoutTrailingSlash } from 'ufo'
-import { computed, inject, onUnmounted, provide, ref, toRaw, toValue } from 'vue'
+import { computed, inject, onUnmounted, getCurrentInstance, provide, ref, toRaw, toValue } from 'vue'
 import { pathBreadcrumbSegments } from '../../shared/breadcrumbs'
 
 interface NuxtUIBreadcrumbItem extends NuxtLinkProps {
@@ -128,28 +128,31 @@ const BreadcrumbCtx = Symbol('BreadcrumbCtx')
  * @docs https://nuxtseo.com/nuxt-seo/api/breadcrumbs
  */
 export function useBreadcrumbItems(_options: BreadcrumbProps = {}) {
+  const vm = getCurrentInstance()
   let isCreatingState = false
-  let stateRef: Ref<Record<string, BreadcrumbProps[]>> | null = inject(BreadcrumbCtx, null)
-  if (!stateRef) {
-    stateRef = ref({})
-    provide(BreadcrumbCtx, stateRef)
-    isCreatingState = false
+  if (vm) {
+    let stateRef: Ref<Record<string, BreadcrumbProps[]>> | null = inject(BreadcrumbCtx, null)
+    if (!stateRef) {
+      stateRef = ref({})
+      provide(BreadcrumbCtx, stateRef)
+      isCreatingState = false
+    }
+    const id = 'breadcrumb'
+    const state = stateRef.value
+    if (!state[id]) {
+      state[id] = []
+    }
+    const idx = state[id].push(_options) - 1
+    stateRef.value = state
+    onUnmounted(() => {
+      stateRef.value = Object.fromEntries(Object.entries(stateRef.value).map(([k, v]) => {
+        if (k === id) {
+          return v.filter((_, i) => i !== idx)
+        }
+        return v
+      }))
+    })
   }
-  const id = 'breadcrumb'
-  const state = stateRef.value
-  if (!state[id]) {
-    state[id] = []
-  }
-  const idx = state[id].push(_options) - 1
-  stateRef.value = state
-  onUnmounted(() => {
-    stateRef.value = Object.fromEntries(Object.entries(stateRef.value).map(([k, v]) => {
-      if (k === id) {
-        return v.filter((_, i) => i !== idx)
-      }
-      return v
-    }))
-  })
   const router = useRouter()
   const i18n = useI18n()
   const siteResolver = createSitePathResolver({

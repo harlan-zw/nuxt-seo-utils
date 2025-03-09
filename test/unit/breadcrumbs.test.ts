@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { pathBreadcrumbSegments } from '~/src/runtime/unhead-v2/shared/breadcrumbs'
+import { pathBreadcrumbSegments } from '../../src/runtime/shared/breadcrumbs'
 
 describe('breadcrumbs', () => {
   it('basic', async () => {

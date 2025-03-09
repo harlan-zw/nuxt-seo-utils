@@ -78,7 +78,7 @@
     "case-police": "^1.0.0",
     "cheerio": "1.0.0",
     "eslint": "^9.22.0",
-    "happy-dom": "^17.4.2",
+    "happy-dom": "^17.4.3",
     "markdownlint-cli": "^0.44.0",
     "nuxt": "^3.16.0",
     "nuxt-content-twoslash": "^0.1.2",

@@ -1,12 +1,13 @@
 import type { UseHeadOptions, UseSeoMetaInput } from '@unhead/vue'
 import type { QueryObject } from 'ufo'
 import type { Ref } from 'vue'
-import { useHead, useSeoMeta } from '#imports'
+import { useHead, useSeoMeta, injectHead } from '#imports'
 import { useSiteConfig } from '#site-config/app/composables/useSiteConfig'
 import { createSitePathResolver } from '#site-config/app/composables/utils'
 import { useError, useRoute, useRuntimeConfig } from 'nuxt/app'
 import { stringifyQuery } from 'ufo'
 import { computed, ref, watch } from 'vue'
+import { TemplateParamsPlugin } from '@unhead/vue/plugins'
 
 export function applyDefaults(i18n: { locale: Ref<string> }) {
   // get the head instance
@@ -42,6 +43,9 @@ export function applyDefaults(i18n: { locale: Ref<string> }) {
       deep: true,
     })
   }
+
+  const head = injectHead()
+  head.push(TemplateParamsPlugin)
 
   useHead({ templateParams })
 

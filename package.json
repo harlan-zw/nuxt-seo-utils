@@ -28,9 +28,9 @@
   ],
   "build": {
     "externals": [
-      "@unhead/shared",
-      "@unhead/schema",
       "unhead",
+      "@unhead/vue",
+      "@unhead/vue/plugins",
       "@unhead/vue/utils"
     ]
   },
@@ -47,9 +47,6 @@
     "twoslash:verify": "nuxt-content-twoslash verify --content-dir docs/content",
     "test": "pnpm dev:prepare && vitest --run --exclude **/__runtime__",
     "test:runtime": "cd test/fixtures/basic && vitest --run"
-  },
-  "peerDependencies": {
-    "@unhead/vue": "^2.0.0-rc.9"
   },
   "dependencies": {
     "@nuxt/kit": "^3.16.0",

@@ -10,6 +10,8 @@ import { computed, ref, watch } from 'vue'
 import { TemplateParamsPlugin } from '@unhead/vue/plugins'
 
 export function applyDefaults(i18n: { locale: Ref<string> }) {
+  const head = injectHead()
+  head.use(TemplateParamsPlugin)
   // get the head instance
   const { canonicalQueryWhitelist, canonicalLowercase } = useRuntimeConfig().public['seo-utils']
   const siteConfig = useSiteConfig()
@@ -43,9 +45,6 @@ export function applyDefaults(i18n: { locale: Ref<string> }) {
       deep: true,
     })
   }
-
-  const head = injectHead()
-  head.push(TemplateParamsPlugin)
 
   useHead({ templateParams })
 

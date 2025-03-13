@@ -25,7 +25,13 @@ export function applyDefaults(i18n: { locale: Ref<string> }) {
     const { query } = route
     let url = (resolveUrl(route.path || '/').value || route.path)
     if (canonicalLowercase) {
-      url = url.toLocaleLowerCase(siteConfig.currentLocale)
+      try {
+        url = url.toLocaleLowerCase(siteConfig.currentLocale || 'en')
+      }
+      catch {
+        // fallback to default
+        url = url.toLowerCase()
+      }
     }
     // apply canonicalQueryWhitelist to query
     const filteredQuery = Object.fromEntries(
@@ -57,7 +63,16 @@ export function applyDefaults(i18n: { locale: Ref<string> }) {
   const seoMeta: UseSeoMetaInput = {
     ogType: 'website',
     ogUrl: () => canonicalUrl.value,
-    ogLocale: () => i18n.locale.value,
+    ogLocale: () => {
+      if (i18n.locale.value) {
+        // verify it's a locale and not just "en"
+        const locale = i18n.locale.value.replace('-', '_')
+        if (locale.includes('_')) {
+          return locale
+        }
+      }
+      return false
+    },
     ogSiteName: siteConfig.name,
   }
   if (siteConfig.description)

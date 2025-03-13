@@ -21,7 +21,7 @@ interface NuxtUIBreadcrumbItem extends NuxtLinkProps {
   icon?: string
   iconClass?: string
   as?: string
-  type?: string
+  type?: 'button' | 'submit' | 'reset'
   disabled?: boolean
   active?: boolean
   exact?: boolean

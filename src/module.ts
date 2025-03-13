@@ -304,7 +304,7 @@ declare module 'nuxt/schema' {
       addPlugin({ src: resolve(appRuntimeDir, 'plugins', 'siteConfig') })
 
     if (config.extendRouteRules)
-      addPlugin({ src: resolve(appRuntimeDir, 'plugins', '0.routeRules.server'), mode: 'server' })
+      addPlugin({ src: resolve(appRuntimeDir, 'plugins', '0.routeRules') })
 
     if (config.fixRequiredAbsoluteMetaTagsLinks)
       addPlugin({ src: resolve(appRuntimeDir, 'plugins', '1.absoluteImageUrls.server'), mode: 'server' })

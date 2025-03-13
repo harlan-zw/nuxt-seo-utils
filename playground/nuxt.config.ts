@@ -72,7 +72,7 @@ export default defineNuxtConfig({
 
   routeRules: {
     '/blog/**': {
-      seoMeta: { title: 'test' },
+      seoMeta: { title: 'ROUTE RULES' },
     },
   },
 

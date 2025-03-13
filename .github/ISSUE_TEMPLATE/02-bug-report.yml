@@ -14,7 +14,7 @@ body:
       required: true
     attributes:
       label: 🛠️ To reproduce
-      description: 'A reproduction of the bug. Please use the Nuxt Link Checker starter https://nuxtseo.com/link-checker/getting-started/stackblitz'
+      description: 'A reproduction of the bug. Please see the StackBlitz link on https://nuxtseo.com/docs/seo-utils/getting-started/troubleshooting'
       placeholder: https://stackblitz.com/[...]
   - type: textarea
     validations:

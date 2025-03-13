@@ -33,12 +33,12 @@ describe('default', () => {
       <meta name="twitter:image:alt" content="hello world">
       <meta name="description" content="Hi, welcome to the test v1.3.4 of en name.">
       <meta property="og:type" content="website">
-      <meta property="og:url" content="https://nuxtseo.com/">
-      <meta property="og:locale" content="en">
-      <meta property="og:site_name" content="en name">
       <meta name="twitter:card" content="summary_large_image">
       <meta property="og:title" data-infer="true" content="Home x en name">
-      <meta property="og:description" data-infer="true" content="Hi, welcome to the test v1.3.4 of en name.">"
+      <meta property="og:description" data-infer="true" content="Hi, welcome to the test v1.3.4 of en name.">
+      <meta property="og:url" content="https://nuxtseo.com/">
+      <meta property="og:locale" content="en">
+      <meta property="og:site_name" content="en name">"
     `)
   }, 30_000)
 })

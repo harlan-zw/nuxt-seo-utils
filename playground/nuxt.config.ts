@@ -39,12 +39,13 @@ export default defineNuxtConfig({
     ],
   },
 
+  // @ts-expect-error untyped
   tailwindcss: {
     viewer: false,
   },
 
   seo: {
-    seoMeta: {
+    meta: {
       description: 'Hi, welcome to the %site.env v%app.version of %siteName.',
     },
   },

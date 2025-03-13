@@ -9,7 +9,6 @@ export default defineNuxtPlugin({
     islands: false,
   },
   // we need to wait for the i18n plugin to run first
-  // @ts-expect-error dynamic
   dependsOn: ['nuxt-site-config:i18n'],
   setup(nuxtApp) {
     const siteConfig = useSiteConfig()

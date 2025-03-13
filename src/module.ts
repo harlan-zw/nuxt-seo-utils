@@ -1,4 +1,4 @@
-import type { UseSeoMetaInput } from '@unhead/vue/types'
+import type { MetaFlatSerializable } from './runtime/types'
 import {
   addImports,
   addPlugin,
@@ -7,13 +7,11 @@ import {
   createResolver,
   defineNuxtModule,
   hasNuxtModule,
-  resolvePath,
   useLogger,
 } from '@nuxt/kit'
 import UnheadVite from '@unhead/addons/vite'
 import { defu } from 'defu'
 import { installNuxtSiteConfig } from 'nuxt-site-config/kit'
-import { relative } from 'pathe'
 import extendNuxtConfigAppHeadSeoMeta from './build-time/extendNuxtConfigAppHeadSeoMeta'
 import extendNuxtConfigAppHeadTypes from './build-time/extendNuxtConfigAppHeadTypes'
 import generateTagsFromPageDirImages from './build-time/generateTagsFromPageDirImages'
@@ -123,7 +121,7 @@ export interface ModuleOptions {
   /**
    * The SEO meta object to be used as defaults.
    */
-  meta: UseSeoMetaInput
+  meta: MetaFlatSerializable
 
   /**
    * Enables debug logs and a debug endpoint.
@@ -271,34 +269,26 @@ export default defineNuxtModule<ModuleOptions>({
       extendNuxtConfigAppHeadTypes()
 
     // add types for the route rules
-    extendTypes('nuxt-seo-utils', async () => {
-      const pkg = '@unhead/vue/types'
-      let unheadSchemaPath: string
-      try {
-        unheadSchemaPath = relative(resolve(nuxt!.options.rootDir, nuxt!.options.buildDir, 'module'), await resolvePath(pkg))
-      }
-      catch {
-        unheadSchemaPath = pkg
-      }
+    extendTypes('nuxt-seo-utils', async (ctx) => {
       // route rules and app config
       return `
 declare module 'nitropack' {
   interface NitroRouteRules {
-     seoMeta?: import('${unheadSchemaPath}').UseSeoMetaInput
-     head?: import('${unheadSchemaPath}').Head
+     seoMeta?: import('${ctx.typesPath}').MetaFlatSerializable
+     head?: import('${ctx.typesPath}').Head
   }
   interface NitroRouteConfig {
-    seoMeta?: import('${unheadSchemaPath}').UseSeoMetaInput
-    head?: import('${unheadSchemaPath}').Head
+    seoMeta?: import('${ctx.typesPath}').MetaFlatSerializable
+    head?: import('${ctx.typesPath}').Head
   }
 }
 
 declare module '@nuxt/schema' {
-  interface AppHeadMetaObject { seoMeta?: import('${unheadSchemaPath}').UseSeoMetaInput }
+  interface AppHeadMetaObject { seoMeta?: import('${ctx.typesPath}').MetaFlatSerializable }
 }
 
 declare module 'nuxt/schema' {
-  interface AppHeadMetaObject { seoMeta?: import('${unheadSchemaPath}').UseSeoMetaInput }
+  interface AppHeadMetaObject { seoMeta?: import('${ctx.typesPath}').MetaFlatSerializable }
 }
 `
     })

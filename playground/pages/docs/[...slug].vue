@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { useBreadcrumbItems } from '#imports'
+
 const items = useBreadcrumbItems({
   overrides: [
     undefined,
@@ -14,5 +16,8 @@ const items = useBreadcrumbItems({
     <nav>
       {{ items.map(item => item.label).join(' > ') }}
     </nav>
+    <NuxtLink to="/delayed">
+      delayed
+    </NuxtLink>
   </div>
 </template>

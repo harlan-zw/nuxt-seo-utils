@@ -1,4 +1,6 @@
 import type { Nuxt } from '@nuxt/schema'
+import type { Meta, SerializableHead } from '@unhead/vue/types'
+import type { MetaFlatSerializable } from '../runtime/types'
 import { useNuxt } from '@nuxt/kit'
 import { unpackMeta } from '@unhead/vue/utils'
 import { defu } from 'defu'
@@ -15,14 +17,14 @@ export default async function generateTagsFromPublicFiles(nuxt: Nuxt = useNuxt()
   const rootPublicFiles = (await fg(MetaTagFileGlobs, { cwd: publicDirPath, onlyFiles: true, deep: 1 }))
     // use base name
     .map(file => basename(file))
-  const headConfig = defu(nuxt.options.app.head, {
+  const headConfig: SerializableHead = defu(nuxt.options.app.head, {
     link: [],
     meta: [],
   })
 
   if (!hasLinkRel(headConfig, 'icon')) {
     if (rootPublicFiles.includes('favicon.ico') && nuxt.options.app.baseURL !== '/') {
-      headConfig.link.push({
+      headConfig.link!.push({
         rel: 'icon',
         href: joinURL(nuxt.options.app.baseURL, 'favicon.ico'),
         sizes: 'any',
@@ -34,7 +36,7 @@ export default async function generateTagsFromPublicFiles(nuxt: Nuxt = useNuxt()
       (file.startsWith('apple-icon.') || file.startsWith('apple-touch-icon.') || file.startsWith('apple-touch.'))
     )
 
-    headConfig.link.push(
+    headConfig.link!.push(
       ...await Promise.all([
         ...rootPublicFiles
           .filter(file => isIcon(file) && !isAppleTouchIcon(file))
@@ -67,7 +69,7 @@ export default async function generateTagsFromPublicFiles(nuxt: Nuxt = useNuxt()
     const twitterImageFiles = rootPublicFiles.filter(file => file.startsWith('twitter-image.'))
       .sort()
     if (twitterImageFiles.length) {
-      headConfig.meta.push(
+      headConfig.meta!.push(
         ...(await Promise.all(twitterImageFiles.map(async (twitterImageFile) => {
           const dimensions = await getImageDimensions(resolve(publicDirPath, twitterImageFile))
           return unpackMeta({
@@ -79,7 +81,7 @@ export default async function generateTagsFromPublicFiles(nuxt: Nuxt = useNuxt()
           })
         }))
         )
-          .flat(),
+          .flat() as Meta[],
       )
       hasTwitterImage = true
     }
@@ -89,11 +91,11 @@ export default async function generateTagsFromPublicFiles(nuxt: Nuxt = useNuxt()
     const ogImageFiles = rootPublicFiles.filter(file => file.startsWith('og-image.') || file.startsWith('og.'))
       .sort()
     if (ogImageFiles.length) {
-      headConfig.meta.push(
+      headConfig.meta!.push(
         ...(await Promise.all(ogImageFiles.map(async (src) => {
           const meta = await getImageMeta(publicDirPath, src, false)
           delete meta.sizes
-          const seoMeta: any = {
+          const seoMeta: MetaFlatSerializable = {
             ogImage: {
               url: src,
               ...meta,
@@ -108,7 +110,7 @@ export default async function generateTagsFromPublicFiles(nuxt: Nuxt = useNuxt()
           return unpackMeta(seoMeta)
         }))
         )
-          .flat(),
+          .flat() as Meta[],
       )
     }
   }

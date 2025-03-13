@@ -7,7 +7,7 @@ import { createSitePathResolver } from '#site-config/app/composables/utils'
 import { TemplateParamsPlugin } from '@unhead/vue/plugins'
 import { useError, useRoute, useRuntimeConfig } from 'nuxt/app'
 import { stringifyQuery } from 'ufo'
-import { computed, ref, watch } from 'vue'
+import { computed } from 'vue'
 
 export function applyDefaults(i18n: { locale: Ref<string> }) {
   const head = injectHead()
@@ -37,26 +37,19 @@ export function applyDefaults(i18n: { locale: Ref<string> }) {
       ? `${url}?${stringifyQuery(filteredQuery)}`
       : url
   })
-  const templateParams = ref({ site: siteConfig, siteName: siteConfig.name })
-  if (import.meta.client) {
-    watch(siteConfig, (v) => {
-      templateParams.value = { site: v, siteName: v.name || '' }
-    }, {
-      deep: true,
-    })
-  }
-
-  useHead({ templateParams })
 
   const minimalPriority: UseHeadOptions = {
     // give nuxt.config values higher priority
-    tagPriority: 101,
+    tagPriority: 'low',
   }
 
   // needs higher priority
   useHead({
     htmlAttrs: { lang: i18n.locale },
-    templateParams,
+    templateParams: {
+      site: () => siteConfig,
+      siteName: () => siteConfig.name,
+    },
     titleTemplate: '%s %separator %siteName',
     link: [{ rel: 'canonical', href: () => canonicalUrl.value }],
   }, minimalPriority)

@@ -1,3 +1,3 @@
 imports.autoImport=false
-modules[]=nuxt-seo-utils
 modules[]=nuxt-site-config
+modules[]=@nuxtjs/i18n

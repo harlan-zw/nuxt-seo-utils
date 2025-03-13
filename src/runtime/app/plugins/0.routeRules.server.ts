@@ -6,10 +6,9 @@ export default defineNuxtPlugin({
   enforce: 'post',
   async setup() {
     const head = injectHead()
-    if (!head)
-      return
-
     const event = useRequestEvent()
+    if (!head || !event)
+      return
 
     if (event.context._nitro.routeRules.head)
       head.push(event.context._nitro.routeRules.head, { mode: 'server', tagPriority: -9 })

@@ -1,8 +1,8 @@
-import { useBreadcrumbItems } from '#imports'
 // @vitest-environment nuxt
 import { mockNuxtImport } from '@nuxt/test-utils/runtime'
 import { afterEach, describe, expect, it, vi } from 'vitest'
 import { toValue } from 'vue'
+import { useBreadcrumbItems } from '../../../../src/runtime/app/composables/useBreadcrumbItems'
 
 const { useRouterMock, useI18nMock, useSchemaOrgMock, defineBreadcrumbMock } = vi.hoisted(() => {
   return {
@@ -291,7 +291,7 @@ describe('useBreadcrumbItems', () => {
     `)
   })
   it('i18n schema.org', async () => {
-    let schemaOrgArgs = []
+    let schemaOrgArgs: any[] = []
     useI18nMock.mockImplementation(() => {
       return {
         t: vi.fn().mockImplementation((s: string, fallback: string) => {
@@ -334,7 +334,7 @@ describe('useBreadcrumbItems', () => {
     const breadcrumbs = useBreadcrumbItems()
     expect(schemaOrgArgs.map((s) => {
       s.itemListElement = toValue(s.itemListElement)
-      s.itemListElement = s.itemListElement.map((s) => {
+      s.itemListElement = s.itemListElement.map((s: any) => {
         s.item = toValue(s.item)
         return s
       })

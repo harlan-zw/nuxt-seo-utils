@@ -1,13 +1,13 @@
 import type { UseHeadOptions, UseSeoMetaInput } from '@unhead/vue'
 import type { QueryObject } from 'ufo'
 import type { Ref } from 'vue'
-import { useHead, useSeoMeta, injectHead } from '#imports'
+import { injectHead, useHead, useSeoMeta } from '#imports'
 import { useSiteConfig } from '#site-config/app/composables/useSiteConfig'
 import { createSitePathResolver } from '#site-config/app/composables/utils'
+import { TemplateParamsPlugin } from '@unhead/vue/plugins'
 import { useError, useRoute, useRuntimeConfig } from 'nuxt/app'
 import { stringifyQuery } from 'ufo'
 import { computed, ref, watch } from 'vue'
-import { TemplateParamsPlugin } from '@unhead/vue/plugins'
 
 export function applyDefaults(i18n: { locale: Ref<string> }) {
   const head = injectHead()

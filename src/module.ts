@@ -132,7 +132,7 @@ export default defineNuxtModule<ModuleOptions>({
     name: 'nuxt-seo-utils',
     configKey: 'seo',
     compatibility: {
-      nuxt: '>=3.6.1',
+      nuxt: '<3.16.0',
       bridge: false,
     },
   },

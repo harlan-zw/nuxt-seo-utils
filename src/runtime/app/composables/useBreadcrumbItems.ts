@@ -10,9 +10,9 @@ import { useSiteConfig } from '#site-config/app/composables/useSiteConfig'
 import { createSitePathResolver } from '#site-config/app/composables/utils'
 import { defu } from 'defu'
 import { fixSlashes } from 'nuxt-site-config/urls'
-import { useRouter } from 'nuxt/app'
+import { useNuxtApp, useRoute, useRouter, useState } from 'nuxt/app'
 import { withoutTrailingSlash } from 'ufo'
-import { computed, getCurrentInstance, inject, onUnmounted, provide, ref, toRaw, toValue } from 'vue'
+import { computed, getCurrentInstance, inject, onScopeDispose, onUnmounted, provide, ref, toRaw, toValue } from 'vue'
 import { pathBreadcrumbSegments } from '../../shared/breadcrumbs'
 
 interface NuxtUIBreadcrumbItem extends NuxtLinkProps {
@@ -130,7 +130,8 @@ const BreadcrumbCtx = Symbol('BreadcrumbCtx')
 export function useBreadcrumbItems(_options: BreadcrumbProps = {}) {
   const vm = getCurrentInstance()
   const id = _options.id || 'breadcrumb'
-  let stateRef: Ref<Record<string, BreadcrumbProps[]>> | null = null
+  const pauseUpdates = ref(import.meta.client)
+  let stateRef: Ref<Record<string, (false | BreadcrumbProps)[]>> | null = null
   if (vm) {
     stateRef = inject(BreadcrumbCtx, null)
     if (!stateRef) {
@@ -144,24 +145,54 @@ export function useBreadcrumbItems(_options: BreadcrumbProps = {}) {
     const idx = state[id].push(_options) - 1
     stateRef.value = state
     onUnmounted(() => {
-      stateRef.value = Object.fromEntries(Object.entries(stateRef.value).map(([k, v]) => {
-        if (k === id) {
-          return v.filter((_, i) => i !== idx)
-        }
-        return v
-      }))
+      const state = toRaw(stateRef!.value)
+      if (state[id]) {
+        // avoid assigning new array entries
+        state[id] = state[id].map((_, i) => i === idx ? false : _)
+        stateRef!.value = state
+      }
     })
+    if (import.meta.client) {
+      const nuxtApp = useNuxtApp()
+      const _: any[] = []
+      // pause dom updates until page is ready and between page transitions
+      _.push(nuxtApp.hooks.hook('page:start', () => {
+        pauseUpdates.value = true
+      }))
+      _.push(nuxtApp.hooks.hook('page:finish', () => {
+        if (!nuxtApp.isHydrating) {
+          pauseUpdates.value = false
+        }
+      }))
+      // unpause on error
+      _.push(nuxtApp.hooks.hook('app:error', () => {
+        pauseUpdates.value = false
+      }))
+      // unpause the DOM once the mount suspense is resolved
+      _.push(nuxtApp.hooks.hook('app:suspense:resolve', () => {
+        pauseUpdates.value = false
+      }))
+      onScopeDispose(() => {
+        _.forEach(hook => hook?.())
+        _.length = 0
+      })
+    }
   }
+  const route = useRoute()
   const router = useRouter()
   const i18n = useI18n()
   const siteResolver = createSitePathResolver({
     canonical: true,
     absolute: true,
   })
+  const lastBreadcrumbs = useState<BreadcrumbItemProps[]>(`nuxt-seo:breadcrumb:${id}`, () => [])
   const siteConfig = useSiteConfig()
   const items = computed(() => {
+    if (import.meta.client && pauseUpdates.value) {
+      return lastBreadcrumbs.value
+    }
     const optionStack = stateRef?.value?.[id] || [_options]
-    const flatOptions = toRaw([...optionStack]).reduce((acc, cur) => {
+    const flatOptions = (toRaw([...optionStack]).filter(Boolean) as BreadcrumbProps[]).reduce((acc, cur) => {
       acc.rootSegment = acc.rootSegment || cur.rootSegment
       acc.path = acc.path || cur.path
       return acc
@@ -171,9 +202,9 @@ export function useBreadcrumbItems(_options: BreadcrumbProps = {}) {
       if (i18n.strategy === 'prefix' || (i18n.strategy !== 'no_prefix' && toValue(i18n.defaultLocale) !== toValue(i18n.locale)))
         rootNode = `${rootNode}${toValue(i18n.locale)}`
     }
-    const current = withoutQuery(withoutTrailingSlash(toValue(flatOptions.path || router.currentRoute.value?.path) || rootNode))
+    const current = withoutQuery(withoutTrailingSlash(toValue(flatOptions.path) || toRaw(route).path || rootNode))
     // apply overrides
-    const allOverrides = toRaw([...optionStack])?.map(opts => toValue(opts.overrides)).filter(Boolean)
+    const allOverrides = (toRaw([...optionStack]).filter(Boolean) as BreadcrumbProps[])?.map(opts => toValue(opts.overrides)).filter(Boolean)
     const flatOverrides = allOverrides?.reduce((acc: (BreadcrumbItemProps | false | undefined)[], i) => {
       // merge them based on index
       if (i) {
@@ -198,14 +229,14 @@ export function useBreadcrumbItems(_options: BreadcrumbProps = {}) {
         return item
       })
 
-    const allPrepends = toRaw([...optionStack]).flatMap(opts => toValue(opts.prepend)).filter(Boolean) as any as BreadcrumbItemProps[]
-    const allAppends = toRaw([...optionStack]).flatMap(opts => toValue(opts.append)).filter(Boolean) as any as BreadcrumbItemProps[]
+    const allPrepends = (toRaw([...optionStack]).filter(Boolean) as BreadcrumbProps[]).flatMap(opts => toValue(opts.prepend)).filter(Boolean) as any as BreadcrumbItemProps[]
+    const allAppends = (toRaw([...optionStack]).filter(Boolean) as BreadcrumbProps[]).flatMap(opts => toValue(opts.append)).filter(Boolean) as any as BreadcrumbItemProps[]
     // apply prepends and appends
     if (allPrepends.length)
       segments.unshift(...allPrepends)
     if (allAppends.length)
       segments.push(...allAppends)
-    return (segments.filter(Boolean) as BreadcrumbItemProps[])
+    lastBreadcrumbs.value = (segments.filter(Boolean) as BreadcrumbItemProps[])
       .map((item) => {
         let fallbackLabel = titleCase(String((item.to || '').split('/').pop()))
         let fallbackAriaLabel = ''
@@ -246,12 +277,16 @@ export function useBreadcrumbItems(_options: BreadcrumbProps = {}) {
         return m
       })
       .filter(Boolean) as BreadcrumbItemProps[]
+    return lastBreadcrumbs.value
   })
 
   const schemaOrgEnabled = typeof _options.schemaOrg === 'undefined' ? true : _options.schemaOrg
   // TODO can probably drop this schemaOrgEnabled flag as we mock the function
+  // @ts-expect-error untyped
   if ((import.meta.dev || import.meta.server || import.meta.env?.NODE_ENV === 'test') && schemaOrgEnabled) {
+    // @ts-expect-error untyped
     useSchemaOrg([
+      // @ts-expect-error untyped
       defineBreadcrumb({
         id: `#${id}`,
         itemListElement: computed(() => items.value.map(item => ({

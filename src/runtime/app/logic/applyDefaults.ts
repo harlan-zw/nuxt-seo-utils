@@ -1,4 +1,4 @@
-import type { UseHeadOptions, UseSeoMetaInput } from '@unhead/vue'
+import type { Link, UseHeadOptions, UseSeoMetaInput } from '@unhead/vue'
 import type { QueryObject } from 'ufo'
 import type { Ref } from 'vue'
 import { injectHead, useHead, useSeoMeta } from '#imports'
@@ -18,9 +18,9 @@ export function applyDefaults(i18n: { locale: Ref<string> }) {
   const route = useRoute()
   const resolveUrl = createSitePathResolver({ withBase: true, absolute: true })
   const err = useError()
-  const canonicalUrl = computed<string | null>(() => {
+  const canonicalUrl = computed<Link | false>(() => {
     if (err.value) {
-      return null
+      return false
     }
     const { query } = route
     let url = (resolveUrl(route.path || '/').value || route.path)
@@ -39,9 +39,10 @@ export function applyDefaults(i18n: { locale: Ref<string> }) {
         .filter(([key]) => canonicalQueryWhitelist.includes(key))
         .sort(([a], [b]) => a.localeCompare(b)), // Sort params
     ) as QueryObject
-    return Object.keys(filteredQuery).length
+    const href = Object.keys(filteredQuery).length
       ? `${url}?${stringifyQuery(filteredQuery)}`
       : url
+    return { rel: 'canonical', href }
   })
 
   const minimalPriority: UseHeadOptions = {
@@ -57,12 +58,15 @@ export function applyDefaults(i18n: { locale: Ref<string> }) {
       siteName: () => siteConfig.name,
     },
     titleTemplate: '%s %separator %siteName',
-    link: [{ rel: 'canonical', href: () => canonicalUrl.value }],
+    link: [() => canonicalUrl.value],
   }, minimalPriority)
 
   const seoMeta: UseSeoMetaInput = {
     ogType: 'website',
-    ogUrl: () => canonicalUrl.value,
+    ogUrl: () => {
+      const url = canonicalUrl.value
+      return url ? url.href : false
+    },
     ogLocale: () => {
       if (i18n.locale.value) {
         // verify it's a locale and not just "en"

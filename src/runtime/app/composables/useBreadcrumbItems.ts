@@ -12,7 +12,7 @@ import { defu } from 'defu'
 import { fixSlashes } from 'nuxt-site-config/urls'
 import { useNuxtApp, useRoute, useRouter, useState } from 'nuxt/app'
 import { withoutTrailingSlash } from 'ufo'
-import { computed, getCurrentInstance, inject, onScopeDispose, onUnmounted, provide, ref, toRaw, toValue } from 'vue'
+import { computed, getCurrentInstance, watch, inject, onScopeDispose, onUnmounted, provide, ref, toRaw, toValue } from 'vue'
 import { pathBreadcrumbSegments } from '../../shared/breadcrumbs'
 
 interface NuxtUIBreadcrumbItem extends NuxtLinkProps {
@@ -236,7 +236,7 @@ export function useBreadcrumbItems(_options: BreadcrumbProps = {}) {
       segments.unshift(...allPrepends)
     if (allAppends.length)
       segments.push(...allAppends)
-    lastBreadcrumbs.value = (segments.filter(Boolean) as BreadcrumbItemProps[])
+    return (segments.filter(Boolean) as BreadcrumbItemProps[])
       .map((item) => {
         let fallbackLabel = titleCase(String((item.to || '').split('/').pop()))
         let fallbackAriaLabel = ''
@@ -277,8 +277,13 @@ export function useBreadcrumbItems(_options: BreadcrumbProps = {}) {
         return m
       })
       .filter(Boolean) as BreadcrumbItemProps[]
-    return lastBreadcrumbs.value
   })
+
+  watch(items, (newItems) => {
+    if (!pauseUpdates.value) {
+      lastBreadcrumbs.value = newItems
+    }
+  }, { immediate: true })
 
   const schemaOrgEnabled = typeof _options.schemaOrg === 'undefined' ? true : _options.schemaOrg
   // TODO can probably drop this schemaOrgEnabled flag as we mock the function

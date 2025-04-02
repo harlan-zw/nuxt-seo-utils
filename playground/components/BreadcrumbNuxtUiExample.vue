@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { ref } from '#imports'
+import { ref, useBreadcrumbItems } from '#imports'
 
 const path = ref('/docs/seo-utils/api/breadcrumbs')
 

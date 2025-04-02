@@ -34,6 +34,9 @@ jobs:
       - run: pnpm i
 
       - name: Build
+        run: pnpm run dev:prepare
+
+      - name: Build
         run: pnpm run build
 
       - name: Typecheck

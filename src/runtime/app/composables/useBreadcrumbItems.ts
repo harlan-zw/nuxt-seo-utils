@@ -1,18 +1,25 @@
 import type { NuxtLinkProps } from 'nuxt/app'
 import type { MaybeRefOrGetter, Ref } from 'vue'
 import type { RouteMeta } from 'vue-router'
-import {
-  defineBreadcrumb,
-  useI18n,
-  useSchemaOrg,
-} from '#imports'
+import { defineBreadcrumb, useI18n, useSchemaOrg } from '#imports'
 import { useSiteConfig } from '#site-config/app/composables/useSiteConfig'
 import { createSitePathResolver } from '#site-config/app/composables/utils'
 import { defu } from 'defu'
 import { fixSlashes } from 'nuxt-site-config/urls'
 import { useNuxtApp, useRoute, useRouter, useState } from 'nuxt/app'
 import { withoutTrailingSlash } from 'ufo'
-import { computed, getCurrentInstance, watch, inject, onScopeDispose, onUnmounted, provide, ref, toRaw, toValue } from 'vue'
+import {
+  computed,
+  getCurrentInstance,
+  inject,
+  onScopeDispose,
+  onUnmounted,
+  provide,
+  ref,
+  toRaw,
+  toValue,
+  watch,
+} from 'vue'
 import { pathBreadcrumbSegments } from '../../shared/breadcrumbs'
 
 interface NuxtUIBreadcrumbItem extends NuxtLinkProps {
@@ -85,6 +92,10 @@ export interface BreadcrumbProps {
   rootSegment?: string
 }
 
+export type ResolvedBreadcrumbProps = {
+  [key in keyof BreadcrumbProps]: BreadcrumbProps[key] extends MaybeRefOrGetter<infer T> ? T : BreadcrumbProps[key]
+}
+
 export interface BreadcrumbItemProps extends NuxtUIBreadcrumbItem {
   /** Whether the breadcrumb item represents the aria-current. */
   current?: boolean
@@ -129,9 +140,15 @@ const BreadcrumbCtx = Symbol('BreadcrumbCtx')
  */
 export function useBreadcrumbItems(_options: BreadcrumbProps = {}) {
   const vm = getCurrentInstance()
-  const id = _options.id || 'breadcrumb'
+  const id = `${vm?.uid || 0}:${_options.id || 'breadcrumb'}`
+  const parentChain: number[] = []
+  let parent = vm?.parent
+  while (parent) {
+    parentChain.push(parent.uid)
+    parent = parent.parent
+  }
   const pauseUpdates = ref(import.meta.client)
-  let stateRef: Ref<Record<string, (false | BreadcrumbProps)[]>> | null = null
+  let stateRef: Ref<Record<string, BreadcrumbProps>> | null = null
   if (vm) {
     stateRef = inject(BreadcrumbCtx, null)
     if (!stateRef) {
@@ -139,18 +156,12 @@ export function useBreadcrumbItems(_options: BreadcrumbProps = {}) {
       provide(BreadcrumbCtx, stateRef)
     }
     const state = stateRef.value
-    if (!state[id]) {
-      state[id] = []
-    }
-    const idx = state[id].push(_options) - 1
+    state[id] = _options
     stateRef.value = state
     onUnmounted(() => {
       const state = toRaw(stateRef!.value)
-      if (state[id]) {
-        // avoid assigning new array entries
-        state[id] = state[id].map((_, i) => i === idx ? false : _)
-        stateRef!.value = state
-      }
+      delete state[id]
+      stateRef!.value = state
     })
     if (import.meta.client) {
       const nuxtApp = useNuxtApp()
@@ -191,51 +202,64 @@ export function useBreadcrumbItems(_options: BreadcrumbProps = {}) {
     if (import.meta.client && pauseUpdates.value) {
       return lastBreadcrumbs.value
     }
-    const optionStack = stateRef?.value?.[id] || [_options]
-    const flatOptions = (toRaw([...optionStack]).filter(Boolean) as BreadcrumbProps[]).reduce((acc, cur) => {
+    const state = toValue(stateRef) || {}
+    const optionStack = [...parentChain, vm?.uid || 0]
+      .map(parentId => state[`${parentId}:${_options.id || 'breadcrumb'}`])
+      .filter(Boolean) as BreadcrumbProps[]
+    const flatOptions = optionStack.reduce((acc, _cur) => {
+      const cur: typeof _cur = {}
+      Object.entries(_cur).forEach(([key, value]) => {
+        cur[key as keyof typeof cur] = toValue(value)
+      })
+      acc.hideRoot = typeof cur.hideRoot === 'undefined' ? acc.hideRoot : cur.hideRoot
+      acc.hideCurrent = typeof cur.hideCurrent === 'undefined' ? acc.hideCurrent : cur.hideCurrent
       acc.rootSegment = acc.rootSegment || cur.rootSegment
       acc.path = acc.path || cur.path
+      acc.overrides = acc.overrides || []
+      const overrides = toRaw(toValue(cur.overrides))
+      if (overrides) {
+        overrides.forEach((item, index) => {
+          if (item !== undefined) {
+            // @ts-expect-error untyped
+            acc.overrides![index] = toRaw(toValue(item))
+          }
+        })
+      }
+      // join all append and prepend
+      const prepend = toRaw(toValue(cur.prepend))
+      const append = toRaw(toValue(cur.append))
+      if (prepend && prepend.length) {
+        acc.prepend = [...(acc.prepend || []), ...prepend.map(m => toRaw(toValue(m)))].filter(Boolean)
+      }
+      if (append && append.length)
+        acc.append = [...(acc.append || []), ...append.map(m => toRaw(toValue(m)))].filter(Boolean)
       return acc
-    }, {})
+    }, {}) as Required<ResolvedBreadcrumbProps>
+
     let rootNode = flatOptions.rootSegment || '/'
     if (i18n) {
       if (i18n.strategy === 'prefix' || (i18n.strategy !== 'no_prefix' && toValue(i18n.defaultLocale) !== toValue(i18n.locale)))
         rootNode = `${rootNode}${toValue(i18n.locale)}`
     }
-    const current = withoutQuery(withoutTrailingSlash(toValue(flatOptions.path) || toRaw(route).path || rootNode))
+    const current = withoutQuery(withoutTrailingSlash(flatOptions.path || toRaw(route).path || rootNode))
     // apply overrides
-    const allOverrides = (toRaw([...optionStack]).filter(Boolean) as BreadcrumbProps[])?.map(opts => toValue(opts.overrides)).filter(Boolean)
-    const flatOverrides = allOverrides?.reduce((acc: (BreadcrumbItemProps | false | undefined)[], i) => {
-      // merge them based on index
-      if (i) {
-        i.forEach((item, index) => {
-          if (item !== undefined) {
-            acc[index] = item
-          }
-        })
-      }
-      return acc
-    }, []) || {}
     const segments = pathBreadcrumbSegments(current, rootNode)
       .map((path, index) => {
         let item = <BreadcrumbItemProps> {
           to: path,
         }
-        if (typeof flatOverrides[index] !== 'undefined') {
-          if (flatOverrides[index] === false)
+        const override = flatOptions.overrides[index]
+        if (typeof override !== 'undefined') {
+          if (override === false)
             return false
-          item = defu(flatOverrides[index] as any as BreadcrumbItemProps, item)
+          item = defu(override as any as BreadcrumbItemProps, item)
         }
         return item
       })
 
-    const allPrepends = (toRaw([...optionStack]).filter(Boolean) as BreadcrumbProps[]).flatMap(opts => toValue(opts.prepend)).filter(Boolean) as any as BreadcrumbItemProps[]
-    const allAppends = (toRaw([...optionStack]).filter(Boolean) as BreadcrumbProps[]).flatMap(opts => toValue(opts.append)).filter(Boolean) as any as BreadcrumbItemProps[]
     // apply prepends and appends
-    if (allPrepends.length)
-      segments.unshift(...allPrepends)
-    if (allAppends.length)
-      segments.push(...allAppends)
+    segments.unshift(...(flatOptions.prepend || []))
+    segments.push(...(flatOptions.append || []))
     return (segments.filter(Boolean) as BreadcrumbItemProps[])
       .map((item) => {
         let fallbackLabel = titleCase(String((item.to || '').split('/').pop()))
@@ -250,7 +274,7 @@ export function useBreadcrumbItems(_options: BreadcrumbProps = {}) {
               ...routeMeta.breadcrumb,
             }
           }
-          const routeName = String(route.name).split('___')[0]
+          const routeName = String(route.name).split('___')?.[0]
           if (routeName === 'index') {
             fallbackLabel = 'Home'
           }
@@ -264,14 +288,14 @@ export function useBreadcrumbItems(_options: BreadcrumbProps = {}) {
         item.ariaLabel = item.ariaLabel || fallbackAriaLabel || item.label
         // mark the current based on the options
         item.current = item.current || item.to === current
-        if (toValue(flatOptions.hideCurrent) && item.current)
+        if (flatOptions.hideCurrent && item.current)
           return false
         return item
       })
       .map((m) => {
         if (m && m.to) {
           m.to = fixSlashes(siteConfig.trailingSlash, m.to)
-          if (m.to === rootNode && toValue(flatOptions.hideRoot))
+          if (m.to === rootNode && flatOptions.hideRoot)
             return false
         }
         return m

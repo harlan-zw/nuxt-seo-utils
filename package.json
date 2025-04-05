@@ -16,13 +16,11 @@
   },
   "exports": {
     ".": {
-      "types": "./dist/types.d.ts",
-      "import": "./dist/module.mjs",
-      "require": "./dist/module.cjs"
+      "types": "./dist/types.d.mts",
+      "import": "./dist/module.mjs"
     }
   },
-  "main": "./dist/module.cjs",
-  "types": "./dist/types.d.ts",
+  "main": "./dist/module.mjs",
   "files": [
     "dist"
   ],
@@ -51,11 +49,11 @@
   },
   "dependencies": {
     "@nuxt/kit": "^3.16.2",
-    "@unhead/addons": "^2.0.2",
+    "@unhead/addons": "^2.0.3",
     "defu": "^6.1.4",
     "escape-string-regexp": "^5.0.0",
     "fast-glob": "^3.3.3",
-    "image-size": "^2.0.1",
+    "image-size": "^2.0.2",
     "nuxt-site-config": "^3.1.7",
     "pathe": "^2.0.3",
     "pkg-types": "^2.1.0",
@@ -65,25 +63,25 @@
   },
   "devDependencies": {
     "@antfu/eslint-config": "4.11.0",
-    "@nuxt/module-builder": "^0.8.4",
+    "@nuxt/module-builder": "^1.0.0",
     "@nuxt/schema": "3.16.2",
     "@nuxt/test-utils": "^3.17.2",
     "@nuxt/ui": "^3.0.2",
     "@nuxtjs/eslint-config-typescript": "^12.1.0",
-    "@nuxtjs/i18n": "^9.4.0",
-    "@unhead/vue": "2.0.2",
+    "@nuxtjs/i18n": "^9.5.0",
+    "@unhead/vue": "2.0.3",
     "@vue/test-utils": "^2.4.6",
     "bumpp": "^10.1.0",
     "case-police": "^2.0.0",
     "cheerio": "1.0.0",
-    "eslint": "^9.23.0",
+    "eslint": "^9.24.0",
     "happy-dom": "^17.4.4",
     "markdownlint-cli": "^0.44.0",
     "nuxt": "3.16.2",
     "nuxt-content-twoslash": "^0.1.2",
     "playwright-core": "^1.51.1",
-    "sass": "^1.86.1",
-    "typescript": "5.8.2",
+    "sass": "^1.86.3",
+    "typescript": "5.8.3",
     "vitest": "^3.1.1",
     "vue-tsc": "^2.2.8"
   },

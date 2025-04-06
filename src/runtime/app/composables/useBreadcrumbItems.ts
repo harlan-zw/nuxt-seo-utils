@@ -229,6 +229,7 @@ export function useBreadcrumbItems(_options: BreadcrumbProps = {}) {
       const prepend = toRaw(toValue(cur.prepend))
       const append = toRaw(toValue(cur.append))
       if (prepend && prepend.length) {
+        // @ts-expect-error untyped
         acc.prepend = [...(acc.prepend || []), ...prepend.map(m => toRaw(toValue(m)))].filter(Boolean)
       }
       if (append && append.length)

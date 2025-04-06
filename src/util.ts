@@ -30,7 +30,7 @@ export async function getImageMeta(base: string, path: string, isIcon = false) {
     if (fs.existsSync(altTextPath)) {
       payload.alt = fs.readFileSync(altTextPath, 'utf8')
       // need to normalise alt for og:image:alt
-      payload.alt = payload.alt.replace(/\n/g, ' ').trim()
+      payload.alt = String(payload.alt).replace(/\n/g, ' ').trim()
     }
   }
   else {

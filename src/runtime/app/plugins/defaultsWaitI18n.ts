@@ -10,13 +10,7 @@ export default defineNuxtPlugin({
   },
   // we need to wait for the i18n plugin to run first
   dependsOn: ['nuxt-site-config:i18n'],
-  setup(nuxtApp) {
-    const siteConfig = useSiteConfig()
-    // @ts-expect-error untyped
-    const locale = ref(nuxtApp.$i18n?.locale?.value || siteConfig.currentLocale || siteConfig.defaultLocale)
-    nuxtApp.hook('i18n:localeSwitched', ({ newLocale }) => {
-      locale.value = newLocale
-    })
-    applyDefaults({ locale })
+  setup() {
+    applyDefaults()
   },
 })

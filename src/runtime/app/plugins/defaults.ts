@@ -10,11 +10,6 @@ export default defineNuxtPlugin({
     islands: false,
   },
   setup() {
-    const siteConfig = useSiteConfig()
-    const locale = ref(siteConfig.currentLocale || siteConfig.defaultLocale)
-    applyDefaults({
-      locale,
-    })
-    // TODO reactive locale, need upstream fixes to nuxt-site-config
+    applyDefaults()
   },
 })

@@ -13,6 +13,8 @@ describe('default', () => {
     // extract the <head>
     const html = await $fetch('/')
     const head = html.match(/<head>([\s\S]*)<\/head>/)?.[1]
+    const htmlAttributes = html.match(/<html([\s\S]*?)>/)?.[1]
+    expect(htmlAttributes).toMatchInlineSnapshot(`"  lang="en-US""`)
     // remove all style tags
     const headWithoutStyles = head?.replace(/<style[\s\S]*?<\/style>/g, '')
     const headWithoutScripts = headWithoutStyles?.replace(/<script[\s\S]*?<\/script>/g, '')
@@ -37,6 +39,7 @@ describe('default', () => {
       <meta property="og:title" data-infer="" content="Home x en name">
       <meta property="og:description" data-infer="" content="Hi, welcome to the test v1.3.4 of en name.">
       <meta property="og:url" content="https://nuxtseo.com/">
+      <meta property="og:locale" content="en_US">
       <meta property="og:site_name" content="en name">"
     `)
   }, 30_000)

@@ -1,20 +1,22 @@
 import type { Link, UseHeadOptions, UseSeoMetaInput } from '@unhead/vue'
 import type { QueryObject } from 'ufo'
-import type { Ref } from 'vue'
 import { injectHead, useHead, useSeoMeta } from '#imports'
 import { useSiteConfig } from '#site-config/app/composables/useSiteConfig'
 import { createSitePathResolver } from '#site-config/app/composables/utils'
 import { TemplateParamsPlugin } from '@unhead/vue/plugins'
 import { useError, useRoute, useRuntimeConfig } from 'nuxt/app'
 import { stringifyQuery } from 'ufo'
-import { computed } from 'vue'
+import { computed, toValue } from 'vue'
 
-export function applyDefaults(i18n: { locale: Ref<string> }) {
+export function applyDefaults() {
+  const siteConfig = useSiteConfig({
+    resolveRefs: false,
+  })
+
   const head = injectHead()
   head.use(TemplateParamsPlugin)
   // get the head instance
   const { canonicalQueryWhitelist, canonicalLowercase } = useRuntimeConfig().public['seo-utils']
-  const siteConfig = useSiteConfig()
   const route = useRoute()
   const resolveUrl = createSitePathResolver({ withBase: true, absolute: true })
   const err = useError()
@@ -52,7 +54,7 @@ export function applyDefaults(i18n: { locale: Ref<string> }) {
 
   // needs higher priority
   useHead({
-    htmlAttrs: { lang: i18n.locale },
+    htmlAttrs: { lang: siteConfig.currentLocale },
     templateParams: {
       site: () => siteConfig,
       siteName: () => siteConfig.name,
@@ -68,11 +70,12 @@ export function applyDefaults(i18n: { locale: Ref<string> }) {
       return url ? url.href : false
     },
     ogLocale: () => {
-      if (i18n.locale.value) {
+      const locale = toValue(siteConfig.currentLocale)
+      if (locale) {
         // verify it's a locale and not just "en"
-        const locale = i18n.locale.value.replace('-', '_')
-        if (locale.includes('_')) {
-          return locale
+        const l = locale.replace('-', '_')
+        if (l.includes('_')) {
+          return l
         }
       }
       return false

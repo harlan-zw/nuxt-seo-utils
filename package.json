@@ -49,7 +49,7 @@
   },
   "dependencies": {
     "@nuxt/kit": "^3.16.2",
-    "@unhead/addons": "^2.0.3",
+    "@unhead/addons": "^2.0.4",
     "defu": "^6.1.4",
     "escape-string-regexp": "^5.0.0",
     "fast-glob": "^3.3.3",
@@ -69,7 +69,7 @@
     "@nuxt/ui": "^3.0.2",
     "@nuxtjs/eslint-config-typescript": "^12.1.0",
     "@nuxtjs/i18n": "^9.5.2",
-    "@unhead/vue": "2.0.3",
+    "@unhead/vue": "2.0.4",
     "@vue/test-utils": "^2.4.6",
     "bumpp": "^10.1.0",
     "case-police": "^2.0.0",

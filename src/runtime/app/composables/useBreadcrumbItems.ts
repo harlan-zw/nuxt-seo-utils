@@ -139,6 +139,7 @@ const BreadcrumbCtx = Symbol('BreadcrumbCtx')
  * @docs https://nuxtseo.com/nuxt-seo/api/breadcrumbs
  */
 export function useBreadcrumbItems(_options: BreadcrumbProps = {}) {
+  const nuxtApp = useNuxtApp()
   const vm = getCurrentInstance()
   const id = `${vm?.uid || 0}:${_options.id || 'breadcrumb'}`
   const parentChain: number[] = []
@@ -147,7 +148,7 @@ export function useBreadcrumbItems(_options: BreadcrumbProps = {}) {
     parentChain.push(parent.uid)
     parent = parent.parent
   }
-  const pauseUpdates = ref(import.meta.client)
+  const pauseUpdates = ref(import.meta.client && !nuxtApp.isHydrating)
   let stateRef: Ref<Record<string, BreadcrumbProps>> | null = null
   if (vm) {
     stateRef = inject(BreadcrumbCtx, null)
@@ -164,7 +165,6 @@ export function useBreadcrumbItems(_options: BreadcrumbProps = {}) {
       stateRef!.value = state
     })
     if (import.meta.client) {
-      const nuxtApp = useNuxtApp()
       const _: any[] = []
       // pause dom updates until page is ready and between page transitions
       _.push(nuxtApp.hooks.hook('page:start', () => {

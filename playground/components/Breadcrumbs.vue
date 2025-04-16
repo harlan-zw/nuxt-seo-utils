@@ -1,4 +1,7 @@
 <script lang="ts" setup>
+import { useBreadcrumbItems } from '#imports'
+import { computed } from 'vue'
+
 const breadcrumb = useBreadcrumbItems()
 
 const crumbs = computed(() => {

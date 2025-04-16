@@ -3,6 +3,10 @@ import { defineEventHandler, getRequestHost, sendRedirect, setHeader } from 'h3'
 import { joinURL } from 'ufo'
 
 export default defineEventHandler((e) => {
+  // avoid redirecting in prerender mode
+  if (import.meta.prerender) {
+    return
+  }
   const path = e.path
   // we only care about routes getting indexed
   if (path.startsWith('/_nuxt') || path.startsWith('/api')) {
@@ -13,7 +17,7 @@ export default defineEventHandler((e) => {
     return
   }
   const siteConfig = useSiteConfig(e)
-  if (!siteConfig.url) {
+  if (!siteConfig.url || siteConfig.env !== 'production') {
     return
   }
   const siteConfigHostName = new URL(e.path, siteConfig.url).host

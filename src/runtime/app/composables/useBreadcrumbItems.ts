@@ -148,7 +148,7 @@ export function useBreadcrumbItems(_options: BreadcrumbProps = {}) {
     parentChain.push(parent.uid)
     parent = parent.parent
   }
-  const pauseUpdates = ref(import.meta.client && !nuxtApp.isHydrating)
+  const pauseUpdates = ref(import.meta.client && nuxtApp.isHydrating)
   let stateRef: Ref<Record<string, BreadcrumbProps>> | null = null
   if (vm) {
     stateRef = inject(BreadcrumbCtx, null)

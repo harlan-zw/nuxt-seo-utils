@@ -54,7 +54,7 @@ export function applyDefaults() {
 
   // needs higher priority
   useHead({
-    htmlAttrs: { lang: siteConfig.currentLocale },
+    htmlAttrs: { lang: () => toValue(siteConfig.currentLocale) },
     templateParams: {
       site: () => siteConfig,
       siteName: () => siteConfig.name,

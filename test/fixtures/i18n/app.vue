@@ -7,8 +7,6 @@ function setLanguage(code: string) {
   i18n.setLocale(code)
 }
 
-const defaultLocale = i18n.defaultLocale
-
 const items = useBreadcrumbItems({
   hideRoot: false,
   hideCurrent: false,
@@ -36,10 +34,8 @@ const items = useBreadcrumbItems({
 })
 
 const languageOptions = [
-  [
-    { label: 'English', click() { setLanguage('en') } },
-    { label: 'French', click() { setLanguage('fr') } },
-  ],
+  { label: 'English', click() { setLanguage('en') } },
+  { label: 'French', click() { setLanguage('fr') } },
 ]
 const route = useRoute()
 if (route.query.name) {
@@ -66,9 +62,11 @@ const siteConfig = useSiteConfig()
               {{ siteConfig.url }}
             </div>
           </NuxtLink>
-          <UDropdown :items="languageOptions" :popper="{ placement: 'bottom-start' }">
-            <UButton color="white" :label="defaultLocale" trailing-icon="i-heroicons-chevron-down" />
-          </UDropdown>
+          <div v-for="language in languageOptions" :key="language.label">
+            <button type="button" @click="language.click">
+              {{ language.label }}
+            </button>
+          </div>
         </div>
       </UContainer>
     </header>

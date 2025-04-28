@@ -141,11 +141,13 @@ const BreadcrumbCtx = Symbol('BreadcrumbCtx')
 export function useBreadcrumbItems(_options: BreadcrumbProps = {}) {
   const nuxtApp = useNuxtApp()
   const vm = getCurrentInstance()
-  const id = `${vm?.uid || 0}:${_options.id || 'breadcrumb'}`
+  // id must be a string representation not a vm uid as SSR -> Client uid does not match
+  const id = `${_options.id || 'breadcrumb'}`
+  const uid = `${vm?.uid || 0}`
   const parentChain: number[] = []
   let parent = vm?.parent
   while (parent) {
-    parentChain.push(parent.uid)
+    parentChain.push(parent.uid || 0)
     parent = parent.parent
   }
   const pauseUpdates = ref(import.meta.client && nuxtApp.isHydrating)
@@ -157,11 +159,11 @@ export function useBreadcrumbItems(_options: BreadcrumbProps = {}) {
       provide(BreadcrumbCtx, stateRef)
     }
     const state = stateRef.value
-    state[id] = _options
+    state[uid] = _options
     stateRef.value = state
     onUnmounted(() => {
       const state = toRaw(stateRef!.value)
-      delete state[id]
+      delete state[uid]
       stateRef!.value = state
     })
     if (import.meta.client) {
@@ -203,8 +205,8 @@ export function useBreadcrumbItems(_options: BreadcrumbProps = {}) {
       return lastBreadcrumbs.value
     }
     const state = toValue(stateRef) || {}
-    const optionStack = [...parentChain, vm?.uid || 0]
-      .map(parentId => state[`${parentId}:${_options.id || 'breadcrumb'}`])
+    const optionStack = [...parentChain, uid]
+      .map(parentId => state[parentId])
       .filter(Boolean) as BreadcrumbProps[]
     const flatOptions = optionStack.reduce((acc, _cur) => {
       const cur: typeof _cur = {}

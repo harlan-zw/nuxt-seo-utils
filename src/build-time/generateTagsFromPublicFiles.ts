@@ -33,7 +33,7 @@ export default async function generateTagsFromPublicFiles(nuxt: Nuxt = useNuxt()
 
     const isIcon = (file: string) => file.includes('icon') && !file.endsWith('.ico')
     const isAppleTouchIcon = (file: string) => (
-      (file.startsWith('apple-icon.') || file.startsWith('apple-touch-icon.') || file.startsWith('apple-touch.'))
+      (file.includes('apple-icon') || file.includes('apple-touch-icon') || file.includes('apple-touch'))
     )
 
     headConfig.link!.push(

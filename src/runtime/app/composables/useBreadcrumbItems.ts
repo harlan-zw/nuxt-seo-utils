@@ -322,7 +322,7 @@ export function useBreadcrumbItems(_options: BreadcrumbProps = {}) {
     if (!pauseUpdates.value) {
       lastBreadcrumbs.value = newItems
     }
-  }, { immediate: true })
+  }, { immediate: true, flush: 'sync' })
 
   const schemaOrgEnabled = typeof _options.schemaOrg === 'undefined' ? true : _options.schemaOrg
   // TODO can probably drop this schemaOrgEnabled flag as we mock the function

@@ -85,6 +85,14 @@ export interface BreadcrumbProps {
    */
   hideRoot?: MaybeRefOrGetter<boolean>
   /**
+   * Should breadcrumb items with non-existing path be shown.
+   *
+   * By default, every path segments will be present in breadcrumb list even if there is no corresponding page for such segment.
+   *
+   * @default false
+   */
+  hideNonExisting?: MaybeRefOrGetter<boolean>
+  /**
    * The root segment of the breadcrumb list.
    *
    * By default, this will be `/`, unless you're using Nuxt I18n with a prefix strategy.
@@ -215,6 +223,7 @@ export function useBreadcrumbItems(_options: BreadcrumbProps = {}) {
       })
       acc.hideRoot = typeof cur.hideRoot === 'undefined' ? acc.hideRoot : cur.hideRoot
       acc.hideCurrent = typeof cur.hideCurrent === 'undefined' ? acc.hideCurrent : cur.hideCurrent
+      acc.hideNonExisting = typeof cur.hideNonExisting === 'undefined' ? acc.hideNonExisting : cur.hideNonExisting
       acc.rootSegment = acc.rootSegment || cur.rootSegment
       acc.path = acc.path || cur.path
       acc.overrides = acc.overrides || []
@@ -284,6 +293,9 @@ export function useBreadcrumbItems(_options: BreadcrumbProps = {}) {
           fallbackLabel = routeMeta.breadcrumbLabel || routeMeta.breadcrumbTitle || routeMeta.title || fallbackLabel
           fallbackLabel = i18n.t(`breadcrumb.items.${routeName}.label`, fallbackLabel, { missingWarn: false })
           fallbackAriaLabel = i18n.t(`breadcrumb.items.${routeName}.ariaLabel`, fallbackAriaLabel, { missingWarn: false })
+        }
+        else if (flatOptions.hideNonExisting) {
+          return false
         }
 
         // allow opt-out of label normalise with `false` value

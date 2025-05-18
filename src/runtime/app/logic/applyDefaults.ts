@@ -13,6 +13,8 @@ export function applyDefaults() {
     resolveRefs: false,
   })
 
+  const resolveCurrentLocale = () => toValue(siteConfig.currentLocale) || toValue(siteConfig.defaultLocale) || 'en'
+
   const head = injectHead()
   head.use(TemplateParamsPlugin)
   // get the head instance
@@ -28,7 +30,7 @@ export function applyDefaults() {
     let url = (resolveUrl(route.path || '/').value || route.path)
     if (canonicalLowercase) {
       try {
-        url = url.toLocaleLowerCase(siteConfig.currentLocale || 'en')
+        url = url.toLocaleLowerCase(resolveCurrentLocale())
       }
       catch {
         // fallback to default
@@ -54,7 +56,7 @@ export function applyDefaults() {
 
   // needs higher priority
   useHead({
-    htmlAttrs: { lang: () => toValue(siteConfig.currentLocale) },
+    htmlAttrs: { lang: resolveCurrentLocale },
     templateParams: {
       site: () => siteConfig,
       siteName: () => siteConfig.name,
@@ -70,7 +72,7 @@ export function applyDefaults() {
       return url ? url.href : false
     },
     ogLocale: () => {
-      const locale = toValue(siteConfig.currentLocale)
+      const locale = resolveCurrentLocale()
       if (locale) {
         // verify it's a locale and not just "en"
         const l = locale.replace('-', '_')

@@ -253,14 +253,14 @@ export function useBreadcrumbItems(_options: BreadcrumbProps = {}) {
       if (i18n.strategy === 'prefix' || (i18n.strategy !== 'no_prefix' && toValue(i18n.defaultLocale) !== toValue(i18n.locale)))
         rootNode = `${rootNode}${toValue(i18n.locale)}`
     }
-    const current = withoutQuery(withoutTrailingSlash(flatOptions.path || toRaw(route).path || rootNode))
+    const current = withoutQuery(withoutTrailingSlash(flatOptions.path || toRaw(route)?.path || rootNode))
     // apply overrides
     const segments = pathBreadcrumbSegments(current, rootNode)
       .map((path, index) => {
         let item = <BreadcrumbItemProps> {
           to: path,
         }
-        const override = flatOptions.overrides[index]
+        const override = flatOptions.overrides?.[index]
         if (typeof override !== 'undefined') {
           if (override === false)
             return false

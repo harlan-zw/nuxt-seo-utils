@@ -42,7 +42,7 @@ export function generateNuxtPageFromFile(file: string, pagesDir: string): NuxtPa
   let parent: NuxtPage[] = []
 
   for (let i = 0; i < segments.length; i++) {
-    const segment = segments[i]
+    const segment = segments[i] || ''
 
     const tokens = parseSegment(segment)
     const segmentName = tokens.map(({ value }) => value).join('')
@@ -119,7 +119,7 @@ function parseSegment(segment: string) {
   }
 
   while (i < segment.length) {
-    const c = segment[i]
+    const c = segment[i] || ''
 
     switch (state) {
       case SegmentParserState.initial:

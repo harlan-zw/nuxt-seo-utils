@@ -22,7 +22,7 @@ export default async function generateTagsFromPageDirImages(nuxt: Nuxt = useNuxt
   const nitroOutputMap: { src: string, dest: string }[] = []
   for (const file of files) {
     const fileName = basename(file)
-    const keyword = fileName.split('.')[0]
+    const keyword = fileName.split('.')[0] || ''
     // for the page file we'll need to figure out what the actual route is
     // const route = file.replace(/\/(og|icon|apple-icon)\.png$/, '')
     let { path } = generateNuxtPageFromFile(resolve(pagesDir, dirname(file)), pagesDir)

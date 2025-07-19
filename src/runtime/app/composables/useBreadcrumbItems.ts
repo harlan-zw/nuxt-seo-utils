@@ -276,7 +276,7 @@ export function useBreadcrumbItems(_options: BreadcrumbProps = {}) {
       .map((item) => {
         let fallbackLabel = titleCase(String((item.to || '').split('/').pop()))
         let fallbackAriaLabel = ''
-        const route = item.to ? router.resolve(item.to as string)?.matched?.[0] : null
+        const route = item.to ? router.resolve(item.to as string)?.matched?.at(-1) : null
         if (route) {
           const routeMeta = (route?.meta || {}) as RouteMeta & { title?: string, breadcrumbLabel: string, breadcrumbTitle: string }
           // merge with the route meta

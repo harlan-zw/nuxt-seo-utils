@@ -281,10 +281,7 @@ export function useBreadcrumbItems(_options: BreadcrumbProps = {}) {
           const routeMeta = (route?.meta || {}) as RouteMeta & { title?: string, breadcrumbLabel: string, breadcrumbTitle: string }
           // merge with the route meta
           if (routeMeta.breadcrumb) {
-            item = {
-              ...item,
-              ...routeMeta.breadcrumb,
-            }
+            item = defu(item, routeMeta.breadcrumb);
           }
           const routeName = String(route.name).split('___')?.[0]
           if (routeName === 'index') {

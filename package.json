@@ -36,6 +36,7 @@
     "lint": "eslint . --fix",
     "stub": "nuxt-build-module build --stub && nuxt-module-build prepare",
     "build": "pnpm stub && nuxt-module-build build",
+    "prepack": "pnpm run build",
     "dev": "nuxi dev playground",
     "dev:build": "nuxi build playground",
     "typecheck": "vue-tsc --noEmit",

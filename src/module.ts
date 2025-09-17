@@ -325,7 +325,9 @@ export {}
     const appRuntimeDir = resolve(runtimeDir, './app')
     // remove useServerHead in client build
     if (config.treeShakeUseSeoMeta)
-      addVitePlugin(UnheadVite())
+      addVitePlugin(UnheadVite(), {
+        prepend: true,
+      })
     if (config.automaticOgAndTwitterTags)
       addPlugin({ src: resolve(appRuntimeDir, 'plugins', 'inferSeoMetaPlugin') })
 

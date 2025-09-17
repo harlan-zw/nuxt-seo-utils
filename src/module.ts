@@ -140,6 +140,19 @@ export default defineNuxtModule<ModuleOptions>({
       nuxt: '>=3.16.0',
     },
   },
+  moduleDependencies: {
+    '@nuxtjs/i18n': {
+      version: '>=8',
+      optional: true,
+    },
+    'nuxt-i18n-micro': {
+      version: '>=1',
+      optional: true,
+    },
+    'nuxt-site-config': {
+      version: '>=3',
+    },
+  },
   defaults: {
     enabled: true,
     debug: false,

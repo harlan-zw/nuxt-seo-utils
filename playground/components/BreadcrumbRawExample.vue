@@ -16,7 +16,7 @@ const items = useBreadcrumbItems({ path, hideRoot, hideCurrent })
           <ul>
             <li v-for="(item, key) in items" :key="key">
               <!-- @ts-expect-error href type incompatibility -->
-              <NuxtLink v-bind="item">
+              <NuxtLink v-bind="item as any">
                 {{ item.label }}
               </NuxtLink>
             </li>

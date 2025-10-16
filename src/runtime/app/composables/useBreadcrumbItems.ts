@@ -35,7 +35,6 @@ interface NuxtUIBreadcrumbItem extends NuxtLinkProps {
   exactQuery?: boolean
   exactMatch?: boolean
   inactiveClass?: string
-  [key: string]: any
 }
 
 export interface BreadcrumbProps {

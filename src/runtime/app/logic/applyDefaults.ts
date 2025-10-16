@@ -13,7 +13,12 @@ export function applyDefaults() {
     resolveRefs: false,
   })
 
-  const resolveCurrentLocale = () => toValue(siteConfig.currentLocale) || toValue(siteConfig.defaultLocale) || 'en'
+  const resolveCurrentLocale = () => {
+    const locale = toValue(siteConfig.currentLocale) || toValue(siteConfig.defaultLocale) || 'en'
+    // Normalize to BCP 47 format (hyphen-separated) for HTML lang attribute
+    // Convert underscore to hyphen (e.g., en_US -> en-US)
+    return locale.replace(/_/g, '-')
+  }
 
   const head = injectHead()
   head.use(TemplateParamsPlugin)

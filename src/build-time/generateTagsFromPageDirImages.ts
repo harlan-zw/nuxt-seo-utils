@@ -3,8 +3,8 @@ import type { UseSeoMetaInput } from '@unhead/vue/types'
 import fs from 'node:fs'
 import { useNuxt } from '@nuxt/kit'
 import { defu } from 'defu'
-import fg from 'fast-glob'
 import { basename, dirname, resolve } from 'pathe'
+import { glob } from 'tinyglobby'
 import { joinURL } from 'ufo'
 import { MetaTagFileGlobs } from '../const'
 import { generateNuxtPageFromFile } from '../pageUtils'
@@ -15,7 +15,7 @@ export default async function generateTagsFromPageDirImages(nuxt: Nuxt = useNuxt
   const pagesDir = resolve(nuxt.options.rootDir, nuxt.options.dir.pages)
 
   // within the pages folder, we need to find all images
-  const files = (await fg(MetaTagFileGlobs, { cwd: pagesDir, onlyFiles: true }))
+  const files = (await glob(MetaTagFileGlobs, { cwd: pagesDir, onlyFiles: true }))
 
   const appendRouteRules: Record<string, any> = {}
   const devMiddlewareMap: Record<string, string> = {}

@@ -6,7 +6,7 @@
   "description": "SEO utilities to improve your Nuxt sites discoverability and shareability",
   "license": "MIT",
   "funding": "https://github.com/sponsors/harlan-zw",
-  "homepage": "https://nuxtseo.com/docs/utils",
+  "homepage": "https://nuxtseo.com/docs/seo-utils",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/harlan-zw/nuxt-seo-utils.git"

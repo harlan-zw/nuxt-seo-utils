@@ -42,7 +42,7 @@ npx nuxi@latest module add nuxt-seo-utils
 
 ## Documentation
 
-[📖 Read the full documentation](https://nuxtseo.com/docs/utils) for more information.
+[📖 Read the full documentation](https://nuxtseo.com/docs/seo-utils) for more information.
 
 ## Demos
 

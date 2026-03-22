@@ -42,6 +42,34 @@ describe('seoMetaAppHeadKey', () => {
     `)
   })
 
+  it('seo.meta config key (#73)', async () => {
+    const mockNuxt = {
+      options: {
+        seo: {
+          meta: {
+            ogTitle: 'My OG Title',
+            ogDescription: 'My OG Description',
+          },
+        },
+        app: {
+          head: {
+            title: 'My Title',
+            titleTemplate: '%s | My Site',
+          },
+        },
+      },
+    } as any as Nuxt
+    extendNuxtConfigAppHeadSeoMeta(mockNuxt)
+    expect(mockNuxt.options.app.head.meta).toContainEqual({
+      property: 'og:title',
+      content: 'My OG Title',
+    })
+    expect(mockNuxt.options.app.head.meta).toContainEqual({
+      property: 'og:description',
+      content: 'My OG Description',
+    })
+  })
+
   it('merge ', async () => {
     const mockNuxt = {
       options: {

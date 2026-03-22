@@ -249,6 +249,11 @@ export default defineNuxtModule<ModuleOptions>({
     })
 
     addImports({
+      from: resolve(runtimeDir, `./app/composables/useFallbackTitle`),
+      name: 'useFallbackTitle',
+    })
+
+    addImports({
       from: resolve(runtimeDir, `./app/composables/useShareLinks`),
       name: 'useShareLinks',
     })

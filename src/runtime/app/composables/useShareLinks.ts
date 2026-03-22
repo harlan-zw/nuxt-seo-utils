@@ -1,8 +1,9 @@
+import type { QueryObject } from 'ufo'
 import type { MaybeRefOrGetter } from 'vue'
 import { useSiteConfig } from '#site-config/app/composables/useSiteConfig'
 import { createSitePathResolver } from '#site-config/app/composables/utils'
-import { useRoute } from 'nuxt/app'
-import { withQuery } from 'ufo'
+import { useRoute, useRuntimeConfig } from 'nuxt/app'
+import { stringifyQuery, withQuery } from 'ufo'
 import { computed, toValue } from 'vue'
 
 export type SharePlatform = 'twitter' | 'facebook' | 'linkedin' | 'whatsapp' | 'telegram' | 'reddit' | 'pinterest' | 'email'
@@ -35,7 +36,7 @@ export interface ShareLinksOptions {
   utm?: MaybeRefOrGetter<ShareLinkUtmParams | undefined>
 }
 
-export type ShareLinks = Record<SharePlatform, string>
+export type ShareLinks = Partial<Record<SharePlatform, string>>
 
 const allPlatforms: SharePlatform[] = ['twitter', 'facebook', 'linkedin', 'whatsapp', 'telegram', 'reddit', 'pinterest', 'email']
 
@@ -73,20 +74,49 @@ function buildShareUrl(platform: SharePlatform, url: string, title: string): str
 export function useShareLinks(options: ShareLinksOptions = {}) {
   const route = useRoute()
   const siteConfig = useSiteConfig()
-  const resolveCanonical = createSitePathResolver({
-    canonical: true,
-    absolute: true,
-  })
+  const { canonicalQueryWhitelist, canonicalLowercase } = useRuntimeConfig().public['seo-utils'] as { canonicalQueryWhitelist: string[], canonicalLowercase: boolean }
+  const resolveUrl = createSitePathResolver({ withBase: true, absolute: true })
   const platforms = options.platforms || allPlatforms
 
   const links = computed<ShareLinks>(() => {
     const customUrl = toValue(options.url)
-    const baseUrl = customUrl || resolveCanonical(route.path).value
+
+    let baseUrl: string
+    if (customUrl) {
+      baseUrl = customUrl
+    }
+    else {
+      let url = resolveUrl(route.path || '/').value || route.path
+      if (canonicalLowercase) {
+        url = url.toLowerCase()
+      }
+      const filteredQuery = Object.fromEntries(
+        Object.entries(route.query)
+          .filter(([key]) => canonicalQueryWhitelist.includes(key))
+          .sort(([a], [b]) => a.localeCompare(b)),
+      ) as QueryObject
+      baseUrl = Object.keys(filteredQuery).length
+        ? `${url}?${stringifyQuery(filteredQuery)}`
+        : url
+    }
+
     const utm = toValue(options.utm)
-    const url = utm ? withQuery(baseUrl, utm as Record<string, string>) : baseUrl
+    let url = baseUrl
+    if (utm) {
+      const query: Record<string, string> = {}
+      for (const [key, value] of Object.entries(utm)) {
+        if (value != null) {
+          query[key] = String(value)
+        }
+      }
+      if (Object.keys(query).length > 0) {
+        url = withQuery(baseUrl, query)
+      }
+    }
+
     const title = toValue(options.title) || siteConfig.name || ''
 
-    const result = {} as ShareLinks
+    const result: ShareLinks = {}
     for (const platform of platforms) {
       result[platform] = buildShareUrl(platform, url, title)
     }

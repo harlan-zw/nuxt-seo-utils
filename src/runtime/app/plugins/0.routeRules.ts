@@ -8,7 +8,7 @@ export default defineNuxtPlugin({
     const head = injectHead()
     if (!head)
       return
-    const { tagPriority } = useRuntimeConfig().public['seo-utils']
+    const { tagPriority } = useRuntimeConfig().public['seo-utils'] as { tagPriority: number | undefined }
     const routeRuleState = useState<{ head: any, seoMeta: any } | null>('nuxt-seo-utils:routeRules', () => null)
     if (import.meta.server) {
       const event = useRequestEvent()

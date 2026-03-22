@@ -9,7 +9,7 @@ export default defineNuxtPlugin(() => {
   if (!head)
     return
 
-  const { tagPriority } = useRuntimeConfig().public['seo-utils']
+  const { tagPriority } = useRuntimeConfig().public['seo-utils'] as { tagPriority: number | undefined }
   const siteConfig = useSiteConfig()
   const input: Head = {
     meta: [],

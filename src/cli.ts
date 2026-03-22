@@ -100,7 +100,7 @@ const main = defineCommand({
       async run(ctx) {
         const cwd = resolve(String(ctx.args.cwd))
         const nuxtConfig = await loadNuxtConfig({ cwd })
-        const publicDir = nuxtConfig.alias?.public || resolve(cwd, 'public')
+        const publicDir = resolve(cwd, nuxtConfig.dir?.public ?? 'public')
         const source = String(ctx.args.source)
         const sourcePath = resolve(publicDir, source)
 
@@ -122,7 +122,7 @@ const main = defineCommand({
         for (const icon of ICON_SIZES) {
           const outputPath = resolve(publicDir, icon.name)
           await sharp(sourcePath)
-            .resize(icon.width, icon.height)
+            .resize(icon.width, icon.height, { fit: 'contain', background: { r: 0, g: 0, b: 0, alpha: 0 } })
             .png()
             .toFile(outputPath)
           console.log(c.green(`  ${icon.name} (${icon.width}x${icon.height})`))
@@ -130,7 +130,7 @@ const main = defineCommand({
 
         // Generate favicon.ico (PNG-in-ICO format)
         const faviconPng = await sharp(sourcePath)
-          .resize(32, 32)
+          .resize(32, 32, { fit: 'contain', background: { r: 0, g: 0, b: 0, alpha: 0 } })
           .png()
           .toBuffer()
         await writeFile(resolve(publicDir, 'favicon.ico'), pngToIco([faviconPng]))

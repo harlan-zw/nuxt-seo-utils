@@ -35,7 +35,7 @@ jobs:
       - run: pnpm i
 
       - name: Prepare
-        run: pnpm run dev:prepare
+        run: pnpm dev:prepare
 
       - name: Build
         run: pnpm run build
@@ -63,7 +63,7 @@ jobs:
       - run: pnpm i
 
       - name: Prepare
-        run: pnpm run dev:prepare
+        run: pnpm dev:prepare
 
       - name: Build
         run: pnpm run build

@@ -329,7 +329,7 @@ export function useBreadcrumbItems(_options: BreadcrumbProps = {}): Ref<Breadcru
     useSchemaOrg([
       defineBreadcrumb({
         '@id': `#${id}`,
-        itemListElement: computed(() => items.value.map(item => ({
+        'itemListElement': computed(() => items.value.map(item => ({
           name: item.label || item.ariaLabel,
           item: item.to ? siteResolver(item.to) : undefined,
         }))),

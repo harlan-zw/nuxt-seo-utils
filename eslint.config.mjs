@@ -3,13 +3,12 @@ import harlanzw from 'eslint-plugin-harlanzw'
 
 export default antfu(
   {
-    type: 'lib',
-    markdown: false,
     ignores: [
       'CLAUDE.md',
       '.claude/**',
       'test/fixtures/**',
       'playground/**',
+      '**/*.md',
     ],
   },
   ...harlanzw({ link: true, nuxt: true, vue: true }),

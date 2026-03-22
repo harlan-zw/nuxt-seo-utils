@@ -2,7 +2,6 @@ name: Test
 
 permissions:
   contents: read
-  pull-requests: write
 
 on:
   push:
@@ -10,37 +9,64 @@ on:
       - main
     paths-ignore:
       - '**/README.md'
-  pull_request_target:
+  pull_request:
     branches:
       - main
 
-jobs:
-  build:
-    runs-on: ubuntu-latest
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.number || github.sha }}
+  cancel-in-progress: true
 
+jobs:
+  lint-typecheck:
+    runs-on: ubuntu-24.04-arm
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
 
       - name: Install pnpm
         uses: pnpm/action-setup@v4
 
-      - name: Use Node.js 24.x
-        uses: actions/setup-node@v5
+      - name: Set node
+        uses: actions/setup-node@v6
         with:
-          node-version: 24.x
-          registry-url: https://registry.npmjs.org/
+          node-version-file: package.json
           cache: pnpm
 
       - run: pnpm i
 
-      - name: Build
-        run: pnpm run dev:prepare
+      - name: Prepare
+        run: pnpm dev:prepare
 
       - name: Build
         run: pnpm run build
 
+      - name: Lint
+        run: pnpm run lint
+
       - name: Typecheck
         run: pnpm run typecheck
 
+  test:
+    runs-on: ubuntu-24.04-arm
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+
+      - name: Set node
+        uses: actions/setup-node@v6
+        with:
+          node-version-file: package.json
+          cache: pnpm
+
+      - run: pnpm i
+
+      - name: Prepare
+        run: pnpm dev:prepare
+
+      - name: Build
+        run: pnpm run build
+
       - name: Test
-        run: pnpm run test
+        run: pnpm test:run

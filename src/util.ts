@@ -4,15 +4,17 @@ import { readFile } from 'node:fs/promises'
 import imageSize from 'image-size'
 import { dirname, resolve } from 'pathe'
 
-export function hasLinkRel(input: Head, rel: string) {
+export function hasLinkRel(input: Head, rel: string): boolean | undefined {
   return input.link?.some(link => link.rel === rel)
 }
 
-export function hasMetaProperty(input: Head, property: string) {
+export function hasMetaProperty(input: Head, property: string): boolean | undefined {
   return input.meta?.some(meta => meta.property === property)
 }
 
-export async function getImageMeta(base: string, path: string, isIcon = false) {
+const ALT_NEWLINE_RE = /\n/g
+
+export async function getImageMeta(base: string, path: string, isIcon = false): Promise<Record<string, undefined | number | string>> {
   const absolutePath = resolve(base, path)
   const file = absolutePath.split('/').pop()
   const keyword = file!.split('.')[0]
@@ -30,7 +32,7 @@ export async function getImageMeta(base: string, path: string, isIcon = false) {
     if (fs.existsSync(altTextPath)) {
       payload.alt = fs.readFileSync(altTextPath, 'utf8')
       // need to normalise alt for og:image:alt
-      payload.alt = String(payload.alt).replace(/\n/g, ' ').trim()
+      payload.alt = String(payload.alt).replace(ALT_NEWLINE_RE, ' ').trim()
     }
   }
   else {
@@ -47,13 +49,13 @@ export async function getImageMeta(base: string, path: string, isIcon = false) {
   }
   return payload
 }
-export async function getImageDimensions(absolutePath: string) {
+export async function getImageDimensions(absolutePath: string): Promise<{ width: number | undefined, height: number | undefined }> {
   // read the file into a buffer using fs
   const buffer = await readFile(absolutePath)
   return imageSize(buffer)
 }
 
-export async function getImageDimensionsToSizes(absolutePath: string) {
+export async function getImageDimensionsToSizes(absolutePath: string): Promise<string> {
   try {
     // read the file into a buffer using fs
     const { width, height } = await getImageDimensions(absolutePath)

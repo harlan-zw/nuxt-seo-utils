@@ -4,7 +4,7 @@ export function pathBreadcrumbSegments(path: string, rootNode: string = '/'): st
   const startNode = parseURL(path)
   const appendsTrailingSlash = hasTrailingSlash(startNode.pathname)
 
-  const stepNode = (node: ReturnType<typeof parseURL>, nodes: string[] = []) => {
+  const stepNode = (node: ReturnType<typeof parseURL>, nodes: string[] = []): string[] => {
     const fullPath = stringifyParsedURL(node)
     // the pathname will always be without the trailing slash
     const currentPathName = node.pathname || '/'

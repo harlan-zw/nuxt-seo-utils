@@ -37,7 +37,7 @@
     ]
   },
   "scripts": {
-    "build": "nuxt-module-build build",
+    "build": "nuxt-module-build build && unbuild",
     "dev": "nuxi dev playground",
     "dev:prepare": "nuxt-module-build prepare && nuxi prepare playground && pnpm prepare:fixtures",
     "stub": "nuxt-module-build build --stub && nuxt-module-build prepare",
@@ -70,6 +70,9 @@
     "tinyglobby": "catalog:",
     "ufo": "catalog:"
   },
+  "optionalDependencies": {
+    "sharp": "catalog:"
+  },
   "devDependencies": {
     "@antfu/eslint-config": "catalog:",
     "@nuxt/module-builder": "catalog:",
@@ -80,9 +83,11 @@
     "@types/node": "catalog:",
     "@unhead/vue": "catalog:",
     "@vue/test-utils": "catalog:",
+    "ansis": "catalog:",
     "bumpp": "catalog:",
     "case-police": "catalog:",
     "cheerio": "catalog:",
+    "citty": "catalog:",
     "eslint": "catalog:",
     "eslint-plugin-harlanzw": "catalog:",
     "happy-dom": "catalog:",
@@ -93,6 +98,7 @@
     "playwright-core": "catalog:",
     "sass": "catalog:",
     "typescript": "catalog:",
+    "unbuild": "catalog:",
     "vitest": "catalog:",
     "vue-tsc": "catalog:"
   }

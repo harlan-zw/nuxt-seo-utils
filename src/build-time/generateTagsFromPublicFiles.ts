@@ -10,7 +10,7 @@ import { joinURL } from 'ufo'
 import { MetaTagFileGlobs } from '../const'
 import { getImageDimensions, getImageMeta, hasLinkRel, hasMetaProperty } from '../util'
 
-export default async function generateTagsFromPublicFiles(nuxt: Nuxt = useNuxt()) {
+export default async function generateTagsFromPublicFiles(nuxt: Nuxt = useNuxt()): Promise<void> {
   // @todo support layer public dirs
   const publicDirPath = resolve(nuxt.options.rootDir, nuxt.options.dir.public)
   // do fg only one level deep
@@ -31,8 +31,8 @@ export default async function generateTagsFromPublicFiles(nuxt: Nuxt = useNuxt()
       })
     }
 
-    const isIcon = (file: string) => file.includes('icon') && !file.endsWith('.ico')
-    const isAppleTouchIcon = (file: string) => (
+    const isIcon = (file: string): boolean => file.includes('icon') && !file.endsWith('.ico')
+    const isAppleTouchIcon = (file: string): boolean => (
       (file.includes('apple-icon') || file.includes('apple-touch-icon') || file.includes('apple-touch'))
     )
 

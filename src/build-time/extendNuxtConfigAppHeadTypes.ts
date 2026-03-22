@@ -3,7 +3,7 @@ import { addTypeTemplate, useNuxt } from '@nuxt/kit'
 import { resolve } from 'pathe'
 import { glob } from 'tinyglobby'
 
-export default function extendNuxtConfigAppHeadTypes(nuxt: Nuxt = useNuxt()) {
+export default function extendNuxtConfigAppHeadTypes(nuxt: Nuxt = useNuxt()): void {
   addTypeTemplate({
     filename: 'module/nuxt-seo-utils.assets.d.ts',
     getContents: async () => {

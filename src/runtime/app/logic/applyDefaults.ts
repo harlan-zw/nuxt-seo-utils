@@ -8,22 +8,24 @@ import { useError, useRoute, useRuntimeConfig } from 'nuxt/app'
 import { stringifyQuery } from 'ufo'
 import { computed, toValue } from 'vue'
 
-export function applyDefaults() {
+const LOCALE_UNDERSCORE_RE = /_/g
+
+export function applyDefaults(): void {
   const siteConfig = useSiteConfig({
     resolveRefs: false,
   })
 
-  const resolveCurrentLocale = () => {
+  const resolveCurrentLocale = (): string => {
     const locale = toValue(siteConfig.currentLocale) || toValue(siteConfig.defaultLocale) || 'en'
     // Normalize to BCP 47 format (hyphen-separated) for HTML lang attribute
     // Convert underscore to hyphen (e.g., en_US -> en-US)
-    return locale.replace(/_/g, '-')
+    return locale.replace(LOCALE_UNDERSCORE_RE, '-')
   }
 
   const head = injectHead()
   head.use(TemplateParamsPlugin)
   // get the head instance
-  const { canonicalQueryWhitelist, canonicalLowercase } = useRuntimeConfig().public['seo-utils']
+  const { canonicalQueryWhitelist, canonicalLowercase } = useRuntimeConfig().public['seo-utils'] as { canonicalQueryWhitelist: string[], canonicalLowercase: boolean }
   const route = useRoute()
   const resolveUrl = createSitePathResolver({ withBase: true, absolute: true })
   const err = useError()

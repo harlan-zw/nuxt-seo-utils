@@ -72,7 +72,7 @@ export function applyDefaults(): void {
       site: () => siteConfig,
       siteName: () => siteConfig.name,
     },
-    titleTemplate: '%s %separator %siteName',
+    titleTemplate: () => err.value ? null : '%s %separator %siteName',
     link: [() => canonicalUrl.value],
   }, minimalPriority)
 

@@ -1,7 +1,7 @@
 import type { Head } from '@unhead/vue/types'
 import { injectHead } from '#imports'
 import { useSiteConfig } from '#site-config/app/composables/useSiteConfig'
-import { defineNuxtPlugin } from 'nuxt/app'
+import { defineNuxtPlugin, useRuntimeConfig } from 'nuxt/app'
 
 export default defineNuxtPlugin(() => {
   const head = injectHead()
@@ -9,6 +9,7 @@ export default defineNuxtPlugin(() => {
   if (!head)
     return
 
+  const { tagPriority } = useRuntimeConfig().public['seo-utils'] as { tagPriority: number | undefined }
   const siteConfig = useSiteConfig()
   const input: Head = {
     meta: [],
@@ -30,7 +31,7 @@ export default defineNuxtPlugin(() => {
       {
         name: 'description',
         content: '%site.description',
-        tagPriority: 'low',
+        tagPriority,
       },
     )
   }

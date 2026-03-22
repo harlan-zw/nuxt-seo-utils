@@ -1,6 +1,6 @@
 import type { Link, UseHeadOptions, UseSeoMetaInput } from '@unhead/vue'
 import type { QueryObject } from 'ufo'
-import { injectHead, useHead, useSeoMeta } from '#imports'
+import { injectHead, useHead, useSeoMeta, useServerSeoMeta } from '#imports'
 import { useSiteConfig } from '#site-config/app/composables/useSiteConfig'
 import { createSitePathResolver } from '#site-config/app/composables/utils'
 import { TemplateParamsPlugin } from '@unhead/vue/plugins'
@@ -89,8 +89,11 @@ export function applyDefaults() {
     },
     ogSiteName: siteConfig.name,
   }
+  // Set description server-side only so it doesn't overwrite page-level
+  // useServerSeoMeta descriptions on the client. The siteConfig plugin
+  // provides a client-side fallback with tagPriority: 'low'.
   if (siteConfig.description)
-    seoMeta.description = siteConfig.description
+    useServerSeoMeta({ description: siteConfig.description }, minimalPriority)
   if (siteConfig.twitter) {
     // id must have the @ in it
     const id = siteConfig.twitter.startsWith('@')

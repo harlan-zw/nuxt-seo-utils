@@ -95,9 +95,10 @@ export function applyDefaults(): void {
     },
     ogSiteName: siteConfig.name,
   }
-  // Set description server-side only so it doesn't overwrite page-level
-  // useServerSeoMeta descriptions on the client. The siteConfig plugin
-  // provides a client-side fallback with tagPriority: 'low'.
+  // Set a default description via useServerSeoMeta so SSR-only page-level
+  // descriptions are not overridden during hydration by client-side defaults
+  // registered with useSeoMeta. The siteConfig plugin also registers a
+  // low-priority client-side fallback with tagPriority: 'low'.
   if (siteConfig.description)
     useServerSeoMeta({ description: siteConfig.description }, minimalPriority)
   if (siteConfig.twitter) {

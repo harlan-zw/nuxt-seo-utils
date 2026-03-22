@@ -1,5 +1,6 @@
 import type { Link, UseHeadOptions, UseSeoMetaInput } from '@unhead/vue'
 import type { QueryObject } from 'ufo'
+
 import { injectHead, useHead, useSeoMeta, useServerSeoMeta } from '#imports'
 import { useSiteConfig } from '#site-config/app/composables/useSiteConfig'
 import { createSitePathResolver } from '#site-config/app/composables/utils'
@@ -72,7 +73,7 @@ export function applyDefaults(): void {
       site: () => siteConfig,
       siteName: () => siteConfig.name,
     },
-    titleTemplate: '%s %separator %siteName',
+    titleTemplate: () => err.value ? '%s' : '%s %separator %siteName',
     link: [() => canonicalUrl.value],
   }, minimalPriority)
 
@@ -95,9 +96,10 @@ export function applyDefaults(): void {
     },
     ogSiteName: siteConfig.name,
   }
-  // Set description server-side only so it doesn't overwrite page-level
-  // useServerSeoMeta descriptions on the client. The siteConfig plugin
-  // provides a client-side fallback with tagPriority: 'low'.
+  // Set a default description via useServerSeoMeta so SSR-only page-level
+  // descriptions are not overridden during hydration by client-side defaults
+  // registered with useSeoMeta. The siteConfig plugin also registers a
+  // low-priority client-side fallback with tagPriority: 'low'.
   if (siteConfig.description)
     useServerSeoMeta({ description: siteConfig.description }, minimalPriority)
   if (siteConfig.twitter) {

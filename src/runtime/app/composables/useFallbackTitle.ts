@@ -7,7 +7,11 @@ import { computed } from 'vue'
 export function useFallbackTitle() {
   const route = useRoute()
   const err = useError()
-  const i18n = useI18n()
+  let i18n: { t: (key: string, fallback: string, options?: Record<string, unknown>) => string } | undefined
+  try {
+    i18n = useI18n()
+  }
+  catch {}
   return computed(() => {
     if (err.value?.statusCode && [404, 500].includes(err.value.statusCode)) {
       return `${err.value.statusCode} - ${err.value.message}`
@@ -22,7 +26,7 @@ export function useFallbackTitle() {
     const matched = route.matched?.at(-1)
     if (matched) {
       const routeName = String(matched.name).split('___')?.[0]
-      if (routeName)
+      if (routeName && i18n)
         fallback = i18n.t(`pages.${routeName}.title`, fallback || '', { missingWarn: false }) || fallback
     }
     return fallback

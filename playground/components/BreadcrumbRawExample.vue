@@ -15,7 +15,8 @@ const items = useBreadcrumbItems({ path, hideRoot, hideCurrent })
         <nav aria-label="Breadcrumbs">
           <ul>
             <li v-for="(item, key) in items" :key="key">
-              <NuxtLink v-bind="item">
+              <!-- @ts-expect-error href type incompatibility -->
+              <NuxtLink v-bind="item as any">
                 {{ item.label }}
               </NuxtLink>
             </li>

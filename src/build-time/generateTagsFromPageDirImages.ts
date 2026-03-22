@@ -3,33 +3,35 @@ import type { UseSeoMetaInput } from '@unhead/vue/types'
 import fs from 'node:fs'
 import { useNuxt } from '@nuxt/kit'
 import { defu } from 'defu'
-import fg from 'fast-glob'
 import { basename, dirname, resolve } from 'pathe'
+import { glob } from 'tinyglobby'
 import { joinURL } from 'ufo'
 import { MetaTagFileGlobs } from '../const'
 import { generateNuxtPageFromFile } from '../pageUtils'
 import { getImageMeta } from '../util'
 
-export default async function generateTagsFromPageDirImages(nuxt: Nuxt = useNuxt()) {
+const DIR_SUFFIX_RE = /\/_dir$/
+
+export default async function generateTagsFromPageDirImages(nuxt: Nuxt = useNuxt()): Promise<void> {
   // @todo support layer public dirs
   const pagesDir = resolve(nuxt.options.rootDir, nuxt.options.dir.pages)
 
   // within the pages folder, we need to find all images
-  const files = (await fg(MetaTagFileGlobs, { cwd: pagesDir, onlyFiles: true }))
+  const files = (await glob(MetaTagFileGlobs, { cwd: pagesDir, onlyFiles: true }))
 
   const appendRouteRules: Record<string, any> = {}
   const devMiddlewareMap: Record<string, string> = {}
   const nitroOutputMap: { src: string, dest: string }[] = []
   for (const file of files) {
     const fileName = basename(file)
-    const keyword = fileName.split('.')[0]
+    const keyword = fileName.split('.')[0] || ''
     // for the page file we'll need to figure out what the actual route is
     // const route = file.replace(/\/(og|icon|apple-icon)\.png$/, '')
     let { path } = generateNuxtPageFromFile(resolve(pagesDir, dirname(file)), pagesDir)
     const meta = await getImageMeta(pagesDir, file)
     // if the path ends with _dir/<filename> then we can omit the _dir
     if (path.endsWith('/_dir'))
-      path = path.replace(/\/_dir$/, '')
+      path = path.replace(DIR_SUFFIX_RE, '')
 
     const src = joinURL(path, fileName)
     if (['icon', 'apple-touch-icon', 'apple-icon'].includes(keyword) || keyword.startsWith('icon-')) {

@@ -4,17 +4,17 @@ import type { MetaFlatSerializable } from '../runtime/types'
 import { useNuxt } from '@nuxt/kit'
 import { unpackMeta } from '@unhead/vue/utils'
 import { defu } from 'defu'
-import fg from 'fast-glob'
 import { basename, resolve } from 'pathe'
+import { glob } from 'tinyglobby'
 import { joinURL } from 'ufo'
 import { MetaTagFileGlobs } from '../const'
 import { getImageDimensions, getImageMeta, hasLinkRel, hasMetaProperty } from '../util'
 
-export default async function generateTagsFromPublicFiles(nuxt: Nuxt = useNuxt()) {
+export default async function generateTagsFromPublicFiles(nuxt: Nuxt = useNuxt()): Promise<void> {
   // @todo support layer public dirs
   const publicDirPath = resolve(nuxt.options.rootDir, nuxt.options.dir.public)
   // do fg only one level deep
-  const rootPublicFiles = (await fg(MetaTagFileGlobs, { cwd: publicDirPath, onlyFiles: true, deep: 1 }))
+  const rootPublicFiles = (await glob(MetaTagFileGlobs, { cwd: publicDirPath, onlyFiles: true, deep: 1 }))
     // use base name
     .map(file => basename(file))
   const headConfig: SerializableHead = defu(nuxt.options.app.head, {
@@ -31,8 +31,8 @@ export default async function generateTagsFromPublicFiles(nuxt: Nuxt = useNuxt()
       })
     }
 
-    const isIcon = (file: string) => file.includes('icon') && !file.endsWith('.ico')
-    const isAppleTouchIcon = (file: string) => (
+    const isIcon = (file: string): boolean => file.includes('icon') && !file.endsWith('.ico')
+    const isAppleTouchIcon = (file: string): boolean => (
       (file.includes('apple-icon') || file.includes('apple-touch-icon') || file.includes('apple-touch'))
     )
 

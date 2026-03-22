@@ -1,6 +1,7 @@
 import type { NuxtLinkProps } from 'nuxt/app'
 import type { MaybeRefOrGetter, Ref } from 'vue'
 import type { RouteMeta } from 'vue-router'
+// @ts-expect-error these are conditionally registered via addImports in module.ts
 import { defineBreadcrumb, useI18n, useSchemaOrg } from '#imports'
 import { useSiteConfig } from '#site-config/app/composables/useSiteConfig'
 import { createSitePathResolver } from '#site-config/app/composables/utils'
@@ -125,14 +126,16 @@ export interface BreadcrumbItemProps extends NuxtUIBreadcrumbItem {
   }
 }
 
-function withoutQuery(path: string) {
-  return path.split('?')[0]
+function withoutQuery(path: string): string {
+  return path.split('?')[0] || ''
 }
 
-function titleCase(s: string) {
+const TITLE_CASE_RE = /\w\S*/g
+
+function titleCase(s: string): string {
   return s
     .replaceAll('-', ' ')
-    .replace(/\w\S*/g, w => w.charAt(0).toUpperCase() + w.substr(1).toLowerCase())
+    .replace(TITLE_CASE_RE, w => w.charAt(0).toUpperCase() + w.substr(1).toLowerCase())
 }
 
 const BreadcrumbCtx = Symbol('BreadcrumbCtx')
@@ -146,7 +149,7 @@ const BreadcrumbCtx = Symbol('BreadcrumbCtx')
  * @see https://github.com/harlan-zw/nuxt-seo/blob/main/src/runtime/nuxt/composables/useBreadcrumbItems.ts
  * @docs https://nuxtseo.com/nuxt-seo/api/breadcrumbs
  */
-export function useBreadcrumbItems(_options: BreadcrumbProps = {}) {
+export function useBreadcrumbItems(_options: BreadcrumbProps = {}): Ref<BreadcrumbItemProps[]> {
   const nuxtApp = useNuxtApp()
   const vm = getCurrentInstance()
   // id must be a string representation not a vm uid as SSR -> Client uid does not match
@@ -253,14 +256,14 @@ export function useBreadcrumbItems(_options: BreadcrumbProps = {}) {
       if (i18n.strategy === 'prefix' || (i18n.strategy !== 'no_prefix' && toValue(i18n.defaultLocale) !== toValue(i18n.locale)))
         rootNode = `${rootNode}${toValue(i18n.locale)}`
     }
-    const current = withoutQuery(withoutTrailingSlash(flatOptions.path || toRaw(route).path || rootNode))
+    const current = withoutQuery(withoutTrailingSlash(flatOptions.path || toRaw(route)?.path || rootNode)) || ''
     // apply overrides
     const segments = pathBreadcrumbSegments(current, rootNode)
       .map((path, index) => {
         let item = <BreadcrumbItemProps> {
           to: path,
         }
-        const override = flatOptions.overrides[index]
+        const override = flatOptions.overrides?.[index]
         if (typeof override !== 'undefined') {
           if (override === false)
             return false
@@ -276,15 +279,12 @@ export function useBreadcrumbItems(_options: BreadcrumbProps = {}) {
       .map((item) => {
         let fallbackLabel = titleCase(String((item.to || '').split('/').pop()))
         let fallbackAriaLabel = ''
-        const route = item.to ? router.resolve(item.to as string)?.matched?.[0] : null
+        const route = item.to ? router.resolve(item.to as string)?.matched?.at(-1) : null
         if (route) {
           const routeMeta = (route?.meta || {}) as RouteMeta & { title?: string, breadcrumbLabel: string, breadcrumbTitle: string }
           // merge with the route meta
           if (routeMeta.breadcrumb) {
-            item = {
-              ...item,
-              ...routeMeta.breadcrumb,
-            }
+            item = defu(item, routeMeta.breadcrumb)
           }
           const routeName = String(route.name).split('___')?.[0]
           if (routeName === 'index') {
@@ -318,22 +318,18 @@ export function useBreadcrumbItems(_options: BreadcrumbProps = {}) {
       .filter(Boolean) as BreadcrumbItemProps[]
   })
 
-  watch(items, (newItems) => {
+  watch(() => items.value, (newItems) => {
     if (!pauseUpdates.value) {
       lastBreadcrumbs.value = newItems
     }
-  }, { immediate: true })
+  }, { immediate: true, flush: 'sync' })
 
   const schemaOrgEnabled = typeof _options.schemaOrg === 'undefined' ? true : _options.schemaOrg
-  // TODO can probably drop this schemaOrgEnabled flag as we mock the function
-  // @ts-expect-error untyped
-  if ((import.meta.dev || import.meta.server || import.meta.env?.NODE_ENV === 'test') && schemaOrgEnabled) {
-    // @ts-expect-error untyped
+  if ((import.meta.server || import.meta.env?.NODE_ENV === 'test') && schemaOrgEnabled) {
     useSchemaOrg([
-      // @ts-expect-error untyped
       defineBreadcrumb({
-        id: `#${id}`,
-        itemListElement: computed(() => items.value.map(item => ({
+        '@id': `#${id}`,
+        'itemListElement': computed(() => items.value.map(item => ({
           name: item.label || item.ariaLabel,
           item: item.to ? siteResolver(item.to) : undefined,
         }))),

@@ -38,11 +38,17 @@ Install `nuxt-seo-utils` dependency to your project:
 npx nuxi@latest module add nuxt-seo-utils
 ```
 
+> [!TIP]
+> Generate an Agent Skill for this package using [skilld](https://github.com/harlan-zw/skilld):
+> ```bash
+> npx skilld add nuxt-seo-utils
+> ```
+
 💡 Need a complete SEO solution for Nuxt? Check out [Nuxt SEO](https://nuxtseo.com).
 
 ## Documentation
 
-[📖 Read the full documentation](https://nuxtseo.com/docs/utils) for more information.
+[📖 Read the full documentation](https://nuxtseo.com/docs/seo-utils) for more information.
 
 ## Demos
 
@@ -70,5 +76,5 @@ Licensed under the [MIT license](https://github.com/harlan-zw/nuxt-seo-utils/blo
 [license-src]: https://img.shields.io/github/license/harlan-zw/nuxt-seo-utils.svg?style=flat&colorA=18181B&colorB=28CF8D
 [license-href]: https://github.com/harlan-zw/nuxt-seo-utils/blob/main/LICENSE.md
 
-[nuxt-src]: https://img.shields.io/badge/Nuxt-18181B?logo=nuxt.js
+[nuxt-src]: https://img.shields.io/badge/Nuxt-18181B?logo=nuxt
 [nuxt-href]: https://nuxt.com

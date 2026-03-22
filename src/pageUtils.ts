@@ -3,6 +3,8 @@ import escapeRE from 'escape-string-regexp'
 import { extname, relative } from 'pathe'
 import { encodePath } from 'ufo'
 
+const INDEX_SUFFIX_RE = /-index$/
+
 // copied from nuxt/src/pages/utils.ts
 
 enum SegmentParserState {
@@ -27,8 +29,9 @@ interface SegmentToken {
 
 // @todo @nuxt/kit util?
 export function generateNuxtPageFromFile(file: string, pagesDir: string): NuxtPage {
+  const extPattern = new RegExp(`${escapeRE(extname(file))}$`)
   const segments = relative(pagesDir, file)
-    .replace(new RegExp(`${escapeRE(extname(file))}$`), '')
+    .replace(extPattern, '')
     .split('/')
 
   const route: NuxtPage = {
@@ -42,7 +45,7 @@ export function generateNuxtPageFromFile(file: string, pagesDir: string): NuxtPa
   let parent: NuxtPage[] = []
 
   for (let i = 0; i < segments.length; i++) {
-    const segment = segments[i]
+    const segment = segments[i] || ''
 
     const tokens = parseSegment(segment)
     const segmentName = tokens.map(({ value }) => value).join('')
@@ -67,7 +70,7 @@ export function generateNuxtPageFromFile(file: string, pagesDir: string): NuxtPa
 
   // Remove -index
   if (route.name)
-    route.name = route.name.replace(/-index$/, '')
+    route.name = route.name.replace(INDEX_SUFFIX_RE, '')
 
   return route
 }
@@ -89,14 +92,14 @@ function getRoutePath(tokens: SegmentToken[]): string {
 
 const PARAM_CHAR_RE = /[\w.]/
 
-function parseSegment(segment: string) {
+function parseSegment(segment: string): SegmentToken[] {
   let state: SegmentParserState = SegmentParserState.initial
   let i = 0
 
   let buffer = ''
   const tokens: SegmentToken[] = []
 
-  function consumeBuffer() {
+  function consumeBuffer(): void {
     if (!buffer)
       return
 
@@ -119,7 +122,7 @@ function parseSegment(segment: string) {
   }
 
   while (i < segment.length) {
-    const c = segment[i]
+    const c = segment[i] || ''
 
     switch (state) {
       case SegmentParserState.initial:
@@ -153,7 +156,7 @@ function parseSegment(segment: string) {
         if (c === '[' && state === SegmentParserState.dynamic)
           state = SegmentParserState.optional
 
-        if (c === ']' && (state !== SegmentParserState.optional || buffer[buffer.length - 1] === ']')) {
+        if (c === ']' && (state !== SegmentParserState.optional || buffer.at(-1) === ']')) {
           if (!buffer)
             throw new Error('Empty param')
           else

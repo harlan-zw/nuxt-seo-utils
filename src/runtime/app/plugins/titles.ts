@@ -1,6 +1,6 @@
 import type { UseHeadOptions } from '@unhead/vue/types'
 import { useHead, useI18n } from '#imports'
-import { defineNuxtPlugin, useError, useRoute, useRouter } from 'nuxt/app'
+import { defineNuxtPlugin, useError, useRoute } from 'nuxt/app'
 import { titleCase } from 'scule'
 import { withoutTrailingSlash } from 'ufo'
 import { computed } from 'vue'
@@ -10,9 +10,10 @@ export default defineNuxtPlugin({
   env: {
     islands: false,
   },
+  // we need to wait for the i18n plugin to run first
+  dependsOn: ['nuxt-site-config:i18n'],
   setup() {
     const route = useRoute()
-    const router = useRouter()
     const err = useError()
     const i18n = useI18n()
     const title = computed(() => {
@@ -26,7 +27,7 @@ export default defineNuxtPlugin({
       const lastSegment = path.split('/').pop()
       let fallback = lastSegment ? titleCase(lastSegment) : null
       // try to resolve the title from i18n translations using the route name
-      const matched = router.resolve(route.path)?.matched?.at(-1)
+      const matched = route.matched?.at(-1)
       if (matched) {
         const routeName = String(matched.name).split('___')?.[0]
         if (routeName)

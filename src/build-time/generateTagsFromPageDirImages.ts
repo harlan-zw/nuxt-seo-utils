@@ -10,7 +10,9 @@ import { MetaTagFileGlobs } from '../const'
 import { generateNuxtPageFromFile } from '../pageUtils'
 import { getImageMeta } from '../util'
 
-export default async function generateTagsFromPageDirImages(nuxt: Nuxt = useNuxt()) {
+const DIR_SUFFIX_RE = /\/_dir$/
+
+export default async function generateTagsFromPageDirImages(nuxt: Nuxt = useNuxt()): Promise<void> {
   // @todo support layer public dirs
   const pagesDir = resolve(nuxt.options.rootDir, nuxt.options.dir.pages)
 
@@ -29,7 +31,7 @@ export default async function generateTagsFromPageDirImages(nuxt: Nuxt = useNuxt
     const meta = await getImageMeta(pagesDir, file)
     // if the path ends with _dir/<filename> then we can omit the _dir
     if (path.endsWith('/_dir'))
-      path = path.replace(/\/_dir$/, '')
+      path = path.replace(DIR_SUFFIX_RE, '')
 
     const src = joinURL(path, fileName)
     if (['icon', 'apple-touch-icon', 'apple-icon'].includes(keyword) || keyword.startsWith('icon-')) {

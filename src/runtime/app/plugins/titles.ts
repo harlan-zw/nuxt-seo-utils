@@ -16,7 +16,7 @@ export default defineNuxtPlugin({
     const err = useError()
     const i18n = useI18n()
     const title = computed(() => {
-      if (err.value && [404, 500].includes(err.value?.statusCode)) {
+      if (err.value?.statusCode && [404, 500].includes(err.value.statusCode)) {
         return `${err.value.statusCode} - ${err.value.message}`
       }
       if (typeof route.meta?.title === 'string')

@@ -1,5 +1,7 @@
+import { useError, useRoute } from 'nuxt/app'
 import { describe, expect, it, vi } from 'vitest'
-import { computed, ref } from 'vue'
+import { ref } from 'vue'
+import { useFallbackTitle } from '../../src/runtime/app/composables/useFallbackTitle'
 
 vi.mock('nuxt/app', () => ({
   useRoute: vi.fn(),
@@ -9,9 +11,6 @@ vi.mock('nuxt/app', () => ({
 vi.mock('scule', () => ({
   titleCase: (s: string) => s.charAt(0).toUpperCase() + s.slice(1),
 }))
-
-import { useError, useRoute } from 'nuxt/app'
-import { useFallbackTitle } from '../../src/runtime/app/composables/useFallbackTitle'
 
 describe('useFallbackTitle', () => {
   it('returns error title for 404', () => {

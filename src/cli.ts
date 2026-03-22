@@ -1,4 +1,5 @@
 import type { ArgDef } from 'citty'
+import { Buffer } from 'node:buffer'
 import { existsSync } from 'node:fs'
 import { writeFile } from 'node:fs/promises'
 import process from 'node:process'

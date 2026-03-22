@@ -15,9 +15,11 @@ catalog:
   '@unhead/addons': ^2.1.12
   '@unhead/vue': ^2.1.12
   '@vue/test-utils': ^2.4.6
+  ansis: ^4.0.0
   bumpp: ^11.0.1
   case-police: ^2.2.0
   cheerio: ^1.2.0
+  citty: ^0.1.6
   defu: ^6.1.4
   escape-string-regexp: ^5.0.0
   eslint: ^10.1.0
@@ -35,9 +37,11 @@ catalog:
   sass: ^1.98.0
   scule: ^1.3.0
   semver: ^7.7.4
+  sharp: ^0.34.2
   tinyglobby: ^0.2.15
   typescript: ^5.9.3
   ufo: ^1.6.3
+  unbuild: ^3.5.0
   vitest: ^4.1.0
   vue-tsc: ^3.2.6
 
@@ -48,6 +52,7 @@ onlyBuiltDependencies:
   - '@parcel/watcher'
   - '@tailwindcss/oxide'
   - esbuild
+  - sharp
   - unrs-resolver
   - vue-demi
 

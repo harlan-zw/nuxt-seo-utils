@@ -226,6 +226,11 @@ export default defineNuxtModule<ModuleOptions>({
       name: 'useBreadcrumbItems',
     })
 
+    addImports({
+      from: resolve(runtimeDir, `./app/composables/useFallbackTitle`),
+      name: 'useFallbackTitle',
+    })
+
     // TODO blocked by https://github.com/nuxt/nuxt/issues/25532
     // if (nuxt.options.experimental?.defaults?.nuxtLink && typeof nuxt.options.experimental?.defaults?.nuxtLink?.trailingSlash == 'undefined')
     //   nuxt.options.experimental.defaults.nuxtLink.trailingSlash = siteConfig.trailingSlash ? 'append' : 'remove'

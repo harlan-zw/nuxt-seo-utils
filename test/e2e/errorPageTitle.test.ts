@@ -14,6 +14,7 @@ await setup({
     modules: [
       resolve('../../src/module'),
     ],
+    // @ts-expect-error module config key
     seo: {
       treeShakeUseSeoMeta: false,
     },

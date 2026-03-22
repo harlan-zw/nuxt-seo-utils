@@ -7,7 +7,7 @@ import { computed } from 'vue'
 export function useFallbackTitle() {
   const route = useRoute()
   const err = useError()
-  let i18n: ReturnType<typeof useI18n> | undefined
+  let i18n: { t: (key: string, fallback: string, options?: Record<string, unknown>) => string } | undefined
   try {
     i18n = useI18n()
   }

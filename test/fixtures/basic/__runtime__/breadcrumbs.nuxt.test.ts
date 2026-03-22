@@ -292,7 +292,7 @@ describe('useBreadcrumbItems', () => {
     })
     useBreadcrumbItems()
     expect(schemaOrgCallCount).toBe(1)
-    const args = useSchemaOrgMock.mock.calls[0][0][0]
+    const args = useSchemaOrgMock.mock.calls[0]![0]![0]
     expect(args).toHaveProperty('@id', '#breadcrumb')
     expect(args).not.toHaveProperty('id')
   })

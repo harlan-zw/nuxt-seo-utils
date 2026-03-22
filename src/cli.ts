@@ -98,10 +98,10 @@ const main = defineCommand({
         },
       },
       async run(ctx) {
-        const cwd = resolve(ctx.args.cwd)
+        const cwd = resolve(String(ctx.args.cwd))
         const nuxtConfig = await loadNuxtConfig({ cwd })
         const publicDir = nuxtConfig.alias?.public || resolve(cwd, 'public')
-        const source = ctx.args.source
+        const source = String(ctx.args.source)
         const sourcePath = resolve(publicDir, source)
 
         if (!existsSync(sourcePath)) {

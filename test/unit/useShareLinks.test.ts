@@ -1,8 +1,18 @@
 import { describe, expect, it, vi } from 'vitest'
 import { ref } from 'vue'
 
+import { useShareLinks } from '../../src/runtime/app/composables/useShareLinks'
+
 vi.mock('nuxt/app', () => ({
-  useRoute: vi.fn(() => ({ path: '/blog/my-post' })),
+  useRoute: vi.fn(() => ({ path: '/blog/my-post', query: {} })),
+  useRuntimeConfig: vi.fn(() => ({
+    public: {
+      'seo-utils': {
+        canonicalQueryWhitelist: [],
+        canonicalLowercase: false,
+      },
+    },
+  })),
 }))
 
 vi.mock('#site-config/app/composables/useSiteConfig', () => ({
@@ -12,8 +22,6 @@ vi.mock('#site-config/app/composables/useSiteConfig', () => ({
 vi.mock('#site-config/app/composables/utils', () => ({
   createSitePathResolver: vi.fn(() => (path: string) => ref(`https://example.com${path}`)),
 }))
-
-import { useShareLinks } from '../../src/runtime/app/composables/useShareLinks'
 
 describe('useShareLinks', () => {
   it('generates links for all 8 platforms by default', () => {

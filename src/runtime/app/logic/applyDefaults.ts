@@ -25,7 +25,7 @@ export function applyDefaults(): void {
   const head = injectHead()
   head.use(TemplateParamsPlugin)
   // get the head instance
-  const { canonicalQueryWhitelist, canonicalLowercase } = useRuntimeConfig().public['seo-utils'] as { canonicalQueryWhitelist: string[], canonicalLowercase: boolean }
+  const { canonicalQueryWhitelist, canonicalLowercase, tagPriority } = useRuntimeConfig().public['seo-utils'] as { canonicalQueryWhitelist: string[], canonicalLowercase: boolean, tagPriority: number | undefined }
   const route = useRoute()
   const resolveUrl = createSitePathResolver({ withBase: true, absolute: true })
   const err = useError()
@@ -59,6 +59,10 @@ export function applyDefaults(): void {
   const minimalPriority: UseHeadOptions = {
     // give nuxt.config values higher priority
     tagPriority: 'low',
+  }
+
+  const seoMetaPriority: UseHeadOptions = {
+    tagPriority,
   }
 
   // needs higher priority
@@ -105,5 +109,5 @@ export function applyDefaults(): void {
     seoMeta.twitterSite = id
   }
   // TODO server only for some tags
-  useSeoMeta(seoMeta, minimalPriority)
+  useSeoMeta(seoMeta, seoMetaPriority)
 }

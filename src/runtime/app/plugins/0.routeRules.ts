@@ -1,10 +1,11 @@
 import { injectHead, useSeoMeta } from '#imports'
-import { defineNuxtPlugin, getRouteRules, useRequestEvent, useState } from 'nuxt/app'
+import { defineNuxtPlugin, getRouteRules, useRequestEvent, useRuntimeConfig, useState } from 'nuxt/app'
 
 export default defineNuxtPlugin({
   enforce: 'post',
   async setup() {
     const head = injectHead()
+    const { tagPriority } = useRuntimeConfig().public['seo-utils']
     const routeRuleState = useState<{ head: any, seoMeta: any } | null>('nuxt-seo-utils:routeRules', () => null)
     if (import.meta.server) {
       const event = useRequestEvent()
@@ -18,9 +19,9 @@ export default defineNuxtPlugin({
     if (routeRuleState.value) {
       const { head: headInput, seoMeta } = routeRuleState.value
       if (headInput)
-        head.push(headInput)
+        head.push(headInput, { tagPriority })
       if (seoMeta)
-        useSeoMeta(seoMeta)
+        useSeoMeta(seoMeta, { tagPriority })
     }
   },
 })

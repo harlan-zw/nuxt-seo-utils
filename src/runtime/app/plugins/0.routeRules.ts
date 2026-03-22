@@ -3,8 +3,11 @@ import { defineNuxtPlugin, getRouteRules, useRequestEvent, useRuntimeConfig, use
 
 export default defineNuxtPlugin({
   enforce: 'post',
+  env: { islands: false },
   async setup() {
     const head = injectHead()
+    if (!head)
+      return
     const { tagPriority } = useRuntimeConfig().public['seo-utils']
     const routeRuleState = useState<{ head: any, seoMeta: any } | null>('nuxt-seo-utils:routeRules', () => null)
     if (import.meta.server) {

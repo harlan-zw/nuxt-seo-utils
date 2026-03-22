@@ -1,4 +1,5 @@
 import type { MetaFlatSerializable } from './runtime/types'
+import { existsSync } from 'node:fs'
 import {
   addImports,
   addPlugin,
@@ -183,10 +184,20 @@ export default defineNuxtModule<ModuleOptions>({
     const runtimeDir = resolve('./runtime')
     if (config.metaDataFiles) {
       // we need ssr to resolve the tags to the absolute path
-      await generateTagsFromPublicFiles()
+      const { hasIcons } = await generateTagsFromPublicFiles()
       await generateTagsFromPageDirImages()
 
       if (nuxt.options.dev) {
+        if (!hasIcons) {
+          const publicDir = resolve(nuxt.options.rootDir, nuxt.options.dir.public)
+          const logoPatterns = ['logo.svg', 'logo.png', 'icon.svg', 'icon.png', 'logo.jpg', 'logo.webp']
+          const foundSource = logoPatterns.find(p => existsSync(resolve(publicDir, p)))
+            || logoPatterns.find(p => existsSync(resolve(nuxt.options.rootDir, p)))
+
+          const sourceArg = foundSource || '<your-logo.svg>'
+          logger.info(`No favicon detected. Generate icons with:\n  npx nuxt-seo-utils icons --source ${sourceArg}`)
+        }
+
         addServerHandler({
           middleware: true,
           handler: resolve(runtimeDir, 'server/middleware/resolveImagesInPagesDir'),

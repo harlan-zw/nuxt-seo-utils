@@ -10,7 +10,7 @@ import { joinURL } from 'ufo'
 import { MetaTagFileGlobs } from '../const'
 import { getImageDimensions, getImageMeta, hasLinkRel, hasMetaProperty } from '../util'
 
-export default async function generateTagsFromPublicFiles(nuxt: Nuxt = useNuxt()): Promise<void> {
+export default async function generateTagsFromPublicFiles(nuxt: Nuxt = useNuxt()): Promise<{ hasIcons: boolean }> {
   // @todo support layer public dirs
   const publicDirPath = resolve(nuxt.options.rootDir, nuxt.options.dir.public)
   // do fg only one level deep
@@ -116,4 +116,6 @@ export default async function generateTagsFromPublicFiles(nuxt: Nuxt = useNuxt()
   }
 
   nuxt.options.app.head = headConfig
+  const hasIcons = rootPublicFiles.some(f => f.includes('icon') || f === 'favicon.ico')
+  return { hasIcons }
 }

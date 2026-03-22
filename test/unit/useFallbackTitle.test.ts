@@ -8,6 +8,12 @@ vi.mock('nuxt/app', () => ({
   useError: vi.fn(),
 }))
 
+vi.mock('#imports', () => ({
+  useI18n: vi.fn(() => ({
+    t: (_key: string, fallback: string) => fallback,
+  })),
+}))
+
 vi.mock('scule', () => ({
   titleCase: (s: string) => s.charAt(0).toUpperCase() + s.slice(1),
 }))

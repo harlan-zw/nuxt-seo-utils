@@ -19,7 +19,7 @@ export default defineNuxtPlugin({
     if (routeRuleState.value) {
       const { head: headInput, seoMeta } = routeRuleState.value
       if (headInput)
-        head.push(headInput, { tagPriority })
+        head.push(headInput)
       if (seoMeta)
         useSeoMeta(seoMeta, { tagPriority })
     }

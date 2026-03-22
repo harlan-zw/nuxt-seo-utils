@@ -10,9 +10,10 @@ export default defineNuxtPlugin({
     if (import.meta.server) {
       const event = useRequestEvent()
       const routeRules = await getRouteRules(event!)
+      const rules = routeRules as Record<string, any>
       routeRuleState.value = {
-        head: routeRules.head,
-        seoMeta: routeRules.seoMeta,
+        head: rules.head,
+        seoMeta: rules.seoMeta,
       }
     }
 

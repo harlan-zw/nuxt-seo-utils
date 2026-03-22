@@ -1,6 +1,6 @@
 import type { Link, UseHeadOptions, UseSeoMetaInput } from '@unhead/vue'
 import type { QueryObject } from 'ufo'
-import { injectHead, useHead, useSeoMeta } from '#imports'
+import { injectHead, useHead, useSeoMeta, useServerSeoMeta } from '#imports'
 import { useSiteConfig } from '#site-config/app/composables/useSiteConfig'
 import { createSitePathResolver } from '#site-config/app/composables/utils'
 import { TemplateParamsPlugin } from '@unhead/vue/plugins'
@@ -8,22 +8,24 @@ import { useError, useRoute, useRuntimeConfig } from 'nuxt/app'
 import { stringifyQuery } from 'ufo'
 import { computed, toValue } from 'vue'
 
-export function applyDefaults() {
+const LOCALE_UNDERSCORE_RE = /_/g
+
+export function applyDefaults(): void {
   const siteConfig = useSiteConfig({
     resolveRefs: false,
   })
 
-  const resolveCurrentLocale = () => {
+  const resolveCurrentLocale = (): string => {
     const locale = toValue(siteConfig.currentLocale) || toValue(siteConfig.defaultLocale) || 'en'
     // Normalize to BCP 47 format (hyphen-separated) for HTML lang attribute
     // Convert underscore to hyphen (e.g., en_US -> en-US)
-    return locale.replace(/_/g, '-')
+    return locale.replace(LOCALE_UNDERSCORE_RE, '-')
   }
 
   const head = injectHead()
   head.use(TemplateParamsPlugin)
   // get the head instance
-  const { canonicalQueryWhitelist, canonicalLowercase, tagPriority } = useRuntimeConfig().public['seo-utils']
+  const { canonicalQueryWhitelist, canonicalLowercase, tagPriority } = useRuntimeConfig().public['seo-utils'] as { canonicalQueryWhitelist: string[], canonicalLowercase: boolean, tagPriority: number | undefined }
   const route = useRoute()
   const resolveUrl = createSitePathResolver({ withBase: true, absolute: true })
   const err = useError()
@@ -93,8 +95,11 @@ export function applyDefaults() {
     },
     ogSiteName: siteConfig.name,
   }
+  // Set description server-side only so it doesn't overwrite page-level
+  // useServerSeoMeta descriptions on the client. The siteConfig plugin
+  // provides a client-side fallback with tagPriority: 'low'.
   if (siteConfig.description)
-    seoMeta.description = siteConfig.description
+    useServerSeoMeta({ description: siteConfig.description }, minimalPriority)
   if (siteConfig.twitter) {
     // id must have the @ in it
     const id = siteConfig.twitter.startsWith('@')

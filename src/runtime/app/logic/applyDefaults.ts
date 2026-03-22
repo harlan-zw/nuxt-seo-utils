@@ -1,5 +1,6 @@
 import type { Link, UseHeadOptions, UseSeoMetaInput } from '@unhead/vue'
 import type { QueryObject } from 'ufo'
+
 import { injectHead, useHead, useSeoMeta, useServerSeoMeta } from '#imports'
 import { useSiteConfig } from '#site-config/app/composables/useSiteConfig'
 import { createSitePathResolver } from '#site-config/app/composables/utils'
@@ -72,7 +73,7 @@ export function applyDefaults(): void {
       site: () => siteConfig,
       siteName: () => siteConfig.name,
     },
-    titleTemplate: () => err.value ? null : '%s %separator %siteName',
+    titleTemplate: () => err.value ? '%s' : '%s %separator %siteName',
     link: [() => canonicalUrl.value],
   }, minimalPriority)
 

@@ -7,7 +7,7 @@ export function useFallbackTitle() {
   const route = useRoute()
   const err = useError()
   return computed(() => {
-    if (err.value && [404, 500].includes(err.value?.statusCode)) {
+    if (err.value?.statusCode && [404, 500].includes(err.value.statusCode)) {
       return `${err.value.statusCode} - ${err.value.message}`
     }
     if (typeof route.meta?.title === 'string')

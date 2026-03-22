@@ -20,6 +20,7 @@ import extendNuxtConfigAppHeadTypes from './build-time/extendNuxtConfigAppHeadTy
 import generateTagsFromPageDirImages from './build-time/generateTagsFromPageDirImages'
 import generateTagsFromPublicFiles from './build-time/generateTagsFromPublicFiles'
 import setupNuxtConfigAppHeadWithMoreDefaults from './build-time/setupNuxtConfigAppHeadWithMoreDefaults'
+import { setupDevToolsUI } from './build/devtools'
 
 export interface ModuleOptions {
   /**
@@ -368,5 +369,8 @@ export {}
 
     if (config.fixRequiredAbsoluteMetaTagsLinks)
       addPlugin({ src: resolve(appRuntimeDir, 'plugins', '1.absoluteImageUrls.server'), mode: 'server' })
+
+    if (nuxt.options.dev)
+      setupDevToolsUI(resolve, nuxt)
   },
 })

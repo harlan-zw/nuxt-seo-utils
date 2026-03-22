@@ -38,7 +38,9 @@
   },
   "scripts": {
     "build": "nuxt-module-build build && unbuild",
+    "build:client": "nuxi generate client",
     "dev": "nuxi dev playground",
+    "dev:client": "nuxi dev client --port 3031",
     "dev:prepare": "nuxt-module-build prepare && nuxi prepare playground && pnpm prepare:fixtures",
     "stub": "nuxt-module-build build --stub && nuxt-module-build prepare",
     "lint": "eslint .",
@@ -57,6 +59,7 @@
     "nuxt": "^3.0.0 || ^4.0.0"
   },
   "dependencies": {
+    "@nuxt/devtools-kit": "catalog:",
     "@nuxt/kit": "catalog:",
     "@unhead/addons": "catalog:",
     "defu": "catalog:",
@@ -67,6 +70,7 @@
     "pkg-types": "catalog:",
     "scule": "catalog:",
     "semver": "catalog:",
+    "sirv": "catalog:",
     "tinyglobby": "catalog:",
     "ufo": "catalog:"
   },

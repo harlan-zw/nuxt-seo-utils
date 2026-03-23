@@ -1,9 +1,9 @@
 import type { NuxtDevtoolsIframeClient } from '@nuxt/devtools-kit/types'
 import type { $Fetch } from 'nitropack/types'
-import { appFetch, path, refreshTime, useDevtoolsConnection } from '#imports'
+import { appFetch, colorMode, devtools, path, refreshTime, useDevtoolsConnection } from '#imports'
 import { computed, onMounted, onUnmounted, ref } from 'vue'
 
-export { appFetch, colorMode, devtools } from '#imports'
+export { appFetch, colorMode, devtools }
 
 export const devtoolsClient = ref<NuxtDevtoolsIframeClient>()
 

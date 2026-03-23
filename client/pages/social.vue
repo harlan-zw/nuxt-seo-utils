@@ -3,7 +3,7 @@ import { useClipboard } from '@vueuse/core'
 import { computed, ref, watch } from 'vue'
 import { appFetch } from '../composables/rpc'
 import { parseMetaTags, useLoadingMessages } from '../composables/tools'
-import { path as hostPath, refreshTime } from '../util/logic'
+import { path as hostPath, isProductionMode, productionUrl, refreshTime } from '../util/logic'
 
 const { copy, copied } = useClipboard()
 
@@ -121,6 +121,12 @@ function parseSocialMeta(html: string, url: string): ParsedSocialMeta {
   }
 }
 
+function resolveBaseUrl() {
+  if (isProductionMode.value && productionUrl.value)
+    return productionUrl.value.replace(/\/$/, '')
+  return window.parent?.location?.origin || window.location.origin
+}
+
 async function checkSocial() {
   loading.value = true
   error.value = null
@@ -128,7 +134,7 @@ async function checkSocial() {
   startMessages()
 
   try {
-    const baseUrl = window.parent?.location?.origin || window.location.origin
+    const baseUrl = resolveBaseUrl()
     const fullUrl = `${baseUrl}${hostPath.value}`
     const response = await fetch(fullUrl, { headers: { Accept: 'text/html' } })
     if (!response.ok)
@@ -145,7 +151,7 @@ async function checkSocial() {
   }
 }
 
-watch([() => appFetch.value, hostPath, refreshTime], () => {
+watch([() => appFetch.value, hostPath, refreshTime, isProductionMode], () => {
   if (appFetch.value)
     checkSocial()
 }, { immediate: true })

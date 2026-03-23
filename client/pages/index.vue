@@ -3,7 +3,7 @@ import { useClipboard } from '@vueuse/core'
 import { computed, ref, watch } from 'vue'
 import { appFetch } from '../composables/rpc'
 import { estimatePixelWidth, descColor as getDescColor, titleColor as getTitleColor, parseMetaTags, SEO_LIMITS, useLoadingMessages } from '../composables/tools'
-import { path as hostPath, refreshTime } from '../util/logic'
+import { path as hostPath, isProductionMode, productionUrl, refreshTime } from '../util/logic'
 
 const { copy, copied } = useClipboard()
 
@@ -98,6 +98,12 @@ const overallStatus = computed(() => {
   return { type: 'success', message: 'Looking good!', icon: 'carbon:checkmark-filled' }
 })
 
+function resolveBaseUrl() {
+  if (isProductionMode.value && productionUrl.value)
+    return productionUrl.value.replace(/\/$/, '')
+  return window.parent?.location?.origin || window.location.origin
+}
+
 async function checkCurrentPage() {
   loading.value = true
   error.value = null
@@ -105,16 +111,16 @@ async function checkCurrentPage() {
   startMessages()
 
   try {
-    // Fetch HTML from the host app's current page
-    const baseUrl = window.parent?.location?.origin || window.location.origin
-    const response = await fetch(`${baseUrl}${hostPath.value}`, {
+    const baseUrl = resolveBaseUrl()
+    const fullUrl = `${baseUrl}${hostPath.value}`
+    const response = await fetch(fullUrl, {
       headers: { Accept: 'text/html' },
     })
     if (!response.ok)
       throw new Error(`HTTP ${response.status}`)
     const html = await response.text()
     const parsed = parseMetaTags(html)
-    result.value = { ...parsed, url: `${baseUrl}${hostPath.value}` }
+    result.value = { ...parsed, url: fullUrl }
   }
   catch (e: any) {
     error.value = e.message || 'Failed to fetch page'
@@ -126,7 +132,7 @@ async function checkCurrentPage() {
 }
 
 // Auto-check when connected and route changes
-watch([() => appFetch.value, hostPath, refreshTime], () => {
+watch([() => appFetch.value, hostPath, refreshTime, isProductionMode], () => {
   if (appFetch.value)
     checkCurrentPage()
 }, { immediate: true })

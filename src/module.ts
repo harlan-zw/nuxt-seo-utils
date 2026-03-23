@@ -370,6 +370,13 @@ export {}
     if (config.fixRequiredAbsoluteMetaTagsLinks)
       addPlugin({ src: resolve(appRuntimeDir, 'plugins', '1.absoluteImageUrls.server'), mode: 'server' })
 
+    if (config.debug || nuxt.options.dev) {
+      addServerHandler({
+        route: '/__nuxt-seo-utils/debug.json',
+        handler: resolve('./runtime/server/routes/__nuxt-seo-utils/debug'),
+      })
+    }
+
     if (nuxt.options.dev)
       setupDevToolsUI(resolve, nuxt)
   },

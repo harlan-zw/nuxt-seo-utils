@@ -1,24 +1,7 @@
 import { resolve } from 'pathe'
 
 export default defineNuxtConfig({
-  ssr: false,
-
-  modules: [
-    '@nuxt/fonts',
-    '@nuxt/ui',
-  ],
-
-  css: ['~/assets/css/global.css'],
-
-  fonts: {
-    families: [
-      { name: 'Hubot Sans' },
-    ],
-  },
-
-  devtools: {
-    enabled: false,
-  },
+  extends: ['nuxtseo-shared/layer-devtools'],
 
   nitro: {
     prerender: {
@@ -35,6 +18,4 @@ export default defineNuxtConfig({
   app: {
     baseURL: '/__nuxt-seo-utils',
   },
-
-  compatibilityDate: '2024-09-11',
 })

@@ -1,11 +1,8 @@
 <script setup lang="ts">
 import { path as hostPath, isProductionMode, productionUrl, refreshTime } from '#imports'
-import { useClipboard } from '@vueuse/core'
 import { computed, ref, watch } from 'vue'
 import { appFetch } from '../composables/rpc'
 import { parseMetaTags, useLoadingMessages } from '../composables/tools'
-
-const { copy, copied } = useClipboard()
 
 const loading = ref(false)
 const error = ref<string | null>(null)
@@ -190,31 +187,20 @@ watch([() => appFetch.value, hostPath, refreshTime, isProductionMode], () => {
     </div>
 
     <!-- Error -->
-    <div v-else-if="error" class="card p-6 border-red-500/30">
-      <div class="flex items-center gap-2 text-red-500">
-        <UIcon name="carbon:warning-alt" class="text-lg" />
-        <span class="font-medium">{{ error }}</span>
-      </div>
-    </div>
+    <DevtoolsEmptyState v-else-if="error" variant="error" :title="error" icon="carbon:warning-alt" />
 
     <!-- Results -->
     <template v-else-if="result">
       <!-- Warnings -->
-      <div v-if="warnings.length" class="card p-4 space-y-2">
-        <div v-for="w of warnings" :key="w.property + w.message" class="flex items-start gap-2 text-sm">
-          <UIcon
-            :name="w.type === 'error' ? 'carbon:close-filled' : 'carbon:warning-filled'"
-            class="mt-0.5 shrink-0"
-            :class="w.type === 'error' ? 'text-red-500' : 'text-amber-500'"
-          />
-          <div>
-            <span class="font-mono text-xs">{{ w.property }}</span>
-            <p class="text-[var(--color-text-muted)]">
-              {{ w.message }}
-            </p>
-          </div>
-        </div>
-      </div>
+      <template v-if="warnings.length">
+        <DevtoolsAlert
+          v-for="w of warnings"
+          :key="w.property + w.message"
+          variant="warning"
+        >
+          <span class="font-mono text-xs">{{ w.property }}</span> {{ w.message }}
+        </DevtoolsAlert>
+      </template>
 
       <!-- Preview tabs -->
       <div class="card overflow-hidden">
@@ -329,19 +315,11 @@ watch([() => appFetch.value, hostPath, refreshTime, isProductionMode], () => {
 
       <!-- OG Tags table -->
       <div class="card p-4 space-y-3">
-        <div class="flex items-center justify-between">
-          <p class="text-sm font-medium">
-            Open Graph Tags
-          </p>
-          <UButton
-            size="xs"
-            variant="ghost"
-            color="neutral"
-            icon="carbon:copy"
-            :label="copied ? 'Copied!' : 'Copy'"
-            @click="copy(JSON.stringify({ og: result.og, twitter: result.twitter }, null, 2))"
-          />
-        </div>
+        <DevtoolsToolbar>
+          <span class="text-sm font-medium">Open Graph Tags</span>
+          <div class="flex-1" />
+          <DevtoolsCopyButton :text="JSON.stringify({ og: result.og, twitter: result.twitter }, null, 2)" />
+        </DevtoolsToolbar>
         <div class="divide-y divide-[var(--color-border-subtle)]">
           <div v-for="(value, key) of result.og" :key="key" class="flex items-center gap-3 py-2">
             <UBadge color="primary" variant="subtle" size="xs">
@@ -362,9 +340,9 @@ watch([() => appFetch.value, hostPath, refreshTime, isProductionMode], () => {
 
       <!-- OG Image preview -->
       <div v-if="result.ogImages.length" class="card p-4 space-y-3">
-        <p class="text-sm font-medium">
-          OG Image
-        </p>
+        <DevtoolsToolbar>
+          <span class="text-sm font-medium">OG Image</span>
+        </DevtoolsToolbar>
         <div v-for="(img, i) of result.ogImages" :key="i" class="space-y-2">
           <div class="rounded-lg overflow-hidden border border-[var(--color-border)]">
             <img :src="img.url" class="w-full max-h-64 object-contain bg-neutral-100 dark:bg-neutral-800" :alt="img.alt || 'OG Image'">
@@ -378,11 +356,6 @@ watch([() => appFetch.value, hostPath, refreshTime, isProductionMode], () => {
     </template>
 
     <!-- Not connected -->
-    <div v-else-if="!loading && !error" class="card p-8 text-center">
-      <UIcon name="carbon:share" class="text-3xl text-[var(--color-text-muted)] mb-3" />
-      <p class="text-sm text-[var(--color-text-muted)]">
-        Waiting for connection to host app...
-      </p>
-    </div>
+    <DevtoolsEmptyState v-else-if="!loading && !error" title="Waiting for connection" description="Waiting for connection to host app..." icon="carbon:share" />
   </div>
 </template>

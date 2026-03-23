@@ -66,6 +66,7 @@
     "escape-string-regexp": "catalog:",
     "image-size": "catalog:",
     "nuxt-site-config": "catalog:",
+    "nuxtseo-layer-devtools": "catalog:",
     "nuxtseo-shared": "catalog:",
     "pathe": "catalog:",
     "pkg-types": "catalog:",

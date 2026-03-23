@@ -1,9 +1,13 @@
 <script lang="ts" setup>
-useSeoMeta({
+import { useHead } from '#imports'
+
+useHead({
   title: 'Page Not Found',
 })
 </script>
 
 <template>
-  <div>error page</div>
+  <div>
+    <h1>Error</h1>
+  </div>
 </template>

@@ -1,9 +1,9 @@
 <script setup lang="ts">
+import { path as hostPath, isProductionMode, productionUrl, refreshTime } from '#imports'
 import { useClipboard } from '@vueuse/core'
 import { computed, ref, watch } from 'vue'
 import { appFetch } from '../composables/rpc'
 import { estimatePixelWidth, descColor as getDescColor, titleColor as getTitleColor, parseMetaTags, SEO_LIMITS, useLoadingMessages } from '../composables/tools'
-import { path as hostPath, isProductionMode, productionUrl, refreshTime } from '../util/logic'
 
 const { copy, copied } = useClipboard()
 

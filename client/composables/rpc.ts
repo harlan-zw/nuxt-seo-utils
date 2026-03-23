@@ -1,13 +1,11 @@
-import type { NuxtDevtoolsClient, NuxtDevtoolsIframeClient } from '@nuxt/devtools-kit/types'
+import type { NuxtDevtoolsIframeClient } from '@nuxt/devtools-kit/types'
 import type { $Fetch } from 'nitropack/types'
-import { onDevtoolsClientConnected } from '@nuxt/devtools-kit/iframe-client'
-import { computed, onMounted, onUnmounted, ref, watchEffect } from 'vue'
-import { path, refreshTime } from '../util/logic'
+import { appFetch, path, refreshTime, useDevtoolsConnection } from '#imports'
+import { computed, onMounted, onUnmounted, ref } from 'vue'
 
-export const appFetch = ref<$Fetch>()
-export const devtools = ref<NuxtDevtoolsClient>()
+export { appFetch, colorMode, devtools } from '#imports'
+
 export const devtoolsClient = ref<NuxtDevtoolsIframeClient>()
-export const colorMode = ref<'dark' | 'light'>('dark')
 
 export const connectionState = ref<'connecting' | 'connected' | 'fallback' | 'failed'>('connecting')
 export const isConnected = computed(() => connectionState.value === 'connected' || connectionState.value === 'fallback')
@@ -41,19 +39,13 @@ onMounted(() => {
   })
 })
 
-onDevtoolsClientConnected(async (client) => {
-  connectionState.value = 'connected'
-  // @ts-expect-error untyped
-  appFetch.value = client.host.app.$fetch
-  watchEffect(() => {
-    colorMode.value = client.host.app.colorMode.value
-  })
-  const $route = client.host.nuxt.vueApp.config.globalProperties?.$route
-  path.value = $route?.path || '/'
-  client.host.nuxt.$router.afterEach((route: any) => {
-    path.value = route.path
+useDevtoolsConnection({
+  onConnected(client) {
+    connectionState.value = 'connected'
+    devtoolsClient.value = client
+  },
+  onRouteChange(route) {
+    path.value = route?.path || '/'
     refreshTime.value = Date.now()
-  })
-  devtools.value = client.devtools
-  devtoolsClient.value = client
+  },
 })

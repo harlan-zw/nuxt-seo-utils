@@ -1,8 +1,7 @@
 <script lang="ts" setup>
-import { computed, useHead, useRoute, watchEffect } from '#imports'
+import { computed, hasProductionUrl, path as hostPath, isProductionMode, previewSource, productionUrl, useHead, useRoute, watchEffect } from '#imports'
 import { useAsyncData } from 'nuxt/app'
 import { appFetch, colorMode } from './composables/rpc'
-import { hasProductionUrl, path as hostPath, isProductionMode, previewSource, productionUrl } from './util/logic'
 
 const { data: debugData } = await useAsyncData('seo-utils-debug', async () => {
   if (!appFetch.value)

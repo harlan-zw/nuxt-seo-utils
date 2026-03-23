@@ -4,6 +4,8 @@ import { computed, ref, watch } from 'vue'
 import { appFetch } from '../composables/rpc'
 import { estimatePixelWidth, descColor as getDescColor, titleColor as getTitleColor, parseMetaTags, SEO_LIMITS, useLoadingMessages } from '../composables/tools'
 
+const TRAILING_SLASH_RE = /\/$/
+
 const loading = ref(false)
 const error = ref<string | null>(null)
 const result = ref<ReturnType<typeof parseMetaTags> & { url: string } | null>(null)
@@ -25,7 +27,7 @@ const displayUrl = computed(() => {
     return ''
   try {
     const url = new URL(result.value.url)
-    return url.hostname + (url.pathname === '/' ? '' : url.pathname.replace(/\/$/, ''))
+    return url.hostname + (url.pathname === '/' ? '' : url.pathname.replace(TRAILING_SLASH_RE, ''))
   }
   catch {
     return result.value.url
@@ -97,7 +99,7 @@ const overallStatus = computed(() => {
 
 function resolveBaseUrl() {
   if (isProductionMode.value && productionUrl.value)
-    return productionUrl.value.replace(/\/$/, '')
+    return productionUrl.value.replace(TRAILING_SLASH_RE, '')
   return window.parent?.location?.origin || window.location.origin
 }
 

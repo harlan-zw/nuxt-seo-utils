@@ -4,6 +4,8 @@ import { computed, ref, watch } from 'vue'
 import { appFetch } from '../composables/rpc'
 import { parseMetaTags, useLoadingMessages } from '../composables/tools'
 
+const TRAILING_SLASH_RE = /\/$/
+
 const loading = ref(false)
 const error = ref<string | null>(null)
 
@@ -103,8 +105,12 @@ function parseSocialMeta(html: string, url: string): ParsedSocialMeta {
   }
 
   let hostname = ''
-  try { hostname = new URL(url).hostname }
-  catch { hostname = url }
+  try {
+    hostname = new URL(url).hostname
+  }
+  catch {
+    hostname = url
+  }
 
   return {
     title: parsed.title,
@@ -120,7 +126,7 @@ function parseSocialMeta(html: string, url: string): ParsedSocialMeta {
 
 function resolveBaseUrl() {
   if (isProductionMode.value && productionUrl.value)
-    return productionUrl.value.replace(/\/$/, '')
+    return productionUrl.value.replace(TRAILING_SLASH_RE, '')
   return window.parent?.location?.origin || window.location.origin
 }
 

@@ -1,4 +1,6 @@
-import { computed, onUnmounted, ref } from 'vue'
+import { onUnmounted, ref } from 'vue'
+
+const DEV_SERVER_HOST_RE = /__nuxt-seo-utils.*/
 
 export function useLoadingMessages(messages: string[], interval = 800) {
   const current = ref(messages[0])
@@ -111,7 +113,7 @@ export function useFetchPage(appFetch: ReturnType<typeof ref<any>>) {
 
     try {
       // Fetch the page HTML from the dev server
-      const response = await fetch(`${window.location.protocol}//${window.location.host.replace(/__nuxt-seo-utils.*/, '')}${pagePath}`, {
+      const response = await fetch(`${window.location.protocol}//${window.location.host.replace(DEV_SERVER_HOST_RE, '')}${pagePath}`, {
         headers: { Accept: 'text/html' },
       })
       if (!response.ok)

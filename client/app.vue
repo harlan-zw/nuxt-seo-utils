@@ -1,13 +1,6 @@
 <script lang="ts" setup>
-import { computed, path as hostPath, watchEffect } from '#imports'
-import { useAsyncData } from 'nuxt/app'
+import { computed, path as hostPath } from '#imports'
 import { appFetch } from './composables/rpc'
-
-const { data: debugData } = await useAsyncData('seo-utils-debug', async () => {
-  if (!appFetch.value)
-    return null
-  return appFetch.value('/__nuxt-seo-utils/debug.json')
-}, { watch: [appFetch] })
 
 const navItems = [
   { value: 'meta', to: '/', icon: 'carbon:tag', label: 'Meta Tags' },

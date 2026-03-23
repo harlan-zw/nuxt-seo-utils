@@ -41,7 +41,7 @@
     "build:client": "nuxi generate client",
     "dev": "nuxi dev playground",
     "dev:client": "nuxi dev client --port 3031",
-    "dev:prepare": "nuxt-module-build prepare && nuxi prepare playground && pnpm prepare:fixtures",
+    "dev:prepare": "nuxt-module-build prepare && nuxi prepare playground && pnpm prepare:fixtures && nuxi prepare client",
     "stub": "nuxt-module-build build --stub && nuxt-module-build prepare",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",

@@ -8,7 +8,8 @@ const NON_JS_TYPES = new Set(['application/json', 'application/ld+json', 'specul
 async function minifyJSBuildTime(code: string): Promise<string | null> {
   // try rolldown first (Vite 8+)
   try {
-    const { minify } = await (import('rolldown/experimental') as Promise<any>)
+    const rolldownPath = 'rolldown/experimental'
+    const { minify } = await import(/* @vite-ignore */ rolldownPath) as { minify: (filename: string, code: string) => Promise<{ code: string }> }
     const result = await minify('inline.js', code)
     return result.code.trim()
   }

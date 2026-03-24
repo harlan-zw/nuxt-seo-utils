@@ -140,14 +140,14 @@ export interface ModuleOptions {
   /**
    * Minify inline `<script>` tags in SSR responses.
    *
-   * - `'esbuild'`: Uses esbuild for full minification. Only works at build time (prerendered/generated routes) since esbuild is a native binary not available in production server bundles.
-   * - `'lightweight'`: Uses a pure JS minifier that strips comments and collapses whitespace. Works at runtime for dynamic SSR with zero native dependencies.
-   * - `true`: Uses both. esbuild for prerendered routes at build time, lightweight for dynamic SSR at runtime.
+   * - `true`: Enables both build and runtime minification.
+   * - `'build'`: Minifies static head scripts and prerendered routes at build time using esbuild.
+   * - `'runtime'`: Minifies all inline scripts per request using a lightweight pure JS minifier.
    * - `false`: Disabled.
    *
    * @default true
    */
-  minifySSRScripts: boolean | 'esbuild' | 'lightweight'
+  minifySSRScripts: boolean | 'build' | 'runtime'
 
   /**
    * Enables debug logs and a debug endpoint.
@@ -392,14 +392,14 @@ export {}
     if (!nuxt.options.dev && config.minifySSRScripts) {
       const mode = config.minifySSRScripts === true ? 'both' : config.minifySSRScripts
       // lightweight runtime minifier for dynamic SSR
-      if (mode === 'both' || mode === 'lightweight') {
+      if (mode === 'both' || mode === 'runtime') {
         nuxt.hooks.hook('nitro:config', (nitroConfig) => {
           nitroConfig.plugins = nitroConfig.plugins || []
           nitroConfig.plugins.push(resolve(runtimeDir, 'server/plugins/minifySSRScripts'))
         })
       }
-      // esbuild minifier for prerendered routes at build time
-      if (mode === 'both' || mode === 'esbuild') {
+      // esbuild minifier: static head scripts + prerendered routes
+      if (mode === 'both' || mode === 'build') {
         minifyPrerenderScripts()
       }
     }

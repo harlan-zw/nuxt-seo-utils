@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { computed } from '#imports'
+import { computed, useRoute } from '#imports'
 import { path as hostPath, refreshSources } from 'nuxtseo-layer-devtools/composables/state'
 import { appFetch } from './composables/rpc'
 

@@ -8,6 +8,5 @@ export function setupDevToolsUI(resolve: (path: string) => string, nuxt: Nuxt = 
     name: 'nuxt-seo-utils',
     title: 'SEO Utils',
     icon: 'carbon:search-locate',
-    devPort: 3031,
   }, resolve, nuxt)
 }

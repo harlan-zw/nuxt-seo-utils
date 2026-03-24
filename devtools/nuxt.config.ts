@@ -3,6 +3,10 @@ import { resolve } from 'pathe'
 export default defineNuxtConfig({
   extends: ['nuxtseo-layer-devtools'],
 
+  imports: {
+    autoImport: true,
+  },
+
   nitro: {
     prerender: {
       routes: ['/', '/social'],

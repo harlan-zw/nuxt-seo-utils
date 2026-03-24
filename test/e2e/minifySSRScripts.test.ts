@@ -30,7 +30,7 @@ describe('minify', () => {
       return !s.match(/type\s*=\s*["'](?!text\/javascript|module|application\/javascript)[^"']*["']/i)
     })
     for (const script of jsScripts) {
-      const content = script.match(/<script[^>]*>([\s\S]*?)<\/script\s*>/i)?.[1]
+      const content = script.match(/<script[^>]*>([\s\S]*?)<\/script\b[^>]*>/i)?.[1]
       if (!content || content.trim().length < 20)
         continue
       // minified scripts should not have multiple consecutive newlines

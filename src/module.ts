@@ -137,6 +137,14 @@ export interface ModuleOptions {
   meta: MetaFlatSerializable
 
   /**
+   * Minify inline `<script>` tags in SSR responses using esbuild or terser.
+   * Automatically detects which minifier is available in your project.
+   *
+   * @default true
+   */
+  minifySSRScripts: boolean
+
+  /**
    * Enables debug logs and a debug endpoint.
    *
    * @default false
@@ -182,6 +190,7 @@ export default defineNuxtModule<ModuleOptions>({
     automaticOgAndTwitterTags: true,
     canonicalLowercase: true,
     tagPriority: 30,
+    minifySSRScripts: true,
   },
   async setup(config, nuxt) {
     const logger = useLogger('nuxt-seo-utils')
@@ -374,6 +383,13 @@ export {}
 
     if (config.fixRequiredAbsoluteMetaTagsLinks)
       addPlugin({ src: resolve(appRuntimeDir, 'plugins', '1.absoluteImageUrls.server'), mode: 'server' })
+
+    if (!nuxt.options.dev && config.minifySSRScripts) {
+      nuxt.hooks.hook('nitro:config', (nitroConfig) => {
+        nitroConfig.plugins = nitroConfig.plugins || []
+        nitroConfig.plugins.push(resolve(runtimeDir, 'server/plugins/minifySSRScripts'))
+      })
+    }
 
     if (nuxt.options.dev)
       setupDevToolsUI(resolve, nuxt)

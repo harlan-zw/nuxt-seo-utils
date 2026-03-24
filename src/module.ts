@@ -138,16 +138,18 @@ export interface ModuleOptions {
   meta: MetaFlatSerializable
 
   /**
-   * Minify inline `<script>` tags in SSR responses.
+   * Minify inline `<script>` tags in SSR responses. Both toggles are independent.
    *
    * - `true`: Enables both build and runtime minification.
-   * - `'build'`: Minifies static head scripts and prerendered routes at build time using esbuild.
-   * - `'runtime'`: Minifies all inline scripts per request using a lightweight pure JS minifier.
    * - `false`: Disabled.
+   * - `{ build?: boolean, runtime?: boolean }`: Toggle each mode independently.
+   *
+   * **Build mode**: Minifies static `app.head` scripts and prerendered route HTML at build time using esbuild.
+   * **Runtime mode**: Minifies all inline scripts per SSR request via an Unhead `ssr:render` plugin using a lightweight pure JS minifier.
    *
    * @default true
    */
-  minifySSRScripts: boolean | 'build' | 'runtime'
+  minifySSRScripts: boolean | { build?: boolean, runtime?: boolean }
 
   /**
    * Enables debug logs and a debug endpoint.
@@ -390,16 +392,18 @@ export {}
       addPlugin({ src: resolve(appRuntimeDir, 'plugins', '1.absoluteImageUrls.server'), mode: 'server' })
 
     if (!nuxt.options.dev && config.minifySSRScripts) {
-      const mode = config.minifySSRScripts === true ? 'both' : config.minifySSRScripts
-      // lightweight runtime minifier for dynamic SSR
-      if (mode === 'both' || mode === 'runtime') {
-        nuxt.hooks.hook('nitro:config', (nitroConfig) => {
-          nitroConfig.plugins = nitroConfig.plugins || []
-          nitroConfig.plugins.push(resolve(runtimeDir, 'server/plugins/minifySSRScripts'))
+      const minifyOpts = config.minifySSRScripts === true
+        ? { build: true, runtime: true }
+        : config.minifySSRScripts
+      // runtime: Unhead ssr:render plugin for per-request minification
+      if (minifyOpts.runtime !== false) {
+        addPlugin({
+          src: resolve(appRuntimeDir, 'plugins', 'minifyScripts.server'),
+          mode: 'server',
         })
       }
-      // esbuild minifier: static head scripts + prerendered routes
-      if (mode === 'both' || mode === 'build') {
+      // build: esbuild for static head scripts + prerendered routes
+      if (minifyOpts.build !== false) {
         minifyPrerenderScripts()
       }
     }

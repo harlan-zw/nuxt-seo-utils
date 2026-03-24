@@ -16,7 +16,7 @@ await setup({
     ],
     // @ts-expect-error module config key
     seo: {
-      minifySSRScripts: true,
+      minifySSRScripts: { runtime: true },
       treeShakeUseSeoMeta: false,
     },
   },

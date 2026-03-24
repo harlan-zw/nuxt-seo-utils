@@ -1,5 +1,5 @@
 import type { QueryObject } from 'ufo'
-import type { MaybeRefOrGetter } from 'vue'
+import type { ComputedRef, MaybeRefOrGetter } from 'vue'
 import { useSiteConfig } from '#site-config/app/composables/useSiteConfig'
 import { createSitePathResolver } from '#site-config/app/composables/utils'
 import { useRoute, useRuntimeConfig } from 'nuxt/app'
@@ -9,11 +9,16 @@ import { computed, toValue } from 'vue'
 export type SharePlatform = 'twitter' | 'facebook' | 'linkedin' | 'whatsapp' | 'telegram' | 'reddit' | 'pinterest' | 'email'
 
 export interface ShareLinkUtmParams {
-  utm_source?: string
-  utm_medium?: string
-  utm_campaign?: string
-  utm_term?: string
-  utm_content?: string
+  /**
+   * Set to 'auto' to use the platform name as utm_source per link.
+   * When a string (other than 'auto'), use that value for all platforms.
+   * @default undefined
+   */
+  source?: 'auto' | (string & {})
+  medium?: string
+  campaign?: string
+  term?: string
+  content?: string
 }
 
 export interface ShareLinksOptions {
@@ -26,9 +31,21 @@ export interface ShareLinksOptions {
    */
   title?: MaybeRefOrGetter<string | undefined>
   /**
-   * UTM parameters to append to the shared URL.
+   * UTM tracking parameters. Defaults to `true` for automatic per-platform tracking
+   * (utm_source = platform name, utm_medium = 'social'/'email'). Pass `false` to disable,
+   * or an object for manual control.
+   *
+   * @example
+   * // Auto: utm_source=twitter&utm_medium=social, utm_source=facebook&utm_medium=email, etc.
+   * utm: true
+   *
+   * // Manual: same utm params on all platforms
+   * utm: { source: 'newsletter', medium: 'email', campaign: 'launch' }
+   *
+   * // Hybrid: auto source + medium per platform, with custom campaign
+   * utm: { source: 'auto', campaign: 'launch' }
    */
-  utm?: MaybeRefOrGetter<ShareLinkUtmParams | undefined>
+  utm?: MaybeRefOrGetter<boolean | ShareLinkUtmParams | undefined>
   /**
    * Twitter/X specific options.
    */
@@ -44,7 +61,7 @@ export interface ShareLinksOptions {
   facebook?: {
     /** Pre-filled text to accompany the share. */
     quote?: string
-    /** A single hashtag (with #, e.g. "#nuxt"). */
+    /** A single hashtag (without #, e.g. "nuxt"). */
     hashtag?: string
   }
   /**
@@ -56,7 +73,10 @@ export interface ShareLinksOptions {
   }
 }
 
-export type ShareLinks = Record<SharePlatform, string>
+export type ShareLinks = Record<SharePlatform, string> & {
+  /** The resolved canonical URL (without UTM params), useful for "copy link" buttons. */
+  canonicalUrl: string
+}
 
 function buildShareUrl(platform: SharePlatform, url: string, title: string, options: ShareLinksOptions): string {
   const encodedUrl = encodeURIComponent(url)
@@ -75,7 +95,7 @@ function buildShareUrl(platform: SharePlatform, url: string, title: string, opti
       if (options.facebook?.quote)
         fbUrl += `&quote=${encodeURIComponent(options.facebook.quote)}`
       if (options.facebook?.hashtag)
-        fbUrl += `&hashtag=${encodeURIComponent(options.facebook.hashtag)}`
+        fbUrl += `&hashtag=${encodeURIComponent(`#${options.facebook.hashtag}`)}`
       return fbUrl
     }
     case 'linkedin':
@@ -106,18 +126,17 @@ function buildShareUrl(platform: SharePlatform, url: string, title: string, opti
  *
  * @docs https://nuxtseo.com/nuxt-seo/api/share-links
  */
-export function useShareLinks(options: ShareLinksOptions = {}) {
+export function useShareLinks(options: ShareLinksOptions = {}): ComputedRef<ShareLinks> {
   const route = useRoute()
   const siteConfig = useSiteConfig()
   const { canonicalQueryWhitelist, canonicalLowercase } = useRuntimeConfig().public['seo-utils'] as { canonicalQueryWhitelist: string[], canonicalLowercase: boolean }
   const resolveUrl = createSitePathResolver({ withBase: true, absolute: true })
 
-  const links = computed<ShareLinks>(() => {
+  return computed<ShareLinks>(() => {
     const customUrl = toValue(options.url)
-
-    let baseUrl: string
+    let canonicalUrl: string
     if (customUrl) {
-      baseUrl = customUrl
+      canonicalUrl = customUrl
     }
     else {
       let url = resolveUrl(route.path || '/').value || route.path
@@ -129,34 +148,44 @@ export function useShareLinks(options: ShareLinksOptions = {}) {
           .filter(([key]) => canonicalQueryWhitelist.includes(key))
           .sort(([a], [b]) => a.localeCompare(b)),
       ) as QueryObject
-      baseUrl = Object.keys(filteredQuery).length
+      canonicalUrl = Object.keys(filteredQuery).length
         ? `${url}?${stringifyQuery(filteredQuery)}`
         : url
     }
 
-    const utm = toValue(options.utm)
-    let url = baseUrl
-    if (utm) {
-      const query: Record<string, string> = {}
-      for (const [key, value] of Object.entries(utm)) {
-        if (value != null) {
-          query[key] = String(value)
-        }
-      }
-      if (Object.keys(query).length > 0) {
-        url = withQuery(baseUrl, query)
-      }
-    }
-
+    const utm = toValue(options.utm) ?? true
     const title = toValue(options.title) || siteConfig.name || ''
 
     const platforms: SharePlatform[] = ['twitter', 'facebook', 'linkedin', 'whatsapp', 'telegram', 'reddit', 'pinterest', 'email']
-    const result = {} as ShareLinks
+    const result = { canonicalUrl } as ShareLinks
     for (const platform of platforms) {
+      const query: Record<string, string> = {}
+      if (utm === false) {
+        // UTM explicitly disabled, skip
+      }
+      else if (utm === true || (typeof utm === 'object' && utm.source === 'auto')) {
+        query.utm_source = platform
+        query.utm_medium = (utm !== true && utm?.medium) || (platform === 'email' ? 'email' : 'social')
+      }
+      else if (utm) {
+        if (utm.source)
+          query.utm_source = utm.source
+        if (utm.medium)
+          query.utm_medium = utm.medium
+      }
+      if (typeof utm === 'object') {
+        if (utm.campaign)
+          query.utm_campaign = utm.campaign
+        if (utm.term)
+          query.utm_term = utm.term
+        if (utm.content)
+          query.utm_content = utm.content
+      }
+      const url = Object.keys(query).length > 0
+        ? withQuery(canonicalUrl, query)
+        : canonicalUrl
       result[platform] = buildShareUrl(platform, url, title, options)
     }
     return result
   })
-
-  return links
 }

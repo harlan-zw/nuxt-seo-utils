@@ -1,4 +1,4 @@
-import { useSiteConfig } from '#site-config/server/composables/useSiteConfig'
+import { getSiteConfig } from '#site-config/server/composables/getSiteConfig'
 import { defineEventHandler, getRequestHost, sendRedirect, setHeader } from 'h3'
 import { joinURL } from 'ufo'
 
@@ -16,7 +16,7 @@ export default defineEventHandler((e) => {
   if (path.split('/').pop()?.includes('.')) {
     return
   }
-  const siteConfig = useSiteConfig(e)
+  const siteConfig = getSiteConfig(e)
   if (!siteConfig.url || siteConfig.env !== 'production') {
     return
   }

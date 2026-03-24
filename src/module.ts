@@ -162,7 +162,7 @@ export default defineNuxtModule<ModuleOptions>({
       optional: true,
     },
     'nuxt-site-config': {
-      version: '>=3',
+      version: '>=3.2',
     },
   },
   defaults: {

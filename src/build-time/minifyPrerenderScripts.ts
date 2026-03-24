@@ -46,7 +46,7 @@ export default function minifyPrerender() {
       for (const script of head.script) {
         if (typeof script === 'string')
           continue
-        const content = script.innerHTML || script.textContent
+        const content = String(script.innerHTML || script.textContent || '')
         if (!content || content.trim().length < 20)
           continue
         if (script.type && NON_JS_TYPES.has(script.type))
@@ -66,7 +66,7 @@ export default function minifyPrerender() {
       for (const style of head.style) {
         if (typeof style === 'string')
           continue
-        const content = style.innerHTML || style.textContent
+        const content = String(style.innerHTML || style.textContent || '')
         if (!content || content.trim().length < 20)
           continue
         promises.push(minifyCSSWithLightningCSS(content).then((minified) => {
@@ -135,7 +135,7 @@ async function replaceAsync(
   const replacements = await Promise.all(matches.map(m => m.replacement))
   let result = str
   for (let i = matches.length - 1; i >= 0; i--) {
-    const { match } = matches[i]
+    const { match } = matches[i]!
     result = result.slice(0, match.index) + replacements[i] + result.slice(match.index + match[0].length)
   }
   return result

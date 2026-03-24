@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import { useClipboard } from '@vueuse/core'
+import { path as hostPath, refreshTime } from 'nuxtseo-layer-devtools/composables/state'
 import { computed, ref, watch } from 'vue'
 import { appFetch } from '../composables/rpc'
 import { parseMetaTags, useLoadingMessages } from '../composables/tools'
-import { path as hostPath, refreshTime } from '../util/logic'
 
 const { copy, copied } = useClipboard()
 
@@ -57,7 +57,7 @@ const warnings = computed(() => {
 
   // Image validation
   if (result.value.ogImages.length) {
-    const img = result.value.ogImages[0]
+    const img = result.value.ogImages[0]!
     if (img.url && !img.url.startsWith('http'))
       w.push({ type: 'error', property: 'og:image', message: 'og:image must be an absolute URL.' })
     const width = Number.parseInt(img.width || '0')
@@ -106,8 +106,12 @@ function parseSocialMeta(html: string, url: string): ParsedSocialMeta {
   }
 
   let hostname = ''
-  try { hostname = new URL(url).hostname }
-  catch { hostname = url }
+  try {
+    hostname = new URL(url).hostname
+  }
+  catch {
+    hostname = url
+  }
 
   return {
     title: parsed.title,

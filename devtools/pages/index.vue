@@ -1,9 +1,11 @@
 <script setup lang="ts">
 import { useClipboard } from '@vueuse/core'
+import { path as hostPath, refreshTime } from 'nuxtseo-layer-devtools/composables/state'
 import { computed, ref, watch } from 'vue'
 import { appFetch } from '../composables/rpc'
 import { estimatePixelWidth, descColor as getDescColor, titleColor as getTitleColor, parseMetaTags, SEO_LIMITS, useLoadingMessages } from '../composables/tools'
-import { path as hostPath, refreshTime } from '../util/logic'
+
+const trailingSlashRe = /\/$/
 
 const { copy, copied } = useClipboard()
 
@@ -28,7 +30,7 @@ const displayUrl = computed(() => {
     return ''
   try {
     const url = new URL(result.value.url)
-    return url.hostname + (url.pathname === '/' ? '' : url.pathname.replace(/\/$/, ''))
+    return url.hostname + (url.pathname === '/' ? '' : url.pathname.replace(trailingSlashRe, ''))
   }
   catch {
     return result.value.url
@@ -57,7 +59,7 @@ const essentialTagsByCategory = computed(() => {
   essentialTags.value.forEach((tag) => {
     if (!grouped[tag.category])
       grouped[tag.category] = []
-    grouped[tag.category].push(tag)
+    grouped[tag.category]!.push(tag)
   })
   return grouped
 })

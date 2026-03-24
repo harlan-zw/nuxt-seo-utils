@@ -162,7 +162,7 @@ export default defineNuxtModule<ModuleOptions>({
       optional: true,
     },
     'nuxt-site-config': {
-      version: '>=3',
+      version: '>=3.2',
     },
   },
   defaults: {
@@ -375,7 +375,15 @@ export {}
     if (config.fixRequiredAbsoluteMetaTagsLinks)
       addPlugin({ src: resolve(appRuntimeDir, 'plugins', '1.absoluteImageUrls.server'), mode: 'server' })
 
-    if (nuxt.options.dev)
+    if (config.debug || nuxt.options.dev) {
+      addServerHandler({
+        route: '/__nuxt-seo-utils/debug.json',
+        handler: resolve('./runtime/server/routes/__nuxt-seo-utils/debug'),
+      })
+    }
+
+    if (nuxt.options.dev) {
       setupDevToolsUI(resolve, nuxt)
+    }
   },
 })

@@ -1,4 +1,4 @@
-import { computed, onUnmounted, ref } from 'vue'
+import { onUnmounted, ref } from 'vue'
 
 export function useLoadingMessages(messages: string[], interval = 800) {
   const current = ref(messages[0])
@@ -93,42 +93,6 @@ export function parseMetaTags(html: string) {
   })
 
   return { title, description, ogTags, twitterTags, allMeta, canonical, schemas }
-}
-
-export function useFetchPage(appFetch: ReturnType<typeof ref<any>>) {
-  const loading = ref(false)
-  const error = ref<string | null>(null)
-  const html = ref<string | null>(null)
-
-  async function fetchPage(pagePath: string) {
-    if (!appFetch.value) {
-      error.value = 'Not connected to host app'
-      return null
-    }
-    loading.value = true
-    error.value = null
-    html.value = null
-
-    try {
-      // Fetch the page HTML from the dev server
-      const response = await fetch(`${window.location.protocol}//${window.location.host.replace(/__nuxt-seo-utils.*/, '')}${pagePath}`, {
-        headers: { Accept: 'text/html' },
-      })
-      if (!response.ok)
-        throw new Error(`HTTP ${response.status}`)
-      html.value = await response.text()
-      return html.value
-    }
-    catch (e: any) {
-      error.value = e.message || 'Failed to fetch page'
-      return null
-    }
-    finally {
-      loading.value = false
-    }
-  }
-
-  return { loading, error, html, fetchPage }
 }
 
 export function titleColor(length: number) {

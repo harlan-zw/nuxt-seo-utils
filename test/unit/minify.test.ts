@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { minifyJS } from '../../src/runtime/shared/minifyJS'
+import { minifyCSS, minifyJS } from '../../src/runtime/shared/minify'
 
 describe('minifyJS', () => {
   it('collapses whitespace', () => {
@@ -69,5 +69,42 @@ describe('minifyJS', () => {
   it('returns empty string for empty input', () => {
     expect(minifyJS('')).toBe('')
     expect(minifyJS('   ')).toBe('')
+  })
+})
+
+describe('minifyCSS', () => {
+  it('collapses whitespace', () => {
+    expect(minifyCSS('body  {  color:  red  }')).toBe('body{color:red}')
+  })
+
+  it('removes comments', () => {
+    expect(minifyCSS('/* comment */ body { color: red }')).toBe('body{color:red}')
+  })
+
+  it('preserves string literals', () => {
+    expect(minifyCSS('body::after { content: "hello   world" }')).toBe('body::after{content:"hello   world"}')
+  })
+
+  it('removes whitespace around selectors', () => {
+    expect(minifyCSS('.a  >  .b  {  margin:  0  }')).toBe('.a>.b{margin:0}')
+  })
+
+  it('handles multiline CSS', () => {
+    const input = `
+      .container {
+        display: flex;
+        align-items: center;
+      }
+    `
+    expect(minifyCSS(input)).toBe('.container{display:flex;align-items:center;}')
+  })
+
+  it('handles multiple selectors', () => {
+    expect(minifyCSS('h1, h2, h3 { font-weight: bold }')).toBe('h1,h2,h3{font-weight:bold}')
+  })
+
+  it('returns empty string for empty input', () => {
+    expect(minifyCSS('')).toBe('')
+    expect(minifyCSS('   ')).toBe('')
   })
 })

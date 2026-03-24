@@ -16,19 +16,17 @@ await setup({
     ],
     // @ts-expect-error module config key
     seo: {
-      minifySSRScripts: { runtime: true },
+      minify: { runtime: true },
       treeShakeUseSeoMeta: false,
     },
   },
 })
 
-describe('minifySSRScripts', () => {
+describe('minify', () => {
   it('minifies inline script tags in SSR response', async () => {
     const html = await $fetch<string>('/')
-    // inline scripts should not contain unnecessary whitespace/newlines
     const scripts = html.match(/<script(?![^>]+\bsrc\b)[^>]*>([\s\S]*?)<\/script>/gi) || []
     const jsScripts = scripts.filter((s) => {
-      // exclude non-JS types like application/json, importmap
       return !s.match(/type\s*=\s*["'](?!text\/javascript|module|application\/javascript)[^"']*["']/i)
     })
     for (const script of jsScripts) {
@@ -42,12 +40,10 @@ describe('minifySSRScripts', () => {
 
   it('preserves non-JS script types like application/json', async () => {
     const html = await $fetch<string>('/')
-    // ld+json and other data scripts should remain intact
     const dataScripts = html.match(/<script[^>]*type\s*=\s*["']application\/(?:ld\+)?json["'][^>]*>([\s\S]*?)<\/script>/gi) || []
     for (const script of dataScripts) {
       const content = script.match(/<script[^>]*>([\s\S]*?)<\/script>/i)?.[1]
       if (content) {
-        // should still be valid JSON
         expect(() => JSON.parse(content)).not.toThrow()
       }
     }

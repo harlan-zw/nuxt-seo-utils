@@ -1,10 +1,11 @@
 import { useNuxt } from '@nuxt/kit'
 
 const INLINE_SCRIPT_RE = /<script(?![^>]+\bsrc\b)([^>]*)>([\s\S]*?)<\/script>/gi
+const INLINE_STYLE_RE = /<style([^>]*)>([\s\S]*?)<\/style>/gi
 const TYPE_NON_JS_RE = /\btype\s*=\s*["'](?!text\/javascript|module|application\/javascript)[^"']*["']/i
 const NON_JS_TYPES = new Set(['application/json', 'application/ld+json', 'speculationrules', 'importmap'])
 
-async function minifyWithEsbuild(code: string): Promise<string | null> {
+async function minifyJSWithEsbuild(code: string): Promise<string | null> {
   try {
     const esbuild = await import('esbuild')
     const result = await esbuild.transform(code, {
@@ -18,41 +19,77 @@ async function minifyWithEsbuild(code: string): Promise<string | null> {
   }
 }
 
-export default function minifyPrerenderScripts() {
+async function minifyCSSWithLightningCSS(code: string): Promise<string | null> {
+  try {
+    const lightningcss = await import('lightningcss')
+    const result = lightningcss.transform({
+      filename: 'inline.css',
+      code: new TextEncoder().encode(code),
+      minify: true,
+    })
+    return new TextDecoder().decode(result.code).trim()
+  }
+  catch {
+    return null
+  }
+}
+
+export default function minifyPrerender() {
   const nuxt = useNuxt()
 
-  // minify static scripts in nuxt.options.app.head at build time
+  // minify static scripts and styles in nuxt.options.app.head at build time
   nuxt.hooks.hook('app:resolve', async () => {
     const head = nuxt.options.app.head
-    if (!head.script?.length)
-      return
+    const promises: Promise<void>[] = []
 
-    await Promise.all(head.script.map(async (script) => {
-      if (typeof script === 'string')
-        return
-      const content = script.innerHTML || script.textContent
-      if (!content || content.trim().length < 20)
-        return
-      // skip non-JS types
-      if (script.type && NON_JS_TYPES.has(script.type))
-        return
-
-      const minified = await minifyWithEsbuild(content)
-      if (minified && minified.length < content.length) {
-        if (script.innerHTML)
-          script.innerHTML = minified
-        else if (script.textContent)
-          script.textContent = minified
+    if (head.script?.length) {
+      for (const script of head.script) {
+        if (typeof script === 'string')
+          continue
+        const content = script.innerHTML || script.textContent
+        if (!content || content.trim().length < 20)
+          continue
+        if (script.type && NON_JS_TYPES.has(script.type))
+          continue
+        promises.push(minifyJSWithEsbuild(content).then((minified) => {
+          if (minified && minified.length < content.length) {
+            if (script.innerHTML)
+              script.innerHTML = minified
+            else if (script.textContent)
+              script.textContent = minified
+          }
+        }))
       }
-    }))
+    }
+
+    if (head.style?.length) {
+      for (const style of head.style) {
+        if (typeof style === 'string')
+          continue
+        const content = style.innerHTML || style.textContent
+        if (!content || content.trim().length < 20)
+          continue
+        promises.push(minifyCSSWithLightningCSS(content).then((minified) => {
+          if (minified && minified.length < content.length) {
+            if (style.innerHTML)
+              style.innerHTML = minified
+            else if (style.textContent)
+              style.textContent = minified
+          }
+        }))
+      }
+    }
+
+    await Promise.all(promises)
   })
 
-  // minify inline scripts in prerendered route HTML
+  // minify inline scripts and styles in prerendered route HTML
   nuxt.hooks.hook('nitro:init', (nitro) => {
     nitro.hooks.hook('prerender:generate', async (route) => {
       if (!route.contents || !route.contentType?.includes('html'))
         return
 
+      // minify inline scripts with esbuild
       route.contents = await replaceAsync(
         route.contents,
         new RegExp(INLINE_SCRIPT_RE.source, INLINE_SCRIPT_RE.flags),
@@ -61,10 +98,23 @@ export default function minifyPrerenderScripts() {
             return fullMatch
           if (!content || content.trim().length < 20)
             return fullMatch
-
-          const minified = await minifyWithEsbuild(content)
+          const minified = await minifyJSWithEsbuild(content)
           if (minified && minified.length < content.length)
             return `<script${attrs}>${minified}</script>`
+          return fullMatch
+        },
+      )
+
+      // minify inline styles with lightningcss
+      route.contents = await replaceAsync(
+        route.contents,
+        new RegExp(INLINE_STYLE_RE.source, INLINE_STYLE_RE.flags),
+        async (fullMatch: string, attrs: string, content: string) => {
+          if (!content || content.trim().length < 20)
+            return fullMatch
+          const minified = await minifyCSSWithLightningCSS(content)
+          if (minified && minified.length < content.length)
+            return `<style${attrs}>${minified}</style>`
           return fullMatch
         },
       )

@@ -19,7 +19,7 @@ import extendNuxtConfigAppHeadSeoMeta from './build-time/extendNuxtConfigAppHead
 import extendNuxtConfigAppHeadTypes from './build-time/extendNuxtConfigAppHeadTypes'
 import generateTagsFromPageDirImages from './build-time/generateTagsFromPageDirImages'
 import generateTagsFromPublicFiles from './build-time/generateTagsFromPublicFiles'
-import minifyPrerenderScripts from './build-time/minifyPrerenderScripts'
+import minifyPrerender from './build-time/minifyPrerenderScripts'
 import setupNuxtConfigAppHeadWithMoreDefaults from './build-time/setupNuxtConfigAppHeadWithMoreDefaults'
 import { setupDevToolsUI } from './build/devtools'
 
@@ -138,18 +138,18 @@ export interface ModuleOptions {
   meta: MetaFlatSerializable
 
   /**
-   * Minify inline `<script>` tags in SSR responses. Both toggles are independent.
+   * Minify inline `<script>` and `<style>` tags in SSR responses. Both toggles are independent.
    *
    * - `true`: Enables both build and runtime minification.
    * - `false`: Disabled.
    * - `{ build?: boolean, runtime?: boolean }`: Toggle each mode independently.
    *
-   * **Build mode**: Minifies static `app.head` scripts and prerendered route HTML at build time using esbuild.
-   * **Runtime mode**: Minifies all inline scripts per SSR request via an Unhead `ssr:render` plugin using a lightweight pure JS minifier.
+   * **Build mode**: Minifies static `app.head` scripts/styles and prerendered route HTML using esbuild (JS) and lightningcss (CSS).
+   * **Runtime mode**: Minifies all inline scripts/styles per SSR request via an Unhead `ssr:render` plugin using lightweight pure JS minifiers.
    *
    * @default true
    */
-  minifySSRScripts: boolean | { build?: boolean, runtime?: boolean }
+  minify: boolean | { build?: boolean, runtime?: boolean }
 
   /**
    * Enables debug logs and a debug endpoint.
@@ -197,7 +197,7 @@ export default defineNuxtModule<ModuleOptions>({
     automaticOgAndTwitterTags: true,
     canonicalLowercase: true,
     tagPriority: 30,
-    minifySSRScripts: true,
+    minify: true,
   },
   async setup(config, nuxt) {
     const logger = useLogger('nuxt-seo-utils')
@@ -391,10 +391,10 @@ export {}
     if (config.fixRequiredAbsoluteMetaTagsLinks)
       addPlugin({ src: resolve(appRuntimeDir, 'plugins', '1.absoluteImageUrls.server'), mode: 'server' })
 
-    if (!nuxt.options.dev && config.minifySSRScripts) {
-      const minifyOpts = config.minifySSRScripts === true
+    if (!nuxt.options.dev && config.minify) {
+      const minifyOpts = config.minify === true
         ? { build: true, runtime: true }
-        : config.minifySSRScripts
+        : config.minify
       // runtime: Unhead ssr:render plugin for per-request minification
       if (minifyOpts.runtime !== false) {
         addPlugin({
@@ -402,9 +402,9 @@ export {}
           mode: 'server',
         })
       }
-      // build: esbuild for static head scripts + prerendered routes
+      // build: esbuild/lightningcss for static head + prerendered routes
       if (minifyOpts.build !== false) {
-        minifyPrerenderScripts()
+        minifyPrerender()
       }
     }
 

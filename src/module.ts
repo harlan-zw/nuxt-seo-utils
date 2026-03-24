@@ -14,13 +14,13 @@ import {
 import UnheadVite from '@unhead/addons/vite'
 import { defu } from 'defu'
 import { installNuxtSiteConfig } from 'nuxt-site-config/kit'
-import { setupDevToolsUI } from 'nuxtseo-shared/devtools'
 import { relative } from 'pathe'
 import extendNuxtConfigAppHeadSeoMeta from './build-time/extendNuxtConfigAppHeadSeoMeta'
 import extendNuxtConfigAppHeadTypes from './build-time/extendNuxtConfigAppHeadTypes'
 import generateTagsFromPageDirImages from './build-time/generateTagsFromPageDirImages'
 import generateTagsFromPublicFiles from './build-time/generateTagsFromPublicFiles'
 import setupNuxtConfigAppHeadWithMoreDefaults from './build-time/setupNuxtConfigAppHeadWithMoreDefaults'
+import { setupDevToolsUI } from './build/devtools'
 
 export interface ModuleOptions {
   /**
@@ -383,13 +383,7 @@ export {}
     }
 
     if (nuxt.options.dev) {
-      setupDevToolsUI({
-        route: '/__nuxt-seo-utils',
-        name: 'nuxt-seo-utils',
-        title: 'SEO Utils',
-        icon: 'carbon:search-locate',
-        devPort: 3031,
-      }, resolve, nuxt)
+      setupDevToolsUI(resolve, nuxt)
     }
   },
 })

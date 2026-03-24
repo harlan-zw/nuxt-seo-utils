@@ -1,22 +1,16 @@
-import type { NuxtDevtoolsIframeClient } from '@nuxt/devtools-kit/types'
-import type { $Fetch } from 'nitropack/types'
-import { appFetch, colorMode, devtools, path, refreshTime, useDevtoolsConnection } from '#imports'
-import { computed, onMounted, onUnmounted, ref } from 'vue'
+import { appFetch, colorMode, devtools, useDevtoolsConnection } from 'nuxtseo-layer-devtools/composables/rpc'
+import { path, refreshTime } from 'nuxtseo-layer-devtools/composables/state'
+import { onMounted, onUnmounted, ref } from 'vue'
 
 export { appFetch, colorMode, devtools }
 
-export const devtoolsClient = ref<NuxtDevtoolsIframeClient>()
-
 export const connectionState = ref<'connecting' | 'connected' | 'fallback' | 'failed'>('connecting')
-export const isConnected = computed(() => connectionState.value === 'connected' || connectionState.value === 'fallback')
-export const isConnectionFailed = computed(() => connectionState.value === 'failed')
-export const isFallbackMode = computed(() => connectionState.value === 'fallback')
 
 async function tryFallbackConnection() {
   const fallbackUrl = 'http://localhost:3000'
   const res = await fetch(`${fallbackUrl}/`).catch(() => null)
   if (res?.ok) {
-    appFetch.value = ((url: string, opts?: any) => fetch(`${fallbackUrl}${url}`, opts).then(r => r.json())) as $Fetch
+    appFetch.value = ((url: string, opts?: any) => fetch(`${fallbackUrl}${url}`, opts).then(r => r.json())) as any
     path.value = '/'
     connectionState.value = 'fallback'
     return true
@@ -40,11 +34,10 @@ onMounted(() => {
 })
 
 useDevtoolsConnection({
-  onConnected(client) {
+  onConnected() {
     connectionState.value = 'connected'
-    devtoolsClient.value = client
   },
-  onRouteChange(route) {
+  onRouteChange(route: any) {
     path.value = route?.path || '/'
     refreshTime.value = Date.now()
   },

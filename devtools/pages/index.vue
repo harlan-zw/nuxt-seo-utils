@@ -1,10 +1,13 @@
 <script setup lang="ts">
-import { path as hostPath, isProductionMode, productionUrl, refreshTime } from '#imports'
+import { useClipboard } from '@vueuse/core'
+import { path as hostPath, refreshTime } from 'nuxtseo-layer-devtools/composables/state'
 import { computed, ref, watch } from 'vue'
 import { appFetch } from '../composables/rpc'
 import { estimatePixelWidth, descColor as getDescColor, titleColor as getTitleColor, parseMetaTags, SEO_LIMITS, useLoadingMessages } from '../composables/tools'
 
-const TRAILING_SLASH_RE = /\/$/
+const trailingSlashRe = /\/$/
+
+const { copy, copied } = useClipboard()
 
 const loading = ref(false)
 const error = ref<string | null>(null)
@@ -27,7 +30,7 @@ const displayUrl = computed(() => {
     return ''
   try {
     const url = new URL(result.value.url)
-    return url.hostname + (url.pathname === '/' ? '' : url.pathname.replace(TRAILING_SLASH_RE, ''))
+    return url.hostname + (url.pathname === '/' ? '' : url.pathname.replace(trailingSlashRe, ''))
   }
   catch {
     return result.value.url
@@ -56,7 +59,7 @@ const essentialTagsByCategory = computed(() => {
   essentialTags.value.forEach((tag) => {
     if (!grouped[tag.category])
       grouped[tag.category] = []
-    grouped[tag.category].push(tag)
+    grouped[tag.category]!.push(tag)
   })
   return grouped
 })
@@ -97,12 +100,6 @@ const overallStatus = computed(() => {
   return { type: 'success', message: 'Looking good!', icon: 'carbon:checkmark-filled' }
 })
 
-function resolveBaseUrl() {
-  if (isProductionMode.value && productionUrl.value)
-    return productionUrl.value.replace(TRAILING_SLASH_RE, '')
-  return window.parent?.location?.origin || window.location.origin
-}
-
 async function checkCurrentPage() {
   loading.value = true
   error.value = null
@@ -110,16 +107,16 @@ async function checkCurrentPage() {
   startMessages()
 
   try {
-    const baseUrl = resolveBaseUrl()
-    const fullUrl = `${baseUrl}${hostPath.value}`
-    const response = await fetch(fullUrl, {
+    // Fetch HTML from the host app's current page
+    const baseUrl = window.parent?.location?.origin || window.location.origin
+    const response = await fetch(`${baseUrl}${hostPath.value}`, {
       headers: { Accept: 'text/html' },
     })
     if (!response.ok)
       throw new Error(`HTTP ${response.status}`)
     const html = await response.text()
     const parsed = parseMetaTags(html)
-    result.value = { ...parsed, url: fullUrl }
+    result.value = { ...parsed, url: `${baseUrl}${hostPath.value}` }
   }
   catch (e: any) {
     error.value = e.message || 'Failed to fetch page'
@@ -131,7 +128,7 @@ async function checkCurrentPage() {
 }
 
 // Auto-check when connected and route changes
-watch([() => appFetch.value, hostPath, refreshTime, isProductionMode], () => {
+watch([() => appFetch.value, hostPath, refreshTime], () => {
   if (appFetch.value)
     checkCurrentPage()
 }, { immediate: true })
@@ -171,7 +168,12 @@ watch([() => appFetch.value, hostPath, refreshTime, isProductionMode], () => {
     </div>
 
     <!-- Error -->
-    <DevtoolsEmptyState v-else-if="error" variant="error" :title="error" icon="carbon:warning-alt" />
+    <div v-else-if="error" class="card p-6 border-red-500/30">
+      <div class="flex items-center gap-2 text-red-500">
+        <UIcon name="carbon:warning-alt" class="text-lg" />
+        <span class="font-medium">{{ error }}</span>
+      </div>
+    </div>
 
     <!-- Results -->
     <template v-else-if="result">
@@ -274,15 +276,24 @@ watch([() => appFetch.value, hostPath, refreshTime, isProductionMode], () => {
       </div>
 
       <!-- Missing tags -->
-      <template v-if="missingTags.length">
-        <DevtoolsAlert
-          v-for="tag of missingTags"
-          :key="tag.tag"
-          :variant="tag.severity === 'error' ? 'warning' : 'warning'"
-        >
-          <span class="font-mono">{{ tag.tag }}</span> {{ tag.message }}
-        </DevtoolsAlert>
-      </template>
+      <div v-if="missingTags.length" class="card p-4 space-y-3">
+        <p class="text-sm font-medium">
+          Missing Tags
+        </p>
+        <div v-for="tag of missingTags" :key="tag.tag" class="flex items-start gap-2">
+          <UIcon
+            :name="tag.severity === 'error' ? 'carbon:close-filled' : 'carbon:warning-filled'"
+            class="text-base mt-0.5 shrink-0"
+            :class="tag.severity === 'error' ? 'text-red-500' : 'text-amber-500'"
+          />
+          <div>
+            <span class="text-sm font-mono">{{ tag.tag }}</span>
+            <p class="text-xs text-[var(--color-text-muted)]">
+              {{ tag.message }}
+            </p>
+          </div>
+        </div>
+      </div>
 
       <!-- Essential tags checklist -->
       <div class="card p-4 space-y-4">
@@ -309,14 +320,19 @@ watch([() => appFetch.value, hostPath, refreshTime, isProductionMode], () => {
 
       <!-- All meta tags -->
       <div class="card p-4 space-y-3">
-        <DevtoolsToolbar>
-          <span class="text-sm font-medium">All Meta Tags</span>
-          <UBadge color="neutral" variant="subtle" size="xs">
-            {{ result.allMeta.length }}
-          </UBadge>
-          <div class="flex-1" />
-          <DevtoolsCopyButton :text="JSON.stringify({ title: result.title, description: result.description, canonical: result.canonical, og: result.ogTags, twitter: result.twitterTags }, null, 2)" />
-        </DevtoolsToolbar>
+        <div class="flex items-center justify-between">
+          <p class="text-sm font-medium">
+            All Meta Tags ({{ result.allMeta.length }})
+          </p>
+          <UButton
+            size="xs"
+            variant="ghost"
+            color="neutral"
+            icon="carbon:copy"
+            :label="copied ? 'Copied!' : 'Copy JSON'"
+            @click="copy(JSON.stringify({ title: result.title, description: result.description, canonical: result.canonical, og: result.ogTags, twitter: result.twitterTags }, null, 2))"
+          />
+        </div>
         <div class="divide-y divide-[var(--color-border-subtle)]">
           <div v-for="meta of result.allMeta" :key="meta.name" class="flex items-center gap-3 py-2">
             <UBadge :color="meta.type === 'property' ? 'primary' : meta.type === 'name' ? 'neutral' : 'warning'" variant="subtle" size="xs">
@@ -330,6 +346,11 @@ watch([() => appFetch.value, hostPath, refreshTime, isProductionMode], () => {
     </template>
 
     <!-- Not connected -->
-    <DevtoolsEmptyState v-else title="Waiting for connection" description="Waiting for connection to host app..." icon="carbon:plug" />
+    <div v-else class="card p-8 text-center">
+      <UIcon name="carbon:plug" class="text-3xl text-[var(--color-text-muted)] mb-3" />
+      <p class="text-sm text-[var(--color-text-muted)]">
+        Waiting for connection to host app...
+      </p>
+    </div>
   </div>
 </template>

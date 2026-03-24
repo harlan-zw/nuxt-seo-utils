@@ -5,13 +5,10 @@ export default defineNuxtConfig({
 
   nitro: {
     prerender: {
-      routes: [
-        '/',
-        '/social',
-      ],
+      routes: ['/', '/social'],
     },
     output: {
-      publicDir: resolve(__dirname, '../dist/client'),
+      publicDir: resolve(__dirname, '../dist/devtools'),
     },
   },
 

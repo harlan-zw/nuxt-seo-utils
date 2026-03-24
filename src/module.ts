@@ -19,6 +19,7 @@ import extendNuxtConfigAppHeadSeoMeta from './build-time/extendNuxtConfigAppHead
 import extendNuxtConfigAppHeadTypes from './build-time/extendNuxtConfigAppHeadTypes'
 import generateTagsFromPageDirImages from './build-time/generateTagsFromPageDirImages'
 import generateTagsFromPublicFiles from './build-time/generateTagsFromPublicFiles'
+import minifyPrerenderScripts from './build-time/minifyPrerenderScripts'
 import setupNuxtConfigAppHeadWithMoreDefaults from './build-time/setupNuxtConfigAppHeadWithMoreDefaults'
 import { setupDevToolsUI } from './build/devtools'
 
@@ -137,12 +138,16 @@ export interface ModuleOptions {
   meta: MetaFlatSerializable
 
   /**
-   * Minify inline `<script>` tags in SSR responses using esbuild or terser.
-   * Automatically detects which minifier is available in your project.
+   * Minify inline `<script>` tags in SSR responses.
+   *
+   * - `'esbuild'`: Uses esbuild for full minification. Only works at build time (prerendered/generated routes) since esbuild is a native binary not available in production server bundles.
+   * - `'lightweight'`: Uses a pure JS minifier that strips comments and collapses whitespace. Works at runtime for dynamic SSR with zero native dependencies.
+   * - `true`: Uses both. esbuild for prerendered routes at build time, lightweight for dynamic SSR at runtime.
+   * - `false`: Disabled.
    *
    * @default true
    */
-  minifySSRScripts: boolean
+  minifySSRScripts: boolean | 'esbuild' | 'lightweight'
 
   /**
    * Enables debug logs and a debug endpoint.
@@ -385,10 +390,18 @@ export {}
       addPlugin({ src: resolve(appRuntimeDir, 'plugins', '1.absoluteImageUrls.server'), mode: 'server' })
 
     if (!nuxt.options.dev && config.minifySSRScripts) {
-      nuxt.hooks.hook('nitro:config', (nitroConfig) => {
-        nitroConfig.plugins = nitroConfig.plugins || []
-        nitroConfig.plugins.push(resolve(runtimeDir, 'server/plugins/minifySSRScripts'))
-      })
+      const mode = config.minifySSRScripts === true ? 'both' : config.minifySSRScripts
+      // lightweight runtime minifier for dynamic SSR
+      if (mode === 'both' || mode === 'lightweight') {
+        nuxt.hooks.hook('nitro:config', (nitroConfig) => {
+          nitroConfig.plugins = nitroConfig.plugins || []
+          nitroConfig.plugins.push(resolve(runtimeDir, 'server/plugins/minifySSRScripts'))
+        })
+      }
+      // esbuild minifier for prerendered routes at build time
+      if (mode === 'both' || mode === 'esbuild') {
+        minifyPrerenderScripts()
+      }
     }
 
     if (nuxt.options.dev)

@@ -30,7 +30,7 @@ describe('minify', () => {
       return !s.match(/type\s*=\s*["'](?!text\/javascript|module|application\/javascript)[^"']*["']/i)
     })
     for (const script of jsScripts) {
-      const content = script.match(/<script[^>]*>([\s\S]*?)<\/script>/i)?.[1]
+      const content = script.match(/<script[^>]*>([\s\S]*?)<\/script\b[^>]*>/i)?.[1]
       if (!content || content.trim().length < 20)
         continue
       // minified scripts should not have multiple consecutive newlines
@@ -40,9 +40,9 @@ describe('minify', () => {
 
   it('preserves non-JS script types like application/json', async () => {
     const html = await $fetch<string>('/')
-    const dataScripts = html.match(/<script[^>]*type\s*=\s*["']application\/(?:ld\+)?json["'][^>]*>([\s\S]*?)<\/script>/gi) || []
+    const dataScripts = html.match(/<script[^>]*type\s*=\s*["']application\/(?:ld\+)?json["'][^>]*>([\s\S]*?)<\/script\s*>/gi) || []
     for (const script of dataScripts) {
-      const content = script.match(/<script[^>]*>([\s\S]*?)<\/script>/i)?.[1]
+      const content = script.match(/<script[^>]*>([\s\S]*?)<\/script\s*>/i)?.[1]
       if (content) {
         expect(() => JSON.parse(content)).not.toThrow()
       }

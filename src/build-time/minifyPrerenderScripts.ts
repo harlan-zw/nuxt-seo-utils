@@ -5,7 +5,15 @@ const INLINE_STYLE_RE = /<style([^>]*)>([\s\S]*?)<\/style\s*>/gi
 const TYPE_NON_JS_RE = /\btype\s*=\s*["'](?!text\/javascript|module|application\/javascript)[^"']*["']/i
 const NON_JS_TYPES = new Set(['application/json', 'application/ld+json', 'speculationrules', 'importmap'])
 
-async function minifyJSWithEsbuild(code: string): Promise<string | null> {
+async function minifyJSBuildTime(code: string): Promise<string | null> {
+  // try rolldown first (Vite 8+)
+  try {
+    const { minify } = await import('rolldown/experimental')
+    const result = await minify('inline.js', code)
+    return result.code.trim()
+  }
+  catch {}
+  // fallback to esbuild (Vite 7)
   try {
     const esbuild = await import('esbuild')
     const result = await esbuild.transform(code, {
@@ -14,9 +22,8 @@ async function minifyJSWithEsbuild(code: string): Promise<string | null> {
     })
     return result.code.trim()
   }
-  catch {
-    return null
-  }
+  catch {}
+  return null
 }
 
 async function minifyCSSWithLightningCSS(code: string): Promise<string | null> {
@@ -51,7 +58,7 @@ export default function minifyPrerender() {
           continue
         if (script.type && NON_JS_TYPES.has(script.type))
           continue
-        promises.push(minifyJSWithEsbuild(content).then((minified) => {
+        promises.push(minifyJSBuildTime(content).then((minified) => {
           if (minified && minified.length < content.length) {
             if (script.innerHTML)
               script.innerHTML = minified
@@ -98,7 +105,7 @@ export default function minifyPrerender() {
             return fullMatch
           if (!content || content.trim().length < 20)
             return fullMatch
-          const minified = await minifyJSWithEsbuild(content)
+          const minified = await minifyJSBuildTime(content)
           if (minified && minified.length < content.length)
             return `<script${attrs}>${minified}</script>`
           return fullMatch

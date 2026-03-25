@@ -16,7 +16,6 @@ catalog:
   '@unhead/addons': ^2.1.12
   '@unhead/vue': ^2.1.12
   '@vue/test-utils': ^2.4.6
-  ansis: ^4.2.0
   bumpp: ^11.0.1
   case-police: ^2.2.0
   cheerio: ^1.2.0

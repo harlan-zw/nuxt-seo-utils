@@ -25,7 +25,7 @@ export default defineNuxtPlugin({
             // og:image and twitter:image need to be absolute
             if (tag.tag !== 'meta')
               continue
-            if (tag.props.property !== 'og:image:url' && tag.props.property !== 'og:image' && tag.props.name !== 'twitter:image')
+            if (tag.props.property !== 'og:image:url' && tag.props.property !== 'og:image' && tag.props.name !== 'twitter:image' && tag.props.name !== 'twitter:image:src')
               continue
             if (typeof tag.props.content !== 'string' || !tag.props.content.trim() || tag.props.content.startsWith('http') || tag.props.content.startsWith('//'))
               continue

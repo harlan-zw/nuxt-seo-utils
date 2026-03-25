@@ -1,5 +1,7 @@
 import { createResolver } from '@nuxt/kit'
 import { $fetch, setup } from '@nuxt/test-utils/e2e'
+import { parse } from 'ultrahtml'
+import { querySelector, querySelectorAll } from 'ultrahtml/selector'
 import { describe, expect, it } from 'vitest'
 
 const { resolve } = createResolver(import.meta.url)
@@ -32,58 +34,81 @@ await setup({
   },
 })
 
+function getInlineScripts(ast: ReturnType<typeof parse>) {
+  return querySelectorAll(ast, 'script')
+    .filter(el => !el.attributes.src)
+}
+
+function getScriptContent(el: ReturnType<typeof querySelector>) {
+  return el?.children?.[0]?.value ?? ''
+}
+
+function getStyleContent(el: ReturnType<typeof querySelector>) {
+  return el?.children?.[0]?.value ?? ''
+}
+
 describe('minify', () => {
   it('minifies inline script tags in SSR response', async () => {
     const html = await $fetch<string>('/')
-    const scripts = html.match(/<script(?![^>]+\bsrc\b)[^>]*>([\s\S]*?)<\/script\s*>/gi) || []
-    const jsScripts = scripts.filter((s) => {
-      return !s.match(/type\s*=\s*["'](?!text\/javascript|module|application\/javascript)[^"']*["']/i)
-    })
-    let foundLargeScript = false
-    for (const script of jsScripts) {
-      const content = script.match(/<script[^>]*>([\s\S]*?)<\/script\s*>/i)?.[1]
-      if (!content || content.trim().length < 20)
-        continue
-      foundLargeScript = true
+    const ast = parse(html)
+    const scripts = getInlineScripts(ast)
+      .filter((el) => {
+        const type = el.attributes.type
+        return !type || ['text/javascript', 'module', 'application/javascript'].includes(type)
+      })
+
+    const largeScripts = scripts
+      .map(el => getScriptContent(el))
+      .filter(content => content.trim().length >= 20)
+
+    expect(largeScripts.length).toBeGreaterThan(0)
+    for (const content of largeScripts) {
       // minified scripts should not have multiple consecutive newlines
       expect(content).not.toMatch(/\n\s*\n/)
     }
-    expect(foundLargeScript).toBe(true)
   }, 30_000)
 
   it('minifies inline style tags in SSR response', async () => {
     const html = await $fetch<string>('/')
-    // the test style we injected should be minified
-    expect(html).toContain('.test-minify{color:red;display:block}')
-    // the comment should be removed
-    expect(html).not.toContain('/* comment */')
+    const ast = parse(html)
+    const styles = querySelectorAll(ast, 'style')
+    const allStyleContent = styles.map(el => getStyleContent(el)).join('')
+
+    expect(allStyleContent).toContain('.test-minify{color:red;display:block}')
+    expect(allStyleContent).not.toContain('/* comment */')
   }, 30_000)
 
   it('minifies static head scripts', async () => {
     const html = await $fetch<string>('/')
-    // the test script we injected via app.head should be minified
-    expect(html).toContain('testMinifyScript')
-    // comments and extra whitespace should be removed
-    expect(html).not.toContain('// should be minified')
-    expect(html).not.toContain('var   testMinifyScript')
+    const ast = parse(html)
+    const scripts = getInlineScripts(ast)
+    const allScriptContent = scripts.map(el => getScriptContent(el)).join('')
+
+    expect(allScriptContent).toContain('testMinifyScript')
+    expect(allScriptContent).not.toContain('// should be minified')
+    expect(allScriptContent).not.toContain('var   testMinifyScript')
   }, 30_000)
 
-  it('preserves non-JS script types like application/json', async () => {
+  it('minifies JSON script types (strips whitespace)', async () => {
     const html = await $fetch<string>('/')
-    const dataScripts = html.match(/<script[^>]*type\s*=\s*["']application\/(?:ld\+)?json["'][^>]*>([\s\S]*?)<\/script\s*>/gi) || []
-    for (const script of dataScripts) {
-      const content = script.match(/<script[^>]*>([\s\S]*?)<\/script\s*>/i)?.[1]
+    const ast = parse(html)
+    const dataScripts = querySelectorAll(ast, 'script')
+      .filter(el => /^application\/(?:ld\+)?json$/.test(el.attributes.type ?? ''))
+
+    for (const el of dataScripts) {
+      const content = getScriptContent(el)
       if (content) {
-        expect(() => JSON.parse(content)).not.toThrow()
+        const parsed = JSON.parse(content)
+        // should be valid JSON and already compact (no unnecessary whitespace)
+        expect(content).toBe(JSON.stringify(parsed))
       }
     }
   }, 30_000)
 
   it('does not break page rendering', async () => {
     const html = await $fetch<string>('/')
-    // page should still render correctly
-    expect(html).toContain('<html')
-    expect(html).toContain('</html>')
-    expect(html).toContain('<body')
+    const ast = parse(html)
+    expect(querySelector(ast, 'html')).toBeTruthy()
+    expect(querySelector(ast, 'body')).toBeTruthy()
   }, 30_000)
 })

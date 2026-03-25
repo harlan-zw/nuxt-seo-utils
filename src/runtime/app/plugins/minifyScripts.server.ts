@@ -1,8 +1,9 @@
 import { injectHead } from '#imports'
 import { defineNuxtPlugin } from 'nuxt/app'
-import { minifyCSS, minifyJS } from '../../shared/minify'
+import { minifyCSS, minifyJS, minifyJSON } from '../../shared/minify'
 
-const NON_JS_TYPES = new Set(['application/json', 'application/ld+json', 'speculationrules', 'importmap'])
+const JSON_TYPES = new Set(['application/json', 'application/ld+json'])
+const SKIP_JS_TYPES = new Set(['application/json', 'application/ld+json', 'speculationrules', 'importmap'])
 
 export default defineNuxtPlugin({
   enforce: 'post',
@@ -17,11 +18,21 @@ export default defineNuxtPlugin({
         'ssr:render': ({ tags }) => {
           for (const tag of tags) {
             const content = tag.innerHTML
-            if (!content || content.trim().length < 20)
+            if (!content)
               continue
 
             if (tag.tag === 'script') {
-              if (tag.props.type && NON_JS_TYPES.has(tag.props.type))
+              const type = tag.props.type
+              if (type && JSON_TYPES.has(type)) {
+                try {
+                  const minified = minifyJSON(content)
+                  if (minified.length < content.length)
+                    tag.innerHTML = minified
+                }
+                catch {}
+                continue
+              }
+              if (type && SKIP_JS_TYPES.has(type))
                 continue
               try {
                 const minified = minifyJS(content)

@@ -1,9 +1,12 @@
-import { useNuxt } from '@nuxt/kit'
+import { useLogger, useNuxt } from '@nuxt/kit'
 
 const INLINE_SCRIPT_RE = /<script(?![^>]+\bsrc\b)([^>]*)>([\s\S]*?)<\/script\s*>/gi
 const INLINE_STYLE_RE = /<style([^>]*)>([\s\S]*?)<\/style\s*>/gi
-const TYPE_NON_JS_RE = /\btype\s*=\s*["'](?!text\/javascript|module|application\/javascript)[^"']*["']/i
-const NON_JS_TYPES = new Set(['application/json', 'application/ld+json', 'speculationrules', 'importmap'])
+const TYPE_ATTR_RE = /\btype\s*=\s*["']([^"']*)["']/i
+const JSON_TYPES = new Set(['application/json', 'application/ld+json'])
+const SKIP_JS_TYPES = new Set(['application/json', 'application/ld+json', 'speculationrules', 'importmap'])
+
+const logger = useLogger('nuxt-seo-utils')
 
 async function minifyJSBuildTime(code: string): Promise<string | null> {
   // try rolldown first (Vite 8+)
@@ -24,6 +27,7 @@ async function minifyJSBuildTime(code: string): Promise<string | null> {
     return result.code.trim()
   }
   catch {}
+  logger.debug('Build-time JS minification skipped: neither rolldown nor esbuild is available. Install one as a dependency to enable it.')
   return null
 }
 
@@ -38,6 +42,7 @@ async function minifyCSSWithLightningCSS(code: string): Promise<string | null> {
     return new TextDecoder().decode(result.code).trim()
   }
   catch {
+    logger.debug('Build-time CSS minification skipped: lightningcss is not available. Install it as a dependency to enable it.')
     return null
   }
 }
@@ -55,17 +60,28 @@ export default function minifyPrerender() {
         if (typeof script === 'string')
           continue
         const content = String(script.innerHTML || script.textContent || '')
-        if (!content || content.trim().length < 20)
+        if (!content)
           continue
-        if (script.type && NON_JS_TYPES.has(script.type))
+        const setContent = (val: string) => {
+          if (script.innerHTML)
+            script.innerHTML = val
+          else if (script.textContent)
+            script.textContent = val
+        }
+        if (script.type && JSON_TYPES.has(script.type)) {
+          try {
+            const minified = JSON.stringify(JSON.parse(content))
+            if (minified.length < content.length)
+              setContent(minified)
+          }
+          catch {}
+          continue
+        }
+        if (script.type && SKIP_JS_TYPES.has(script.type))
           continue
         promises.push(minifyJSBuildTime(content).then((minified) => {
-          if (minified && minified.length < content.length) {
-            if (script.innerHTML)
-              script.innerHTML = minified
-            else if (script.textContent)
-              script.textContent = minified
-          }
+          if (minified && minified.length < content.length)
+            setContent(minified)
         }))
       }
     }
@@ -75,7 +91,7 @@ export default function minifyPrerender() {
         if (typeof style === 'string')
           continue
         const content = String(style.innerHTML || style.textContent || '')
-        if (!content || content.trim().length < 20)
+        if (!content)
           continue
         promises.push(minifyCSSWithLightningCSS(content).then((minified) => {
           if (minified && minified.length < content.length) {
@@ -97,14 +113,25 @@ export default function minifyPrerender() {
       if (!route.contents || !route.contentType?.includes('html'))
         return
 
-      // minify inline scripts with esbuild
+      // minify inline scripts
       route.contents = await replaceAsync(
         route.contents,
         new RegExp(INLINE_SCRIPT_RE.source, INLINE_SCRIPT_RE.flags),
         async (fullMatch: string, attrs: string, content: string) => {
-          if (TYPE_NON_JS_RE.test(attrs))
+          if (!content)
             return fullMatch
-          if (!content || content.trim().length < 20)
+          const typeMatch = TYPE_ATTR_RE.exec(attrs)
+          const type = typeMatch?.[1]
+          if (type && JSON_TYPES.has(type)) {
+            try {
+              const minified = JSON.stringify(JSON.parse(content))
+              if (minified.length < content.length)
+                return `<script${attrs}>${minified}</script>`
+            }
+            catch {}
+            return fullMatch
+          }
+          if (type && SKIP_JS_TYPES.has(type))
             return fullMatch
           const minified = await minifyJSBuildTime(content)
           if (minified && minified.length < content.length)
@@ -113,12 +140,12 @@ export default function minifyPrerender() {
         },
       )
 
-      // minify inline styles with lightningcss
+      // minify inline styles
       route.contents = await replaceAsync(
         route.contents,
         new RegExp(INLINE_STYLE_RE.source, INLINE_STYLE_RE.flags),
         async (fullMatch: string, attrs: string, content: string) => {
-          if (!content || content.trim().length < 20)
+          if (!content)
             return fullMatch
           const minified = await minifyCSSWithLightningCSS(content)
           if (minified && minified.length < content.length)

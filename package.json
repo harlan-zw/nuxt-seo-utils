@@ -41,7 +41,7 @@
     "build:client": "nuxt generate devtools",
     "dev": "nuxt dev playground",
     "devtools": "nuxt dev devtools --port 3030",
-    "dev:prepare": "nuxt-module-build prepare && nuxt prepare playground && pnpm prepare:fixtures",
+    "dev:prepare": "nuxt-module-build build --stub && nuxt-module-build prepare && nuxt prepare playground && pnpm prepare:fixtures",
     "stub": "nuxt-module-build build --stub && nuxt-module-build prepare",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",

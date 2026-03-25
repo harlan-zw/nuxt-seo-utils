@@ -1,6 +1,24 @@
 # Changelog
 
 
+## v8.0.0...main
+
+[compare changes](https://github.com/harlan-zw/nuxt-seo-utils/compare/v8.0.0...main)
+
+### 🔥 Performance
+
+- Optimize bundle ([a9a6f63](https://github.com/harlan-zw/nuxt-seo-utils/commit/a9a6f63))
+
+### 🏡 Chore
+
+- Sync ([0c89d91](https://github.com/harlan-zw/nuxt-seo-utils/commit/0c89d91))
+- Sync ([3cb049c](https://github.com/harlan-zw/nuxt-seo-utils/commit/3cb049c))
+- Sync ([0156094](https://github.com/harlan-zw/nuxt-seo-utils/commit/0156094))
+
+### ❤️ Contributors
+
+- Harlan Wilton ([@harlan-zw](https://github.com/harlan-zw))
+
 ## v7.0.19...main
 
 [compare changes](https://github.com/harlan-zw/nuxt-seo-utils/compare/v7.0.19...main)

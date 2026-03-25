@@ -181,6 +181,7 @@ describe('minifyJS', () => {
   // --- String edge cases ---
 
   it('preserves template literals with expressions', () => {
+    // eslint-disable-next-line no-template-curly-in-string
     expect(minifyJS('const x = `hello ${  name  } world`')).toBe('const x=`hello ${  name  } world`')
   })
 
@@ -507,14 +508,17 @@ const x = 1`
   // --- Template literal edge cases ---
 
   it('handles template literal with expression', () => {
+    // eslint-disable-next-line no-template-curly-in-string
     expect(minifyJS('const x = `${a + b}`')).toBe('const x=`${a + b}`')
   })
 
   it('handles template literal with nested backtick expression', () => {
+    // eslint-disable-next-line no-template-curly-in-string
     expect(minifyJS('const x = `a ${`b`} c`')).toBe('const x=`a ${`b`} c`')
   })
 
   it('handles tagged template literal', () => {
+    // eslint-disable-next-line no-template-curly-in-string
     expect(minifyJS('html`<div>${x}</div>`')).toBe('html`<div>${x}</div>`')
   })
 

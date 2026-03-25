@@ -3,6 +3,9 @@ shellEmulator: true
 
 trustPolicy: no-downgrade
 
+packages:
+  - '!examples/**'
+
 catalog:
   '@antfu/eslint-config': ^7.7.3
   '@nuxt/devtools-kit': ^3.2.4

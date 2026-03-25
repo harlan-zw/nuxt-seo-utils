@@ -12,4 +12,12 @@ export default antfu(
     ],
   },
   ...harlanzw({ link: true, nuxt: true, vue: true }),
+  {
+    files: ['examples/**/package.json'],
+    rules: {
+      'pnpm/json-enforce-catalog': 'off',
+      'pnpm/json-valid-catalog': 'off',
+      'pnpm/json-prefer-workspace-settings': 'off',
+    },
+  },
 )

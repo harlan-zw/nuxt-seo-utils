@@ -1,0 +1,10 @@
+{
+  "name": "nuxt-seo-utils-basic-example",
+  "type": "module",
+  "private": true,
+  "dependencies": {
+    "nuxt": "^4.4.2",
+    "nuxt-seo-utils": "latest",
+    "vue": "^3.5.31"
+  }
+}

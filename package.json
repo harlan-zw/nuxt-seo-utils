@@ -37,7 +37,7 @@
     ]
   },
   "scripts": {
-    "build": "nuxt-module-build build && unbuild",
+    "build": "nuxt-module-build prepare && nuxt-module-build build",
     "build:client": "nuxt generate devtools",
     "dev": "nuxt dev playground",
     "devtools": "nuxt dev devtools --port 3030",

@@ -1,7 +1,7 @@
 {
   "name": "nuxt-seo-utils",
   "type": "module",
-  "version": "8.0.0",
+  "version": "8.0.1",
   "packageManager": "pnpm@10.33.0",
   "description": "SEO utilities to improve your Nuxt sites discoverability and shareability",
   "license": "MIT",
@@ -37,7 +37,7 @@
     ]
   },
   "scripts": {
-    "build": "nuxt-module-build prepare && nuxt-module-build build",
+    "build": "nuxt-module-build build --stub && nuxt-module-build prepare && nuxt-module-build build",
     "build:client": "nuxt generate devtools",
     "dev": "nuxt dev playground",
     "devtools": "nuxt dev devtools --port 3030",

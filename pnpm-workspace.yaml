@@ -1,9 +1,7 @@
 catalogMode: prefer
-
 shellEmulator: true
 
 trustPolicy: no-downgrade
-
 packages:
   - '!examples/**'
 
@@ -34,7 +32,7 @@ catalog:
   markdownlint-cli: ^0.48.0
   nuxt: ^4.4.2
   nuxt-content-twoslash: ^0.4.0
-  nuxt-site-config: ^4.0.1
+  nuxt-site-config: ^4.0.2
   nuxtseo-layer-devtools: ^0.3.1
   nuxtseo-shared: ^0.7.1
   pathe: ^2.0.3
@@ -62,4 +60,5 @@ onlyBuiltDependencies:
   - sharp
   - unrs-resolver
   - vue-demi
+
 trustPolicyIgnoreAfter: 262800

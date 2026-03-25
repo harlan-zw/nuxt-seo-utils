@@ -20,6 +20,7 @@ const connectionReady = computed(() => !!appFetch.value)
 <template>
   <DevtoolsLayout
     v-model:active-tab="activeTab"
+    module-name="nuxt-seo-utils"
     title="SEO Utils"
     icon="carbon:search-locate"
     :nav-items="navItems"

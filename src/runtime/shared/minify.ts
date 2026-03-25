@@ -139,7 +139,7 @@ export function minifyCSS(code: string): string {
       }
     }
     // leading zero: 0.x → .x
-    else if (ch === '0' && code[i + 1] === '.' && code[i + 2] >= '0' && code[i + 2] <= '9') {
+    else if (ch === '0' && code[i + 1] === '.' && (code[i + 2] ?? '') >= '0' && (code[i + 2] ?? '') <= '9') {
       const prev = result.at(-1)
       // only strip if prev is not a digit (avoid turning 10.5 into 1.5)
       if (prev && prev >= '0' && prev <= '9') {

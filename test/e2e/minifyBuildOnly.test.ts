@@ -39,11 +39,11 @@ function getInlineScripts(ast: ReturnType<typeof parse>) {
     .filter(el => !el.attributes.src)
 }
 
-function getScriptContent(el: { children?: { value?: string }[] }) {
+function getScriptContent(el: any) {
   return el?.children?.[0]?.value ?? ''
 }
 
-function getStyleContent(el: { children?: { value?: string }[] }) {
+function getStyleContent(el: any) {
   return el?.children?.[0]?.value ?? ''
 }
 

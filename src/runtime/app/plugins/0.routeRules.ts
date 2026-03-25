@@ -1,4 +1,4 @@
-import { injectHead, useSeoMeta } from '#imports'
+import { injectHead, useSeoMeta } from '@unhead/vue'
 import { defineNuxtPlugin, getRouteRules, useRequestEvent, useRuntimeConfig, useState } from 'nuxt/app'
 
 export default defineNuxtPlugin({

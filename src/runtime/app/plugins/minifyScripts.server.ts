@@ -1,4 +1,4 @@
-import { injectHead } from '#imports'
+import { injectHead } from '@unhead/vue'
 import { defineNuxtPlugin } from 'nuxt/app'
 import { minifyCSS, minifyJS, minifyJSON } from '../../shared/minify'
 

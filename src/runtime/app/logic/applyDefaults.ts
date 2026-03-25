@@ -1,9 +1,9 @@
 import type { Link, UseHeadOptions, UseSeoMetaInput } from '@unhead/vue'
 import type { QueryObject } from 'ufo'
 
-import { injectHead, useHead, useSeoMeta, useServerSeoMeta } from '#imports'
 import { useSiteConfig } from '#site-config/app/composables/useSiteConfig'
 import { createSitePathResolver } from '#site-config/app/composables/utils'
+import { injectHead, useHead, useSeoMeta, useServerSeoMeta } from '@unhead/vue'
 import { TemplateParamsPlugin } from '@unhead/vue/plugins'
 import { useError, useRoute, useRuntimeConfig } from 'nuxt/app'
 import { stringifyQuery } from 'ufo'

@@ -4,8 +4,8 @@ import { existsSync } from 'node:fs'
 import { writeFile } from 'node:fs/promises'
 import process from 'node:process'
 import { loadNuxtConfig } from '@nuxt/kit'
-import c from 'ansis'
 import { defineCommand, runMain } from 'citty'
+import { colors as c } from 'consola/utils'
 import { resolve } from 'pathe'
 import { description, name, version } from '../package.json'
 
@@ -117,7 +117,7 @@ const main = defineCommand({
 
         const sharp = await loadSharp()
 
-        console.log(c.cyan(`Generating icons from ${c.bold(source)}...`))
+        console.log(c.cyan(`Generating icons from ${c.bold(String(source))}...`))
 
         for (const icon of ICON_SIZES) {
           const outputPath = resolve(publicDir, icon.name)
@@ -136,7 +136,7 @@ const main = defineCommand({
         await writeFile(resolve(publicDir, 'favicon.ico'), pngToIco([faviconPng]))
         console.log(c.green('  favicon.ico (32x32)'))
 
-        console.log(c.green.bold('\nDone! Generated all icon variants.'))
+        console.log(c.bold(c.green('\nDone! Generated all icon variants.')))
       },
     }),
   },

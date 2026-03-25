@@ -1,6 +1,6 @@
 import type { Head } from '@unhead/vue/types'
-import { injectHead } from '#imports'
 import { useSiteConfig } from '#site-config/app/composables/useSiteConfig'
+import { injectHead } from '@unhead/vue'
 import { defineNuxtPlugin, useRuntimeConfig } from 'nuxt/app'
 
 export default defineNuxtPlugin(() => {

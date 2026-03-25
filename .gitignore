@@ -17,6 +17,8 @@ playground/nuxt-runtime
 
 # Generated dirs
 dist
+src/runtime/**/*.js
+src/runtime/**/*.d.ts
 
 # Nuxt
 .nuxt

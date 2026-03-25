@@ -1,16 +1,15 @@
 import { defineBuildConfig } from 'unbuild'
 
 export default defineBuildConfig({
+  declaration: true,
   entries: [
-    'src/cli.ts',
+    { input: 'src/cli', name: 'cli' },
   ],
-  clean: false,
-  rollup: {
-    inlineDependencies: true,
-  },
   externals: [
     'sharp',
     '@nuxt/kit',
+    'citty',
+    'consola/utils',
     'pathe',
     'ufo',
   ],

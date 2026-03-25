@@ -1,5 +1,5 @@
 import type { UseHeadOptions } from '@unhead/vue/types'
-import { useHead } from '#imports'
+import { useHead } from '@unhead/vue'
 import { defineNuxtPlugin } from 'nuxt/app'
 import { useFallbackTitle } from '../composables/useFallbackTitle'
 

@@ -25,13 +25,13 @@ catalog:
   escape-string-regexp: ^5.0.0
   eslint: ^10.1.0
   eslint-plugin-harlanzw: ^0.11.0
-  happy-dom: ^20.8.7
+  happy-dom: ^20.8.8
   image-size: ^2.0.2
   lint-staged: ^16.4.0
   markdownlint-cli: ^0.48.0
   nuxt: ^4.4.2
   nuxt-content-twoslash: ^0.4.0
-  nuxt-site-config: ^4.0.0
+  nuxt-site-config: ^4.0.1
   nuxtseo-layer-devtools: ^0.3.0
   nuxtseo-shared: ^0.7.0
   pathe: ^2.0.3

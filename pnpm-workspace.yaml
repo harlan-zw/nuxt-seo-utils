@@ -45,6 +45,7 @@ catalog:
   tinyglobby: ^0.2.15
   typescript: ^6.0.2
   ufo: ^1.6.3
+  ultrahtml: ^1.6.0
   unbuild: ^3.6.1
   vitest: ^4.1.1
   vue-tsc: ^3.2.6

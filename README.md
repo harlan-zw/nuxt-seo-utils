@@ -29,6 +29,7 @@ While there are several features covering many aspects of SEO, it covers importa
 - 🧩 Site config template params `useHead({ title: '%site.title' })`
 - 🍞 Breadcrumb composable
 - 🧙 Best practice defaults and enhanced titles
+- ⚡ Inline minification of `<script>` and `<style>` tags (esbuild + lightningcss at build, lightweight runtime fallback)
 
 ## Installation
 

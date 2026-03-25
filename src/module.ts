@@ -19,6 +19,7 @@ import extendNuxtConfigAppHeadSeoMeta from './build-time/extendNuxtConfigAppHead
 import extendNuxtConfigAppHeadTypes from './build-time/extendNuxtConfigAppHeadTypes'
 import generateTagsFromPageDirImages from './build-time/generateTagsFromPageDirImages'
 import generateTagsFromPublicFiles from './build-time/generateTagsFromPublicFiles'
+import minifyPrerender from './build-time/minifyPrerenderScripts'
 import setupNuxtConfigAppHeadWithMoreDefaults from './build-time/setupNuxtConfigAppHeadWithMoreDefaults'
 import { setupDevToolsUI } from './build/devtools'
 
@@ -137,6 +138,20 @@ export interface ModuleOptions {
   meta: MetaFlatSerializable
 
   /**
+   * Minify inline `<script>` and `<style>` tags in SSR responses. Both toggles are independent.
+   *
+   * - `true`: Enables both build and runtime minification.
+   * - `false`: Disabled.
+   * - `{ build?: boolean, runtime?: boolean }`: Toggle each mode independently.
+   *
+   * **Build mode**: Minifies static `app.head` scripts/styles and prerendered route HTML using esbuild (JS) and lightningcss (CSS).
+   * **Runtime mode**: Minifies all inline scripts/styles per SSR request via an Unhead `ssr:render` plugin using lightweight pure JS minifiers.
+   *
+   * @default true
+   */
+  minify: boolean | { build?: boolean, runtime?: boolean }
+
+  /**
    * Enables debug logs and a debug endpoint.
    *
    * @default false
@@ -182,6 +197,7 @@ export default defineNuxtModule<ModuleOptions>({
     automaticOgAndTwitterTags: true,
     canonicalLowercase: true,
     tagPriority: 30,
+    minify: true,
   },
   async setup(config, nuxt) {
     const logger = useLogger('nuxt-seo-utils')
@@ -374,6 +390,23 @@ export {}
 
     if (config.fixRequiredAbsoluteMetaTagsLinks)
       addPlugin({ src: resolve(appRuntimeDir, 'plugins', '1.absoluteImageUrls.server'), mode: 'server' })
+
+    if (!nuxt.options.dev && config.minify) {
+      const minifyOpts = config.minify === true
+        ? { build: true, runtime: true }
+        : config.minify
+      // runtime: Unhead ssr:render plugin for per-request minification
+      if (minifyOpts.runtime !== false) {
+        addPlugin({
+          src: resolve(appRuntimeDir, 'plugins', 'minifyScripts.server'),
+          mode: 'server',
+        })
+      }
+      // build: esbuild/lightningcss for static head + prerendered routes
+      if (minifyOpts.build !== false) {
+        minifyPrerender()
+      }
+    }
 
     if (config.debug || nuxt.options.dev) {
       addServerHandler({

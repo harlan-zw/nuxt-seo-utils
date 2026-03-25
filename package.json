@@ -56,7 +56,21 @@
     "lint:docs:fix": "markdownlint ./docs/content --fix && case-police 'docs/content/**/*.md' *.md --fix"
   },
   "peerDependencies": {
-    "nuxt": "^3.0.0 || ^4.0.0"
+    "esbuild": ">=0.17.0",
+    "lightningcss": ">=1.20.0",
+    "nuxt": "^3.0.0 || ^4.0.0",
+    "rolldown": ">=1.0.0-beta.0"
+  },
+  "peerDependenciesMeta": {
+    "esbuild": {
+      "optional": true
+    },
+    "lightningcss": {
+      "optional": true
+    },
+    "rolldown": {
+      "optional": true
+    }
   },
   "dependencies": {
     "@nuxt/devtools-kit": "catalog:",
@@ -104,6 +118,7 @@
     "playwright-core": "catalog:",
     "sass": "catalog:",
     "typescript": "catalog:",
+    "ultrahtml": "catalog:",
     "unbuild": "catalog:",
     "vitest": "catalog:",
     "vue-tsc": "catalog:"

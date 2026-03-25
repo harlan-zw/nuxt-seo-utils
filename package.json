@@ -37,8 +37,8 @@
     ]
   },
   "scripts": {
-    "build": "nuxt-module-build build --stub && nuxt-module-build prepare && nuxt-module-build build",
-    "build:client": "nuxt generate devtools",
+    "client:build": "nuxt generate devtools",
+    "build": "nuxt-module-build build --stub && nuxt-module-build prepare && nuxt-module-build build && npm run client:build",
     "dev": "nuxt dev playground",
     "devtools": "nuxt dev devtools --port 3030",
     "dev:prepare": "nuxt-module-build build --stub && nuxt-module-build prepare && nuxt prepare playground && pnpm prepare:fixtures",

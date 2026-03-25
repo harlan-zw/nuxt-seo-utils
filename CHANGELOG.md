@@ -1,6 +1,27 @@
 # Changelog
 
 
+## v8.0.1...main
+
+[compare changes](https://github.com/harlan-zw/nuxt-seo-utils/compare/v8.0.1...main)
+
+### 🩹 Fixes
+
+- Normalize `twitter:image:src` paths ([b606e8b](https://github.com/harlan-zw/nuxt-seo-utils/commit/b606e8b))
+- Normalize paths in client for dev mode ([3dc9c96](https://github.com/harlan-zw/nuxt-seo-utils/commit/3dc9c96))
+
+### 🏡 Chore
+
+- Sync ([4eaa335](https://github.com/harlan-zw/nuxt-seo-utils/commit/4eaa335))
+- Examples ([8aaeae1](https://github.com/harlan-zw/nuxt-seo-utils/commit/8aaeae1))
+- Label devtools ([2da3df5](https://github.com/harlan-zw/nuxt-seo-utils/commit/2da3df5))
+- Bump deps ([f6c9b76](https://github.com/harlan-zw/nuxt-seo-utils/commit/f6c9b76))
+- Bump deps ([8d3d1fc](https://github.com/harlan-zw/nuxt-seo-utils/commit/8d3d1fc))
+
+### ❤️ Contributors
+
+- Harlan Wilton ([@harlan-zw](https://github.com/harlan-zw))
+
 ## v8.0.0...main
 
 [compare changes](https://github.com/harlan-zw/nuxt-seo-utils/compare/v8.0.0...main)

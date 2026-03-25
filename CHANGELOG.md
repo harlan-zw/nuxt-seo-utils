@@ -1,6 +1,79 @@
 # Changelog
 
 
+## v7.0.19...main
+
+[compare changes](https://github.com/harlan-zw/nuxt-seo-utils/compare/v7.0.19...main)
+
+### 🚀 Enhancements
+
+- Nuxt-seo-utils CLI with icons command ([#76](https://github.com/harlan-zw/nuxt-seo-utils/pull/76))
+- **seo:** Add configurable tagPriority for OG meta tags ([#89](https://github.com/harlan-zw/nuxt-seo-utils/pull/89))
+- **seo:** Add useShareLinks composable for social sharing URLs ([#92](https://github.com/harlan-zw/nuxt-seo-utils/pull/92))
+- **seo:** Extract fallback title logic into useFallbackTitle composable ([#91](https://github.com/harlan-zw/nuxt-seo-utils/pull/91))
+- Devtools ([494bce5](https://github.com/harlan-zw/nuxt-seo-utils/commit/494bce5))
+- Minify inline SSR scripts using esbuild/terser ([4e939b6](https://github.com/harlan-zw/nuxt-seo-utils/commit/4e939b6))
+- Support two minification modes (esbuild + lightweight) ([d35cd0d](https://github.com/harlan-zw/nuxt-seo-utils/commit/d35cd0d))
+- Support Rolldown (Vite 8) for build-time JS minification ([c568225](https://github.com/harlan-zw/nuxt-seo-utils/commit/c568225))
+- Minify inline scripts and styles in SSR ([#99](https://github.com/harlan-zw/nuxt-seo-utils/pull/99))
+
+### 🩹 Fixes
+
+- **docs:** Update link to `infer-seo-meta-tags` plugin ([#80](https://github.com/harlan-zw/nuxt-seo-utils/pull/80))
+- Ensure useServerSeoMeta takes precedence over site defaults ([5fcd4df](https://github.com/harlan-zw/nuxt-seo-utils/commit/5fcd4df))
+- **breadcrumbs:** Resolve schema.org duplicate @id and double registration ([#88](https://github.com/harlan-zw/nuxt-seo-utils/pull/88))
+- Narrow statusCode type before includes check ([23116ce](https://github.com/harlan-zw/nuxt-seo-utils/commit/23116ce))
+- **i18n:** Resolve fallback page titles from i18n translations ([#94](https://github.com/harlan-zw/nuxt-seo-utils/pull/94))
+- Preserve user-defined titles on error pages ([#90](https://github.com/harlan-zw/nuxt-seo-utils/pull/90))
+- Merge main, fix CodeQL HTML regex warnings ([387ea7a](https://github.com/harlan-zw/nuxt-seo-utils/commit/387ea7a))
+- Resolve typecheck errors in minifyPrerenderScripts ([71a013e](https://github.com/harlan-zw/nuxt-seo-utils/commit/71a013e))
+- Suppress rolldown/experimental type error for Vite 7 projects ([0149984](https://github.com/harlan-zw/nuxt-seo-utils/commit/0149984))
+- Use dynamic string import for rolldown to avoid TS2307 ([5f5caea](https://github.com/harlan-zw/nuxt-seo-utils/commit/5f5caea))
+- Add eslint-disable for template-curly-in-string in minify tests ([dc9be4c](https://github.com/harlan-zw/nuxt-seo-utils/commit/dc9be4c))
+- Use rolldown >=1.0.0-beta.0 peer dep to include pre-releases ([ebcb160](https://github.com/harlan-zw/nuxt-seo-utils/commit/ebcb160))
+- Resolve CI lint, typecheck errors ([47fb321](https://github.com/harlan-zw/nuxt-seo-utils/commit/47fb321))
+
+### 💅 Refactors
+
+- Replace `fast-glob` with `tinyglobby` ([#82](https://github.com/harlan-zw/nuxt-seo-utils/pull/82))
+- Improve useShareLinks API ([a7ec249](https://github.com/harlan-zw/nuxt-seo-utils/commit/a7ec249))
+- Use pure JS minifier instead of esbuild dependency ([de64177](https://github.com/harlan-zw/nuxt-seo-utils/commit/de64177))
+- Rename modes to build/runtime, minify static head scripts ([5717b93](https://github.com/harlan-zw/nuxt-seo-utils/commit/5717b93))
+- Migrate devtools to nuxtseo-shared and nuxtseo-layer-devtools ([#98](https://github.com/harlan-zw/nuxt-seo-utils/pull/98))
+- Independent build/runtime toggles, Unhead ssr:render plugin ([df6183e](https://github.com/harlan-zw/nuxt-seo-utils/commit/df6183e))
+- Generalize to minify config covering both JS and CSS ([17cfb96](https://github.com/harlan-zw/nuxt-seo-utils/commit/17cfb96))
+
+### 📖 Documentation
+
+- Fix broken links, add descriptions, and add meta tag checker links ([#77](https://github.com/harlan-zw/nuxt-seo-utils/pull/77))
+- Apply content audit fixes ([#78](https://github.com/harlan-zw/nuxt-seo-utils/pull/78))
+- Fix internal links to use correct paths ([#79](https://github.com/harlan-zw/nuxt-seo-utils/pull/79))
+- Update documentation links ([#81](https://github.com/harlan-zw/nuxt-seo-utils/pull/81))
+- Add skilld agent skill snippet ([#83](https://github.com/harlan-zw/nuxt-seo-utils/pull/83))
+- Add skilld snippet to installation docs ([#84](https://github.com/harlan-zw/nuxt-seo-utils/pull/84))
+- Add minification guide, update README and introduction ([20e3c68](https://github.com/harlan-zw/nuxt-seo-utils/commit/20e3c68))
+- Use code-group for config examples, add comprehensive tests ([b43c0f8](https://github.com/harlan-zw/nuxt-seo-utils/commit/b43c0f8))
+
+### 🏡 Chore
+
+- Bump deps ([981116c](https://github.com/harlan-zw/nuxt-seo-utils/commit/981116c))
+- Bump deps ([601efd5](https://github.com/harlan-zw/nuxt-seo-utils/commit/601efd5))
+- Lint ([c083773](https://github.com/harlan-zw/nuxt-seo-utils/commit/c083773))
+- Lint ([9b7f471](https://github.com/harlan-zw/nuxt-seo-utils/commit/9b7f471))
+- Lint ([32dd1bb](https://github.com/harlan-zw/nuxt-seo-utils/commit/32dd1bb))
+- Sync ([24bff8a](https://github.com/harlan-zw/nuxt-seo-utils/commit/24bff8a))
+- Sync ([26a8cdf](https://github.com/harlan-zw/nuxt-seo-utils/commit/26a8cdf))
+
+### ✅ Tests
+
+- Add seo.meta config key verification for #73 ([#93](https://github.com/harlan-zw/nuxt-seo-utils/pull/93), [#73](https://github.com/harlan-zw/nuxt-seo-utils/issues/73))
+
+### ❤️ Contributors
+
+- Harlan Wilton ([@harlan-zw](https://github.com/harlan-zw))
+- 山吹色御守 ([@KazariEX](https://github.com/KazariEX))
+- Nestor Vera ([@hacknug](https://github.com/hacknug))
+
 ## v7.0.18...main
 
 [compare changes](https://github.com/harlan-zw/nuxt-seo-utils/compare/v7.0.18...main)

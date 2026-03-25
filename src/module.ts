@@ -388,8 +388,12 @@ export {}
     if (config.extendRouteRules)
       addPlugin({ src: resolve(appRuntimeDir, 'plugins', '0.routeRules') })
 
-    if (config.fixRequiredAbsoluteMetaTagsLinks)
+    if (config.fixRequiredAbsoluteMetaTagsLinks) {
       addPlugin({ src: resolve(appRuntimeDir, 'plugins', '1.absoluteImageUrls.server'), mode: 'server' })
+      // in dev, also run on client so DevTools shows correct absolute URLs
+      if (nuxt.options.dev)
+        addPlugin({ src: resolve(appRuntimeDir, 'plugins', '1.absoluteImageUrls.server'), mode: 'client' })
+    }
 
     if (!nuxt.options.dev && config.minify) {
       const minifyOpts = config.minify === true

@@ -416,6 +416,15 @@ export {}
     }
 
     if (config.debug || nuxt.options.dev) {
+      // expose resolved head config for devtools identity page
+      const headConfig = nuxt.options.app.head as Record<string, any>
+      nuxt.options.runtimeConfig['seo-utils-head'] = {
+        link: (headConfig.link || []).filter((l: any) => l.rel === 'icon' || l.rel === 'apple-touch-icon'),
+        meta: (headConfig.meta || []).filter((m: any) => {
+          const name = m.name || m.property || ''
+          return name.startsWith('og:image') || name.startsWith('twitter:image')
+        }),
+      }
       addServerHandler({
         route: '/__nuxt-seo-utils/debug.json',
         handler: resolve('./runtime/server/routes/__nuxt-seo-utils/debug'),

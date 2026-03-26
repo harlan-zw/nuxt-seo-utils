@@ -35,19 +35,20 @@ export function parseMetaTags(html: string) {
       twitterTags[name] = content
   })
 
-  const allMeta: { name: string, content: string, type: 'name' | 'property' | 'http-equiv' }[] = []
+  const allMeta: { name: string, content: string, type: 'name' | 'property' | 'http-equiv', media?: string }[] = []
   doc.querySelectorAll('meta').forEach((el) => {
     const name = el.getAttribute('name')
     const property = el.getAttribute('property')
     const httpEquiv = el.getAttribute('http-equiv')
     const content = el.getAttribute('content') || ''
+    const media = el.getAttribute('media') || undefined
 
     if (name)
-      allMeta.push({ name, content, type: 'name' })
+      allMeta.push({ name, content, type: 'name', media })
     else if (property)
-      allMeta.push({ name: property, content, type: 'property' })
+      allMeta.push({ name: property, content, type: 'property', media })
     else if (httpEquiv)
-      allMeta.push({ name: httpEquiv, content, type: 'http-equiv' })
+      allMeta.push({ name: httpEquiv, content, type: 'http-equiv', media })
   })
 
   const schemas: Array<{ type: string, data: any, raw: string }> = []
@@ -63,7 +64,21 @@ export function parseMetaTags(html: string) {
     }
   })
 
-  return { title, description, ogTags, twitterTags, allMeta, canonical, schemas }
+  const iconLinks: Array<{ rel: string, href: string, type?: string, sizes?: string, media?: string }> = []
+  doc.querySelectorAll('link[rel="icon"], link[rel="apple-touch-icon"], link[rel="shortcut icon"]').forEach((el) => {
+    const href = el.getAttribute('href')
+    if (!href)
+      return
+    iconLinks.push({
+      rel: el.getAttribute('rel') || 'icon',
+      href,
+      type: el.getAttribute('type') || undefined,
+      sizes: el.getAttribute('sizes') || undefined,
+      media: el.getAttribute('media') || undefined,
+    })
+  })
+
+  return { title, description, ogTags, twitterTags, allMeta, canonical, schemas, iconLinks }
 }
 
 export function titleColor(length: number) {

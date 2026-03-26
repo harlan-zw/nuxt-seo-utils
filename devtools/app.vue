@@ -22,6 +22,8 @@ const currentTab = computed(() => {
   const p = route.path
   if (p.startsWith('/social'))
     return 'social'
+  if (p.startsWith('/identity'))
+    return 'identity'
   if (p.startsWith('/debug'))
     return 'debug'
   if (p.startsWith('/docs'))
@@ -32,6 +34,7 @@ const currentTab = computed(() => {
 const navItems = [
   { value: 'meta', to: '/', icon: 'carbon:tag', label: 'Meta Tags', devOnly: false },
   { value: 'social', to: '/social', icon: 'carbon:share', label: 'Social', devOnly: false },
+  { value: 'identity', to: '/identity', icon: 'carbon:identification', label: 'Identity', devOnly: false },
   { value: 'debug', to: '/debug', icon: 'carbon:debug', label: 'Debug', devOnly: true },
   { value: 'docs', to: '/docs', icon: 'carbon:book', label: 'Docs', devOnly: false },
 ]

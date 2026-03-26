@@ -3,6 +3,7 @@
   "exclude": [
     "test/fixtures/**",
     "playground/**",
-    "client/**"
+    "client/**",
+    "examples/**"
   ]
 }

@@ -4,7 +4,7 @@ import { computed, ref, watch } from 'vue'
 import { data } from '../composables/state'
 import { parseMetaTags } from '../composables/tools'
 
-const { copy, copied } = useClipboard()
+const { copy } = useClipboard()
 
 const loading = ref(false)
 const error = ref<string | null>(null)

@@ -8,6 +8,8 @@ export default defineNuxtPlugin({
   env: {
     islands: false,
   },
+  // we need to wait for the i18n plugin to run first
+  dependsOn: ['nuxt-site-config:i18n'],
   setup() {
     const title = useFallbackTitle()
 

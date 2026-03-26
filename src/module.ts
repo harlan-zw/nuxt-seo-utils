@@ -250,9 +250,16 @@ export default defineNuxtModule<ModuleOptions>({
       }
     }
     if (config.fallbackTitle) {
-      addPlugin({
-        src: resolve(runtimeDir, './app/plugins/titles'),
-      })
+      if (hasI18n) {
+        addPlugin({
+          src: resolve(runtimeDir, './app/plugins/titlesWaitI18n'),
+        })
+      }
+      else {
+        addPlugin({
+          src: resolve(runtimeDir, './app/plugins/titles'),
+        })
+      }
     }
 
     if (!hasI18n) {

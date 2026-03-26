@@ -1,6 +1,25 @@
 # Changelog
 
 
+## v8.0.5...main
+
+[compare changes](https://github.com/harlan-zw/nuxt-seo-utils/compare/v8.0.5...main)
+
+### 🚀 Enhancements
+
+- **devtools:** Identity tab ([31ed322](https://github.com/harlan-zw/nuxt-seo-utils/commit/31ed322))
+
+### 🏡 Chore
+
+- Bump deps ([398bdd9](https://github.com/harlan-zw/nuxt-seo-utils/commit/398bdd9))
+- Ignore exampls ([ac7e9d7](https://github.com/harlan-zw/nuxt-seo-utils/commit/ac7e9d7))
+- Bump deps ([03013c6](https://github.com/harlan-zw/nuxt-seo-utils/commit/03013c6))
+- Ignore devtools ([c8adad5](https://github.com/harlan-zw/nuxt-seo-utils/commit/c8adad5))
+
+### ❤️ Contributors
+
+- Harlan Wilton ([@harlan-zw](https://github.com/harlan-zw))
+
 ## v8.0.4...main
 
 [compare changes](https://github.com/harlan-zw/nuxt-seo-utils/compare/v8.0.4...main)

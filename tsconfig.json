@@ -4,6 +4,7 @@
     "test/fixtures/**",
     "playground/**",
     "client/**",
-    "examples/**"
+    "examples/**",
+    "devtools"
   ]
 }

@@ -113,7 +113,6 @@
     "lint-staged": "catalog:",
     "markdownlint-cli": "catalog:",
     "nuxt": "catalog:",
-    "nuxt-content-twoslash": "catalog:",
     "playwright-core": "catalog:",
     "sass": "catalog:",
     "typescript": "catalog:",

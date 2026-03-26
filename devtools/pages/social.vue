@@ -1,9 +1,8 @@
 <script setup lang="ts">
 import { useClipboard } from '@vueuse/core'
-import { path as hostPath, refreshTime } from 'nuxtseo-layer-devtools/composables/state'
 import { computed, ref, watch } from 'vue'
-import { appFetch } from '../composables/rpc'
-import { parseMetaTags, useLoadingMessages } from '../composables/tools'
+import { data } from '../composables/state'
+import { parseMetaTags } from '../composables/tools'
 
 const { copy, copied } = useClipboard()
 
@@ -23,13 +22,6 @@ interface ParsedSocialMeta {
 
 const result = ref<ParsedSocialMeta | null>(null)
 const activePreview = ref('twitter')
-
-const { current: loadingMessage, start: startMessages, stop: stopMessages } = useLoadingMessages([
-  'Fetching page HTML...',
-  'Extracting Open Graph tags...',
-  'Checking Twitter card data...',
-  'Analyzing social previews...',
-])
 
 const previewTabs = [
   { label: 'X / Twitter', value: 'twitter', icon: 'carbon:logo-x' },
@@ -55,7 +47,6 @@ const warnings = computed(() => {
   if (!result.value.twitter['twitter:card'])
     w.push({ type: 'warning', property: 'twitter:card', message: 'Missing twitter:card. Defaults to "summary".' })
 
-  // Image validation
   if (result.value.ogImages.length) {
     const img = result.value.ogImages[0]!
     if (img.url && !img.url.startsWith('http'))
@@ -91,6 +82,9 @@ const previewSiteName = computed(() => {
     return ''
   }
 })
+
+const ogTagCount = computed(() => result.value ? Object.keys(result.value.og).length : 0)
+const twitterTagCount = computed(() => result.value ? Object.keys(result.value.twitter).length : 0)
 
 function parseSocialMeta(html: string, url: string): ParsedSocialMeta {
   const parsed = parseMetaTags(html)
@@ -129,11 +123,10 @@ async function checkSocial() {
   loading.value = true
   error.value = null
   result.value = null
-  startMessages()
 
   try {
     const baseUrl = window.parent?.location?.origin || window.location.origin
-    const fullUrl = `${baseUrl}${hostPath.value}`
+    const fullUrl = `${baseUrl}${path.value}`
     const response = await fetch(fullUrl, { headers: { Accept: 'text/html' } })
     if (!response.ok)
       throw new Error(`HTTP ${response.status}`)
@@ -145,96 +138,83 @@ async function checkSocial() {
   }
   finally {
     loading.value = false
-    stopMessages()
   }
 }
 
-watch([() => appFetch.value, hostPath, refreshTime], () => {
-  if (appFetch.value)
+watch([() => data.value, path, refreshTime], () => {
+  if (data.value)
     checkSocial()
 }, { immediate: true })
 </script>
 
 <template>
-  <div class="space-y-6 animate-fade-up">
-    <div class="flex items-center justify-between">
-      <div class="flex items-center gap-2">
-        <UIcon name="carbon:share" class="text-lg text-[var(--seo-green)]" />
-        <h2 class="text-lg font-semibold">
-          Social Share Debugger
-        </h2>
-      </div>
-      <div class="flex items-center gap-2">
-        <UBadge color="neutral" variant="subtle" class="font-mono text-xs">
-          {{ hostPath }}
-        </UBadge>
-        <UButton
-          size="xs"
-          variant="ghost"
-          color="neutral"
-          icon="carbon:reset"
-          :loading="loading"
-          @click="checkSocial"
-        />
-      </div>
-    </div>
-
+  <div class="space-y-5 stagger-children">
     <!-- Loading -->
-    <div v-if="loading" class="card p-8 text-center">
-      <UIcon name="carbon:circle-dash" class="text-3xl text-[var(--seo-green)] animate-spin mb-3" />
-      <p class="text-sm text-[var(--color-text-muted)]">
-        {{ loadingMessage }}
-      </p>
-    </div>
+    <DevtoolsLoading v-if="loading" />
 
     <!-- Error -->
-    <div v-else-if="error" class="card p-6 border-red-500/30">
-      <div class="flex items-center gap-2 text-red-500">
-        <UIcon name="carbon:warning-alt" class="text-lg" />
-        <span class="font-medium">{{ error }}</span>
-      </div>
-    </div>
+    <DevtoolsError v-else-if="error" :error="error" title="Failed to check page">
+      <UButton size="sm" variant="ghost" icon="carbon:reset" label="Retry" @click="checkSocial" />
+    </DevtoolsError>
 
     <!-- Results -->
     <template v-else-if="result">
       <!-- Warnings -->
-      <div v-if="warnings.length" class="card p-4 space-y-2">
-        <div v-for="w of warnings" :key="w.property + w.message" class="flex items-start gap-2 text-sm">
-          <UIcon
-            :name="w.type === 'error' ? 'carbon:close-filled' : 'carbon:warning-filled'"
-            class="mt-0.5 shrink-0"
-            :class="w.type === 'error' ? 'text-red-500' : 'text-amber-500'"
+      <DevtoolsSection v-if="warnings.length" icon="carbon:warning" text="Warnings">
+        <template #actions>
+          <DevtoolsMetric
+            :value="warnings.filter(w => w.type === 'error').length"
+            label="errors"
+            :variant="warnings.some(w => w.type === 'error') ? 'danger' : undefined"
           />
-          <div>
-            <span class="font-mono text-xs">{{ w.property }}</span>
-            <p class="text-[var(--color-text-muted)]">
-              {{ w.message }}
-            </p>
+          <DevtoolsMetric
+            :value="warnings.filter(w => w.type === 'warning').length"
+            label="warnings"
+            :variant="warnings.some(w => w.type === 'warning') ? 'warning' : undefined"
+          />
+        </template>
+        <div class="space-y-1">
+          <div v-for="w of warnings" :key="w.property + w.message" class="social-issue-row">
+            <UIcon
+              :name="w.type === 'error' ? 'carbon:close-filled' : 'carbon:warning-filled'"
+              class="mt-0.5 shrink-0"
+              :class="w.type === 'error' ? 'text-red-500' : 'text-amber-500'"
+            />
+            <div class="min-w-0">
+              <span class="font-mono text-xs">{{ w.property }}</span>
+              <p class="text-xs text-[var(--color-text-muted)]">
+                {{ w.message }}
+              </p>
+            </div>
           </div>
         </div>
-      </div>
+      </DevtoolsSection>
 
       <!-- Preview tabs -->
-      <div class="card overflow-hidden">
-        <div class="flex border-b border-[var(--color-border)]">
+      <DevtoolsSection icon="carbon:view" text="Social Preview" :padding="false">
+        <div class="social-tab-bar">
           <button
             v-for="tab of previewTabs"
             :key="tab.value"
-            class="flex items-center gap-1.5 px-3 py-2 text-xs font-medium transition-colors"
-            :class="activePreview === tab.value ? 'text-[var(--seo-green)] border-b-2 border-[var(--seo-green)]' : 'text-[var(--color-text-muted)] hover:text-[var(--color-text)]'"
+            class="social-tab"
+            :class="{ 'social-tab--active': activePreview === tab.value }"
             @click="activePreview = tab.value"
           >
-            <UIcon :name="tab.icon" />
-            {{ tab.label }}
+            <UIcon :name="tab.icon" class="text-sm" />
+            <span class="social-tab__label">{{ tab.label }}</span>
           </button>
         </div>
 
-        <div class="p-6">
+        <div class="social-preview-stage">
           <!-- Twitter preview -->
-          <div v-if="activePreview === 'twitter'" class="max-w-[500px] mx-auto">
+          <div v-if="activePreview === 'twitter'" class="social-preview-card">
             <div class="rounded-2xl overflow-hidden border border-neutral-200 dark:border-neutral-700">
               <div v-if="previewImage" class="aspect-[1.91/1] bg-neutral-100 dark:bg-neutral-800">
                 <img :src="previewImage" class="w-full h-full object-cover" :alt="previewTitle">
+              </div>
+              <div v-else class="social-image-placeholder aspect-[1.91/1]">
+                <UIcon name="carbon:image" class="text-2xl" />
+                <span>No og:image</span>
               </div>
               <div class="p-3">
                 <p class="text-xs text-neutral-500">
@@ -251,10 +231,14 @@ watch([() => appFetch.value, hostPath, refreshTime], () => {
           </div>
 
           <!-- Facebook preview -->
-          <div v-if="activePreview === 'facebook'" class="max-w-[500px] mx-auto">
+          <div v-if="activePreview === 'facebook'" class="social-preview-card">
             <div class="rounded-lg overflow-hidden border border-neutral-200 dark:border-neutral-700 bg-neutral-50 dark:bg-neutral-800">
               <div v-if="previewImage" class="aspect-[1.91/1] bg-neutral-100 dark:bg-neutral-700">
                 <img :src="previewImage" class="w-full h-full object-cover" :alt="previewTitle">
+              </div>
+              <div v-else class="social-image-placeholder aspect-[1.91/1]">
+                <UIcon name="carbon:image" class="text-2xl" />
+                <span>No og:image</span>
               </div>
               <div class="p-3">
                 <p class="text-[11px] text-neutral-500 uppercase tracking-wider">
@@ -271,10 +255,14 @@ watch([() => appFetch.value, hostPath, refreshTime], () => {
           </div>
 
           <!-- LinkedIn preview -->
-          <div v-if="activePreview === 'linkedin'" class="max-w-[500px] mx-auto">
+          <div v-if="activePreview === 'linkedin'" class="social-preview-card">
             <div class="rounded-lg overflow-hidden border border-neutral-200 dark:border-neutral-700">
               <div v-if="previewImage" class="aspect-[1.91/1] bg-neutral-100 dark:bg-neutral-800">
                 <img :src="previewImage" class="w-full h-full object-cover" :alt="previewTitle">
+              </div>
+              <div v-else class="social-image-placeholder aspect-[1.91/1]">
+                <UIcon name="carbon:image" class="text-2xl" />
+                <span>No og:image</span>
               </div>
               <div class="p-3 bg-neutral-50 dark:bg-neutral-800">
                 <p class="text-sm font-semibold line-clamp-2">
@@ -288,7 +276,7 @@ watch([() => appFetch.value, hostPath, refreshTime], () => {
           </div>
 
           <!-- Discord preview -->
-          <div v-if="activePreview === 'discord'" class="max-w-[500px] mx-auto">
+          <div v-if="activePreview === 'discord'" class="social-preview-card">
             <div class="rounded-lg overflow-hidden border-l-4 border-[#5865F2] bg-[#2f3136] text-white p-4">
               <p class="text-xs text-neutral-400 mb-1">
                 {{ previewSiteName }}
@@ -302,11 +290,15 @@ watch([() => appFetch.value, hostPath, refreshTime], () => {
               <div v-if="previewImage" class="mt-3 rounded-lg overflow-hidden max-w-[300px]">
                 <img :src="previewImage" class="w-full object-cover" :alt="previewTitle">
               </div>
+              <div v-else class="social-image-placeholder social-image-placeholder--discord mt-3 max-w-[300px] aspect-video rounded-lg">
+                <UIcon name="carbon:image" class="text-xl" />
+                <span>No image</span>
+              </div>
             </div>
           </div>
 
           <!-- Slack preview -->
-          <div v-if="activePreview === 'slack'" class="max-w-[500px] mx-auto">
+          <div v-if="activePreview === 'slack'" class="social-preview-card">
             <div class="rounded-lg overflow-hidden border-l-4 border-neutral-300 dark:border-neutral-600 pl-4 py-2">
               <p class="text-xs text-neutral-500 font-bold mb-1">
                 {{ previewSiteName }}
@@ -323,14 +315,13 @@ watch([() => appFetch.value, hostPath, refreshTime], () => {
             </div>
           </div>
         </div>
-      </div>
+      </DevtoolsSection>
 
       <!-- OG Tags table -->
-      <div class="card p-4 space-y-3">
-        <div class="flex items-center justify-between">
-          <p class="text-sm font-medium">
-            Open Graph Tags
-          </p>
+      <DevtoolsSection icon="carbon:tag-group" text="Open Graph Tags">
+        <template #actions>
+          <DevtoolsMetric :value="ogTagCount" label="og" />
+          <DevtoolsMetric :value="twitterTagCount" label="twitter" />
           <UButton
             size="xs"
             variant="ghost"
@@ -339,48 +330,186 @@ watch([() => appFetch.value, hostPath, refreshTime], () => {
             :label="copied ? 'Copied!' : 'Copy'"
             @click="copy(JSON.stringify({ og: result.og, twitter: result.twitter }, null, 2))"
           />
-        </div>
-        <div class="divide-y divide-[var(--color-border-subtle)]">
-          <div v-for="(value, key) of result.og" :key="key" class="flex items-center gap-3 py-2">
+        </template>
+        <div class="social-tags-table">
+          <div v-for="(value, key) of result.og" :key="key" class="social-tags-table__row">
             <UBadge color="primary" variant="subtle" size="xs">
               og
             </UBadge>
-            <span class="text-sm font-mono shrink-0">{{ key }}</span>
-            <span class="text-xs text-[var(--color-text-muted)] truncate">{{ value }}</span>
+            <span class="text-sm font-mono shrink-0 text-[var(--color-text)]">{{ key }}</span>
+            <span class="text-xs text-[var(--color-text-muted)] truncate min-w-0 flex-1 text-right font-mono">{{ value }}</span>
           </div>
-          <div v-for="(value, key) of result.twitter" :key="key" class="flex items-center gap-3 py-2">
+          <div v-for="(value, key) of result.twitter" :key="key" class="social-tags-table__row">
             <UBadge color="neutral" variant="subtle" size="xs">
               twitter
             </UBadge>
-            <span class="text-sm font-mono shrink-0">{{ key }}</span>
-            <span class="text-xs text-[var(--color-text-muted)] truncate">{{ value }}</span>
+            <span class="text-sm font-mono shrink-0 text-[var(--color-text)]">{{ key }}</span>
+            <span class="text-xs text-[var(--color-text-muted)] truncate min-w-0 flex-1 text-right font-mono">{{ value }}</span>
           </div>
         </div>
-      </div>
+      </DevtoolsSection>
 
       <!-- OG Image preview -->
-      <div v-if="result.ogImages.length" class="card p-4 space-y-3">
-        <p class="text-sm font-medium">
-          OG Image
-        </p>
+      <DevtoolsSection v-if="result.ogImages.length" icon="carbon:image" text="OG Image">
+        <template #actions>
+          <DevtoolsMetric
+            v-if="result.ogImages[0]?.width && result.ogImages[0]?.height"
+            :value="`${result.ogImages[0].width}×${result.ogImages[0].height}`"
+            label="px"
+          />
+        </template>
         <div v-for="(img, i) of result.ogImages" :key="i" class="space-y-2">
           <div class="rounded-lg overflow-hidden border border-[var(--color-border)]">
             <img :src="img.url" class="w-full max-h-64 object-contain bg-neutral-100 dark:bg-neutral-800" :alt="img.alt || 'OG Image'">
           </div>
-          <div class="flex gap-4 text-xs text-[var(--color-text-muted)]">
-            <span v-if="img.width && img.height">{{ img.width }}x{{ img.height }}</span>
+          <div class="flex items-center gap-2 text-xs text-[var(--color-text-muted)] font-mono">
             <span class="truncate">{{ img.url }}</span>
           </div>
         </div>
-      </div>
+      </DevtoolsSection>
     </template>
 
     <!-- Not connected -->
-    <div v-else-if="!loading && !error" class="card p-8 text-center">
-      <UIcon name="carbon:share" class="text-3xl text-[var(--color-text-muted)] mb-3" />
-      <p class="text-sm text-[var(--color-text-muted)]">
-        Waiting for connection to host app...
-      </p>
-    </div>
+    <DevtoolsEmptyState
+      v-else-if="!loading && !error"
+      icon="carbon:share"
+      title="Waiting for connection"
+      description="Waiting for connection to host app..."
+    />
   </div>
 </template>
+
+<style scoped>
+/* Issue rows */
+.social-issue-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.5rem;
+  padding: 0.625rem 0.75rem;
+  border-radius: var(--radius-sm);
+  font-size: 0.8125rem;
+  transition: background 150ms;
+}
+
+.social-issue-row:hover {
+  background: var(--color-surface-sunken);
+}
+
+/* Platform tabs */
+.social-tab-bar {
+  display: flex;
+  gap: 0.125rem;
+  padding: 0.5rem 0.75rem;
+  border-bottom: 1px solid var(--color-border);
+  overflow-x: auto;
+}
+
+.social-tab {
+  display: flex;
+  align-items: center;
+  gap: 0.375rem;
+  padding: 0.375rem 0.625rem;
+  border-radius: var(--radius-sm);
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: var(--color-text-muted);
+  white-space: nowrap;
+  transition: color 150ms, background 150ms;
+}
+
+.social-tab:hover {
+  color: var(--color-text);
+  background: var(--color-surface-sunken);
+}
+
+.social-tab--active {
+  color: var(--seo-green);
+  background: oklch(65% 0.2 145 / 0.08);
+}
+
+.dark .social-tab--active {
+  background: oklch(65% 0.2 145 / 0.12);
+}
+
+.social-tab__label {
+  display: none;
+}
+
+@media (min-width: 640px) {
+  .social-tab__label {
+    display: inline;
+  }
+}
+
+/* Preview stage */
+.social-preview-stage {
+  padding: 1.5rem;
+}
+
+.social-preview-card {
+  max-width: 500px;
+  margin: 0 auto;
+  animation: fade-up 250ms cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+/* Image placeholder */
+.social-image-placeholder {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.375rem;
+  background: var(--color-surface-sunken);
+  color: var(--color-text-subtle);
+  font-size: 0.6875rem;
+  font-weight: 500;
+  background-image:
+    linear-gradient(45deg, oklch(0% 0 0 / 0.03) 25%, transparent 25%),
+    linear-gradient(-45deg, oklch(0% 0 0 / 0.03) 25%, transparent 25%),
+    linear-gradient(45deg, transparent 75%, oklch(0% 0 0 / 0.03) 75%),
+    linear-gradient(-45deg, transparent 75%, oklch(0% 0 0 / 0.03) 75%);
+  background-size: 16px 16px;
+  background-position: 0 0, 0 8px, 8px -8px, -8px 0;
+}
+
+.dark .social-image-placeholder {
+  background-image:
+    linear-gradient(45deg, oklch(100% 0 0 / 0.03) 25%, transparent 25%),
+    linear-gradient(-45deg, oklch(100% 0 0 / 0.03) 25%, transparent 25%),
+    linear-gradient(45deg, transparent 75%, oklch(100% 0 0 / 0.03) 75%),
+    linear-gradient(-45deg, transparent 75%, oklch(100% 0 0 / 0.03) 75%);
+  background-size: 16px 16px;
+  background-position: 0 0, 0 8px, 8px -8px, -8px 0;
+}
+
+.social-image-placeholder--discord {
+  background-color: #36393f;
+  color: #72767d;
+}
+
+/* Tags table */
+.social-tags-table__row {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.5rem 0.625rem;
+  border-radius: var(--radius-sm);
+  transition: background 150ms;
+}
+
+.social-tags-table__row:hover {
+  background: var(--color-surface-sunken);
+}
+
+.social-tags-table__row:nth-child(even) {
+  background: oklch(0% 0 0 / 0.015);
+}
+
+.dark .social-tags-table__row:nth-child(even) {
+  background: oklch(100% 0 0 / 0.015);
+}
+
+.social-tags-table__row:nth-child(even):hover {
+  background: var(--color-surface-sunken);
+}
+</style>

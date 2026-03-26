@@ -15,6 +15,7 @@ import UnheadVite from '@unhead/addons/vite'
 import { defu } from 'defu'
 import { installNuxtSiteConfig } from 'nuxt-site-config/kit'
 import { relative } from 'pathe'
+import { readPackageJSON } from 'pkg-types'
 import extendNuxtConfigAppHeadSeoMeta from './build-time/extendNuxtConfigAppHeadSeoMeta'
 import extendNuxtConfigAppHeadTypes from './build-time/extendNuxtConfigAppHeadTypes'
 import generateTagsFromPageDirImages from './build-time/generateTagsFromPageDirImages'
@@ -207,6 +208,7 @@ export default defineNuxtModule<ModuleOptions>({
       return
     }
     const { resolve } = createResolver(import.meta.url)
+    const { version } = await readPackageJSON(resolve('../package.json'))
     await installNuxtSiteConfig()
 
     const runtimeDir = resolve('./runtime')
@@ -308,6 +310,7 @@ export default defineNuxtModule<ModuleOptions>({
       })
     }
     nuxt.options.alias['#seo-utils'] = runtimeDir
+    nuxt.options.runtimeConfig.public['nuxt-seo-utils-version'] = nuxt.options.runtimeConfig.public['nuxt-seo-utils-version'] || version || ''
     nuxt.options.runtimeConfig.public['seo-utils'] = defu(nuxt.options.runtimeConfig.public['seo-utils'] || {}, {
       canonicalQueryWhitelist: config.canonicalQueryWhitelist || [
         'page',

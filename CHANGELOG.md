@@ -1,6 +1,18 @@
 # Changelog
 
 
+## v8.0.2...main
+
+[compare changes](https://github.com/harlan-zw/nuxt-seo-utils/compare/v8.0.2...main)
+
+### 🏡 Chore
+
+- Bump deps ([c4bac7c](https://github.com/harlan-zw/nuxt-seo-utils/commit/c4bac7c))
+
+### ❤️ Contributors
+
+- Harlan Wilton ([@harlan-zw](https://github.com/harlan-zw))
+
 ## v8.0.1...main
 
 [compare changes](https://github.com/harlan-zw/nuxt-seo-utils/compare/v8.0.1...main)

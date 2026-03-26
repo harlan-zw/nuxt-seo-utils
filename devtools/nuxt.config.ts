@@ -9,7 +9,7 @@ export default defineNuxtConfig({
 
   nitro: {
     prerender: {
-      routes: ['/', '/social'],
+      routes: ['/', '/social', '/debug', '/docs'],
     },
     output: {
       publicDir: resolve(__dirname, '../dist/devtools'),

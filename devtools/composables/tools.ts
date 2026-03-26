@@ -1,31 +1,3 @@
-import { onUnmounted, ref } from 'vue'
-
-export function useLoadingMessages(messages: string[], interval = 800) {
-  const current = ref(messages[0])
-  let timer: ReturnType<typeof setInterval> | null = null
-  let idx = 0
-
-  function start() {
-    idx = 0
-    current.value = messages[0]
-    timer = setInterval(() => {
-      idx = (idx + 1) % messages.length
-      current.value = messages[idx]
-    }, interval)
-  }
-
-  function stop() {
-    if (timer) {
-      clearInterval(timer)
-      timer = null
-    }
-  }
-
-  onUnmounted(stop)
-
-  return { current, start, stop }
-}
-
 export const SEO_LIMITS = {
   TITLE_MAX_CHARS: 60,
   TITLE_WARN_CHARS: 50,
@@ -78,7 +50,6 @@ export function parseMetaTags(html: string) {
       allMeta.push({ name: httpEquiv, content, type: 'http-equiv' })
   })
 
-  // Extract JSON-LD schemas
   const schemas: Array<{ type: string, data: any, raw: string }> = []
   doc.querySelectorAll('script[type="application/ld+json"]').forEach((el) => {
     const raw = el.textContent?.trim() || ''

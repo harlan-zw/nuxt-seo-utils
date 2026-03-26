@@ -14,7 +14,11 @@ body:
       required: true
     attributes:
       label: 🛠️ To reproduce
-      description: 'A reproduction of the bug. Please see the StackBlitz link on https://nuxtseo.com/docs/seo-utils/getting-started/troubleshooting'
+      description: |
+        A reproduction of the bug. Please create a StackBlitz reproduction from one of the starters:
+        - [Basic](https://stackblitz.com/github/harlan-zw/nuxt-seo-utils/tree/main/examples/basic)
+        - [Breadcrumbs](https://stackblitz.com/github/harlan-zw/nuxt-seo-utils/tree/main/examples/breadcrumbs)
+        - [Meta Tags](https://stackblitz.com/github/harlan-zw/nuxt-seo-utils/tree/main/examples/meta-tags)
       placeholder: https://stackblitz.com/[...]
   - type: textarea
     validations:

@@ -53,23 +53,6 @@ const iconRelLabels: Record<string, { label: string, description: string }> = {
   },
 }
 
-const siteConfigItems = computed(() => {
-  if (!siteConfig.value)
-    return []
-  const c = siteConfig.value
-  return [
-    { key: 'Site Name', value: c.name || '', mono: true },
-    { key: 'Site URL', value: c.url || '', mono: true, link: c.url },
-    { key: 'Description', value: c.description || '', mono: false },
-    { key: 'Environment', value: c.env || '', mono: true },
-    { key: 'Indexable', value: c.indexable ? 'Yes' : 'No', mono: true },
-    { key: 'Trailing Slash', value: c.trailingSlash ? 'Yes' : 'No', mono: true },
-    { key: 'Title Separator', value: c.titleSeparator || '', mono: true },
-    { key: 'Default Locale', value: c.defaultLocale || '', mono: true },
-    { key: 'Twitter', value: c.twitter || '', mono: true },
-  ].filter(i => i.value)
-})
-
 // Identity completeness score
 const identityScore = computed(() => {
   if (!siteConfig.value || !parsedPage.value)
@@ -268,42 +251,6 @@ const iconSizesGenerated = [
         </div>
       </div>
 
-      <!-- Site Config -->
-      <DevtoolsSection icon="carbon:settings" text="Site Config">
-        <template #actions>
-          <UButton
-            size="xs"
-            variant="ghost"
-            color="neutral"
-            icon="carbon:copy"
-            :label="copied ? 'Copied!' : 'Copy JSON'"
-            @click="copy(JSON.stringify(siteConfig, null, 2))"
-          />
-        </template>
-        <div class="id-kv-list">
-          <div v-for="item of siteConfigItems" :key="item.key" class="id-kv-row">
-            <span class="id-kv-label">{{ item.key }}</span>
-            <a v-if="item.link" :href="item.link" target="_blank" class="id-kv-value id-link" :class="{ 'font-mono': item.mono }">
-              {{ item.value }}
-            </a>
-            <span v-else class="id-kv-value" :class="{ 'font-mono': item.mono }">
-              {{ item.value }}
-            </span>
-          </div>
-        </div>
-
-        <DevtoolsAlert v-if="!siteConfig?.name" variant="warning" class="mt-3">
-          <span class="text-xs">No site name configured. Set <code class="id-code">name</code> in your <code class="id-code">nuxt.config.ts</code> site config or <code class="id-code">package.json</code>.</span>
-        </DevtoolsAlert>
-
-        <DevtoolsAlert v-if="!siteConfig?.url || siteConfig.url === 'http://localhost:3000'" variant="info" class="mt-3">
-          <span class="text-xs">Site URL is not configured. Set it in <code class="id-code">nuxt.config.ts</code>:</span>
-          <pre class="id-snippet">site: {
-  url: 'https://example.com'
-}</pre>
-        </DevtoolsAlert>
-      </DevtoolsSection>
-
       <!-- Icons -->
       <DevtoolsSection icon="carbon:image" text="Icons">
         <template #actions>
@@ -396,57 +343,6 @@ const iconSizesGenerated = [
                 <pre class="id-snippet !mt-2 !mb-0">pnpm add -D sharp</pre>
               </div>
             </div>
-          </div>
-        </div>
-      </DevtoolsSection>
-
-      <!-- Social Images -->
-      <DevtoolsSection icon="carbon:share" text="Social Images">
-        <template #actions>
-          <DevtoolsMetric :value="parsedPage.ogImages.length + parsedPage.twitterImages.length" label="images" />
-        </template>
-
-        <template v-if="parsedPage.ogImages.length || parsedPage.twitterImages.length">
-          <div class="id-social-grid">
-            <div v-for="(img, i) of parsedPage.ogImages" :key="`og-${i}`" class="id-social-card">
-              <div class="id-social-card__header">
-                <UBadge color="primary" variant="subtle" size="xs">
-                  og:image
-                </UBadge>
-                <span v-if="img.width && img.height" class="text-xs font-mono text-[var(--color-text-muted)]">{{ img.width }} &times; {{ img.height }}</span>
-              </div>
-              <div class="id-social-card__preview">
-                <img :src="img.url" :alt="img.alt || 'OG Image'" class="id-social-card__img">
-              </div>
-              <a :href="img.url" target="_blank" class="id-social-card__url">
-                {{ img.url }}
-              </a>
-            </div>
-
-            <div v-for="(img, i) of parsedPage.twitterImages" :key="`tw-${i}`" class="id-social-card">
-              <div class="id-social-card__header">
-                <UBadge color="neutral" variant="subtle" size="xs">
-                  twitter:image
-                </UBadge>
-                <span v-if="img.width && img.height" class="text-xs font-mono text-[var(--color-text-muted)]">{{ img.width }} &times; {{ img.height }}</span>
-              </div>
-              <div class="id-social-card__preview">
-                <img :src="img.url" alt="Twitter Image" class="id-social-card__img">
-              </div>
-              <a :href="img.url" target="_blank" class="id-social-card__url">
-                {{ img.url }}
-              </a>
-            </div>
-          </div>
-        </template>
-
-        <div v-else class="hint-callout">
-          <UIcon name="carbon:information" class="hint-callout-icon text-sm mt-0.5 shrink-0" />
-          <div class="text-xs text-[var(--color-text-muted)]">
-            No OG or Twitter images found. Add images to your <code class="id-code">public/</code> directory:
-            <pre class="id-snippet !mt-2">public/og-image.png       # 1200x630 recommended
-public/twitter-image.png  # 1200x600 recommended</pre>
-            Or use <code class="id-code">nuxt-og-image</code> for dynamic OG image generation.
           </div>
         </div>
       </DevtoolsSection>
@@ -1114,62 +1010,6 @@ public/twitter-image.png  # 1200x600 recommended</pre>
 /* ═══════════════════════════════════════
    Social Images
    ═══════════════════════════════════════ */
-.id-social-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-  gap: 0.75rem;
-}
-
-.id-social-card {
-  border-radius: var(--radius-md);
-  overflow: hidden;
-  border: 1px solid var(--color-border);
-  background: var(--color-surface-elevated);
-}
-
-.id-social-card__header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 0.5rem 0.75rem;
-  border-bottom: 1px solid var(--color-border-subtle);
-}
-
-.id-social-card__preview {
-  aspect-ratio: 1.91 / 1;
-  overflow: hidden;
-  /* Checkerboard */
-  background-image:
-    linear-gradient(45deg, var(--color-surface-sunken) 25%, transparent 25%),
-    linear-gradient(-45deg, var(--color-surface-sunken) 25%, transparent 25%),
-    linear-gradient(45deg, transparent 75%, var(--color-surface-sunken) 75%),
-    linear-gradient(-45deg, transparent 75%, var(--color-surface-sunken) 75%);
-  background-size: 12px 12px;
-  background-position: 0 0, 0 6px, 6px -6px, -6px 0;
-  background-color: var(--color-surface-elevated);
-}
-
-.id-social-card__img {
-  width: 100%;
-  height: 100%;
-  object-fit: contain;
-}
-
-.id-social-card__url {
-  display: block;
-  padding: 0.5rem 0.75rem;
-  font-size: 0.6875rem;
-  font-family: var(--font-mono);
-  color: var(--seo-green);
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  text-decoration: none;
-  border-top: 1px solid var(--color-border-subtle);
-}
-
-.id-social-card__url:hover { text-decoration: underline; text-underline-offset: 2px; }
-
 /* ═══════════════════════════════════════
    Theme Colors
    ═══════════════════════════════════════ */

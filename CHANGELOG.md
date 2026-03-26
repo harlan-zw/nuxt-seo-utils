@@ -1,6 +1,18 @@
 # Changelog
 
 
+## v8.1.0...main
+
+[compare changes](https://github.com/harlan-zw/nuxt-seo-utils/compare/v8.1.0...main)
+
+### 🩹 Fixes
+
+- False positive on missing i18n ([4abac6d](https://github.com/harlan-zw/nuxt-seo-utils/commit/4abac6d))
+
+### ❤️ Contributors
+
+- Harlan Wilton ([@harlan-zw](https://github.com/harlan-zw))
+
 ## v8.0.5...main
 
 [compare changes](https://github.com/harlan-zw/nuxt-seo-utils/compare/v8.0.5...main)

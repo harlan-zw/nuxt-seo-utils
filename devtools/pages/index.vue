@@ -41,8 +41,8 @@ const essentialTags = computed(() => {
     { category: 'Open Graph', name: 'og:image', present: !!result.value.ogTags['og:image'], value: result.value.ogTags['og:image'] },
     { category: 'Open Graph', name: 'og:url', present: !!result.value.ogTags['og:url'], value: result.value.ogTags['og:url'] },
     { category: 'Twitter', name: 'twitter:card', present: !!result.value.twitterTags['twitter:card'], value: result.value.twitterTags['twitter:card'] },
-    { category: 'Twitter', name: 'twitter:title', present: !!result.value.twitterTags['twitter:title'], value: result.value.twitterTags['twitter:title'] },
-    { category: 'Twitter', name: 'twitter:image', present: !!result.value.twitterTags['twitter:image'], value: result.value.twitterTags['twitter:image'] },
+    { category: 'Twitter', name: 'twitter:title', present: !!result.value.twitterTags['twitter:title'], value: result.value.twitterTags['twitter:title'], fallback: result.value.ogTags['og:title'] ? 'og:title' : undefined },
+    { category: 'Twitter', name: 'twitter:image', present: !!result.value.twitterTags['twitter:image'], value: result.value.twitterTags['twitter:image'], fallback: result.value.ogTags['og:image'] ? 'og:image' : undefined },
   ]
 })
 
@@ -57,7 +57,7 @@ const essentialTagsByCategory = computed(() => {
 })
 
 const essentialTagsScore = computed(() => {
-  const present = essentialTags.value.filter(t => t.present).length
+  const present = essentialTags.value.filter(t => t.present || t.fallback).length
   return { present, total: essentialTags.value.length }
 })
 
@@ -216,7 +216,7 @@ watch([() => data.value, path, refreshTime], () => {
                 :class="`seo-progress-fill--${tColor}`"
                 :style="{ width: `${Math.min(100, (titleLen / SEO_LIMITS.TITLE_MAX_CHARS) * 100)}%` }"
               />
-              <div class="seo-progress-marker" :style="{ left: `${(SEO_LIMITS.TITLE_WARN_CHARS / SEO_LIMITS.TITLE_MAX_CHARS) * 100}%` }" />
+              <div class="seo-progress-marker" :style="{ left: `${(30 / SEO_LIMITS.TITLE_MAX_CHARS) * 100}%` }" />
             </div>
             <p class="text-xs text-[var(--color-text-muted)] truncate">
               {{ result.title || 'Not set' }}
@@ -290,14 +290,17 @@ watch([() => data.value, path, refreshTime], () => {
             <div class="seo-checklist">
               <div v-for="tag of tags" :key="tag.name" class="seo-checklist__item">
                 <UIcon
-                  :name="tag.present ? 'carbon:checkmark-filled' : 'carbon:close-filled'"
+                  :name="tag.present ? 'carbon:checkmark-filled' : tag.fallback ? 'carbon:information-filled' : 'carbon:close-filled'"
                   class="text-sm shrink-0"
-                  :class="tag.present ? 'text-green-500' : 'text-red-400'"
+                  :class="tag.present ? 'text-green-500' : tag.fallback ? 'text-gray-400' : 'text-red-400'"
                 />
                 <span class="text-sm font-mono flex-1 min-w-0 truncate">{{ tag.name }}</span>
                 <span v-if="tag.value" class="seo-checklist__value">
                   {{ tag.value }}
                 </span>
+                <UBadge v-else-if="tag.fallback" color="neutral" variant="subtle" size="xs">
+                  falls back to {{ tag.fallback }}
+                </UBadge>
                 <UBadge v-else color="neutral" variant="subtle" size="xs">
                   missing
                 </UBadge>

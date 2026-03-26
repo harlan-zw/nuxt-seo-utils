@@ -84,7 +84,7 @@ export function parseMetaTags(html: string) {
 export function titleColor(length: number) {
   if (length > SEO_LIMITS.TITLE_MAX_CHARS)
     return 'error'
-  if (length > SEO_LIMITS.TITLE_WARN_CHARS || length < 30)
+  if (length < 30)
     return 'warning'
   return 'success'
 }

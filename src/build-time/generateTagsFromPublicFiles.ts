@@ -1,22 +1,38 @@
 import type { Nuxt } from '@nuxt/schema'
 import type { Meta, SerializableHead } from '@unhead/vue/types'
 import type { MetaFlatSerializable } from '../runtime/types'
+import { readdir } from 'node:fs/promises'
 import { useNuxt } from '@nuxt/kit'
 import { unpackMeta } from '@unhead/vue/utils'
 import { defu } from 'defu'
-import { basename, resolve } from 'pathe'
-import { glob } from 'tinyglobby'
+import { resolve } from 'pathe'
 import { joinURL } from 'ufo'
-import { MetaTagFileGlobs } from '../const'
+import { isMetaTagFile } from '../const'
 import { getImageDimensions, getImageMeta, hasLinkRel, hasMetaProperty } from '../util'
 
+async function listMetaTagFiles(dir: string): Promise<string[]> {
+  const entries = await readdir(dir, { withFileTypes: true }).catch(() => [])
+  return entries.filter(e => e.isFile() && isMetaTagFile(e.name)).map(e => e.name)
+}
+
 export default async function generateTagsFromPublicFiles(nuxt: Nuxt = useNuxt()): Promise<{ hasIcons: boolean }> {
-  // @todo support layer public dirs
-  const publicDirPath = resolve(nuxt.options.rootDir, nuxt.options.dir.public)
-  // do fg only one level deep
-  const rootPublicFiles = (await glob(MetaTagFileGlobs, { cwd: publicDirPath, onlyFiles: true, deep: 1 }))
-    // use base name
-    .map(file => basename(file))
+  const publicDirs = nuxt.options._layers
+    .map(layer => resolve(layer.config.rootDir!, layer.config.dir?.public || 'public'))
+
+  // collect files from all layers, first layer (app) wins on conflicts
+  const seen = new Set<string>()
+  const fileEntries: { file: string, dir: string }[] = []
+  for (const dir of publicDirs) {
+    const files = await listMetaTagFiles(dir)
+    for (const file of files) {
+      if (!seen.has(file)) {
+        seen.add(file)
+        fileEntries.push({ file, dir })
+      }
+    }
+  }
+
+  const rootPublicFiles = fileEntries.map(e => e.file)
   const headConfig: SerializableHead = defu(nuxt.options.app.head, {
     link: [],
     meta: [],
@@ -36,13 +52,15 @@ export default async function generateTagsFromPublicFiles(nuxt: Nuxt = useNuxt()
       (file.includes('apple-icon') || file.includes('apple-touch-icon') || file.includes('apple-touch'))
     )
 
+    const resolveDir = (file: string): string => fileEntries.find(e => e.file === file)!.dir
+
     headConfig.link!.push(
       ...await Promise.all([
         ...rootPublicFiles
           .filter(file => isIcon(file) && !isAppleTouchIcon(file))
           .sort()
           .map(async (iconFile) => {
-            const meta = await getImageMeta(publicDirPath, iconFile, true)
+            const meta = await getImageMeta(resolveDir(iconFile), iconFile, true)
             return {
               rel: 'icon',
               href: joinURL(nuxt.options.app.baseURL, iconFile),
@@ -53,7 +71,7 @@ export default async function generateTagsFromPublicFiles(nuxt: Nuxt = useNuxt()
           .filter(file => isAppleTouchIcon(file))
           .sort()
           .map(async (appleIconFile) => {
-            const meta = await getImageMeta(publicDirPath, appleIconFile, true)
+            const meta = await getImageMeta(resolveDir(appleIconFile), appleIconFile, true)
             return {
               rel: 'apple-touch-icon',
               href: joinURL(nuxt.options.app.baseURL, appleIconFile),
@@ -71,7 +89,7 @@ export default async function generateTagsFromPublicFiles(nuxt: Nuxt = useNuxt()
     if (twitterImageFiles.length) {
       headConfig.meta!.push(
         ...(await Promise.all(twitterImageFiles.map(async (twitterImageFile) => {
-          const dimensions = await getImageDimensions(resolve(publicDirPath, twitterImageFile))
+          const dimensions = await getImageDimensions(resolve(fileEntries.find(e => e.file === twitterImageFile)!.dir, twitterImageFile))
           return unpackMeta({
             twitterImage: {
               url: twitterImageFile,
@@ -93,7 +111,7 @@ export default async function generateTagsFromPublicFiles(nuxt: Nuxt = useNuxt()
     if (ogImageFiles.length) {
       headConfig.meta!.push(
         ...(await Promise.all(ogImageFiles.map(async (src) => {
-          const meta = await getImageMeta(publicDirPath, src, false)
+          const meta = await getImageMeta(fileEntries.find(e => e.file === src)!.dir, src, false)
           delete meta.sizes
           const seoMeta: MetaFlatSerializable = {
             ogImage: {

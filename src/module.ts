@@ -319,7 +319,7 @@ export default defineNuxtModule<ModuleOptions>({
     nuxt.options.alias['#seo-utils'] = runtimeDir
     nuxt.options.runtimeConfig.public['nuxt-seo-utils-version'] = nuxt.options.runtimeConfig.public['nuxt-seo-utils-version'] || version || ''
     nuxt.options.runtimeConfig.public['seo-utils'] = defu(nuxt.options.runtimeConfig.public['seo-utils'] || {}, {
-      canonicalQueryWhitelist: config.canonicalQueryWhitelist || [
+      canonicalQueryWhitelist: config.canonicalQueryWhitelist ?? [
         'page',
         'sort',
         'filter',

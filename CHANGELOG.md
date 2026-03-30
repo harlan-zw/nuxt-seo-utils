@@ -1,6 +1,18 @@
 # Changelog
 
 
+## v8.1.2...main
+
+[compare changes](https://github.com/harlan-zw/nuxt-seo-utils/compare/v8.1.2...main)
+
+### 🩹 Fixes
+
+- Meta tag file detection only matches root public dir, support layers ([#101](https://github.com/harlan-zw/nuxt-seo-utils/pull/101))
+
+### ❤️ Contributors
+
+- Harlan Wilton ([@harlan-zw](https://github.com/harlan-zw))
+
 ## v8.1.0...main
 
 [compare changes](https://github.com/harlan-zw/nuxt-seo-utils/compare/v8.1.0...main)

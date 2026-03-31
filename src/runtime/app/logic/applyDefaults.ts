@@ -77,22 +77,25 @@ export function applyDefaults(): void {
     link: [() => canonicalUrl.value],
   }, minimalPriority)
 
-  const seoMeta: UseSeoMetaInput = {
-    ogType: 'website',
-    ogUrl: () => {
-      const url = canonicalUrl.value
-      return url ? url.href : false
-    },
+  // og:locale is set at low priority so @nuxtjs/i18n can override it
+  useSeoMeta({
     ogLocale: () => {
       const locale = resolveCurrentLocale()
       if (locale) {
-        // verify it's a locale and not just "en"
         const l = locale.replace('-', '_')
         if (l.includes('_')) {
           return l
         }
       }
       return false
+    },
+  }, minimalPriority)
+
+  const seoMeta: UseSeoMetaInput = {
+    ogType: 'website',
+    ogUrl: () => {
+      const url = canonicalUrl.value
+      return url ? url.href : false
     },
     ogSiteName: siteConfig.name,
   }

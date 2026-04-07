@@ -32,8 +32,8 @@ catalog:
   markdownlint-cli: ^0.48.0
   nuxt: ^4.4.2
   nuxt-site-config: ^4.0.7
-  nuxtseo-layer-devtools: ^5.1.0
-  nuxtseo-shared: ^5.1.0
+  nuxtseo-layer-devtools: ^5.1.1
+  nuxtseo-shared: ^5.1.1
   pathe: ^2.0.3
   pkg-types: ^2.3.0
   playwright-core: ^1.59.1

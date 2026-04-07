@@ -73,7 +73,6 @@
     }
   },
   "dependencies": {
-    "@nuxt/devtools-kit": "catalog:",
     "@nuxt/kit": "catalog:",
     "@unhead/addons": "catalog:",
     "citty": "catalog:",
@@ -81,13 +80,10 @@
     "escape-string-regexp": "catalog:",
     "image-size": "catalog:",
     "nuxt-site-config": "catalog:",
-    "nuxtseo-layer-devtools": "catalog:",
     "nuxtseo-shared": "catalog:",
     "pathe": "catalog:",
     "pkg-types": "catalog:",
     "scule": "catalog:",
-    "semver": "catalog:",
-    "sirv": "catalog:",
     "tinyglobby": "catalog:",
     "ufo": "catalog:"
   },
@@ -96,6 +92,7 @@
   },
   "devDependencies": {
     "@antfu/eslint-config": "catalog:",
+    "@nuxt/devtools-kit": "catalog:",
     "@nuxt/module-builder": "catalog:",
     "@nuxt/schema": "catalog:",
     "@nuxt/test-utils": "catalog:",
@@ -113,8 +110,11 @@
     "lint-staged": "catalog:",
     "markdownlint-cli": "catalog:",
     "nuxt": "catalog:",
+    "nuxtseo-layer-devtools": "catalog:",
     "playwright-core": "catalog:",
     "sass": "catalog:",
+    "semver": "catalog:",
+    "sirv": "catalog:",
     "typescript": "catalog:",
     "ultrahtml": "catalog:",
     "unbuild": "catalog:",

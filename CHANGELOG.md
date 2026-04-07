@@ -1,6 +1,18 @@
 # Changelog
 
 
+## v8.1.4...main
+
+[compare changes](https://github.com/harlan-zw/nuxt-seo-utils/compare/v8.1.4...main)
+
+### 🩹 Fixes
+
+- Set og:locale at low priority so i18n can override ([#102](https://github.com/harlan-zw/nuxt-seo-utils/pull/102))
+
+### ❤️ Contributors
+
+- Harlan Wilton ([@harlan-zw](https://github.com/harlan-zw))
+
 ## v8.1.2...main
 
 [compare changes](https://github.com/harlan-zw/nuxt-seo-utils/compare/v8.1.2...main)

@@ -5,6 +5,6 @@
   "dependencies": {
     "nuxt": "^4.4.2",
     "nuxt-seo-utils": "latest",
-    "vue": "^3.5.31"
+    "vue": "^3.5.32"
   }
 }

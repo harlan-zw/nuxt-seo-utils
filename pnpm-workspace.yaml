@@ -6,25 +6,25 @@ packages:
   - '!examples/**'
 
 catalog:
-  '@antfu/eslint-config': ^7.7.3
+  '@antfu/eslint-config': ^8.0.0
   '@nuxt/devtools-kit': 4.0.0-alpha.3
   '@nuxt/kit': ^4.4.2
   '@nuxt/module-builder': ^1.0.2
   '@nuxt/schema': ^4.4.2
   '@nuxt/test-utils': ^4.0.0
-  '@nuxt/ui': ^4.6.0
+  '@nuxt/ui': ^4.6.1
   '@nuxtjs/i18n': ^10.2.4
-  '@types/node': ^25.5.0
-  '@unhead/addons': ^2.1.12
-  '@unhead/vue': ^2.1.12
+  '@types/node': ^25.5.2
+  '@unhead/addons': ^2.1.13
+  '@unhead/vue': ^2.1.13
   '@vue/test-utils': ^2.4.6
   bumpp: ^11.0.1
   case-police: ^2.2.0
   cheerio: ^1.2.0
-  citty: ^0.2.1
-  defu: ^6.1.4
+  citty: ^0.2.2
+  defu: ^6.1.7
   escape-string-regexp: ^5.0.0
-  eslint: ^10.1.0
+  eslint: ^10.2.0
   eslint-plugin-harlanzw: ^0.12.0
   happy-dom: ^20.8.9
   image-size: ^2.0.2
@@ -36,8 +36,8 @@ catalog:
   nuxtseo-shared: ^5.1.0
   pathe: ^2.0.3
   pkg-types: ^2.3.0
-  playwright-core: ^1.58.2
-  sass: ^1.98.0
+  playwright-core: ^1.59.1
+  sass: ^1.99.0
   scule: ^1.3.0
   semver: ^7.7.4
   sharp: ^0.34.5
@@ -47,7 +47,7 @@ catalog:
   ufo: ^1.6.3
   ultrahtml: ^1.6.0
   unbuild: ^3.6.1
-  vitest: ^4.1.2
+  vitest: ^4.1.3
   vue-tsc: ^3.2.6
 ignoredBuiltDependencies:
   - esbuild

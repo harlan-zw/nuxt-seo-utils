@@ -3,7 +3,7 @@ import { describe, expect, it } from 'vitest'
 describe('tagPriority', () => {
   it('default tagPriority is applied to runtime config', async () => {
     // Simulate what the module does: sets tagPriority in runtime config
-    const config = { tagPriority: 30 }
+    const config = { tagPriority: 'low' as const }
     const runtimeConfig = {
       public: {
         'seo-utils': {
@@ -13,7 +13,7 @@ describe('tagPriority', () => {
         },
       },
     }
-    expect(runtimeConfig.public['seo-utils'].tagPriority).toBe(30)
+    expect(runtimeConfig.public['seo-utils'].tagPriority).toBe('low')
   })
 
   it('custom tagPriority propagates to runtime config', async () => {
@@ -30,12 +30,11 @@ describe('tagPriority', () => {
     expect(runtimeConfig.public['seo-utils'].tagPriority).toBe(10)
   })
 
-  it('tagPriority is used in seoMeta options', () => {
-    const tagPriority = 30
-    const seoMetaPriority = { tagPriority }
-    expect(seoMetaPriority).toEqual({ tagPriority: 30 })
-    // Verify it's distinct from the minimalPriority used for other head tags
-    const minimalPriority = { tagPriority: 'low' as const }
-    expect(seoMetaPriority).not.toEqual(minimalPriority)
+  it('tagPriority accepts string aliases', () => {
+    const priorities = ['critical', 'high', 'low', 'before:style', 'after:meta'] as const
+    for (const p of priorities) {
+      const seoMetaPriority = { tagPriority: p }
+      expect(seoMetaPriority.tagPriority).toBe(p)
+    }
   })
 })

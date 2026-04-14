@@ -1,6 +1,24 @@
 # Changelog
 
 
+## v8.1.6...main
+
+[compare changes](https://github.com/harlan-zw/nuxt-seo-utils/compare/v8.1.6...main)
+
+### 🩹 Fixes
+
+- Use `'low'` alias for default tagPriority ([#104](https://github.com/harlan-zw/nuxt-seo-utils/pull/104))
+- Move devtools-only deps to devDependencies ([e7d546e](https://github.com/harlan-zw/nuxt-seo-utils/commit/e7d546e))
+
+### 🏡 Chore
+
+- Bump ([c1a3f91](https://github.com/harlan-zw/nuxt-seo-utils/commit/c1a3f91))
+- Bump ([059c6d8](https://github.com/harlan-zw/nuxt-seo-utils/commit/059c6d8))
+
+### ❤️ Contributors
+
+- Harlan Wilton ([@harlan-zw](https://github.com/harlan-zw))
+
 ## v8.1.4...main
 
 [compare changes](https://github.com/harlan-zw/nuxt-seo-utils/compare/v8.1.4...main)

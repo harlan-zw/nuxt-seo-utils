@@ -3,7 +3,7 @@ import type { QueryObject } from 'ufo'
 
 import { useSiteConfig } from '#site-config/app/composables/useSiteConfig'
 import { createSitePathResolver } from '#site-config/app/composables/utils'
-import { injectHead, useHead, useSeoMeta, useServerSeoMeta } from '@unhead/vue'
+import { injectHead, useHead, useSeoMeta } from '@unhead/vue'
 import { TemplateParamsPlugin } from '@unhead/vue/plugins'
 import { useError, useRoute, useRuntimeConfig } from 'nuxt/app'
 import { stringifyQuery } from 'ufo'
@@ -99,12 +99,11 @@ export function applyDefaults(): void {
     },
     ogSiteName: siteConfig.name,
   }
-  // Set a default description via useServerSeoMeta so SSR-only page-level
-  // descriptions are not overridden during hydration by client-side defaults
-  // registered with useSeoMeta. The siteConfig plugin also registers a
-  // low-priority client-side fallback with tagPriority: 'low'.
-  if (siteConfig.description)
-    useServerSeoMeta({ description: siteConfig.description }, minimalPriority)
+  // SSR-only default description so page-level descriptions are not overridden
+  // during hydration by client-side defaults registered with useSeoMeta. The
+  // siteConfig plugin also registers a low-priority client-side fallback.
+  if (import.meta.server && siteConfig.description)
+    useSeoMeta({ description: siteConfig.description }, minimalPriority)
   if (siteConfig.twitter) {
     // id must have the @ in it
     const id = siteConfig.twitter.startsWith('@')

@@ -1,7 +1,6 @@
-import { InferSeoMetaPlugin } from '@unhead/addons'
 import { injectHead } from '@unhead/vue'
+import { InferSeoMetaPlugin, TemplateParamsPlugin } from '@unhead/vue/plugins'
 import { defineNuxtPlugin } from 'nuxt/app'
-import { TemplateParamsPlugin } from 'unhead/plugins'
 
 export default defineNuxtPlugin(() => {
   const head = injectHead()

@@ -1,8 +1,5 @@
 import { useLogger, useNuxt } from '@nuxt/kit'
 
-const INLINE_SCRIPT_RE = /<script(?![^>]+\bsrc\b)([^>]*)>([\s\S]*?)<\/script\s*>/gi
-const INLINE_STYLE_RE = /<style([^>]*)>([\s\S]*?)<\/style\s*>/gi
-const TYPE_ATTR_RE = /\btype\s*=\s*["']([^"']*)["']/i
 const JSON_TYPES = new Set(['application/json', 'application/ld+json'])
 const SKIP_JS_TYPES = new Set(['application/json', 'application/ld+json', 'speculationrules', 'importmap'])
 
@@ -47,7 +44,7 @@ async function minifyCSSWithLightningCSS(code: string): Promise<string | null> {
   }
 }
 
-export default function minifyPrerender() {
+export default function minifyStaticHead() {
   const nuxt = useNuxt()
 
   // minify static scripts and styles in nuxt.options.app.head at build time
@@ -106,72 +103,4 @@ export default function minifyPrerender() {
 
     await Promise.all(promises)
   })
-
-  // minify inline scripts and styles in prerendered route HTML
-  nuxt.hooks.hook('nitro:init', (nitro) => {
-    nitro.hooks.hook('prerender:generate', async (route) => {
-      if (!route.contents || !route.contentType?.includes('html'))
-        return
-
-      // minify inline scripts
-      route.contents = await replaceAsync(
-        route.contents,
-        new RegExp(INLINE_SCRIPT_RE.source, INLINE_SCRIPT_RE.flags),
-        async (fullMatch: string, attrs: string, content: string) => {
-          if (!content)
-            return fullMatch
-          const typeMatch = TYPE_ATTR_RE.exec(attrs)
-          const type = typeMatch?.[1]
-          if (type && JSON_TYPES.has(type)) {
-            try {
-              const minified = JSON.stringify(JSON.parse(content))
-              if (minified.length < content.length)
-                return `<script${attrs}>${minified}</script>`
-            }
-            catch {}
-            return fullMatch
-          }
-          if (type && SKIP_JS_TYPES.has(type))
-            return fullMatch
-          const minified = await minifyJSBuildTime(content)
-          if (minified && minified.length < content.length)
-            return `<script${attrs}>${minified}</script>`
-          return fullMatch
-        },
-      )
-
-      // minify inline styles
-      route.contents = await replaceAsync(
-        route.contents,
-        new RegExp(INLINE_STYLE_RE.source, INLINE_STYLE_RE.flags),
-        async (fullMatch: string, attrs: string, content: string) => {
-          if (!content)
-            return fullMatch
-          const minified = await minifyCSSWithLightningCSS(content)
-          if (minified && minified.length < content.length)
-            return `<style${attrs}>${minified}</style>`
-          return fullMatch
-        },
-      )
-    })
-  })
-}
-
-async function replaceAsync(
-  str: string,
-  regex: RegExp,
-  asyncFn: (...args: string[]) => Promise<string>,
-): Promise<string> {
-  const matches: Array<{ match: RegExpExecArray, replacement: Promise<string> }> = []
-  const re = new RegExp(regex.source, regex.flags)
-  for (let m = re.exec(str); m !== null; m = re.exec(str))
-    matches.push({ match: m, replacement: asyncFn(...m) })
-
-  const replacements = await Promise.all(matches.map(m => m.replacement))
-  let result = str
-  for (let i = matches.length - 1; i >= 0; i--) {
-    const { match } = matches[i]!
-    result = result.slice(0, match.index) + replacements[i] + result.slice(match.index + match[0].length)
-  }
-  return result
 }

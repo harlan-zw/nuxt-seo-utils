@@ -31,6 +31,7 @@ catalog:
   lint-staged: ^16.4.0
   markdownlint-cli: ^0.48.0
   nuxt: ^4.4.2
+  nuxt-security: ^2.5.1
   nuxt-site-config: ^4.0.7
   nuxtseo-layer-devtools: ^5.1.1
   nuxtseo-shared: ^5.1.1

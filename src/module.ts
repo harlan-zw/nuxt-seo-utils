@@ -20,7 +20,7 @@ import extendNuxtConfigAppHeadSeoMeta from './build-time/extendNuxtConfigAppHead
 import extendNuxtConfigAppHeadTypes from './build-time/extendNuxtConfigAppHeadTypes'
 import generateTagsFromPageDirImages from './build-time/generateTagsFromPageDirImages'
 import generateTagsFromPublicFiles from './build-time/generateTagsFromPublicFiles'
-import minifyPrerender from './build-time/minifyPrerenderScripts'
+import minifyStaticHead from './build-time/minifyStaticHead'
 import setupNuxtConfigAppHeadWithMoreDefaults from './build-time/setupNuxtConfigAppHeadWithMoreDefaults'
 import { setupDevToolsUI } from './build/devtools'
 
@@ -416,9 +416,15 @@ export {}
           mode: 'server',
         })
       }
-      // build: esbuild/lightningcss for static head + prerendered routes
+      // build: esbuild/lightningcss for static head + nitro render:html plugin for prerendered routes
       if (minifyOpts.build !== false) {
-        minifyPrerender()
+        minifyStaticHead()
+        // register as first nitro plugin so render:html hook runs before CSP hashing (e.g. nuxt-security)
+        const minifyHtmlPlugin = resolve(runtimeDir, './server/plugins/minifyHtml')
+        nuxt.hook('nitro:config', (nitroConfig) => {
+          nitroConfig.plugins ||= []
+          nitroConfig.plugins.unshift(minifyHtmlPlugin)
+        })
       }
     }
 

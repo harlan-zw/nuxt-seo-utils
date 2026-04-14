@@ -33,7 +33,9 @@
       "unhead",
       "@unhead/vue",
       "@unhead/vue/plugins",
-      "@unhead/vue/utils"
+      "@unhead/vue/utils",
+      "@unhead/vue/vite",
+      "@unhead/addons/vite"
     ]
   },
   "scripts": {

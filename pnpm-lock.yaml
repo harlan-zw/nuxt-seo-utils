@@ -34,10 +34,10 @@ catalogs:
       specifier: ^25.6.0
       version: 25.6.0
     '@unhead/addons':
-      specifier: ^2.1.13
+      specifier: ^2.1.13 || ^3.0.0
       version: 2.1.13
     '@unhead/vue':
-      specifier: ^2.1.13
+      specifier: ^2.1.13 || ^3.0.0
       version: 2.1.13
     '@vue/test-utils':
       specifier: ^2.4.6

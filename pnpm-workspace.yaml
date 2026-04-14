@@ -17,8 +17,8 @@ catalog:
   '@nuxt/ui': ^4.6.1
   '@nuxtjs/i18n': ^10.2.4
   '@types/node': ^25.6.0
-  '@unhead/addons': ^2.1.13
-  '@unhead/vue': ^2.1.13
+  '@unhead/addons': ^2.1.13 || ^3.0.0
+  '@unhead/vue': ^2.1.13 || ^3.0.0
   '@vue/test-utils': ^2.4.6
   bumpp: ^11.0.1
   case-police: ^2.2.0

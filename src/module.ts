@@ -11,7 +11,6 @@ import {
   hasNuxtModule,
   useLogger,
 } from '@nuxt/kit'
-import UnheadVite from '@unhead/addons/vite'
 import { defu } from 'defu'
 import { installNuxtSiteConfig } from 'nuxt-site-config/kit'
 import { relative } from 'pathe'
@@ -383,9 +382,26 @@ export {}
     })
 
     const appRuntimeDir = resolve(runtimeDir, './app')
-    // remove useServerHead in client build
+    // remove useServerHead in client build + transform useSeoMeta -> useHead
     if (config.treeShakeUseSeoMeta) {
-      addVitePlugin(UnheadVite(), {
+      // Pick the right Vite plugin entry: v3 ships it inside @unhead/vue itself
+      // (named `Unhead` export), v2 only exposes it via @unhead/addons/vite as
+      // a default export. Detect installed major and defer the import so v3
+      // users don't need @unhead/addons in their tree.
+      const unheadPkg = await readPackageJSON('@unhead/vue', { from: nuxt.options.rootDir }).catch(() => null)
+      const unheadMajor = Number.parseInt((unheadPkg?.version || '2').split('.')[0]!, 10)
+      addVitePlugin(async () => {
+        if (unheadMajor >= 3) {
+          // String-variable import keeps TS from resolving the v3-only subpath
+          // when consumers/devs are on v2.
+          const v3Vite = '@unhead/vue/vite'
+          const { Unhead } = await import(v3Vite) as { Unhead: () => any }
+          return Unhead()
+        }
+        const v2Vite = '@unhead/addons/vite'
+        const { default: UnheadVite } = await import(v2Vite) as { default: () => any }
+        return UnheadVite()
+      }, {
         prepend: true,
       })
     }

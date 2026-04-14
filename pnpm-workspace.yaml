@@ -5,6 +5,8 @@ trustPolicy: no-downgrade
 packages:
   - '!examples/**'
 
+overrides:
+  unhead: 2.1.13
 catalog:
   '@antfu/eslint-config': ^8.2.0
   '@nuxt/devtools-kit': 4.0.0-alpha.3
@@ -52,7 +54,6 @@ catalog:
   vue-tsc: ^3.2.6
 ignoredBuiltDependencies:
   - esbuild
-
 onlyBuiltDependencies:
   - '@parcel/watcher'
   - '@tailwindcss/oxide'

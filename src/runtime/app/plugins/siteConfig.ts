@@ -9,8 +9,14 @@ export default defineNuxtPlugin(() => {
   if (!head)
     return
 
-  const { tagPriority } = useRuntimeConfig().public['seo-utils'] as { tagPriority: number | 'critical' | 'high' | 'low' | `before:${string}` | `after:${string}` | undefined }
+  const { tagPriority, separator, titleSeparator } = useRuntimeConfig().public['seo-utils'] as {
+    tagPriority: number | 'critical' | 'high' | 'low' | `before:${string}` | `after:${string}` | undefined
+    separator?: string
+    titleSeparator?: string
+  }
   const siteConfig = useSiteConfig()
+  const resolvedSeparator = siteConfig.separator || separator || siteConfig.titleSeparator || titleSeparator
+  const resolvedTitleSeparator = siteConfig.titleSeparator || titleSeparator || siteConfig.separator || separator
   const input: Head = {
     meta: [],
     templateParams: {
@@ -20,10 +26,10 @@ export default defineNuxtPlugin(() => {
       siteName: siteConfig.name,
     },
   }
-  if (siteConfig.separator)
-    input.templateParams!.separator = siteConfig.separator
-  if (siteConfig.titleSeparator)
-    input.templateParams!.titleSeparator = siteConfig.titleSeparator
+  if (resolvedSeparator)
+    input.templateParams!.separator = resolvedSeparator
+  if (resolvedTitleSeparator)
+    input.templateParams!.titleSeparator = resolvedTitleSeparator
   if (siteConfig.description) {
     input.templateParams!.siteDescription = siteConfig.description
     // we can setup a meta description

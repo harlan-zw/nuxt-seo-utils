@@ -308,6 +308,7 @@ export default defineNuxtModule<ModuleOptions>({
     })
     nuxt.options.experimental.headNext = true
 
+    const headTemplateParams = (nuxt.options.app.head as Record<string, any> | undefined)?.templateParams as Record<string, any> | undefined
     // add redirect middleware
     if (!nuxt.options.dev && config.redirectToCanonicalSiteUrl) {
       addServerHandler({
@@ -329,6 +330,8 @@ export default defineNuxtModule<ModuleOptions>({
       ],
       canonicalLowercase: config.canonicalLowercase,
       tagPriority: config.tagPriority,
+      separator: headTemplateParams?.separator,
+      titleSeparator: headTemplateParams?.titleSeparator,
     })
 
     if (config.extendNuxtConfigAppHeadSeoMeta)

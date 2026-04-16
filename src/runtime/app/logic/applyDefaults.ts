@@ -26,10 +26,18 @@ export function applyDefaults(): void {
   const head = injectHead()
   head.use(TemplateParamsPlugin)
   // get the head instance
-  const { canonicalQueryWhitelist, canonicalLowercase, tagPriority } = useRuntimeConfig().public['seo-utils'] as { canonicalQueryWhitelist: string[], canonicalLowercase: boolean, tagPriority: number | undefined }
+  const { canonicalQueryWhitelist, canonicalLowercase, tagPriority, separator, titleSeparator } = useRuntimeConfig().public['seo-utils'] as {
+    canonicalQueryWhitelist: string[]
+    canonicalLowercase: boolean
+    tagPriority: number | undefined
+    separator?: string
+    titleSeparator?: string
+  }
   const route = useRoute()
   const resolveUrl = createSitePathResolver({ withBase: true, absolute: true })
   const err = useError()
+  const resolveSeparator = () => toValue(siteConfig.separator) || separator || toValue(siteConfig.titleSeparator) || titleSeparator
+  const resolveTitleSeparator = () => toValue(siteConfig.titleSeparator) || titleSeparator || toValue(siteConfig.separator) || separator
   const canonicalUrl = computed<Link | false>(() => {
     if (err.value) {
       return false
@@ -72,6 +80,8 @@ export function applyDefaults(): void {
     templateParams: {
       site: () => siteConfig,
       siteName: () => siteConfig.name,
+      separator: resolveSeparator,
+      titleSeparator: resolveTitleSeparator,
     },
     titleTemplate: () => err.value ? '%s' : '%s %separator %siteName',
     link: [() => canonicalUrl.value],

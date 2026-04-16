@@ -46,8 +46,8 @@ catalogs:
       specifier: ^11.0.1
       version: 11.0.1
     case-police:
-      specifier: ^2.2.0
-      version: 2.2.0
+      specifier: ^2.2.1
+      version: 2.2.1
     cheerio:
       specifier: ^1.2.0
       version: 1.2.0
@@ -230,7 +230,7 @@ importers:
         version: 11.0.1
       case-police:
         specifier: 'catalog:'
-        version: 2.2.0
+        version: 2.2.1
       cheerio:
         specifier: 'catalog:'
         version: 1.2.0
@@ -3838,8 +3838,8 @@ packages:
   caniuse-lite@1.0.30001788:
     resolution: {integrity: sha512-6q8HFp+lOQtcf7wBK+uEenxymVWkGKkjFpCvw5W25cmMwEDU45p1xQFBQv8JDlMMry7eNxyBaR+qxgmTUZkIRQ==}
 
-  case-police@2.2.0:
-    resolution: {integrity: sha512-bFGvJl/w6+X2DoFB0HTFGxbIk/dClWxM7S0fiIQ63Xg00fL4dw7G+MOAGgVgHlfIda4YmHeRh9mp13xFqxz3hg==}
+  case-police@2.2.1:
+    resolution: {integrity: sha512-EZlL1YgE36hPbgkbSh32RvfITFE1K/z6K6DHlLLUDq/QctI/jON/pTTIS4C4eqyaVn5pvG118HanhEFry420Ow==}
     hasBin: true
 
   ccount@2.0.1:
@@ -10911,7 +10911,7 @@ snapshots:
 
   caniuse-lite@1.0.30001788: {}
 
-  case-police@2.2.0: {}
+  case-police@2.2.1: {}
 
   ccount@2.0.1: {}
 

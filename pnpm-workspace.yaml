@@ -21,7 +21,7 @@ catalog:
   '@unhead/vue': ^2.1.13 || ^3.0.0
   '@vue/test-utils': ^2.4.6
   bumpp: ^11.0.1
-  case-police: ^2.2.0
+  case-police: ^2.2.1
   cheerio: ^1.2.0
   citty: ^0.2.2
   defu: ^6.1.7

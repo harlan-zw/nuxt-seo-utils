@@ -35,7 +35,7 @@
       "@unhead/vue/plugins",
       "@unhead/vue/utils",
       "@unhead/vue/vite",
-      "@unhead/addons/vite"
+      "@unhead/bundler/vite"
     ]
   },
   "scripts": {
@@ -76,10 +76,11 @@
   },
   "dependencies": {
     "@nuxt/kit": "catalog:",
-    "@unhead/addons": "catalog:",
+    "@unhead/bundler": "catalog:",
     "citty": "catalog:",
     "defu": "catalog:",
     "escape-string-regexp": "catalog:",
+    "exsolve": "catalog:",
     "image-size": "catalog:",
     "nuxt-site-config": "catalog:",
     "nuxtseo-shared": "catalog:",

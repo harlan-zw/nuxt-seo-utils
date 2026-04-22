@@ -17,7 +17,7 @@ catalog:
   '@nuxt/ui': ^4.6.1
   '@nuxtjs/i18n': ^10.2.4
   '@types/node': ^25.6.0
-  '@unhead/addons': ^2.1.13 || ^3.0.0
+  '@unhead/bundler': ^3.0.5
   '@unhead/vue': ^2.1.13 || ^3.0.0
   '@vue/test-utils': ^2.4.6
   bumpp: ^11.0.1
@@ -28,6 +28,7 @@ catalog:
   escape-string-regexp: ^5.0.0
   eslint: ^10.2.0
   eslint-plugin-harlanzw: ^0.12.1
+  exsolve: ^1.0.8
   happy-dom: ^20.9.0
   image-size: ^2.0.2
   lint-staged: ^16.4.0

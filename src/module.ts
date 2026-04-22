@@ -1,5 +1,6 @@
 import type { MetaFlatSerializable } from './runtime/types'
 import { existsSync } from 'node:fs'
+import { pathToFileURL } from 'node:url'
 import {
   addImports,
   addPlugin,
@@ -8,10 +9,13 @@ import {
   addVitePlugin,
   createResolver,
   defineNuxtModule,
+  directoryToURL,
+  hasNuxtCompatibility,
   hasNuxtModule,
   useLogger,
 } from '@nuxt/kit'
 import { defu } from 'defu'
+import { resolveModulePath } from 'exsolve'
 import { installNuxtSiteConfig } from 'nuxt-site-config/kit'
 import { relative } from 'pathe'
 import { readPackageJSON } from 'pkg-types'
@@ -385,25 +389,62 @@ export {}
     })
 
     const appRuntimeDir = resolve(runtimeDir, './app')
-    // remove useServerHead in client build + transform useSeoMeta -> useHead
-    if (config.treeShakeUseSeoMeta) {
-      // Pick the right Vite plugin entry: v3 ships it inside @unhead/vue itself
-      // (named `Unhead` export), v2 only exposes it via @unhead/addons/vite as
-      // a default export. Detect installed major and defer the import so v3
-      // users don't need @unhead/addons in their tree.
+    // Seed nuxt.options.unhead.vite so Nuxt >=4.5.0 compat>=5 (which registers
+    // @unhead/vue/vite itself) uses the same config as our fallback registration.
+    // Users can pass false to disable the plugin entirely, or override any option.
+    ;(nuxt.options as any).unhead = defu(
+      nuxt.options.unhead as { vite?: false | Record<string, any> } | undefined,
+      { vite: config.treeShakeUseSeoMeta ? { validate: !nuxt.options.test } : false },
+    )
+    const viteOpts = (nuxt.options as any).unhead.vite
+    const nuxtRegistersUnheadVite = nuxt.options.future?.compatibilityVersion >= 5
+      && nuxt.options.builder === '@nuxt/vite-builder'
+      && await hasNuxtCompatibility({ nuxt: '>=4.5.0' })
+    if (!nuxtRegistersUnheadVite && viteOpts !== false) {
+      // v3 ships the plugin via @unhead/vue/vite (wraps bundler + adds vue streaming).
+      // v2 has no such entry, so we fall back to our bundled @unhead/bundler/vite.
       const unheadPkg = await readPackageJSON('@unhead/vue', { from: nuxt.options.rootDir }).catch(() => null)
       const unheadMajor = Number.parseInt((unheadPkg?.version || '2').split('.')[0]!, 10)
+      // Resolve minifier paths eagerly (matches Nuxt 4.5 behavior). Vite 8+ ships
+      // rolldown/experimental and lightningcss as direct deps; older setups skip gracefully.
+      const importPaths = nuxt.options.modulesDir.map(d => directoryToURL(d))
+      const rolldownPath = resolveModulePath('rolldown/experimental', { try: true, from: importPaths })
+      const lightningcssPath = resolveModulePath('lightningcss', { try: true, from: importPaths })
+      const rolldownURL = rolldownPath ? pathToFileURL(rolldownPath).href : undefined
+      const lightningcssURL = lightningcssPath ? pathToFileURL(lightningcssPath).href : undefined
+      const minify = {
+        js: rolldownURL
+          ? async (code: string) => {
+            const { minify } = await import(rolldownURL) as { minify: (n: string, c: string) => Promise<{ code: string }> }
+            return (await minify('inline.js', code)).code.trim()
+          }
+          : undefined,
+        css: lightningcssURL
+          ? async (code: string) => {
+            const { transform } = await import(lightningcssURL) as { transform: (o: { filename: string, code: Uint8Array, minify: boolean }) => { code: Uint8Array } }
+            return new TextDecoder().decode(transform({
+              filename: 'inline.css',
+              code: new TextEncoder().encode(code),
+              minify: true,
+            }).code).trim()
+          }
+          : undefined,
+      }
       addVitePlugin(async () => {
         if (unheadMajor >= 3) {
-          // String-variable import keeps TS from resolving the v3-only subpath
-          // when consumers/devs are on v2.
           const v3Vite = '@unhead/vue/vite'
-          const { Unhead } = await import(v3Vite) as { Unhead: () => any }
-          return Unhead()
+          const { Unhead } = await import(v3Vite) as { Unhead: (opts?: Record<string, any>) => any }
+          return Unhead({ minify, ...viteOpts })
         }
-        const v2Vite = '@unhead/addons/vite'
-        const { default: UnheadVite } = await import(v2Vite) as { default: () => any }
-        return UnheadVite()
+        // v2 runtime: keep validate/devtools disabled (ValidatePlugin and devtoolsPlugin
+        // target v3 plugin API); minify is pure build-time so safe to enable.
+        const { Unhead } = await import('@unhead/bundler/vite')
+        return Unhead({
+          _framework: '@unhead/vue',
+          minify,
+          validate: false,
+          devtools: false,
+        })
       }, {
         prepend: true,
       })

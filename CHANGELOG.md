@@ -1,6 +1,23 @@
 # Changelog
 
 
+## v8.1.9...main
+
+[compare changes](https://github.com/harlan-zw/nuxt-seo-utils/compare/v8.1.9...main)
+
+### 🩹 Fixes
+
+- Resolve @unhead/bundler + align vite plugin with nuxt 4.5 ([#109](https://github.com/harlan-zw/nuxt-seo-utils/pull/109))
+
+### 🏡 Chore
+
+- Bump ([102ea2f](https://github.com/harlan-zw/nuxt-seo-utils/commit/102ea2f))
+- Bump ([3c11ff8](https://github.com/harlan-zw/nuxt-seo-utils/commit/3c11ff8))
+
+### ❤️ Contributors
+
+- Harlan Wilton ([@harlan-zw](https://github.com/harlan-zw))
+
 ## v8.1.6...main
 
 [compare changes](https://github.com/harlan-zw/nuxt-seo-utils/compare/v8.1.6...main)

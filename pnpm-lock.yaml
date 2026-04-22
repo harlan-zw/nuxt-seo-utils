@@ -37,8 +37,8 @@ catalogs:
       specifier: ^3.0.5
       version: 3.0.5
     '@unhead/vue':
-      specifier: ^2.1.13 || ^3.0.0
-      version: 3.0.5
+      specifier: ^2.1.13
+      version: 2.1.13
     '@vue/test-utils':
       specifier: ^2.4.6
       version: 2.4.6
@@ -227,7 +227,7 @@ importers:
         version: 25.6.0
       '@unhead/vue':
         specifier: 'catalog:'
-        version: 3.0.5(esbuild@0.28.0)(lightningcss@1.32.0)(rolldown@1.0.0-rc.15)(typescript@6.0.3)(vite@7.3.2(@types/node@25.6.0)(jiti@2.6.1)(lightningcss@1.32.0)(sass@1.99.0)(terser@5.46.1)(yaml@2.8.3))(vue@3.5.32(typescript@6.0.3))
+        version: 2.1.13(vue@3.5.32(typescript@6.0.3))
       '@vue/test-utils':
         specifier: 'catalog:'
         version: 2.4.6
@@ -3587,15 +3587,6 @@ packages:
     resolution: {integrity: sha512-HYy0shaHRnLNW9r85gppO8IiGz0ONWVV3zGdlT8CQ0tbTwixznJCIiyqV4BSV1aIF1jJIye0pd1p/k6Eab8Z/A==}
     peerDependencies:
       vue: '>=3.5.18'
-
-  '@unhead/vue@3.0.5':
-    resolution: {integrity: sha512-D1vWYcrNaQL8vTK8Wu7VVx0PArk+SCjePzGQ5meeiwVYlwP1krIGj8VMDAo4TlaJCu2vhVZwy+AiHTfyuVY27w==}
-    peerDependencies:
-      vite: '>=6.4.2'
-      vue: '>=3.5.18'
-    peerDependenciesMeta:
-      vite:
-        optional: true
 
   '@vercel/nft@1.5.0':
     resolution: {integrity: sha512-IWTDeIoWhQ7ZtRO/JRKH+jhmeQvZYhtGPmzw/QGDY+wDCQqfm25P9yIdoAFagu4fWsK4IwZXDFIjrmp5rRm/sA==}
@@ -10733,28 +10724,9 @@ snapshots:
 
   '@unhead/vue@2.1.13(vue@3.5.32(typescript@6.0.3))':
     dependencies:
-      hookable: 6.1.0
-      unhead: 2.1.13
-      vue: 3.5.32(typescript@6.0.3)
-
-  '@unhead/vue@3.0.5(esbuild@0.28.0)(lightningcss@1.32.0)(rolldown@1.0.0-rc.15)(typescript@6.0.3)(vite@7.3.2(@types/node@25.6.0)(jiti@2.6.1)(lightningcss@1.32.0)(sass@1.99.0)(terser@5.46.1)(yaml@2.8.3))(vue@3.5.32(typescript@6.0.3))':
-    dependencies:
-      '@unhead/bundler': 3.0.5(esbuild@0.28.0)(lightningcss@1.32.0)(rolldown@1.0.0-rc.15)(typescript@6.0.3)(unhead@2.1.13)(vite@7.3.2(@types/node@25.6.0)(jiti@2.6.1)(lightningcss@1.32.0)(sass@1.99.0)(terser@5.46.1)(yaml@2.8.3))
       hookable: 6.1.1
-      magic-string: 0.30.21
-      oxc-parser: 0.127.0
-      oxc-walker: 0.7.0(oxc-parser@0.127.0)
       unhead: 2.1.13
       vue: 3.5.32(typescript@6.0.3)
-    optionalDependencies:
-      vite: 7.3.2(@types/node@25.6.0)(jiti@2.6.1)(lightningcss@1.32.0)(sass@1.99.0)(terser@5.46.1)(yaml@2.8.3)
-    transitivePeerDependencies:
-      - bufferutil
-      - esbuild
-      - lightningcss
-      - rolldown
-      - typescript
-      - utf-8-validate
 
   '@vercel/nft@1.5.0(rollup@4.60.1)':
     dependencies:

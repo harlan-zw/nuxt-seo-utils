@@ -8,6 +8,7 @@ import {
   addVitePlugin,
   createResolver,
   defineNuxtModule,
+  hasNuxtCompatibility,
   hasNuxtModule,
   useLogger,
 } from '@nuxt/kit'
@@ -387,26 +388,35 @@ export {}
     const appRuntimeDir = resolve(runtimeDir, './app')
     // remove useServerHead in client build + transform useSeoMeta -> useHead
     if (config.treeShakeUseSeoMeta) {
-      // Pick the right Vite plugin entry: v3 ships it inside @unhead/vue itself
-      // (named `Unhead` export), v2 only exposes it via @unhead/addons/vite as
-      // a default export. Detect installed major and defer the import so v3
-      // users don't need @unhead/addons in their tree.
-      const unheadPkg = await readPackageJSON('@unhead/vue', { from: nuxt.options.rootDir }).catch(() => null)
-      const unheadMajor = Number.parseInt((unheadPkg?.version || '2').split('.')[0]!, 10)
-      addVitePlugin(async () => {
-        if (unheadMajor >= 3) {
-          // String-variable import keeps TS from resolving the v3-only subpath
-          // when consumers/devs are on v2.
-          const v3Vite = '@unhead/vue/vite'
-          const { Unhead } = await import(v3Vite) as { Unhead: () => any }
-          return Unhead()
-        }
-        const v2Vite = '@unhead/addons/vite'
-        const { default: UnheadVite } = await import(v2Vite) as { default: () => any }
-        return UnheadVite()
-      }, {
-        prepend: true,
-      })
+      // Nuxt >=4.5.0 with compatibilityVersion>=5 registers @unhead/vue/vite itself.
+      const nuxtRegistersUnheadVite = nuxt.options.future?.compatibilityVersion >= 5
+        && nuxt.options.builder === '@nuxt/vite-builder'
+        && await hasNuxtCompatibility({ nuxt: '>=4.5.0' })
+      if (!nuxtRegistersUnheadVite) {
+        // v3 ships the plugin via @unhead/vue/vite (wraps bundler + adds vue streaming).
+        // v2 has no such entry, so we fall back to our bundled @unhead/bundler/vite.
+        const unheadPkg = await readPackageJSON('@unhead/vue', { from: nuxt.options.rootDir }).catch(() => null)
+        const unheadMajor = Number.parseInt((unheadPkg?.version || '2').split('.')[0]!, 10)
+        addVitePlugin(async () => {
+          if (unheadMajor >= 3) {
+            const v3Vite = '@unhead/vue/vite'
+            const { Unhead } = await import(v3Vite) as { Unhead: () => any }
+            return Unhead()
+          }
+          // v2 addons only applied TreeshakeServerComposables + UseSeoMetaTransform.
+          // Disable v3-only additions (validate/devtools inject runtime plugins
+          // against v3 API surface, minify is inert by default) to match v2 behavior.
+          const { Unhead } = await import('@unhead/bundler/vite')
+          return Unhead({
+            _framework: '@unhead/vue',
+            minify: false,
+            validate: false,
+            devtools: false,
+          })
+        }, {
+          prepend: true,
+        })
+      }
     }
     if (config.automaticOgAndTwitterTags)
       addPlugin({ src: resolve(appRuntimeDir, 'plugins', 'inferSeoMetaPlugin') })

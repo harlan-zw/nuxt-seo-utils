@@ -387,12 +387,19 @@ export {}
 
     const appRuntimeDir = resolve(runtimeDir, './app')
     // remove useServerHead in client build + transform useSeoMeta -> useHead
-    if (config.treeShakeUseSeoMeta) {
-      // Nuxt >=4.5.0 with compatibilityVersion>=5 registers @unhead/vue/vite itself.
+    // Populate nuxt.options.unhead.vite so Nuxt >=4.5.0 compat>=5 (which registers
+    // @unhead/vue/vite itself) uses the same options as our fallback registration.
+    const unheadConfig = nuxt.options.unhead as { vite?: false | Record<string, any> } | undefined
+    if (!config.treeShakeUseSeoMeta) {
+      ;(nuxt.options as any).unhead = defu(unheadConfig, { vite: false })
+    }
+    else {
+      ;(nuxt.options as any).unhead = defu(unheadConfig, { vite: { validate: !nuxt.options.test } })
+      const viteOpts = (nuxt.options as any).unhead.vite
       const nuxtRegistersUnheadVite = nuxt.options.future?.compatibilityVersion >= 5
         && nuxt.options.builder === '@nuxt/vite-builder'
         && await hasNuxtCompatibility({ nuxt: '>=4.5.0' })
-      if (!nuxtRegistersUnheadVite) {
+      if (!nuxtRegistersUnheadVite && viteOpts !== false) {
         // v3 ships the plugin via @unhead/vue/vite (wraps bundler + adds vue streaming).
         // v2 has no such entry, so we fall back to our bundled @unhead/bundler/vite.
         const unheadPkg = await readPackageJSON('@unhead/vue', { from: nuxt.options.rootDir }).catch(() => null)
@@ -400,8 +407,8 @@ export {}
         addVitePlugin(async () => {
           if (unheadMajor >= 3) {
             const v3Vite = '@unhead/vue/vite'
-            const { Unhead } = await import(v3Vite) as { Unhead: (opts?: { validate?: boolean }) => any }
-            return Unhead({ validate: !nuxt.options.test })
+            const { Unhead } = await import(v3Vite) as { Unhead: (opts?: Record<string, any>) => any }
+            return Unhead(viteOpts)
           }
           // v2 addons only applied TreeshakeServerComposables + UseSeoMetaTransform.
           // Disable v3-only additions (validate/devtools inject runtime plugins

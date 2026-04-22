@@ -400,8 +400,8 @@ export {}
         addVitePlugin(async () => {
           if (unheadMajor >= 3) {
             const v3Vite = '@unhead/vue/vite'
-            const { Unhead } = await import(v3Vite) as { Unhead: () => any }
-            return Unhead()
+            const { Unhead } = await import(v3Vite) as { Unhead: (opts?: { validate?: boolean }) => any }
+            return Unhead({ validate: !nuxt.options.test })
           }
           // v2 addons only applied TreeshakeServerComposables + UseSeoMetaTransform.
           // Disable v3-only additions (validate/devtools inject runtime plugins

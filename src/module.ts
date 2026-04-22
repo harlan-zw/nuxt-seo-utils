@@ -1,5 +1,6 @@
 import type { MetaFlatSerializable } from './runtime/types'
 import { existsSync } from 'node:fs'
+import { pathToFileURL } from 'node:url'
 import {
   addImports,
   addPlugin,
@@ -8,11 +9,13 @@ import {
   addVitePlugin,
   createResolver,
   defineNuxtModule,
+  directoryToURL,
   hasNuxtCompatibility,
   hasNuxtModule,
   useLogger,
 } from '@nuxt/kit'
 import { defu } from 'defu'
+import { resolveModulePath } from 'exsolve'
 import { installNuxtSiteConfig } from 'nuxt-site-config/kit'
 import { relative } from 'pathe'
 import { readPackageJSON } from 'pkg-types'
@@ -404,11 +407,38 @@ export {}
         // v2 has no such entry, so we fall back to our bundled @unhead/bundler/vite.
         const unheadPkg = await readPackageJSON('@unhead/vue', { from: nuxt.options.rootDir }).catch(() => null)
         const unheadMajor = Number.parseInt((unheadPkg?.version || '2').split('.')[0]!, 10)
+        // Resolve minifier paths eagerly (matches Nuxt 4.5 behavior). Vite 8+ ships
+        // rolldown/experimental and lightningcss as direct deps; older setups skip gracefully.
+        const importPaths = nuxt.options.modulesDir.map(d => directoryToURL(d))
+        const rolldownPath = resolveModulePath('rolldown/experimental', { try: true, from: importPaths })
+        const lightningcssPath = resolveModulePath('lightningcss', { try: true, from: importPaths })
+        const rolldownURL = rolldownPath ? pathToFileURL(rolldownPath).href : undefined
+        const lightningcssURL = lightningcssPath ? pathToFileURL(lightningcssPath).href : undefined
         addVitePlugin(async () => {
           if (unheadMajor >= 3) {
             const v3Vite = '@unhead/vue/vite'
             const { Unhead } = await import(v3Vite) as { Unhead: (opts?: Record<string, any>) => any }
-            return Unhead(viteOpts)
+            return Unhead({
+              minify: {
+                js: rolldownURL
+                  ? async (code: string) => {
+                    const { minify } = await import(rolldownURL) as { minify: (n: string, c: string) => Promise<{ code: string }> }
+                    return (await minify('inline.js', code)).code.trim()
+                  }
+                  : undefined,
+                css: lightningcssURL
+                  ? async (code: string) => {
+                    const { transform } = await import(lightningcssURL) as { transform: (o: { filename: string, code: Uint8Array, minify: boolean }) => { code: Uint8Array } }
+                    return new TextDecoder().decode(transform({
+                      filename: 'inline.css',
+                      code: new TextEncoder().encode(code),
+                      minify: true,
+                    }).code).trim()
+                  }
+                  : undefined,
+              },
+              ...viteOpts,
+            })
           }
           // v2 addons only applied TreeshakeServerComposables + UseSeoMetaTransform.
           // Disable v3-only additions (validate/devtools inject runtime plugins

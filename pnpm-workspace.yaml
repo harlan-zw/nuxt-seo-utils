@@ -28,6 +28,7 @@ catalog:
   escape-string-regexp: ^5.0.0
   eslint: ^10.2.0
   eslint-plugin-harlanzw: ^0.12.1
+  exsolve: ^1.0.8
   happy-dom: ^20.9.0
   image-size: ^2.0.2
   lint-staged: ^16.4.0

@@ -66,6 +66,9 @@ catalogs:
     eslint-plugin-harlanzw:
       specifier: ^0.12.1
       version: 0.12.1
+    exsolve:
+      specifier: ^1.0.8
+      version: 1.0.8
     happy-dom:
       specifier: ^20.9.0
       version: 20.9.0
@@ -164,6 +167,9 @@ importers:
       escape-string-regexp:
         specifier: 'catalog:'
         version: 5.0.0
+      exsolve:
+        specifier: 'catalog:'
+        version: 1.0.8
       image-size:
         specifier: 'catalog:'
         version: 2.0.2

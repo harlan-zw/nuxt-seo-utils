@@ -17,6 +17,7 @@ import {
 import { defu } from 'defu'
 import { resolveModulePath } from 'exsolve'
 import { installNuxtSiteConfig } from 'nuxt-site-config/kit'
+import { resolveHostUnheadMajor } from 'nuxtseo-shared/kit'
 import { relative } from 'pathe'
 import { readPackageJSON } from 'pkg-types'
 import extendNuxtConfigAppHeadSeoMeta from './build-time/extendNuxtConfigAppHeadSeoMeta'
@@ -403,8 +404,12 @@ export {}
     if (!nuxtRegistersUnheadVite && viteOpts !== false) {
       // v3 ships the plugin via @unhead/vue/vite (wraps bundler + adds vue streaming).
       // v2 has no such entry, so we fall back to our bundled @unhead/bundler/vite.
-      const unheadPkg = await readPackageJSON('@unhead/vue', { from: nuxt.options.rootDir }).catch(() => null)
-      const unheadMajor = Number.parseInt((unheadPkg?.version || '2').split('.')[0]!, 10)
+      // Detect the major the host actually *renders* with, not whichever @unhead/vue
+      // resolves from rootDir: under pnpm a nested @unhead/vue v2 can sit at the root
+      // while Nitro/Nuxt render with unhead v3. Picking the wrong major makes the
+      // build-time useSeoMeta->useHead transform emit a _flatMeta shape the runtime
+      // FlatMetaPlugin reads differently, silently dropping meta:description (#555).
+      const unheadMajor = await resolveHostUnheadMajor(nuxt.options.rootDir)
       // Resolve minifier paths eagerly (matches Nuxt 4.5 behavior). Vite 8+ ships
       // rolldown/experimental and lightningcss as direct deps; older setups skip gracefully.
       const importPaths = nuxt.options.modulesDir.map(d => directoryToURL(d))

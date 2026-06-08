@@ -16,6 +16,10 @@ permissions:
 jobs:
   ci:
     uses: harlan-zw/nuxt-seo/.github/workflows/reusable-ci.yml@main
+    # No browser tests here; skip the ~183MB arm64 Chromium download that stalls
+    # on cdn.playwright.dev whenever the lockfile cache key misses.
+    with:
+      playwright: false
 
   # The module imports @unhead/vue directly and feature-detects the host's unhead
   # major. The main suite runs on the unhead v3 stack, so it can't catch a v2 host

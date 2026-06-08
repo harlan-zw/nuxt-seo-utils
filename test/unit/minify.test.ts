@@ -799,6 +799,23 @@ describe('minifyCSS', () => {
     expect(minifyCSS('* { box-sizing: border-box }')).toBe('*{box-sizing:border-box}')
   })
 
+  // --- selector-function whitespace (#552: Tailwind group-* variants) ---
+
+  it('preserves the descendant combinator space before * inside :is()/:where()', () => {
+    // Tailwind v4 group-* variants emit a universal selector inside :is(:where(.group)…).
+    // The space before * is significant; stripping it produces an invalid selector.
+    expect(minifyCSS('.x{&:is(:where(.group):hover *){color:red}}'))
+      .toBe('.x{&:is(:where(.group):hover *){color:red}}')
+    expect(minifyCSS('.x{&:is(:where(.group)[data-open] *){display:block}}'))
+      .toBe('.x{&:is(:where(.group)[data-open] *){display:block}}')
+  })
+
+  it('still strips spaces around * and / inside value functions like calc()', () => {
+    // value-context parens keep calc minification (regression guard for the #552 fix)
+    expect(minifyCSS('.x { width: calc(100% * 0.5) }')).toBe('.x{width:calc(100%*.5)}')
+    expect(minifyCSS('.x { width: calc(100px / 2) }')).toBe('.x{width:calc(100px/2)}')
+  })
+
   // --- At-rule edge cases ---
 
   it('handles @font-face', () => {

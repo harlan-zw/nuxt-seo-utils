@@ -70,7 +70,11 @@ export function minifyJS(code: string): string {
 export function minifyCSS(code: string): string {
   let result = ''
   let i = 0
-  let parenDepth = 0
+  // Stack of paren contexts: true = selector-function paren (:is/:where/:not/:has),
+  // false = value paren (calc/min/max/clamp/var/rgb…). Whitespace rules differ:
+  // value parens may strip spaces around * and /, selector parens must not (the
+  // space before * is the descendant combinator, e.g. Tailwind v4 group-* variants).
+  const parenStack: boolean[] = []
   const len = code.length
 
   while (i < len) {
@@ -95,14 +99,14 @@ export function minifyCSS(code: string): string {
         i++
       i += 2
     }
-    // track paren depth for calc()/min()/max()/clamp()/var()
+    // track paren context for calc()/min()/max()/clamp()/var() vs :is()/:where()/…
     else if (ch === '(') {
-      parenDepth++
+      parenStack.push(isSelectorFunctionParen(result))
       result += ch
       i++
     }
     else if (ch === ')') {
-      parenDepth = Math.max(0, parenDepth - 1)
+      parenStack.pop()
       result += ch
       i++
     }
@@ -115,10 +119,12 @@ export function minifyCSS(code: string): string {
       // strip space before ! for !important
       if (next === '!')
         continue
-      if (parenDepth > 0) {
-        // inside parens (calc/min/max/clamp/var): strip around * and / (safe per spec),
-        // preserve around + and - (required by spec), strip around base punctuation
-        if (prev && next && !isCSSCalcPunctuation(prev) && !isCSSCalcPunctuation(next))
+      if (parenStack.length > 0) {
+        // selector parens (:is/:where/:not/:has) follow selector whitespace rules so
+        // the descendant combinator before * is preserved; value parens (calc/min/…)
+        // may additionally strip around * and / (safe per spec), preserving + and -.
+        const isPunct = parenStack[parenStack.length - 1] ? isCSSPunctuation : isCSSCalcPunctuation
+        if (prev && next && !isPunct(prev) && !isPunct(next))
           result += ' '
       }
       else if (prev && next && !isCSSPunctuation(prev) && !isCSSPunctuation(next)) {
@@ -175,9 +181,28 @@ function isCSSPunctuation(ch: string): boolean {
 }
 
 function isCSSCalcPunctuation(ch: string): boolean {
-  // inside parens: strip spaces around base punctuation and * /
+  // inside value parens: strip spaces around base punctuation and * /
   // but NOT + and - (CSS spec requires spaces around them in calc)
   return isCSSBasePunctuation(ch) || ch === '*' || ch === '/'
+}
+
+function isCSSNameChar(ch: string): boolean {
+  return (ch >= 'a' && ch <= 'z') || (ch >= 'A' && ch <= 'Z') || ch === '-'
+}
+
+// A '(' opens a selector-function paren when it directly follows a functional
+// pseudo-class/element (:is, :where, :not, :has, …). Inside those, * is the
+// universal selector and the leading space is the descendant combinator, so the
+// calc-style stripping of * / must not apply (e.g. Tailwind v4 group-* variants).
+function isSelectorFunctionParen(result: string): boolean {
+  let j = result.length - 1
+  while (j >= 0 && isCSSNameChar(result[j]!))
+    j--
+  if (result[j] !== ':')
+    return false
+  const name = result.slice(j + 1).toLowerCase()
+  return name === 'is' || name === 'where' || name === 'not' || name === 'has'
+    || name === 'matches' || name === 'host' || name === 'host-context' || name === 'slotted'
 }
 
 /**

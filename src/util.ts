@@ -1,14 +1,14 @@
-import type { Head } from '@unhead/vue'
+import type { SerializableHead } from '@unhead/vue/types'
 import fs from 'node:fs'
 import { readFile } from 'node:fs/promises'
 import imageSize from 'image-size'
 import { dirname, resolve } from 'pathe'
 
-export function hasLinkRel(input: Head, rel: string): boolean | undefined {
+export function hasLinkRel(input: SerializableHead, rel: string): boolean | undefined {
   return input.link?.some(link => link.rel === rel)
 }
 
-export function hasMetaProperty(input: Head, property: string): boolean | undefined {
+export function hasMetaProperty(input: SerializableHead, property: string): boolean | undefined {
   return input.meta?.some(meta => meta.property === property)
 }
 

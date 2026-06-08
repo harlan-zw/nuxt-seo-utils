@@ -2,6 +2,7 @@
   "extends": "./.nuxt/tsconfig.json",
   "exclude": [
     "test/fixtures/**",
+    "test/compat-v2/**",
     "playground/**",
     "client/**",
     "examples/**",

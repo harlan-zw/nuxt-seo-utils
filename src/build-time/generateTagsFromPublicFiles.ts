@@ -1,5 +1,5 @@
 import type { Nuxt } from '@nuxt/schema'
-import type { Meta, SerializableHead } from '@unhead/vue/types'
+import type { Link, Meta, SerializableHead } from '@unhead/vue/types'
 import type { MetaFlatSerializable } from '../runtime/types'
 import { readdir } from 'node:fs/promises'
 import { useNuxt } from '@nuxt/kit'
@@ -78,7 +78,7 @@ export default async function generateTagsFromPublicFiles(nuxt: Nuxt = useNuxt()
               ...meta,
             }
           }),
-      ]),
+      ]) as Link[],
     )
   }
   let hasTwitterImage = hasMetaProperty(headConfig, 'twitter:image')

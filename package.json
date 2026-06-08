@@ -131,7 +131,6 @@
     "typescript": "catalog:",
     "ultrahtml": "catalog:",
     "unbuild": "catalog:",
-    "unhead": "catalog:",
     "vitest": "catalog:",
     "vue-tsc": "catalog:"
   }

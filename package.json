@@ -55,15 +55,21 @@
     "prepack": "pnpm run build",
     "release": "pnpm build && bumpp -x \"npx changelogen --output=CHANGELOG.md\"",
     "lint:docs": "markdownlint ./docs/content && case-police 'docs/content/**/*.md' *.md",
-    "lint:docs:fix": "markdownlint ./docs/content --fix && case-police 'docs/content/**/*.md' *.md --fix"
+    "lint:docs:fix": "markdownlint ./docs/content --fix && case-police 'docs/content/**/*.md' *.md --fix",
+    "test:compat-v2": "node test/compat-v2/run.mjs"
   },
   "peerDependencies": {
+    "@unhead/vue": "^2.0.7 || ^3.0.0",
     "esbuild": ">=0.17.0",
     "lightningcss": ">=1.20.0",
     "nuxt": "^3.0.0 || ^4.0.0",
-    "rolldown": ">=1.0.0-beta.0"
+    "rolldown": ">=1.0.0-beta.0",
+    "unhead": "^2.0.7 || ^3.0.0"
   },
   "peerDependenciesMeta": {
+    "@unhead/vue": {
+      "optional": true
+    },
     "esbuild": {
       "optional": true
     },
@@ -71,6 +77,9 @@
       "optional": true
     },
     "rolldown": {
+      "optional": true
+    },
+    "unhead": {
       "optional": true
     }
   },
@@ -122,6 +131,7 @@
     "typescript": "catalog:",
     "ultrahtml": "catalog:",
     "unbuild": "catalog:",
+    "unhead": "catalog:",
     "vitest": "catalog:",
     "vue-tsc": "catalog:"
   }

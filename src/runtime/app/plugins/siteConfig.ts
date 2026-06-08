@@ -1,4 +1,4 @@
-import type { Head } from '@unhead/vue/types'
+import type { SerializableHead } from '@unhead/vue/types'
 import { useSiteConfig } from '#site-config/app/composables/useSiteConfig'
 import { injectHead } from '@unhead/vue'
 import { defineNuxtPlugin, useRuntimeConfig } from 'nuxt/app'
@@ -17,7 +17,7 @@ export default defineNuxtPlugin(() => {
   const siteConfig = useSiteConfig()
   const resolvedSeparator = siteConfig.separator || separator || siteConfig.titleSeparator || titleSeparator
   const resolvedTitleSeparator = siteConfig.titleSeparator || titleSeparator || siteConfig.separator || separator
-  const input: Head = {
+  const input: SerializableHead = {
     meta: [],
     templateParams: {
       site: siteConfig,

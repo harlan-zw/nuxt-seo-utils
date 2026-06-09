@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { computed, ref, watch } from 'vue'
 import { isProductionMode, navigateTo, useRoute } from '#imports'
+import { computed, ref, watch } from 'vue'
 import { data, refreshSources } from '../lib/seo-utils/state'
 import '../lib/seo-utils/rpc'
 

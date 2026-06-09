@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { useClipboard } from '@vueuse/core'
 import { computed, ref, watch } from 'vue'
-import { data } from '../composables/state'
-import { estimatePixelWidth, descColor as getDescColor, titleColor as getTitleColor, parseMetaTags, SEO_LIMITS } from '../composables/tools'
+import { data } from '../../lib/seo-utils/state'
+import { estimatePixelWidth, descColor as getDescColor, titleColor as getTitleColor, parseMetaTags, SEO_LIMITS } from '../../lib/seo-utils/tools'
 
 const trailingSlashRe = /\/$/
 

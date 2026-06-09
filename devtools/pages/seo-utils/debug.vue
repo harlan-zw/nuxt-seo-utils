@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed } from 'vue'
-import { data } from '../composables/state'
+import { data } from '../../lib/seo-utils/state'
 
 const runtimeConfigItems = computed(() => {
   if (!data.value?.runtimeConfig)

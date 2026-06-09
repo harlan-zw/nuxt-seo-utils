@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { useClipboard } from '@vueuse/core'
 import { computed, ref, watch } from 'vue'
-import { data } from '../composables/state'
-import { parseMetaTags } from '../composables/tools'
+import { data } from '../../lib/seo-utils/state'
+import { parseMetaTags } from '../../lib/seo-utils/tools'
 
 const { copy, copied } = useClipboard()
 

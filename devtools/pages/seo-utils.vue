@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import { navigateTo, useRoute } from '#imports'
+import { isProductionMode, navigateTo, useRoute } from '#imports'
 import { computed, ref, watch } from 'vue'
-import { data, refreshSources } from './composables/state'
-import './composables/rpc'
+import { data, refreshSources } from '../lib/seo-utils/state'
+import '../lib/seo-utils/rpc'
 
 const refreshing = ref(false)
 
@@ -20,30 +20,30 @@ async function refresh() {
 const route = useRoute()
 const currentTab = computed(() => {
   const p = route.path
-  if (p.startsWith('/social'))
+  if (p.startsWith('/seo-utils/social'))
     return 'social'
-  if (p.startsWith('/identity'))
+  if (p.startsWith('/seo-utils/identity'))
     return 'identity'
-  if (p.startsWith('/debug'))
+  if (p.startsWith('/seo-utils/debug'))
     return 'debug'
-  if (p.startsWith('/docs'))
+  if (p.startsWith('/seo-utils/docs'))
     return 'docs'
   return 'meta'
 })
 
 const navItems = [
-  { value: 'meta', to: '/', icon: 'carbon:tag', label: 'Meta Tags', devOnly: false },
-  { value: 'social', to: '/social', icon: 'carbon:share', label: 'Social', devOnly: false },
-  { value: 'identity', to: '/identity', icon: 'carbon:identification', label: 'Identity', devOnly: false },
-  { value: 'debug', to: '/debug', icon: 'carbon:debug', label: 'Debug', devOnly: true },
-  { value: 'docs', to: '/docs', icon: 'carbon:book', label: 'Docs', devOnly: false },
+  { value: 'meta', to: '/seo-utils', icon: 'carbon:tag', label: 'Meta Tags', devOnly: false },
+  { value: 'social', to: '/seo-utils/social', icon: 'carbon:share', label: 'Social', devOnly: false },
+  { value: 'identity', to: '/seo-utils/identity', icon: 'carbon:identification', label: 'Identity', devOnly: false },
+  { value: 'debug', to: '/seo-utils/debug', icon: 'carbon:debug', label: 'Debug', devOnly: true },
+  { value: 'docs', to: '/seo-utils/docs', icon: 'carbon:book', label: 'Docs', devOnly: false },
 ]
 
 const version = computed(() => data.value?.runtimeConfig?.version || '')
 
 watch(isProductionMode, (isProd) => {
   if (isProd && currentTab.value === 'debug')
-    return navigateTo('/')
+    return navigateTo('/seo-utils')
 })
 </script>
 

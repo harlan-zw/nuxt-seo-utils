@@ -1,6 +1,30 @@
 # Changelog
 
 
+## v8.2.1...main
+
+[compare changes](https://github.com/harlan-zw/nuxt-seo-utils/compare/v8.2.1...main)
+
+### 🚀 Enhancements
+
+- **devtools:** Ship devtools as a layer ([#117](https://github.com/harlan-zw/nuxt-seo-utils/pull/117))
+
+### 🩹 Fixes
+
+- **test:** Add vue as explicit devDependency ([8605bb8](https://github.com/harlan-zw/nuxt-seo-utils/commit/8605bb8))
+- **test:** Pin vue to 3.5.35 in compat-v2 fixture ([d306266](https://github.com/harlan-zw/nuxt-seo-utils/commit/d306266))
+
+### 🏡 Chore
+
+- Bump ([66a4da3](https://github.com/harlan-zw/nuxt-seo-utils/commit/66a4da3))
+- Bump ([70f2256](https://github.com/harlan-zw/nuxt-seo-utils/commit/70f2256))
+- Bump ([e621612](https://github.com/harlan-zw/nuxt-seo-utils/commit/e621612))
+- Bump ([70b39d3](https://github.com/harlan-zw/nuxt-seo-utils/commit/70b39d3))
+
+### ❤️ Contributors
+
+- Harlan Wilton ([@harlan-zw](https://github.com/harlan-zw))
+
 ## v8.1.9...main
 
 [compare changes](https://github.com/harlan-zw/nuxt-seo-utils/compare/v8.1.9...main)

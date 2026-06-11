@@ -29,7 +29,9 @@ export default defineNuxtPlugin({
                   if (minified.length < content.length)
                     tag.innerHTML = minified
                 }
-                catch {}
+                catch {
+                  // Invalid JSON should not block SSR; keep the original script content.
+                }
                 continue
               }
               if (type && SKIP_JS_TYPES.has(type))
@@ -39,7 +41,9 @@ export default defineNuxtPlugin({
                 if (minified.length < content.length)
                   tag.innerHTML = minified
               }
-              catch {}
+              catch {
+                // Inline script minification is best-effort; preserve the original content on failure.
+              }
             }
             else if (tag.tag === 'style') {
               try {
@@ -47,7 +51,9 @@ export default defineNuxtPlugin({
                 if (minified.length < content.length)
                   tag.innerHTML = minified
               }
-              catch {}
+              catch {
+                // Inline style minification is best-effort; preserve the original content on failure.
+              }
             }
           }
         },

@@ -13,7 +13,9 @@ async function minifyJSBuildTime(code: string): Promise<string | null> {
     const result = await minify('inline.js', code)
     return result.code.trim()
   }
-  catch {}
+  catch {
+    // Optional build-time minifier is unavailable or failed; fall back to esbuild.
+  }
   // fallback to esbuild (Vite 7)
   try {
     const esbuild = await import('esbuild')
@@ -23,7 +25,9 @@ async function minifyJSBuildTime(code: string): Promise<string | null> {
     })
     return result.code.trim()
   }
-  catch {}
+  catch {
+    // Optional fallback minifier is unavailable or failed; keep the original script content.
+  }
   logger.debug('Build-time JS minification skipped: neither rolldown nor esbuild is available. Install one as a dependency to enable it.')
   return null
 }
@@ -71,7 +75,9 @@ export default function minifyStaticHead() {
             if (minified.length < content.length)
               setContent(minified)
           }
-          catch {}
+          catch {
+            // Invalid JSON should not fail the build; leave the original script content intact.
+          }
           continue
         }
         if (script.type && SKIP_JS_TYPES.has(script.type))

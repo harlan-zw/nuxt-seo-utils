@@ -1,6 +1,6 @@
-import { getSiteConfig } from '#site-config/server/composables/getSiteConfig'
 import { defineEventHandler, getRequestHost, sendRedirect, setHeader } from 'h3'
 import { joinURL } from 'ufo'
+import { getSiteConfig } from '#site-config/server/composables/getSiteConfig'
 
 export default defineEventHandler((e) => {
   // avoid redirecting in prerender mode

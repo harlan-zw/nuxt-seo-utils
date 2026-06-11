@@ -30,7 +30,7 @@ await setup({
 
 describe('layer public files', () => {
   it('picks up icon from layer public dir', async () => {
-    const html = (await $fetch('/')) as string
+    const html = await $fetch<string>('/' as string)
     const head = html.match(/<head>([\s\S]*)<\/head>/)?.[1]
     expect(head).toContain('<link rel="icon" href="/icon.png"')
   }, 30_000)

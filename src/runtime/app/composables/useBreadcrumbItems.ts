@@ -1,10 +1,6 @@
 import type { NuxtLinkProps } from 'nuxt/app'
 import type { MaybeRefOrGetter, Ref } from 'vue'
 import type { RouteMeta } from 'vue-router'
-// @ts-expect-error these are conditionally registered via addImports in module.ts
-import { defineBreadcrumb, useI18n, useSchemaOrg } from '#imports'
-import { useSiteConfig } from '#site-config/app/composables/useSiteConfig'
-import { createSitePathResolver } from '#site-config/app/composables/utils'
 import { defu } from 'defu'
 import { fixSlashes } from 'nuxt-site-config/urls'
 import { useNuxtApp, useRoute, useRouter, useState } from 'nuxt/app'
@@ -21,6 +17,10 @@ import {
   toValue,
   watch,
 } from 'vue'
+// @ts-expect-error these are conditionally registered via addImports in module.ts
+import { defineBreadcrumb, useI18n, useSchemaOrg } from '#imports'
+import { useSiteConfig } from '#site-config/app/composables/useSiteConfig'
+import { createSitePathResolver } from '#site-config/app/composables/utils'
 import { pathBreadcrumbSegments } from '../../shared/breadcrumbs'
 
 interface NuxtUIBreadcrumbItem extends NuxtLinkProps {

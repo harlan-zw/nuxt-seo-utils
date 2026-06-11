@@ -1,6 +1,6 @@
 import type { ComputedRef } from 'vue'
-import { useSiteConfig } from '#site-config/app/composables/useSiteConfig'
 import { computed, toValue } from 'vue'
+import { useSiteConfig } from '#site-config/app/composables/useSiteConfig'
 
 // eslint-disable-next-line harlanzw/vue-no-faux-composables
 export function useSchemaOrg(): void {}

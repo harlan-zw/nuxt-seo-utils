@@ -1,10 +1,10 @@
 import type { QueryObject } from 'ufo'
 import type { ComputedRef, MaybeRefOrGetter } from 'vue'
-import { useSiteConfig } from '#site-config/app/composables/useSiteConfig'
-import { createSitePathResolver } from '#site-config/app/composables/utils'
 import { useRoute, useRuntimeConfig } from 'nuxt/app'
 import { stringifyQuery, withQuery } from 'ufo'
 import { computed, toValue } from 'vue'
+import { useSiteConfig } from '#site-config/app/composables/useSiteConfig'
+import { createSitePathResolver } from '#site-config/app/composables/utils'
 
 export type SharePlatform = 'twitter' | 'facebook' | 'linkedin' | 'whatsapp' | 'telegram' | 'reddit' | 'pinterest' | 'email'
 

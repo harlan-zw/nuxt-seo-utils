@@ -1,13 +1,13 @@
 import type { Link, UseHeadOptions, UseSeoMetaInput } from '@unhead/vue'
 import type { QueryObject } from 'ufo'
 
-import { useSiteConfig } from '#site-config/app/composables/useSiteConfig'
-import { createSitePathResolver } from '#site-config/app/composables/utils'
 import { injectHead, useHead, useSeoMeta } from '@unhead/vue'
 import { TemplateParamsPlugin } from '@unhead/vue/plugins'
 import { useError, useRoute, useRuntimeConfig } from 'nuxt/app'
 import { stringifyQuery } from 'ufo'
 import { computed, toValue } from 'vue'
+import { useSiteConfig } from '#site-config/app/composables/useSiteConfig'
+import { createSitePathResolver } from '#site-config/app/composables/utils'
 
 const LOCALE_UNDERSCORE_RE = /_/g
 

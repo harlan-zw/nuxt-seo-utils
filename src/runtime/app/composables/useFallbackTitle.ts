@@ -1,8 +1,8 @@
-import { useI18n } from '#imports'
 import { useError, useRoute } from 'nuxt/app'
 import { titleCase } from 'scule'
 import { withoutTrailingSlash } from 'ufo'
 import { computed } from 'vue'
+import { useI18n } from '#imports'
 
 export function useFallbackTitle() {
   const route = useRoute()
@@ -11,7 +11,9 @@ export function useFallbackTitle() {
   try {
     i18n = useI18n()
   }
-  catch {}
+  catch {
+    // i18n is optional; fall back to route-derived titles when it is not installed.
+  }
   return computed(() => {
     if (err.value?.statusCode && [404, 500].includes(err.value.statusCode)) {
       return `${err.value.statusCode} - ${err.value.message}`

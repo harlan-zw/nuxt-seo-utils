@@ -6,6 +6,7 @@
     "playground/**",
     "client/**",
     "examples/**",
+    "dist",
     "devtools"
   ]
 }

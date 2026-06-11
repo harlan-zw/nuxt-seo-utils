@@ -1,6 +1,6 @@
-import { getSiteConfig } from '#site-config/server/composables'
 import { defineEventHandler, getQuery } from 'h3'
 import { useRuntimeConfig } from 'nitropack/runtime'
+import { getSiteConfig } from '#site-config/server/composables'
 
 export default defineEventHandler((e) => {
   const siteConfig = getSiteConfig(e)

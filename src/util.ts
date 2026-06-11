@@ -61,7 +61,8 @@ export async function getImageDimensionsToSizes(absolutePath: string): Promise<s
     const { width, height } = await getImageDimensions(absolutePath)
     return `${width}x${height}`
   }
-  catch {}
-  // okay to fail, we fallback to any
+  catch {
+    // Image metadata is optional for icons; fall back to the generic size token.
+  }
   return 'any'
 }

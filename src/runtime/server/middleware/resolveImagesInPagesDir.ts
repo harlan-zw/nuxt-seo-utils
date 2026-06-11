@@ -1,7 +1,7 @@
 import fs from 'node:fs'
-import { fileMapping } from '#seo-utils-virtual/pageDirImages'
 import { defineEventHandler, setHeader } from 'h3'
 import { parseURL } from 'ufo'
+import { fileMapping } from '#seo-utils-virtual/pageDirImages'
 
 // Note: this only runs in dev
 export default defineEventHandler(async (e) => {

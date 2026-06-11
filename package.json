@@ -133,6 +133,7 @@
     "unbuild": "catalog:",
     "unhead": "catalog:",
     "vitest": "catalog:",
+    "vue": "catalog:",
     "vue-tsc": "catalog:"
   }
 }

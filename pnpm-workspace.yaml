@@ -28,6 +28,8 @@ minimumReleaseAgeExclude:
   - '@img/sharp-win32-x64@0.35.0'
   - '@types/node@25.9.3'
   - sharp@0.35.0
+  - nuxtseo-layer-devtools@5.2.3
+  - nuxtseo-shared@5.2.3
 shellEmulator: true
 
 trustPolicy: no-downgrade
@@ -68,8 +70,8 @@ catalog:
   nuxt: ^4.4.8
   nuxt-security: ^2.6.0
   nuxt-site-config: ^4.0.8
-  nuxtseo-layer-devtools: ^5.2.1
-  nuxtseo-shared: ^5.2.1
+  nuxtseo-layer-devtools: ^5.2.3
+  nuxtseo-shared: ^5.2.3
   pathe: ^2.0.3
   pkg-types: ^2.3.1
   playwright-core: ^1.60.0

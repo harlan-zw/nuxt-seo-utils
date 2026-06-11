@@ -1,7 +1,7 @@
 {
   "name": "nuxt-seo-utils",
   "type": "module",
-  "version": "8.3.0",
+  "version": "8.3.1",
   "packageManager": "pnpm@11.5.3",
   "description": "SEO utilities to improve your Nuxt sites discoverability and shareability",
   "license": "MIT",

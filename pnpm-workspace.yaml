@@ -30,6 +30,16 @@ minimumReleaseAgeExclude:
   - sharp@0.35.0
   - nuxtseo-layer-devtools
   - nuxtseo-shared
+  - '@vue/compiler-core@3.5.38'
+  - '@vue/compiler-dom@3.5.38'
+  - '@vue/compiler-sfc@3.5.38'
+  - '@vue/compiler-ssr@3.5.38'
+  - '@vue/reactivity@3.5.38'
+  - '@vue/runtime-core@3.5.38'
+  - '@vue/runtime-dom@3.5.38'
+  - '@vue/server-renderer@3.5.38'
+  - '@vue/shared@3.5.38'
+  - vue@3.5.38
 shellEmulator: true
 
 trustPolicy: no-downgrade
@@ -38,6 +48,7 @@ packages:
   - '!test/compat-v2/**'
 
 overrides:
+  vue: ^3.5.38
   '@unhead/vue': ^3.1.3
   unhead: ^3.1.3
 catalog:
@@ -69,7 +80,7 @@ catalog:
   markdownlint-cli: ^0.48.0
   nuxt: ^4.4.8
   nuxt-security: ^2.6.0
-  nuxt-site-config: ^4.0.8
+  nuxt-site-config: ^4.1.0
   nuxtseo-layer-devtools: ^5.3.0
   nuxtseo-shared: ^5.3.0
   pathe: ^2.0.3
@@ -87,7 +98,7 @@ catalog:
   unbuild: ^3.6.1
   unhead: ^3.1.3
   vitest: ^4.1.8
-  vue: ^3.5.35
+  vue: ^3.5.38
   vue-tsc: ^3.3.4
 ignoredBuiltDependencies:
   - esbuild

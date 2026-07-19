@@ -29,6 +29,9 @@ minimumReleaseAgeExclude:
   - '@types/node@25.9.3'
   - sharp@0.35.0
   - nuxtseo-layer-devtools
+  - unhead
+  - '@unhead/vue'
+  - '@unhead/bundler'
   - nuxtseo-shared
   - '@vue/compiler-core@3.5.38'
   - '@vue/compiler-dom@3.5.38'
@@ -45,9 +48,6 @@ minimumReleaseAgeExclude:
   - '@nuxt/schema@4.5.0'
   - '@nuxt/vite-builder@4.5.0'
   - nuxt@4.5.0
-  - '@unhead/bundler@3.2.0'
-  - '@unhead/vue@3.2.0'
-  - unhead@3.2.0
 shellEmulator: true
 
 trustPolicy: no-downgrade
@@ -56,8 +56,11 @@ packages:
   - '!test/compat-v2/**'
 
 overrides:
-  '@unhead/vue': ^3.2.0
-  unhead: ^3.2.0
+  # 3.2.0's SSR transform rewrites `head.ssr = false` into invalid syntax.
+  # Keep the Unhead packages aligned until an upstream patch is available.
+  '@unhead/bundler': 3.2.1
+  '@unhead/vue': 3.2.1
+  unhead: 3.2.1
   vue: ^3.5.40
 catalog:
   '@antfu/eslint-config': ^9.1.0
@@ -69,8 +72,8 @@ catalog:
   '@nuxt/ui': ^4.10.0
   '@nuxtjs/i18n': ^10.4.1
   '@types/node': ^26.1.1
-  '@unhead/bundler': ^3.2.0
-  '@unhead/vue': ^3.2.0
+  '@unhead/bundler': 3.2.1
+  '@unhead/vue': 3.2.1
   '@vue/test-utils': ^2.4.11
   bumpp: ^11.1.0
   case-police: ^2.2.1
@@ -104,7 +107,7 @@ catalog:
   ufo: ^1.6.4
   ultrahtml: ^1.7.0
   unbuild: ^3.6.1
-  unhead: ^3.2.0
+  unhead: 3.2.1
   vitest: ^4.1.10
   vue: ^3.5.40
   vue-tsc: ^3.3.7

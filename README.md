@@ -45,7 +45,7 @@ npx nuxi@latest module add nuxt-seo-utils
 > npx skilld add nuxt-seo-utils
 > ```
 
-💡 Need a complete SEO solution for Nuxt? Check out [Nuxt SEO](https://nuxtseo.com).
+💡 Set up your meta tags? Check titles, descriptions and OG tags with a SERP preview using the free [Meta Tag Checker](https://nuxtseo.com/tools/meta-tag-checker), or monitor them across every page with [Nuxt SEO Pro](https://nuxtseo.com/pro).
 
 ## Documentation
 

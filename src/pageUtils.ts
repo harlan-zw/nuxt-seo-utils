@@ -167,10 +167,6 @@ function parseSegment(segment: string): SegmentToken[] {
         else if (PARAM_CHAR_RE.test(c)) {
           buffer += c
         }
-        else {
-
-          // console.debug(`[pages]Ignored character "${c}" while building param "${buffer}" from "segment"`)
-        }
         break
     }
     i++

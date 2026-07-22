@@ -1,3 +1,6 @@
+export const JSON_TYPES = new Set(['application/json', 'application/ld+json'])
+export const SKIP_JS_TYPES = new Set(['application/json', 'application/ld+json', 'speculationrules', 'importmap'])
+
 /**
  * Lightweight JS minifier in pure JS (no native deps).
  * Strips comments and collapses whitespace while preserving string literals.

@@ -1,8 +1,7 @@
 import type { Nuxt } from '@nuxt/schema'
 import type { UseSeoMetaInput } from '@unhead/vue/types'
 import fs from 'node:fs'
-import { useNuxt } from '@nuxt/kit'
-import { defu } from 'defu'
+import { extendRouteRules, useNuxt } from '@nuxt/kit'
 import { basename, dirname, resolve } from 'pathe'
 import { glob } from 'tinyglobby'
 import { joinURL } from 'ufo'
@@ -61,8 +60,8 @@ export default async function generateTagsFromPageDirImages(nuxt: Nuxt = useNuxt
     }
   }
 
-  nuxt.options.routeRules = defu(appendRouteRules, nuxt.options.routeRules)
-  nuxt.options.nitro.routeRules = defu(appendRouteRules, nuxt.options.nitro.routeRules)
+  for (const [route, rule] of Object.entries(appendRouteRules))
+    extendRouteRules(route, rule, { override: true })
 
   if (nuxt.options.dev) {
     nuxt.hooks.hook('nitro:config', async (nitroConfig) => {

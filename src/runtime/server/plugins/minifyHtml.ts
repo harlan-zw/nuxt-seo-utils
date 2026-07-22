@@ -1,11 +1,9 @@
 import { defineNitroPlugin } from 'nitropack/runtime'
-import { minifyCSS, minifyJS, minifyJSON } from '../../shared/minify'
+import { JSON_TYPES, minifyCSS, minifyJS, minifyJSON, SKIP_JS_TYPES } from '../../shared/minify'
 
 const INLINE_SCRIPT_RE = /<script(?![^>]+\bsrc\b)([^>]*)>([\s\S]*?)<\/script\s*>/gi
 const INLINE_STYLE_RE = /<style([^>]*)>([\s\S]*?)<\/style\s*>/gi
 const TYPE_ATTR_RE = /\btype\s*=\s*["']([^"']*)["']/i
-const JSON_TYPES = new Set(['application/json', 'application/ld+json'])
-const SKIP_JS_TYPES = new Set(['application/json', 'application/ld+json', 'speculationrules', 'importmap'])
 
 function minifyChunk(chunk: string): string {
   let out = chunk.replace(INLINE_SCRIPT_RE, (full, attrs: string, content: string) => {

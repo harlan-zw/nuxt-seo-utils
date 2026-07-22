@@ -1,7 +1,5 @@
 import { useLogger, useNuxt } from '@nuxt/kit'
-
-const JSON_TYPES = new Set(['application/json', 'application/ld+json'])
-const SKIP_JS_TYPES = new Set(['application/json', 'application/ld+json', 'speculationrules', 'importmap'])
+import { JSON_TYPES, SKIP_JS_TYPES } from '../runtime/shared/minify'
 
 const logger = useLogger('nuxt-seo-utils')
 

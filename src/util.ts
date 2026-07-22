@@ -54,15 +54,3 @@ export async function getImageDimensions(absolutePath: string): Promise<{ width:
   const buffer = await readFile(absolutePath)
   return imageSize(buffer)
 }
-
-export async function getImageDimensionsToSizes(absolutePath: string): Promise<string> {
-  try {
-    // read the file into a buffer using fs
-    const { width, height } = await getImageDimensions(absolutePath)
-    return `${width}x${height}`
-  }
-  catch {
-    // Image metadata is optional for icons; fall back to the generic size token.
-  }
-  return 'any'
-}

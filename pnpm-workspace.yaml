@@ -100,7 +100,6 @@ catalog:
   sass: ^1.101.0
   scule: ^1.3.0
   sharp: ^0.35.3
-  sirv: ^3.0.2
   tinyglobby: ^0.2.17
   typescript: 6.0.3
   ufo: ^1.6.4

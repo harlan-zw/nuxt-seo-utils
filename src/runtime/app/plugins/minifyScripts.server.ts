@@ -1,9 +1,6 @@
 import { injectHead } from '@unhead/vue'
 import { defineNuxtPlugin } from 'nuxt/app'
-import { minifyCSS, minifyJS, minifyJSON } from '../../shared/minify'
-
-const JSON_TYPES = new Set(['application/json', 'application/ld+json'])
-const SKIP_JS_TYPES = new Set(['application/json', 'application/ld+json', 'speculationrules', 'importmap'])
+import { JSON_TYPES, minifyCSS, minifyJS, minifyJSON, SKIP_JS_TYPES } from '../../shared/minify'
 
 export default defineNuxtPlugin({
   enforce: 'post',

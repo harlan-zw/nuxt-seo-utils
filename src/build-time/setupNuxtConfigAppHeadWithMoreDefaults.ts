@@ -8,7 +8,6 @@ export default function setupNuxtConfigAppHeadWithMoreDefaults(nuxt: Nuxt = useN
   const headConfig = nuxt.options.app.head
   headConfig.link = headConfig.link || []
   headConfig.htmlAttrs = headConfig.htmlAttrs || {}
-  headConfig.link = headConfig.link || []
   headConfig.meta = headConfig.meta || []
 
   if (!hasMetaProperty(headConfig, 'og:type')) {

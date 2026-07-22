@@ -99,7 +99,6 @@ catalog:
   playwright-core: ^1.61.1
   sass: ^1.101.0
   scule: ^1.3.0
-  semver: ^7.8.5
   sharp: ^0.35.3
   sirv: ^3.0.2
   tinyglobby: ^0.2.17

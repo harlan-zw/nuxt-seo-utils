@@ -12,12 +12,11 @@ import {
   directoryToURL,
   hasNuxtCompatibility,
   hasNuxtModule,
-  useLogger,
 } from '@nuxt/kit'
 import { defu } from 'defu'
 import { resolveModulePath } from 'exsolve'
 import { installNuxtSiteConfig } from 'nuxt-site-config/kit'
-import { resolveHostUnheadMajor } from 'nuxtseo-shared/kit'
+import { resolveHostUnheadMajor, useModuleLogger } from 'nuxtseo-shared/kit'
 import { relative } from 'pathe'
 import { readPackageJSON } from 'pkg-types'
 import extendNuxtConfigAppHeadSeoMeta from './build-time/extendNuxtConfigAppHeadSeoMeta'
@@ -205,8 +204,7 @@ export default defineNuxtModule<ModuleOptions>({
     minify: true,
   },
   async setup(config, nuxt) {
-    const logger = useLogger('nuxt-seo-utils')
-    logger.level = (config.debug || nuxt.options.debug) ? 4 : 3
+    const logger = useModuleLogger('nuxt-seo-utils', config, nuxt)
     if (config.enabled === false) {
       logger.debug('The module is disabled, skipping setup.')
       return

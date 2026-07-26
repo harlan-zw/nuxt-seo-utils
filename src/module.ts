@@ -401,7 +401,7 @@ export {}
       && await hasNuxtCompatibility({ nuxt: '>=4.5.0' })
     if (!nuxtRegistersUnheadVite && viteOpts !== false) {
       // v3 ships the plugin via @unhead/vue/vite (wraps bundler + adds vue streaming).
-      // v2 has no such entry, so we fall back to our bundled @unhead/bundler/vite.
+      // v2 has no such entry, so it can use the optional @unhead/bundler peer.
       // Detect the major the host actually *renders* with, not whichever @unhead/vue
       // resolves from rootDir: under pnpm a nested @unhead/vue v2 can sit at the root
       // while Nitro/Nuxt render with unhead v3. Picking the wrong major makes the
@@ -415,6 +415,15 @@ export {}
       const lightningcssPath = resolveModulePath('lightningcss', { try: true, from: importPaths })
       const rolldownURL = rolldownPath ? pathToFileURL(rolldownPath).href : undefined
       const lightningcssURL = lightningcssPath ? pathToFileURL(lightningcssPath).href : undefined
+      const bundlerPath = unheadMajor < 3
+        ? resolveModulePath('@unhead/bundler/vite', { try: true, from: importPaths })
+        : undefined
+      const bundlerURL = bundlerPath ? pathToFileURL(bundlerPath).href : undefined
+      const vitePluginSource = unheadMajor >= 3
+        ? { _tag: 'vue' } as const
+        : bundlerURL
+          ? { _tag: 'bundler', url: bundlerURL } as const
+          : { _tag: 'missing-bundler' } as const
       const minify = {
         js: rolldownURL
           ? async (code: string) => {
@@ -433,24 +442,29 @@ export {}
           }
           : undefined,
       }
-      addVitePlugin(async () => {
-        if (unheadMajor >= 3) {
-          const v3Vite = '@unhead/vue/vite'
-          const { Unhead } = await import(v3Vite) as { Unhead: (opts?: Record<string, any>) => any }
-          return Unhead({ minify, ...viteOpts })
-        }
-        // v2 runtime: keep validate/devtools disabled (ValidatePlugin and devtoolsPlugin
-        // target v3 plugin API); minify is pure build-time so safe to enable.
-        const { Unhead } = await import('@unhead/bundler/vite')
-        return Unhead({
-          _framework: '@unhead/vue',
-          minify,
-          validate: false,
-          devtools: false,
+      if (vitePluginSource._tag === 'missing-bundler') {
+        logger.warn('`treeShakeUseSeoMeta` requires the optional `@unhead/bundler` peer on Unhead v2. Install it or disable `treeShakeUseSeoMeta`.')
+      }
+      else {
+        addVitePlugin(async () => {
+          if (vitePluginSource._tag === 'vue') {
+            const v3Vite = '@unhead/vue/vite'
+            const { Unhead } = await import(v3Vite) as { Unhead: (opts?: Record<string, any>) => any }
+            return Unhead({ minify, ...viteOpts })
+          }
+          // v2 runtime: keep validate/devtools disabled (ValidatePlugin and devtoolsPlugin
+          // target v3 plugin API); minify is pure build-time so safe to enable.
+          const { Unhead } = await import(vitePluginSource.url) as { Unhead: (opts?: Record<string, any>) => any }
+          return Unhead({
+            _framework: '@unhead/vue',
+            minify,
+            validate: false,
+            devtools: false,
+          })
+        }, {
+          prepend: true,
         })
-      }, {
-        prepend: true,
-      })
+      }
     }
     if (config.automaticOgAndTwitterTags)
       addPlugin({ src: resolve(appRuntimeDir, 'plugins', 'inferSeoMetaPlugin') })

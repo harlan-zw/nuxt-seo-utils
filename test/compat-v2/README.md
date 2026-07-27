@@ -5,9 +5,10 @@ pins `@unhead/vue`/`unhead` to v3 so Nuxt's renderer stays coherent). This fixtu
 guards the **v2** stack, which can't coexist in the same workspace because the
 unhead major is global.
 
-It is a standalone npm project (excluded from the pnpm workspace) that installs a
-v2 host — Nuxt 4.2, `@unhead/vue@2`, `unhead@2` — and links the local module via
-`file:module.tgz`. The module imports `@unhead/vue` directly (`/plugins`,
+It is a standalone npm project (excluded from the pnpm workspace) that links the
+local module via `file:module.tgz`. It installs a v2 host with Nuxt 4.2,
+`@unhead/vue@2`, and `unhead@2`, plus the optional `@unhead/bundler` peer. The
+module imports `@unhead/vue` directly (`/plugins`,
 `/utils`, `/vite`) and feature-detects the host's unhead major; a successful
 render proves those imports resolve on v2 and that the `InferSeoMetaPlugin` and
 `TemplateParamsPlugin` runtime registrations still run.

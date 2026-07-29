@@ -27,7 +27,10 @@ export async function refreshSources() {
     return
   data.value = await appFetch.value('/__nuxt-seo-utils/debug.json', {
     query: { path: path.value },
-  }).catch(() => null)
+  }).catch(() => {
+    // A failed devtools refresh means no debug data is available until the next poll.
+    return null
+  })
 }
 
 watch([path, appFetch, refreshTime], () => {

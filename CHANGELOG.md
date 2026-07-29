@@ -1,6 +1,35 @@
 # Changelog
 
 
+## v8.3.1...main
+
+[compare changes](https://github.com/harlan-zw/nuxt-seo-utils/compare/v8.3.1...main)
+
+### 🔥 Performance
+
+- **devtools:** Move nuxtseo-layer-devtools to dev dep ([#119](https://github.com/harlan-zw/nuxt-seo-utils/pull/119))
+
+### 🩹 Fixes
+
+- **lint:** Use catalog specifiers for overridden vue/unhead deps ([d8ef47c](https://github.com/harlan-zw/nuxt-seo-utils/commit/d8ef47c))
+
+### 📖 Documentation
+
+- Content audit sweep (grammar, links, structure) ([#121](https://github.com/harlan-zw/nuxt-seo-utils/pull/121))
+
+### 🏡 Chore
+
+- Bump deps ([476282f](https://github.com/harlan-zw/nuxt-seo-utils/commit/476282f))
+- Bump deps ([0a3a486](https://github.com/harlan-zw/nuxt-seo-utils/commit/0a3a486))
+
+### 🤖 CI
+
+- Bump pnpm/action-setup to v6 (Node 24 runtime) ([95b3ee1](https://github.com/harlan-zw/nuxt-seo-utils/commit/95b3ee1))
+
+### ❤️ Contributors
+
+- Harlan Wilton ([@harlan-zw](https://github.com/harlan-zw))
+
 ## v8.2.1...main
 
 [compare changes](https://github.com/harlan-zw/nuxt-seo-utils/compare/v8.2.1...main)

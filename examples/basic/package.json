@@ -3,7 +3,7 @@
   "type": "module",
   "private": true,
   "dependencies": {
-    "nuxt": "^4.4.8",
+    "nuxt": "^4.5.1",
     "nuxt-seo-utils": "latest",
     "vue": "^3.5.40"
   }

@@ -123,6 +123,3 @@ allowBuilds:
   '@parcel/watcher': true
   esbuild: true
   vue-demi: true
-catalogs:
-  conflicts_@unhead/bundler_3_2_3:
-    '@unhead/bundler': 3.2.3

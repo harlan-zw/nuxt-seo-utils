@@ -58,7 +58,7 @@
     "test:compat-v2": "node test/compat-v2/run.mjs"
   },
   "peerDependencies": {
-    "@unhead/bundler": "^3.2.1",
+    "@unhead/addons": "^2.0.7",
     "@unhead/vue": "^2.0.7 || ^3.0.0",
     "esbuild": ">=0.17.0",
     "lightningcss": ">=1.20.0",
@@ -67,7 +67,7 @@
     "unhead": "^2.0.7 || ^3.0.0"
   },
   "peerDependenciesMeta": {
-    "@unhead/bundler": {
+    "@unhead/addons": {
       "optional": true
     },
     "@unhead/vue": {
@@ -114,6 +114,7 @@
     "@nuxt/ui": "catalog:",
     "@nuxtjs/i18n": "catalog:",
     "@types/node": "catalog:",
+    "@unhead/addons": "catalog:",
     "@unhead/bundler": "catalog:",
     "@unhead/vue": "catalog:",
     "@vue/test-utils": "catalog:",

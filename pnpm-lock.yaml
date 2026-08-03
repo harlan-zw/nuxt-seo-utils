@@ -33,6 +33,9 @@ catalogs:
     '@types/node':
       specifier: ^26.1.2
       version: 26.1.2
+    '@unhead/addons':
+      specifier: ^2.1.16
+      version: 2.1.16
     '@vue/test-utils':
       specifier: ^2.4.11
       version: 2.4.11
@@ -219,6 +222,9 @@ importers:
       '@types/node':
         specifier: 'catalog:'
         version: 26.1.2
+      '@unhead/addons':
+        specifier: 'catalog:'
+        version: 2.1.16(esbuild@0.28.0)(rolldown@1.2.0)(rollup@4.61.1)(unhead@3.2.1(esbuild@0.28.0)(rolldown@1.2.0)(rollup@4.61.1)(vite@8.1.5(@types/node@26.1.2)(esbuild@0.28.0)(jiti@2.7.0)(sass@1.102.0)(terser@5.48.0)(yaml@2.9.0)))(vite@8.1.5(@types/node@26.1.2)(esbuild@0.28.0)(jiti@2.7.0)(sass@1.102.0)(terser@5.48.0)(yaml@2.9.0))
       '@unhead/bundler':
         specifier: 3.2.1
         version: 3.2.1(crossws@0.4.10(srvx@0.11.22))(esbuild@0.28.0)(lightningcss@1.32.0)(rolldown@1.2.0)(rollup@4.61.1)(typescript@6.0.3)(unhead@3.2.1(esbuild@0.28.0)(rolldown@1.2.0)(rollup@4.61.1)(vite@8.1.5(@types/node@26.1.2)(esbuild@0.28.0)(jiti@2.7.0)(sass@1.102.0)(terser@5.48.0)(yaml@2.9.0)))(vite@8.1.5(@types/node@26.1.2)(esbuild@0.28.0)(jiti@2.7.0)(sass@1.102.0)(terser@5.48.0)(yaml@2.9.0))
@@ -3283,6 +3289,11 @@ packages:
   '@ungap/structured-clone@1.3.1':
     resolution: {integrity: sha512-mUFwbeTqrVgDQxFveS+df2yfap6iuP20NAKAsBt5jDEoOTDew+zwLAOilHCeQJOVSvmgCX4ogqIrA0mnyr08yQ==}
 
+  '@unhead/addons@2.1.16':
+    resolution: {integrity: sha512-+YVfncr74rmyqlG0Zc5C+OnGUbAii0Ju73lrK7kMIU0YWjTW6LI3De/BjHXGi3ID9d6/Bt4opBnoncj4A3s3mA==}
+    peerDependencies:
+      unhead: 3.2.1
+
   '@unhead/bundler@3.2.1':
     resolution: {integrity: sha512-lMJGiviHfmZT1dtL+VAi4AgP0NrT1dZXDVK96lajUF4tIYxha1FEo0yQun0lp1J+RL8BE2pm3u2LZY9564dA1A==}
     peerDependencies:
@@ -3644,6 +3655,10 @@ packages:
   ast-kit@2.2.0:
     resolution: {integrity: sha512-m1Q/RaVOnTp9JxPX+F+Zn7IcLYMzM8kZofDImfsKZd8MbR+ikdOzTeztStWqfrqIxZnYWryyI9ePm3NGjnZgGw==}
     engines: {node: '>=20.19.0'}
+
+  ast-kit@3.0.0:
+    resolution: {integrity: sha512-8OG92q3R35qjC/4i6BLBMg8IB+fClWu/1PEwg2Z9Rn+BuNaiEgJzpzn+pxWOdHJWDCAwu2JP0wCDTozAM4QirQ==}
+    engines: {node: ^22.18.0 || >=24.11.0}
 
   ast-walker-scope@0.9.0:
     resolution: {integrity: sha512-IJdzo2vLiElBxKzwS36VsCue/62d6IdWjnPB2v3nuPKeWGynp6FF/CYoLa5i/3jXH/z97ZDdsXz6abpgM6w07A==}
@@ -7034,6 +7049,10 @@ packages:
   unist-util-visit@5.1.0:
     resolution: {integrity: sha512-m+vIdyeCOpdr/QeQCu2EzxX/ohgS8KbnPDgFni4dQsfSCtpz8UqDyY5GjRru8PDKuYn7Fq19j1CQ+nJSsGKOzg==}
 
+  unplugin-ast@0.16.0:
+    resolution: {integrity: sha512-1ow2FlRznoSKE7Fjk2bSxqDsvHyj/O876RqsNlipsM6A+I91t7Mi+jG7tCNNcl3vZx14z4pGXBLSl8KOPrMuFQ==}
+    engines: {node: '>=20.19.0'}
+
   unplugin-auto-import@21.0.0:
     resolution: {integrity: sha512-vWuC8SwqJmxZFYwPojhOhOXDb5xFhNNcEVb9K/RFkyk/3VnfaOjzitWN7v+8DEKpMjSsY2AEGXNgt6I0yQrhRQ==}
     engines: {node: '>=20.19.0'}
@@ -8738,7 +8757,7 @@ snapshots:
       giget: 3.3.0
       jiti: 2.7.0
       listhen: 1.10.0(srvx@0.11.22)
-      nypm: 0.6.8
+      nypm: 0.6.9
       ofetch: 1.5.1
       ohash: 2.0.11
       pathe: 2.0.3
@@ -10742,6 +10761,27 @@ snapshots:
 
   '@ungap/structured-clone@1.3.1': {}
 
+  '@unhead/addons@2.1.16(esbuild@0.28.0)(rolldown@1.2.0)(rollup@4.61.1)(unhead@3.2.1(esbuild@0.28.0)(rolldown@1.2.0)(rollup@4.61.1)(vite@8.1.5(@types/node@26.1.2)(esbuild@0.28.0)(jiti@2.7.0)(sass@1.102.0)(terser@5.48.0)(yaml@2.9.0)))(vite@8.1.5(@types/node@26.1.2)(esbuild@0.28.0)(jiti@2.7.0)(sass@1.102.0)(terser@5.48.0)(yaml@2.9.0))':
+    dependencies:
+      '@rollup/pluginutils': 5.4.0(rollup@4.61.1)
+      estree-walker: 3.0.3
+      magic-string: 0.30.21
+      mlly: 1.8.2
+      ufo: 1.6.4
+      unhead: 3.2.1(esbuild@0.28.0)(rolldown@1.2.0)(rollup@4.61.1)(vite@8.1.5(@types/node@26.1.2)(esbuild@0.28.0)(jiti@2.7.0)(sass@1.102.0)(terser@5.48.0)(yaml@2.9.0))
+      unplugin: 3.3.0(esbuild@0.28.0)(rolldown@1.2.0)(rollup@4.61.1)(vite@8.1.5(@types/node@26.1.2)(esbuild@0.28.0)(jiti@2.7.0)(sass@1.102.0)(terser@5.48.0)(yaml@2.9.0))
+      unplugin-ast: 0.16.0(esbuild@0.28.0)(rolldown@1.2.0)(rollup@4.61.1)(vite@8.1.5(@types/node@26.1.2)(esbuild@0.28.0)(jiti@2.7.0)(sass@1.102.0)(terser@5.48.0)(yaml@2.9.0))
+    transitivePeerDependencies:
+      - '@farmfe/core'
+      - '@rspack/core'
+      - bun-types-no-globals
+      - esbuild
+      - rolldown
+      - rollup
+      - unloader
+      - vite
+      - webpack
+
   '@unhead/bundler@3.2.1(crossws@0.4.10(srvx@0.11.22))(esbuild@0.28.0)(lightningcss@1.32.0)(rolldown@1.2.0)(rollup@4.61.1)(typescript@6.0.3)(unhead@3.2.1(esbuild@0.28.0)(rolldown@1.2.0)(rollup@4.61.1)(vite@8.1.5(@types/node@26.1.2)(esbuild@0.28.0)(jiti@2.7.0)(sass@1.102.0)(terser@5.48.0)(yaml@2.9.0)))(vite@8.1.5(@types/node@26.1.2)(esbuild@0.28.0)(jiti@2.7.0)(sass@1.102.0)(terser@5.48.0)(yaml@2.9.0))':
     dependencies:
       '@vitejs/devtools-kit': 0.3.4(crossws@0.4.10(srvx@0.11.22))(esbuild@0.28.0)(rolldown@1.2.0)(rollup@4.61.1)(typescript@6.0.3)(vite@8.1.5(@types/node@26.1.2)(esbuild@0.28.0)(jiti@2.7.0)(sass@1.102.0)(terser@5.48.0)(yaml@2.9.0))
@@ -11199,6 +11239,12 @@ snapshots:
   ast-kit@2.2.0:
     dependencies:
       '@babel/parser': 7.29.7
+      pathe: 2.0.3
+
+  ast-kit@3.0.0:
+    dependencies:
+      '@babel/parser': 8.0.4
+      estree-walker: 3.0.3
       pathe: 2.0.3
 
   ast-walker-scope@0.9.0:
@@ -15593,6 +15639,25 @@ snapshots:
       '@types/unist': 3.0.3
       unist-util-is: 6.0.1
       unist-util-visit-parents: 6.0.2
+
+  unplugin-ast@0.16.0(esbuild@0.28.0)(rolldown@1.2.0)(rollup@4.61.1)(vite@8.1.5(@types/node@26.1.2)(esbuild@0.28.0)(jiti@2.7.0)(sass@1.102.0)(terser@5.48.0)(yaml@2.9.0)):
+    dependencies:
+      '@babel/generator': 8.0.0
+      '@babel/parser': 8.0.4
+      '@babel/types': 8.0.4
+      ast-kit: 3.0.0
+      magic-string-ast: 1.0.3
+      unplugin: 3.3.0(esbuild@0.28.0)(rolldown@1.2.0)(rollup@4.61.1)(vite@8.1.5(@types/node@26.1.2)(esbuild@0.28.0)(jiti@2.7.0)(sass@1.102.0)(terser@5.48.0)(yaml@2.9.0))
+    transitivePeerDependencies:
+      - '@farmfe/core'
+      - '@rspack/core'
+      - bun-types-no-globals
+      - esbuild
+      - rolldown
+      - rollup
+      - unloader
+      - vite
+      - webpack
 
   unplugin-auto-import@21.0.0(@nuxt/kit@4.5.1(magic-string@0.30.21)(magicast@0.5.3)(oxc-parser@0.140.0)(rolldown@1.2.0)(unplugin@3.3.0(esbuild@0.28.0)(rolldown@1.2.0)(rollup@4.61.1)(vite@8.1.5(@types/node@26.1.2)(esbuild@0.28.0)(jiti@2.7.0)(sass@1.102.0)(terser@5.48.0)(yaml@2.9.0))))(@vueuse/core@14.3.0(vue@3.5.40(typescript@6.0.3))):
     dependencies:

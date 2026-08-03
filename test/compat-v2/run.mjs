@@ -30,7 +30,7 @@ const tgz = readdirSync(workDir).find(f => f.endsWith('.tgz'))
 renameSync(join(workDir, tgz), join(workDir, 'module.tgz'))
 
 console.log('[compat-v2] installing isolated v2 stack')
-run('npm', ['install', '--legacy-peer-deps', '--no-package-lock'], workDir)
+run('npm', ['install', '--no-package-lock'], workDir)
 
 console.log('[compat-v2] running tests')
 run('npm', ['test'], workDir)

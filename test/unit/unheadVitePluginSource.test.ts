@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from 'vitest'
-import { resolveUnheadVitePluginSource, supportsUnheadV2Bundler } from '../../src/build-time/resolveUnheadVitePluginSource'
+import { resolveUnheadVitePluginSource } from '../../src/build-time/resolveUnheadVitePluginSource'
 
 describe('resolveUnheadVitePluginSource', () => {
   it('resolves the v3 plugin from the Nuxt dependency tree before the app root', () => {
@@ -23,9 +23,9 @@ describe('resolveUnheadVitePluginSource', () => {
     })
   })
 
-  it('keeps resolving the v2 plugin from the optional bundler peer', () => {
+  it('skips the v3-only transform on Unhead v2', () => {
     const appImportPath = new URL('file:///app/node_modules/')
-    const resolvePath = vi.fn(() => '/app/node_modules/@unhead/bundler/dist/vite.mjs')
+    const resolvePath = vi.fn()
 
     const source = resolveUnheadVitePluginSource({
       unheadMajor: 2,
@@ -33,18 +33,7 @@ describe('resolveUnheadVitePluginSource', () => {
       importPaths: [appImportPath],
     }, resolvePath)
 
-    expect(resolvePath).toHaveBeenCalledWith('@unhead/bundler/vite', {
-      try: true,
-      from: [appImportPath],
-    })
-    expect(source).toEqual({
-      _tag: 'bundler',
-      url: 'file:///app/node_modules/@unhead/bundler/dist/vite.mjs',
-    })
-  })
-
-  it('rejects bundler versions that require Unhead v3 exports', () => {
-    expect(supportsUnheadV2Bundler('3.2.1')).toBe(true)
-    expect(supportsUnheadV2Bundler('3.3.0')).toBe(false)
+    expect(resolvePath).not.toHaveBeenCalled()
+    expect(source).toEqual({ _tag: 'unsupported-v2' })
   })
 })

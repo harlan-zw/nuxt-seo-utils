@@ -24,7 +24,7 @@ import extendNuxtConfigAppHeadTypes from './build-time/extendNuxtConfigAppHeadTy
 import generateTagsFromPageDirImages from './build-time/generateTagsFromPageDirImages'
 import generateTagsFromPublicFiles from './build-time/generateTagsFromPublicFiles'
 import minifyStaticHead from './build-time/minifyStaticHead'
-import { resolveUnheadVitePluginSource, supportsUnheadV2Bundler } from './build-time/resolveUnheadVitePluginSource'
+import { resolveUnheadVitePluginSource } from './build-time/resolveUnheadVitePluginSource'
 import setupNuxtConfigAppHeadWithMoreDefaults from './build-time/setupNuxtConfigAppHeadWithMoreDefaults'
 import { setupDevToolsUI } from './build/devtools'
 
@@ -401,8 +401,6 @@ export {}
       && nuxt.options.builder === '@nuxt/vite-builder'
       && await hasNuxtCompatibility({ nuxt: '>=4.5.0' })
     if (!nuxtRegistersUnheadVite && viteOpts !== false) {
-      // v3 ships the plugin via @unhead/vue/vite (wraps bundler + adds vue streaming).
-      // v2 has no such entry, so it can use the optional @unhead/bundler peer.
       // Detect the major the host actually *renders* with, not whichever @unhead/vue
       // resolves from rootDir: under pnpm a nested @unhead/vue v2 can sit at the root
       // while Nitro/Nuxt render with unhead v3. Picking the wrong major makes the
@@ -419,16 +417,11 @@ export {}
       const hostImportPaths = unheadMajor >= 3
         ? [directoryToURL(dirname(await resolvePackageJSON('nuxt', { url: directoryToURL(nuxt.options.rootDir).href })))]
         : []
-      const resolvedVitePluginSource = resolveUnheadVitePluginSource({
+      const vitePluginSource = resolveUnheadVitePluginSource({
         unheadMajor,
         hostImportPaths,
         importPaths,
       }, resolveModulePath)
-      const vitePluginSource = resolvedVitePluginSource._tag === 'bundler'
-        ? await readPackageJSON(resolvedVitePluginSource.url).then(({ version }) => version && supportsUnheadV2Bundler(version)
-            ? resolvedVitePluginSource
-            : { _tag: 'incompatible-bundler', version: version || 'unknown' } as const)
-        : resolvedVitePluginSource
       const minify = {
         js: rolldownURL
           ? async (code: string) => {
@@ -447,29 +440,16 @@ export {}
           }
           : undefined,
       }
-      if (vitePluginSource._tag === 'missing-vue') {
+      if (vitePluginSource._tag === 'unsupported-v2') {
+        logger.warn('`treeShakeUseSeoMeta` requires Unhead v3; skipping the transform on Unhead v2.')
+      }
+      else if (vitePluginSource._tag === 'missing-vue') {
         logger.warn('`treeShakeUseSeoMeta` requires `@unhead/vue` with the `/vite` export. Install Unhead v3 or disable `treeShakeUseSeoMeta`.')
-      }
-      else if (vitePluginSource._tag === 'missing-bundler') {
-        logger.warn('`treeShakeUseSeoMeta` requires the optional `@unhead/bundler` peer on Unhead v2. Install it or disable `treeShakeUseSeoMeta`.')
-      }
-      else if (vitePluginSource._tag === 'incompatible-bundler') {
-        logger.warn(`\`treeShakeUseSeoMeta\` requires \`@unhead/bundler@3.2.x\` on Unhead v2. Found ${vitePluginSource.version}; skipping the transform.`)
       }
       else {
         addVitePlugin(async () => {
           const { Unhead } = await import(vitePluginSource.url) as { Unhead: (opts?: Record<string, any>) => any }
-          if (vitePluginSource._tag === 'vue') {
-            return Unhead({ minify, ...viteOpts })
-          }
-          // v2 runtime: keep validate/devtools disabled (ValidatePlugin and devtoolsPlugin
-          // target v3 plugin API); minify is pure build-time so safe to enable.
-          return Unhead({
-            _framework: '@unhead/vue',
-            minify,
-            validate: false,
-            devtools: false,
-          })
+          return Unhead({ minify, ...viteOpts })
         }, {
           prepend: true,
         })

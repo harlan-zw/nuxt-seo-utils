@@ -72,7 +72,6 @@ catalog:
   '@nuxt/ui': ^4.10.0
   '@nuxtjs/i18n': ^10.5.0
   '@types/node': ^26.1.2
-  '@unhead/bundler': ^3.2.3
   '@unhead/vue': 3.2.3
   '@vue/test-utils': ^2.4.11
   bumpp: ^12.0.0

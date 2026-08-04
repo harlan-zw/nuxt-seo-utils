@@ -9,7 +9,6 @@
   "dependencies": {
     "nuxt-seo-utils": "file:module.tgz",
     "nuxt": "~4.2.0",
-    "@unhead/bundler": "^3.2.1",
     "@unhead/vue": "^2.0.7",
     "unhead": "^2.0.7"
   },

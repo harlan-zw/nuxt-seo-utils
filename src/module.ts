@@ -12,6 +12,7 @@ import {
   directoryToURL,
   hasNuxtCompatibility,
   hasNuxtModule,
+  resolveModule,
 } from '@nuxt/kit'
 import { defu } from 'defu'
 import { resolveModulePath } from 'exsolve'
@@ -211,6 +212,7 @@ export default defineNuxtModule<ModuleOptions>({
       return
     }
     const nitroCompatibility = setupNitroRuntimeCompatibility(nuxt)
+    nuxt.options.nitro.alias!.ofetch ||= resolveModule('ofetch', { url: new URL(import.meta.url) })
     const { resolve } = createResolver(import.meta.url)
     const { version } = await readPackageJSON(resolve('../package.json'))
     await installNuxtSiteConfig()

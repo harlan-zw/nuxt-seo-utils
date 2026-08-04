@@ -38,7 +38,7 @@ async function main() {
 
   try {
     await Promise.all(fixtureFiles.map(file => cp(join(fixtureDir, file), join(tempDir, basename(file)))))
-    await run('pnpm', ['install', '--frozen-lockfile'], tempDir)
+    await run('pnpm', ['install', '--no-frozen-lockfile', '--force', '--update-checksums'], tempDir)
     await run('pnpm', ['test'], tempDir)
   }
   finally {

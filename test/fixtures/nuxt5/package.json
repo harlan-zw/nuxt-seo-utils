@@ -11,7 +11,7 @@
     "nuxt": "npm:nuxt-nightly@5.0.0-29762711.192612c7",
     "nuxt-seo-utils": "file:module.tgz",
     "nuxt-site-config": "4.1.4",
-    "nuxtseo-shared": "5.3.8",
+    "nuxtseo-shared": "5.3.9",
     "vue": "^3.5.40",
     "vue-router": "^5.2.0"
   },

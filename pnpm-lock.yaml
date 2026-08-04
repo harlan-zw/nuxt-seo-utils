@@ -91,11 +91,8 @@ catalogs:
       specifier: ^5.3.6
       version: 5.3.6
     nuxtseo-shared:
-      specifier: ^5.3.8
-      version: 5.3.8
-    ofetch:
-      specifier: ^1.5.1
-      version: 1.5.1
+      specifier: ^5.3.9
+      version: 5.3.9
     pathe:
       specifier: ^2.0.3
       version: 2.0.3
@@ -178,10 +175,7 @@ importers:
         version: 4.1.4(f49e2ed7362d0a87267931a42857511b)
       nuxtseo-shared:
         specifier: 'catalog:'
-        version: 5.3.8(c7abfd82b6dc34e886d3989ea1381e2e)
-      ofetch:
-        specifier: 'catalog:'
-        version: 1.5.1
+        version: 5.3.9(c7abfd82b6dc34e886d3989ea1381e2e)
       pathe:
         specifier: 'catalog:'
         version: 2.0.3
@@ -5710,8 +5704,8 @@ packages:
       zod:
         optional: true
 
-  nuxtseo-shared@5.3.8:
-    resolution: {integrity: sha512-2NOB0I5ikvgChNF5s6OXsxOvNSmluRxaTbS0T1s5EC7X/nzAQXM+OaGYL2D8JffH6HutTayJftJEiFeE+WDbcg==}
+  nuxtseo-shared@5.3.9:
+    resolution: {integrity: sha512-TFp6klJ+K1QJGjfWSP6812ELehdsE0CKPTbbpFT5hV18+GNT76RavnimgJ4xYJlaU8SIbPq9di40JBGORN6wRA==}
     peerDependencies:
       '@nuxt/schema': ^3.16.0 || ^4.0.0 || ^5.0.0
       nuxt: ^3.16.0 || ^4.0.0 || ^5.0.0
@@ -13730,7 +13724,7 @@ snapshots:
       defu: 6.1.7
       h3: 1.15.11
       nuxt-site-config-kit: 4.1.4(magic-string@0.30.21)(magicast@0.5.3)(oxc-parser@0.140.0)(rolldown@1.2.0)(unplugin@3.3.0(esbuild@0.28.0)(rolldown@1.2.0)(rollup@4.61.1)(vite@8.1.5(@types/node@26.1.2)(esbuild@0.28.0)(jiti@2.7.0)(sass@1.102.0)(terser@5.48.0)(yaml@2.9.0)))(vue@3.5.40(typescript@6.0.3))
-      nuxtseo-shared: 5.3.8(c7abfd82b6dc34e886d3989ea1381e2e)
+      nuxtseo-shared: 5.3.9(c7abfd82b6dc34e886d3989ea1381e2e)
       pathe: 2.0.3
       pkg-types: 2.3.1
       site-config-stack: 4.1.4(vue@3.5.40(typescript@6.0.3))
@@ -14021,7 +14015,7 @@ snapshots:
       - unplugin
       - vite
 
-  nuxtseo-shared@5.3.8(c7abfd82b6dc34e886d3989ea1381e2e):
+  nuxtseo-shared@5.3.9(c7abfd82b6dc34e886d3989ea1381e2e):
     dependencies:
       '@clack/prompts': 1.7.0
       '@nuxt/devtools-kit': 4.0.0-alpha.7(magic-string@0.30.21)(magicast@0.5.3)(oxc-parser@0.140.0)(rolldown@1.2.0)(unplugin@3.3.0(esbuild@0.28.0)(rolldown@1.2.0)(rollup@4.61.1)(vite@8.1.5(@types/node@26.1.2)(esbuild@0.28.0)(jiti@2.7.0)(sass@1.102.0)(terser@5.48.0)(yaml@2.9.0)))(vite@8.1.5(@types/node@26.1.2)(esbuild@0.28.0)(jiti@2.7.0)(sass@1.102.0)(terser@5.48.0)(yaml@2.9.0))

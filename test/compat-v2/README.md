@@ -7,7 +7,7 @@ unhead major is global.
 
 It is a standalone npm project (excluded from the pnpm workspace) that links the
 local module via `file:module.tgz`. It installs a v2 host with Nuxt 4.2,
-`@unhead/vue@2`, and `unhead@2`. The module imports `@unhead/vue` directly
+ `@unhead/vue@2`, and `unhead@2`. The module imports `@unhead/vue` directly
 through its v2 exports and skips the v3-only Vite transform. A successful render
 proves those imports resolve on v2 and that the `InferSeoMetaPlugin` and
 `TemplateParamsPlugin` runtime registrations still run.

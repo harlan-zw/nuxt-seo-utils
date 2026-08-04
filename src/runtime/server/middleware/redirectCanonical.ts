@@ -1,5 +1,5 @@
-import { defineEventHandler, getRequestHost, sendRedirect, setHeader } from 'h3'
 import { joinURL } from 'ufo'
+import { defineEventHandler, getRequestHost, sendRedirect, setHeader } from '#nuxtseo/h3'
 import { getSiteConfig } from '#site-config/server/composables/getSiteConfig'
 
 export default defineEventHandler((e) => {

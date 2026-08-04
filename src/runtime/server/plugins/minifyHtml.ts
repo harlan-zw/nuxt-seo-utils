@@ -1,4 +1,4 @@
-import { defineNitroPlugin } from 'nitropack/runtime'
+import { defineNitroPlugin } from '#nuxtseo/nitro'
 import { JSON_TYPES, minifyCSS, minifyJS, minifyJSON, SKIP_JS_TYPES } from '../../shared/minify'
 
 const INLINE_SCRIPT_RE = /<script(?![^>]+\bsrc\b)([^>]*)>([\s\S]*?)<\/script\s*>/gi

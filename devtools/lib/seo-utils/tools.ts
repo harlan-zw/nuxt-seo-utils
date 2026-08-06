@@ -7,8 +7,39 @@ export const SEO_LIMITS = {
   DESC_MAX_PIXELS: 920,
 } as const
 
+export interface ParsedIconLink {
+  rel: string
+  href: string
+  type?: string
+  sizes?: string
+  media?: string
+}
+
 export function estimatePixelWidth(text: string, fontSize: number = 16): number {
   return Math.round(text.length * fontSize * 0.55)
+}
+
+export function resolveAppUrl(origin: string, appBaseURL: string, path: string): string {
+  const base = new URL(appBaseURL, origin)
+  if (!base.pathname.endsWith('/'))
+    base.pathname += '/'
+
+  const candidate = new URL(path, origin)
+  const basePath = base.pathname.replace(/\/$/, '')
+  if (candidate.pathname === basePath || candidate.pathname.startsWith(`${basePath}/`))
+    return candidate.href
+  return new URL(path.replace(/^\//, ''), base).href
+}
+
+export function getIconIssues(icons: ParsedIconLink[]): string[] {
+  return icons.flatMap((icon) => {
+    const isSvg = icon.type === 'image/svg+xml' || /\.svg(?:[?#]|$)/i.test(icon.href)
+    if (!icon.sizes)
+      return [`${icon.href} has no sizes attribute.`]
+    if (icon.sizes.toLowerCase().split(/\s+/).includes('any') && !isSvg)
+      return [`${icon.href} uses sizes="any", which is reserved for scalable icons.`]
+    return []
+  })
 }
 
 export function parseMetaTags(html: string) {
@@ -64,13 +95,21 @@ export function parseMetaTags(html: string) {
     }
   })
 
-  const iconLinks: Array<{ rel: string, href: string, type?: string, sizes?: string, media?: string }> = []
-  doc.querySelectorAll('link[rel="icon"], link[rel="apple-touch-icon"], link[rel="shortcut icon"]').forEach((el) => {
+  const iconLinks: ParsedIconLink[] = []
+  doc.querySelectorAll('link[rel][href]').forEach((el) => {
+    const relTokens = (el.getAttribute('rel') || '').toLowerCase().split(/\s+/)
+    const rel = relTokens.includes('apple-touch-icon')
+      ? 'apple-touch-icon'
+      : relTokens.includes('icon')
+        ? 'icon'
+        : null
+    if (!rel)
+      return
     const href = el.getAttribute('href')
     if (!href)
       return
     iconLinks.push({
-      rel: el.getAttribute('rel') || 'icon',
+      rel,
       href,
       type: el.getAttribute('type') || undefined,
       sizes: el.getAttribute('sizes') || undefined,

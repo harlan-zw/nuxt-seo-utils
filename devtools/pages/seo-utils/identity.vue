@@ -1,24 +1,17 @@
 <script setup lang="ts">
+import type { ParsedIconLink } from '../../lib/seo-utils/tools'
 import { useClipboard } from '@vueuse/core'
 import { computed, ref, watch } from 'vue'
 import { data } from '../../lib/seo-utils/state'
-import { parseMetaTags } from '../../lib/seo-utils/tools'
+import { getIconIssues, parseMetaTags, resolveAppUrl } from '../../lib/seo-utils/tools'
 
 const { copy } = useClipboard()
 
 const loading = ref(false)
 const error = ref<string | null>(null)
 
-interface IconLink {
-  rel: string
-  href: string
-  type?: string
-  sizes?: string
-  media?: string
-}
-
 interface ParsedIdentity {
-  icons: IconLink[]
+  icons: ParsedIconLink[]
   ogImages: Array<{ url: string, width?: string, height?: string, alt?: string }>
   twitterImages: Array<{ url: string, width?: string, height?: string }>
   themeColors: Array<{ color: string, media?: string, context: 'light' | 'dark' | 'default' }>
@@ -30,9 +23,10 @@ const parsedPage = ref<ParsedIdentity | null>(null)
 const siteConfig = computed(() => data.value?.siteConfig || null)
 const pageIcons = computed(() => parsedPage.value?.icons || [])
 const hasIcons = computed(() => pageIcons.value.length > 0)
+const iconIssues = computed(() => getIconIssues(pageIcons.value))
 
 const iconsByRel = computed(() => {
-  const groups: Record<string, IconLink[]> = {}
+  const groups: Record<string, ParsedIconLink[]> = {}
   pageIcons.value.forEach((link) => {
     const rel = link.rel || 'icon'
     if (!groups[rel])
@@ -110,7 +104,8 @@ async function checkIdentity() {
 
   try {
     const baseUrl = window.parent?.location?.origin || window.location.origin
-    const response = await fetch(`${baseUrl}${path.value}`, {
+    const pageUrl = resolveAppUrl(baseUrl, data.value?.runtimeConfig.appBaseURL || '/', path.value)
+    const response = await fetch(pageUrl, {
       headers: { Accept: 'text/html' },
     })
     if (!response.ok)
@@ -155,7 +150,7 @@ async function checkIdentity() {
     // Resolve relative icon URLs to absolute
     const icons = parsed.iconLinks.map(icon => ({
       ...icon,
-      href: icon.href.startsWith('http') ? icon.href : `${baseUrl}${icon.href.startsWith('/') ? '' : '/'}${icon.href}`,
+      href: new URL(icon.href, response.url).href,
     }))
 
     parsedPage.value = {
@@ -182,7 +177,7 @@ watch([() => data.value, path, refreshTime], () => {
 const cliCommand = 'npx nuxt-seo-utils icons --source <your-logo.svg>'
 
 const iconSizesGenerated = [
-  { name: 'favicon.ico', size: '32x32', desc: 'Browser tab' },
+  { name: 'favicon.ico', size: '16x16, 32x32, 48x48', desc: 'Browser tab' },
   { name: 'icon-16x16.png', size: '16x16', desc: 'Small favicon' },
   { name: 'icon-32x32.png', size: '32x32', desc: 'Standard favicon' },
   { name: 'apple-touch-icon.png', size: '180x180', desc: 'iOS home screen' },
@@ -258,6 +253,14 @@ const iconSizesGenerated = [
         </template>
 
         <template v-if="hasIcons">
+          <div v-if="iconIssues.length" class="hint-callout mb-4">
+            <UIcon name="carbon:warning" class="hint-callout-icon text-sm mt-0.5 shrink-0" />
+            <div class="text-xs text-[var(--color-text-muted)]">
+              <p v-for="issue in iconIssues" :key="issue">
+                {{ issue }}
+              </p>
+            </div>
+          </div>
           <div v-for="(icons, rel) in iconsByRel" :key="rel" class="mb-5 last:mb-0">
             <div class="id-group-header">
               <span>{{ iconRelLabels[rel]?.label || rel }}</span>

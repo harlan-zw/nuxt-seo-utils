@@ -11,6 +11,7 @@ export default defineEventHandler((e) => {
   return {
     runtimeConfig: {
       version: runtimeConfig.public?.['nuxt-seo-utils-version'] || 'unknown',
+      appBaseURL: runtimeConfig.app.baseURL,
       ...seoUtils,
     },
     siteConfig: {

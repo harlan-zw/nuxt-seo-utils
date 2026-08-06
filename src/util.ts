@@ -4,10 +4,6 @@ import { readFile } from 'node:fs/promises'
 import imageSize from 'image-size'
 import { dirname, resolve } from 'pathe'
 
-export function hasLinkRel(input: SerializableHead, rel: string): boolean | undefined {
-  return input.link?.some(link => link.rel === rel)
-}
-
 export function hasMetaProperty(input: SerializableHead, property: string): boolean | undefined {
   return input.meta?.some(meta => meta.property === property)
 }
@@ -18,12 +14,16 @@ export async function getImageMeta(base: string, path: string, isIcon = false): 
   const absolutePath = resolve(base, path)
   const file = absolutePath.split('/').pop()
   const keyword = file!.split('.')[0]
-  let ext = absolutePath.split('.').pop()
+  let ext = absolutePath.split('.').pop()?.toLowerCase()
   if (ext === 'jpg')
     ext = 'jpeg'
-  const { width, height } = await getImageDimensions(absolutePath)
+  const { width, height, images } = await getImageDimensions(absolutePath)
   const payload: Record<string, undefined | number | string> = {
-    type: ext === 'svg' ? `image/svg+xml` : `image/${ext}`,
+    type: ext === 'svg'
+      ? 'image/svg+xml'
+      : ext === 'ico'
+        ? 'image/vnd.microsoft.icon'
+        : `image/${ext}`,
   }
   if (!isIcon) {
     payload.width = width
@@ -40,7 +40,13 @@ export async function getImageMeta(base: string, path: string, isIcon = false): 
       payload.media = '(prefers-color-scheme: dark)'
     else if (path.includes('.light') || path.includes('-light'))
       payload.media = '(prefers-color-scheme: light)'
-    if (ext !== 'svg') {
+    if (ext === 'ico' && images?.length) {
+      payload.sizes = [...new Map(images.map(image => [`${image.width}x${image.height}`, image])).values()]
+        .sort((a, b) => (a.width * a.height) - (b.width * b.height))
+        .map(image => `${image.width}x${image.height}`)
+        .join(' ')
+    }
+    else if (ext !== 'svg') {
       payload.sizes = `${width}x${height}`
     }
     else {
@@ -49,7 +55,7 @@ export async function getImageMeta(base: string, path: string, isIcon = false): 
   }
   return payload
 }
-export async function getImageDimensions(absolutePath: string): Promise<{ width: number | undefined, height: number | undefined }> {
+export async function getImageDimensions(absolutePath: string) {
   // read the file into a buffer using fs
   const buffer = await readFile(absolutePath)
   return imageSize(buffer)

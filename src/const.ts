@@ -1,19 +1,16 @@
+import { classifyIconFilename } from './build-time/iconAssets'
+
 export const MetaTagFileDeepGlobs = [
-  '**/og-image.{png,jpg,jpeg,gif}',
-  '**/opengraph-image.{png,jpg,jpeg,gif}',
-  '**/twitter-image.{png,jpg,jpeg,gif}',
-  '**/apple-icon.{jpg,jpeg,png}',
-  '**/apple-touch.{jpg,jpeg,png}',
-  '**/apple-touch-*.{jpg,jpeg,png}',
-  '**/apple-touch-icon.{jpg,jpeg,png}',
-  '**/apple-touch-icon-*.{jpg,jpeg,png}',
-  '**/icon.{ico,jpg,jpeg,png,svg}',
-  '**/icon-*.{ico,jpg,jpeg,png,svg}',
+  '**/{og-image,opengraph-image,twitter-image}.{png,jpg,jpeg,gif}',
+  '**/{favicon,icon*}.{ico,jpg,jpeg,png,svg}',
+  '**/*.icon*.{ico,jpg,jpeg,png,svg}',
+  '**/apple-*.{jpg,jpeg,png}',
+  '**/*.apple-*.{jpg,jpeg,png}',
 ]
 
 // Matches meta tag files in a flat directory listing (no glob needed)
-const META_TAG_FILE_RE = /^(?:(?:og-image|opengraph-image)\.(?:png|jpe?g|gif)|twitter-image\.(?:png|jpe?g|gif)|apple-(?:icon|touch|touch-icon)(?:-[^.]+)?\.(?:jpe?g|png)|icon(?:-[^.]+)?\.(?:ico|jpe?g|png|svg)|favicon\.ico)$/
+const SOCIAL_IMAGE_RE = /^(?:og-image|opengraph-image|twitter-image)\.(?:png|jpe?g|gif)$/
 
 export function isMetaTagFile(filename: string): boolean {
-  return META_TAG_FILE_RE.test(filename)
+  return SOCIAL_IMAGE_RE.test(filename) || classifyIconFilename(filename) !== undefined
 }

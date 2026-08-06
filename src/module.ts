@@ -216,10 +216,18 @@ export default defineNuxtModule<ModuleOptions>({
     const runtimeDir = resolve('./runtime')
     if (config.metaDataFiles) {
       // we need ssr to resolve the tags to the absolute path
-      const { hasIcons } = await generateTagsFromPublicFiles()
+      const { hasIcons, diagnostics } = await generateTagsFromPublicFiles()
       await generateTagsFromPageDirImages()
 
       if (nuxt.options.dev) {
+        diagnostics.forEach((diagnostic) => {
+          if (diagnostic._tag === 'IconSizesNormalized') {
+            logger.warn(`Normalized icon sizes for ${diagnostic.href} from "${diagnostic.configured}" to "${diagnostic.resolved}" to match the local file.`)
+          }
+          else if (diagnostic._tag === 'IconHrefNormalized') {
+            logger.warn(`Normalized local icon href from "${diagnostic.configured}" to "${diagnostic.resolved}" to include app.baseURL.`)
+          }
+        })
         if (!hasIcons) {
           const publicDir = resolve(nuxt.options.rootDir, nuxt.options.dir.public)
           const logoPatterns = ['logo.svg', 'logo.png', 'icon.svg', 'icon.png', 'logo.jpg', 'logo.webp']

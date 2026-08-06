@@ -1,6 +1,6 @@
 import fs from 'node:fs'
-import { defineEventHandler, setHeader } from 'h3'
 import { parseURL } from 'ufo'
+import { defineEventHandler, setHeader } from '#nuxtseo/h3'
 import { fileMapping } from '#seo-utils-virtual/pageDirImages'
 
 // Note: this only runs in dev

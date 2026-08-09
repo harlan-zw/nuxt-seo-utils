@@ -95,7 +95,7 @@ catalog:
   nuxt-security: ^2.6.0
   nuxt-site-config: ^4.1.4
   nuxtseo-layer-devtools: ^5.3.6
-  nuxtseo-shared: ^5.3.9
+  nuxtseo-shared: ^5.3.11
   pathe: ^2.0.3
   pkg-types: ^2.3.1
   playwright-core: ^1.62.0

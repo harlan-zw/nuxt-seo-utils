@@ -257,7 +257,6 @@ export function useBreadcrumbItems(_options: BreadcrumbProps = {}): Ref<Breadcru
         locale: toValue(i18n.locale),
         defaultLocale: toValue(i18n.defaultLocale),
         strategy: i18n.strategy,
-        differentDomains: toValue((i18n as any).differentDomains),
       })
     }
     const current = withoutQuery(withoutTrailingSlash(flatOptions.path || toRaw(route)?.path || rootNode)) || ''

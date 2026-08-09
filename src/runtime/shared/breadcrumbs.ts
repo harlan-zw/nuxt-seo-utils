@@ -6,7 +6,6 @@ interface BreadcrumbLocaleContext {
   locale?: string
   defaultLocale?: string
   strategy?: RuntimeI18nConfig['strategy']
-  differentDomains?: boolean
 }
 
 export function resolveBreadcrumbRoot(rootNode: string, context: BreadcrumbLocaleContext): string {
@@ -17,7 +16,6 @@ export function resolveBreadcrumbRoot(rootNode: string, context: BreadcrumbLocal
     defaultLocale: context.defaultLocale || context.locale,
     strategy: context.strategy,
     locales: [],
-    differentDomains: context.differentDomains,
   })
 }
 

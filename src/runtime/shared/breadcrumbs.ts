@@ -1,4 +1,25 @@
+import type { RuntimeI18nConfig } from 'nuxtseo-shared/i18n-runtime'
+import { localePath } from 'nuxtseo-shared/i18n-runtime'
 import { hasTrailingSlash, parseURL, stringifyParsedURL, withTrailingSlash } from 'ufo'
+
+interface BreadcrumbLocaleContext {
+  locale?: string
+  defaultLocale?: string
+  strategy?: RuntimeI18nConfig['strategy']
+  differentDomains?: boolean
+}
+
+export function resolveBreadcrumbRoot(rootNode: string, context: BreadcrumbLocaleContext): string {
+  if (!context.locale || !context.strategy)
+    return rootNode
+
+  return localePath(rootNode, context.locale, {
+    defaultLocale: context.defaultLocale || context.locale,
+    strategy: context.strategy,
+    locales: [],
+    differentDomains: context.differentDomains,
+  })
+}
 
 export function pathBreadcrumbSegments(path: string, rootNode: string = '/'): string[] {
   const startNode = parseURL(path)

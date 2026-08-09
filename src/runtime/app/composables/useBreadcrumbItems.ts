@@ -21,7 +21,7 @@ import {
 import { defineBreadcrumb, useI18n, useSchemaOrg } from '#imports'
 import { useSiteConfig } from '#site-config/app/composables/useSiteConfig'
 import { createSitePathResolver } from '#site-config/app/composables/utils'
-import { pathBreadcrumbSegments } from '../../shared/breadcrumbs'
+import { pathBreadcrumbSegments, resolveBreadcrumbRoot } from '../../shared/breadcrumbs'
 
 interface NuxtUIBreadcrumbItem extends NuxtLinkProps {
   label: string
@@ -253,8 +253,12 @@ export function useBreadcrumbItems(_options: BreadcrumbProps = {}): Ref<Breadcru
 
     let rootNode = flatOptions.rootSegment || '/'
     if (i18n) {
-      if (i18n.strategy === 'prefix' || (i18n.strategy !== 'no_prefix' && toValue(i18n.defaultLocale) !== toValue(i18n.locale)))
-        rootNode = `${rootNode}${toValue(i18n.locale)}`
+      rootNode = resolveBreadcrumbRoot(rootNode, {
+        locale: toValue(i18n.locale),
+        defaultLocale: toValue(i18n.defaultLocale),
+        strategy: i18n.strategy,
+        differentDomains: toValue((i18n as any).differentDomains),
+      })
     }
     const current = withoutQuery(withoutTrailingSlash(flatOptions.path || toRaw(route)?.path || rootNode)) || ''
     // apply overrides

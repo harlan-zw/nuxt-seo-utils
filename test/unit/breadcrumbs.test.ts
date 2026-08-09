@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { pathBreadcrumbSegments } from '../../src/runtime/shared/breadcrumbs'
+import { pathBreadcrumbSegments, resolveBreadcrumbRoot } from '../../src/runtime/shared/breadcrumbs'
 
 describe('breadcrumbs', () => {
   it('basic', async () => {
@@ -40,5 +40,12 @@ describe('breadcrumbs', () => {
         "/x/y",
       ]
     `)
+  })
+  it('prefixes the default locale for prefix_and_default', () => {
+    expect(resolveBreadcrumbRoot('/', {
+      locale: 'en',
+      defaultLocale: 'en',
+      strategy: 'prefix_and_default',
+    })).toBe('/en')
   })
 })

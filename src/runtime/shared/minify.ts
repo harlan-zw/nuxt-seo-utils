@@ -1,30 +1,42 @@
 export const JSON_TYPES = new Set(['application/json', 'application/ld+json'])
 export const SKIP_JS_TYPES = new Set(['application/json', 'application/ld+json', 'speculationrules', 'importmap'])
 
+const JS_MINIFY_CANDIDATE_RE = /[\s/]/
+const CSS_MINIFY_CANDIDATE_RE = /[\s/]|;\}|0\.\d/
+
 /**
  * Lightweight JS minifier in pure JS (no native deps).
  * Strips comments and collapses whitespace while preserving string literals.
  */
 export function minifyJS(code: string): string {
+  if (!JS_MINIFY_CANDIDATE_RE.test(code))
+    return code
+
   let result = ''
+  let last = ''
   let i = 0
   const len = code.length
+  // Reading from the growing result forces V8 to flatten its string rope.
+  const append = (value: string) => {
+    result += value
+    last = value
+  }
 
   while (i < len) {
     const ch = code[i]
     // string literals - preserve as-is
     if (ch === '\'' || ch === '"' || ch === '`') {
       const quote = ch
-      result += ch
+      append(ch)
       i++
       while (i < len && code[i] !== quote) {
         if (code[i] === '\\') {
-          result += code[i++]
+          append(code[i++]!)
         }
-        result += code[i++]
+        append(code[i++]!)
       }
       if (i < len)
-        result += code[i++] // closing quote
+        append(code[i++]!) // closing quote
     }
     // single-line comment
     else if (ch === '/' && code[i + 1] === '/') {
@@ -47,18 +59,17 @@ export function minifyJS(code: string): string {
           hasNewline = true
         i++
       }
-      const prev = result.at(-1)
       const next = code[i]
-      if (hasNewline && prev && next && prev !== '{' && prev !== '}' && prev !== ';' && next !== '}' && next !== ';')
-        result += '\n'
-      else if (prev && next && isIdentChar(prev) && isIdentChar(next))
-        result += ' '
+      if (hasNewline && last && next && last !== '{' && last !== '}' && last !== ';' && next !== '}' && next !== ';')
+        append('\n')
+      else if (last && next && isIdentChar(last) && isIdentChar(next))
+        append(' ')
       // preserve space between identical + or - to avoid creating ++/-- operators
-      else if (prev && next && ((prev === '+' && next === '+') || (prev === '-' && next === '-')))
-        result += ' '
+      else if (last && next && ((last === '+' && next === '+') || (last === '-' && next === '-')))
+        append(' ')
     }
     else {
-      result += ch
+      append(ch!)
       i++
     }
   }
@@ -71,7 +82,11 @@ export function minifyJS(code: string): string {
  * Strips comments and collapses whitespace while preserving string literals.
  */
 export function minifyCSS(code: string): string {
+  if (!CSS_MINIFY_CANDIDATE_RE.test(code))
+    return code
+
   let result = ''
+  let last = ''
   let i = 0
   // Stack of paren contexts: true = selector-function paren (:is/:where/:not/:has),
   // false = value paren (calc/min/max/clamp/var/rgb…). Whitespace rules differ:
@@ -79,21 +94,26 @@ export function minifyCSS(code: string): string {
   // space before * is the descendant combinator, e.g. Tailwind v4 group-* variants).
   const parenStack: boolean[] = []
   const len = code.length
+  // Reading from the growing result forces V8 to flatten its string rope.
+  const append = (value: string) => {
+    result += value
+    last = value
+  }
 
   while (i < len) {
     const ch = code[i]
     // string literals - preserve as-is
     if (ch === '\'' || ch === '"') {
       const quote = ch
-      result += ch
+      append(ch)
       i++
       while (i < len && code[i] !== quote) {
         if (code[i] === '\\')
-          result += code[i++]
-        result += code[i++]
+          append(code[i++]!)
+        append(code[i++]!)
       }
       if (i < len)
-        result += code[i++]
+        append(code[i++]!)
     }
     // comments
     else if (ch === '/' && code[i + 1] === '*') {
@@ -104,20 +124,19 @@ export function minifyCSS(code: string): string {
     }
     // track paren context for calc()/min()/max()/clamp()/var() vs :is()/:where()/…
     else if (ch === '(') {
-      parenStack.push(isSelectorFunctionParen(result))
-      result += ch
+      parenStack.push(isSelectorFunctionParen(code, i))
+      append(ch)
       i++
     }
     else if (ch === ')') {
       parenStack.pop()
-      result += ch
+      append(ch)
       i++
     }
     // whitespace - collapse to single space, remove around punctuation
     else if (ch === ' ' || ch === '\t' || ch === '\n' || ch === '\r') {
       while (i < len && (code[i] === ' ' || code[i] === '\t' || code[i] === '\n' || code[i] === '\r'))
         i++
-      const prev = result.at(-1)
       const next = code[i]
       // strip space before ! for !important
       if (next === '!')
@@ -127,11 +146,11 @@ export function minifyCSS(code: string): string {
         // the descendant combinator before * is preserved; value parens (calc/min/…)
         // may additionally strip around * and / (safe per spec), preserving + and -.
         const isPunct = parenStack[parenStack.length - 1] ? isCSSPunctuation : isCSSCalcPunctuation
-        if (prev && next && !isPunct(prev) && !isPunct(next))
-          result += ' '
+        if (last && next && !isPunct(last) && !isPunct(next))
+          append(' ')
       }
-      else if (prev && next && !isCSSPunctuation(prev) && !isCSSPunctuation(next)) {
-        result += ' '
+      else if (last && next && !isCSSPunctuation(last) && !isCSSPunctuation(next)) {
+        append(' ')
       }
     }
     // trailing semicolon before } is optional
@@ -143,16 +162,15 @@ export function minifyCSS(code: string): string {
         i++ // skip the semicolon
       }
       else {
-        result += ch
+        append(ch)
         i++
       }
     }
     // leading zero: 0.x → .x
     else if (ch === '0' && code[i + 1] === '.' && (code[i + 2] ?? '') >= '0' && (code[i + 2] ?? '') <= '9') {
-      const prev = result.at(-1)
       // only strip if prev is not a digit (avoid turning 10.5 into 1.5)
-      if (prev && prev >= '0' && prev <= '9') {
-        result += ch
+      if (last && last >= '0' && last <= '9') {
+        append(ch)
         i++
       }
       else {
@@ -160,7 +178,7 @@ export function minifyCSS(code: string): string {
       }
     }
     else {
-      result += ch
+      append(ch!)
       i++
     }
   }
@@ -197,13 +215,13 @@ function isCSSNameChar(ch: string): boolean {
 // pseudo-class/element (:is, :where, :not, :has, …). Inside those, * is the
 // universal selector and the leading space is the descendant combinator, so the
 // calc-style stripping of * / must not apply (e.g. Tailwind v4 group-* variants).
-function isSelectorFunctionParen(result: string): boolean {
-  let j = result.length - 1
-  while (j >= 0 && isCSSNameChar(result[j]!))
+function isSelectorFunctionParen(code: string, parenIndex: number): boolean {
+  let j = parenIndex - 1
+  while (j >= 0 && isCSSNameChar(code[j]!))
     j--
-  if (result[j] !== ':')
+  if (code[j] !== ':')
     return false
-  const name = result.slice(j + 1).toLowerCase()
+  const name = code.slice(j + 1, parenIndex).toLowerCase()
   return name === 'is' || name === 'where' || name === 'not' || name === 'has'
     || name === 'matches' || name === 'host' || name === 'host-context' || name === 'slotted'
 }

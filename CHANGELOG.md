@@ -1,6 +1,46 @@
 # Changelog
 
 
+## v8.3.3...main
+
+[compare changes](https://github.com/harlan-zw/nuxt-seo-utils/compare/v8.3.3...main)
+
+### 🚀 Enhancements
+
+- **ci:** Add package size reporting ([#129](https://github.com/harlan-zw/nuxt-seo-utils/pull/129))
+- Switch icons with app color mode ([#133](https://github.com/harlan-zw/nuxt-seo-utils/pull/133))
+
+### 🩹 Fixes
+
+- Resolve Unhead Vite plugin from host tree ([#128](https://github.com/harlan-zw/nuxt-seo-utils/pull/128))
+- Support Nitro 3 runtime APIs ([#127](https://github.com/harlan-zw/nuxt-seo-utils/pull/127))
+- Use shared Nitro fetch alias ([#130](https://github.com/harlan-zw/nuxt-seo-utils/pull/130))
+- **i18n:** Resolve localized breadcrumb roots ([#132](https://github.com/harlan-zw/nuxt-seo-utils/pull/132))
+- Emit accurate favicon metadata ([#131](https://github.com/harlan-zw/nuxt-seo-utils/pull/131))
+
+### ❤️ Contributors
+
+- Harlan Wilton ([@harlan-zw](https://github.com/harlan-zw))
+
+## v8.3.2...main
+
+[compare changes](https://github.com/harlan-zw/nuxt-seo-utils/compare/v8.3.2...main)
+
+### 🔥 Performance
+
+- Make Unhead bundler an optional peer ([#125](https://github.com/harlan-zw/nuxt-seo-utils/pull/125))
+
+### 🏡 Chore
+
+- Code cleanup sweep ([#123](https://github.com/harlan-zw/nuxt-seo-utils/pull/123))
+- Adopt nuxtseo-shared 5.3.4 APIs ([#124](https://github.com/harlan-zw/nuxt-seo-utils/pull/124))
+- Bump ([2aed8e6](https://github.com/harlan-zw/nuxt-seo-utils/commit/2aed8e6))
+- Bump ([10a3b11](https://github.com/harlan-zw/nuxt-seo-utils/commit/10a3b11))
+
+### ❤️ Contributors
+
+- Harlan Wilton ([@harlan-zw](https://github.com/harlan-zw))
+
 ## v8.3.1...main
 
 [compare changes](https://github.com/harlan-zw/nuxt-seo-utils/compare/v8.3.1...main)

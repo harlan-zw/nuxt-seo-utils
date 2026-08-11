@@ -153,7 +153,7 @@ export interface ModuleOptions {
    * **Build mode**: Minifies static `app.head` scripts/styles and prerendered route HTML using esbuild (JS) and lightningcss (CSS).
    * **Runtime mode**: Minifies all inline scripts/styles per SSR request via an Unhead `ssr:render` plugin using lightweight pure JS minifiers.
    *
-   * @default true
+   * @default { build: true, runtime: false }
    */
   minify: boolean | { build?: boolean, runtime?: boolean }
 
@@ -203,7 +203,7 @@ export default defineNuxtModule<ModuleOptions>({
     automaticOgAndTwitterTags: true,
     canonicalLowercase: true,
     tagPriority: 'low',
-    minify: true,
+    minify: { build: true, runtime: false },
   },
   async setup(config, nuxt) {
     const logger = useModuleLogger('nuxt-seo-utils', config, nuxt)

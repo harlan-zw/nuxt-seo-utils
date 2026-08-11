@@ -1037,3 +1037,37 @@ describe('minifyJSON', () => {
     expect(() => minifyJSON('not json')).toThrow()
   })
 })
+
+describe('large input performance', () => {
+  it.each([
+    ['JavaScript', minifyJS, 'const   item   =   { key: "value", count: 1 }; // comment\n'],
+    ['CSS', minifyCSS, '.item   { color: red; padding: calc(1rem + 2px); } /* comment */\n'],
+  ] as const)('keeps %s minification near linear', (_, minify, unit) => {
+    const small = unit.repeat(Math.ceil(32_768 / unit.length))
+    const large = unit.repeat(Math.ceil(262_144 / unit.length))
+
+    minify(small)
+    const smallStart = performance.now()
+    for (let i = 0; i < 5; i++)
+      minify(small)
+    const smallAverage = (performance.now() - smallStart) / 5
+
+    const largeStart = performance.now()
+    minify(large)
+    const largeDuration = performance.now() - largeStart
+
+    expect(largeDuration).toBeLessThan(smallAverage * 40)
+  })
+
+  it.each([
+    ['JavaScript', minifyJS, 'a();'],
+    ['CSS', minifyCSS, '.a{color:red}'],
+  ] as const)('fast-passes candidate-free %s', (_, minify, unit) => {
+    const input = unit.repeat(Math.ceil(4_194_304 / unit.length))
+    const start = performance.now()
+    const result = minify(input)
+
+    expect(result).toBe(input)
+    expect(performance.now() - start).toBeLessThan(50)
+  })
+})

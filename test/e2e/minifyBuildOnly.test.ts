@@ -28,7 +28,6 @@ await setup({
     },
     // @ts-expect-error module config key
     seo: {
-      minify: { build: true, runtime: false },
       treeShakeUseSeoMeta: false,
     },
   },
@@ -47,7 +46,7 @@ function getStyleContent(el: any) {
   return el?.children?.[0]?.value ?? ''
 }
 
-describe('minify build-only (runtime disabled)', () => {
+describe('default build-only minification', () => {
   it('minifies static head scripts at build time', async () => {
     const html = await $fetch<string>('/')
     const ast = parse(html)
@@ -81,5 +80,13 @@ describe('minify build-only (runtime disabled)', () => {
         expect(() => JSON.parse(content)).not.toThrow()
       }
     }
+  }, 30_000)
+
+  it('does not minify dynamic scripts at runtime', async () => {
+    const html = await $fetch<string>('/runtime-minify-default?marker=Default')
+    const ast = parse(html)
+    const content = getInlineScripts(ast).map(el => getScriptContent(el)).join('')
+
+    expect(content).toContain('var   runtimeDefault   =   true  ;   // runtime whitespace')
   }, 30_000)
 })

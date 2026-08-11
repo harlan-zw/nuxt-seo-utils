@@ -1,11 +1,15 @@
 import { createResolver } from '@nuxt/kit'
-import { $fetch, setup } from '@nuxt/test-utils/e2e'
+import { $fetch, fetch, setup } from '@nuxt/test-utils/e2e'
 import { load } from 'cheerio'
 import { describe, expect, it } from 'vitest'
 
 const { resolve } = createResolver(import.meta.url)
 
 await setup({
+  dev: true,
+  env: {
+    NUXT_APP_BASE_URL: '/base',
+  },
   rootDir: resolve('../fixtures/basic'),
   nuxtConfig: {
     app: {
@@ -35,5 +39,15 @@ describe('app baseURL', () => {
     const darkIcon = $('link[rel="icon"][href="/base/admin/icon.dark.svg"]')
     expect(darkIcon.attr('sizes')).toBe('any')
     expect(darkIcon.attr('media')).toBe('(prefers-color-scheme: dark)')
+  })
+
+  it.each([
+    '/base/admin/icon.svg',
+    '/base/admin/icon.dark.svg',
+  ])('serves the route-specific icon at %s', async (href) => {
+    const response = await fetch(href)
+
+    expect(response.status).toBe(200)
+    expect(await response.text()).toContain('<svg')
   })
 })

@@ -77,7 +77,7 @@ export default async function generateTagsFromPageDirImages(nuxt: Nuxt = useNuxt
         routeRule.seoMeta[property] ||= []
         routeRule.seoMeta[property].push({ url: href, ...meta, sizes: undefined })
       }
-      devMiddlewareMap[href] = resolve(pagesDir, file)
+      devMiddlewareMap[routeAssetPath] = resolve(pagesDir, file)
       nitroOutputMap.push({
         src: resolve(pagesDir, file),
         dest: routeAssetPath.slice(1),

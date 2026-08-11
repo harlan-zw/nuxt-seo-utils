@@ -31,7 +31,7 @@ beforeEach(() => {
 
 describe('color mode icon plugin', () => {
   it('updates its head input when the app color mode changes', async () => {
-    const plugin = (await pluginModule).default as { setup: () => void }
+    const plugin = (await pluginModule).default as unknown as { setup: () => void }
     plugin.setup()
     const resolveHead = state.useHead.mock.calls[0]![0] as () => { link: Array<{ href: string }> }
 

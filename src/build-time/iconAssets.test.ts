@@ -5,7 +5,7 @@ import { createResolver } from '@nuxt/kit'
 import imageSize from 'image-size'
 import { describe, expect, it } from 'vitest'
 import generateTagsFromPublicFiles from './generateTagsFromPublicFiles'
-import { classifyIconFilename, getIconRel, pngToIco } from './iconAssets'
+import { classifyIconFilename, getIconRel, partitionColorModeIconLinks, pngToIco } from './iconAssets'
 
 const { resolve } = createResolver(import.meta.url)
 
@@ -22,6 +22,8 @@ describe('icon asset conventions', () => {
   it.each([
     ['favicon.ico', 'icon'],
     ['favicon.svg', 'icon'],
+    ['favicon-dark.svg', 'icon'],
+    ['favicon.light.png', 'icon'],
     ['icon.ico', 'icon'],
     ['icon.dark.png', 'icon'],
     ['icon-dark.png', 'icon'],
@@ -38,6 +40,44 @@ describe('icon asset conventions', () => {
 
   it('ignores unrelated image files', () => {
     expect(classifyIconFilename('article.png')).toBeUndefined()
+  })
+
+  it('extracts complete color mode pairs from static icon links', () => {
+    const result = partitionColorModeIconLinks([
+      { rel: 'icon', href: '/favicon-dark.svg', media: '(prefers-color-scheme: dark)' },
+      { rel: 'icon', href: '/favicon-light.svg', media: '(prefers-color-scheme: light)' },
+      { rel: 'apple-touch-icon', href: '/touch-dark.png', media: '(prefers-color-scheme: dark)' },
+      { rel: 'apple-touch-icon', href: '/touch-light.png', media: '(prefers-color-scheme: light)' },
+      { rel: 'icon', href: '/fallback.ico' },
+    ])
+
+    expect(result).toEqual({
+      _tag: 'ReactiveIconLinks',
+      links: [
+        { rel: 'icon', href: '/fallback.ico' },
+      ],
+      icons: {
+        dark: [
+          { rel: 'icon', href: '/favicon-dark.svg' },
+          { rel: 'apple-touch-icon', href: '/touch-dark.png' },
+        ],
+        light: [
+          { rel: 'icon', href: '/favicon-light.svg' },
+          { rel: 'apple-touch-icon', href: '/touch-light.png' },
+        ],
+      },
+    })
+  })
+
+  it('keeps incomplete color mode pairs as media links', () => {
+    const links: Link[] = [
+      { rel: 'icon', href: '/favicon-dark.svg', media: '(prefers-color-scheme: dark)' },
+    ]
+
+    expect(partitionColorModeIconLinks(links)).toEqual({
+      _tag: 'StaticIconLinks',
+      links,
+    })
   })
 
   it('writes every supplied PNG size into the ICO directory', () => {

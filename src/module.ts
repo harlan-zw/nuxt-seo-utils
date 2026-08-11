@@ -23,6 +23,7 @@ import extendNuxtConfigAppHeadSeoMeta from './build-time/extendNuxtConfigAppHead
 import extendNuxtConfigAppHeadTypes from './build-time/extendNuxtConfigAppHeadTypes'
 import generateTagsFromPageDirImages from './build-time/generateTagsFromPageDirImages'
 import generateTagsFromPublicFiles from './build-time/generateTagsFromPublicFiles'
+import { partitionColorModeIconLinks } from './build-time/iconAssets'
 import minifyStaticHead from './build-time/minifyStaticHead'
 import { resolveUnheadVitePluginSource } from './build-time/resolveUnheadVitePluginSource'
 import setupNuxtConfigAppHeadWithMoreDefaults from './build-time/setupNuxtConfigAppHeadWithMoreDefaults'
@@ -390,6 +391,20 @@ export {}
     })
 
     const appRuntimeDir = resolve(runtimeDir, './app')
+    nuxt.hook('modules:done', () => {
+      if (!hasNuxtModule('@nuxtjs/color-mode', nuxt))
+        return
+
+      const headConfig = nuxt.options.app.head as Record<string, any>
+      const result = partitionColorModeIconLinks(headConfig.link || [])
+      if (result._tag === 'StaticIconLinks')
+        return
+
+      headConfig.link = result.links
+      const seoRuntimeConfig = nuxt.options.runtimeConfig.public['seo-utils'] as Record<string, unknown>
+      seoRuntimeConfig.colorModeIcons = result.icons
+      addPlugin({ src: resolve(appRuntimeDir, 'plugins', 'colorModeIcons') })
+    })
     // Seed nuxt.options.unhead.vite so Nuxt >=4.5.0 compat>=5 (which registers
     // @unhead/vue/vite itself) uses the same config as our fallback registration.
     // Users can pass false to disable the plugin entirely, or override any option.

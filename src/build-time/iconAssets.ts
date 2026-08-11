@@ -1,6 +1,12 @@
+import type { Link } from '@unhead/vue/types'
+import type { ColorModeIconLinks } from '../runtime/types'
 import { Buffer } from 'node:buffer'
 
 export type IconRel = 'icon' | 'apple-touch-icon'
+
+export type ResolvedColorModeIconLinks
+  = | { _tag: 'StaticIconLinks', links: Link[] }
+    | { _tag: 'ReactiveIconLinks', links: Link[], icons: ColorModeIconLinks }
 
 export type IconDiagnostic
   = | {
@@ -22,8 +28,9 @@ export interface IcoPng {
 }
 
 const APPLE_ICON_RE = /^(?:[^.]+\.)?apple-(?:icon|touch(?:-icon)?)(?:[.-][^.]+)?\.(?:jpe?g|png)$/i
-const ICON_RE = /^(?:favicon\.(?:ico|png|svg)|(?:[^.]+\.)?icon(?:[.-][^.]+)?\.(?:ico|jpe?g|png|svg))$/i
+const ICON_RE = /^(?:favicon(?:[.-][^.]+)?\.(?:ico|jpe?g|png|svg)|(?:[^.]+\.)?icon(?:[.-][^.]+)?\.(?:ico|jpe?g|png|svg))$/i
 const SIZE_RE = /^\d+x\d+$/
+const COLOR_SCHEME_MEDIA_RE = /^\(\s*prefers-color-scheme\s*:\s*(dark|light)\s*\)$/i
 
 export function classifyIconFilename(filename: string): IconRel | undefined {
   if (APPLE_ICON_RE.test(filename))
@@ -40,6 +47,50 @@ export function getIconRel(rel: unknown): IconRel | undefined {
     return 'apple-touch-icon'
   if (tokens.includes('icon'))
     return 'icon'
+}
+
+function getIconColorMode(media: unknown): keyof ColorModeIconLinks | undefined {
+  if (typeof media !== 'string')
+    return
+  return COLOR_SCHEME_MEDIA_RE.exec(media.trim())?.[1]?.toLowerCase() as keyof ColorModeIconLinks | undefined
+}
+
+export function partitionColorModeIconLinks(links: Link[]): ResolvedColorModeIconLinks {
+  const candidates = links.map((link, index) => {
+    const iconLink = link as Link & { media?: string }
+    return {
+      index,
+      link: iconLink,
+      mode: getIconColorMode(iconLink.media),
+      rel: getIconRel(iconLink.rel),
+    }
+  })
+  const reactiveRels = new Set<IconRel>()
+
+  for (const rel of ['icon', 'apple-touch-icon'] as const) {
+    const modes = new Set(candidates.filter(candidate => candidate.rel === rel).map(candidate => candidate.mode))
+    if (modes.has('dark') && modes.has('light'))
+      reactiveRels.add(rel)
+  }
+
+  if (reactiveRels.size === 0)
+    return { _tag: 'StaticIconLinks', links }
+
+  const icons: ColorModeIconLinks = { dark: [], light: [] }
+  const reactiveIndexes = new Set<number>()
+  for (const candidate of candidates) {
+    if (!candidate.rel || !candidate.mode || !reactiveRels.has(candidate.rel))
+      continue
+    const { media: _, ...link } = candidate.link
+    icons[candidate.mode].push(link as Link)
+    reactiveIndexes.add(candidate.index)
+  }
+
+  return {
+    _tag: 'ReactiveIconLinks',
+    links: links.filter((_, index) => !reactiveIndexes.has(index)),
+    icons,
+  }
 }
 
 export function normalizeIconSizes(configured: unknown, resolved: string): {

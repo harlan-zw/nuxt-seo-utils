@@ -11,6 +11,7 @@ export default defineConfig({
           include: [
             './test/unit/**/*.test.ts',
             './src/**/*.test.ts',
+            './devtools/lib/**/*.test.ts',
           ],
         },
       }),

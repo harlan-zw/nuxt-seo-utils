@@ -1,21 +1,95 @@
 import type { Nuxt } from '@nuxt/schema'
 import type { Link, Meta, SerializableHead } from '@unhead/vue/types'
 import type { MetaFlatSerializable } from '../runtime/types'
+import type { IconDiagnostic, IconRel } from './iconAssets'
 import { readdir } from 'node:fs/promises'
 import { useNuxt } from '@nuxt/kit'
 import { unpackMeta } from '@unhead/vue/utils'
 import { defu } from 'defu'
-import { resolve } from 'pathe'
+import { basename, resolve } from 'pathe'
 import { joinURL } from 'ufo'
 import { isMetaTagFile } from '../const'
-import { getImageDimensions, getImageMeta, hasLinkRel, hasMetaProperty } from '../util'
+import { getImageDimensions, getImageMeta, hasMetaProperty } from '../util'
+import { classifyIconFilename, getIconRel, normalizeIconSizes } from './iconAssets'
+
+interface IconFileEntry {
+  file: string
+  dir: string
+  rel: IconRel
+  type: string
+  sizes: string
+  media?: string
+}
+
+interface LocalIconMatch {
+  entry: IconFileEntry
+  resolvedHref: string
+}
+
+type ConfiguredIconLink = Link & {
+  href?: string
+  media?: string
+  sizes?: string
+  type?: string
+}
 
 async function listMetaTagFiles(dir: string): Promise<string[]> {
-  const entries = await readdir(dir, { withFileTypes: true }).catch(() => [])
+  const entries = await readdir(dir, { withFileTypes: true }).catch((error: NodeJS.ErrnoException) => {
+    if (error.code === 'ENOENT')
+      return []
+    throw error
+  })
   return entries.filter(e => e.isFile() && isMetaTagFile(e.name)).map(e => e.name)
 }
 
-export default async function generateTagsFromPublicFiles(nuxt: Nuxt = useNuxt()): Promise<{ hasIcons: boolean }> {
+function findLocalIcon(href: unknown, baseURL: string, iconEntries: IconFileEntry[]): LocalIconMatch | undefined {
+  if (typeof href !== 'string' || /^(?:[a-z][a-z\d+.-]*:|\/\/|#)/i.test(href))
+    return
+  const path = href.split(/[?#]/, 1)[0] || ''
+  const file = basename(path)
+  const entry = iconEntries.find(icon => icon.file === file)
+  if (!entry)
+    return
+  const validPaths = new Set([entry.file, `/${entry.file}`, joinURL(baseURL, entry.file)])
+  return validPaths.has(path)
+    ? { entry, resolvedHref: `${joinURL(baseURL, entry.file)}${href.slice(path.length)}` }
+    : undefined
+}
+
+function enrichConfiguredIcon(link: Link, baseURL: string, iconEntries: IconFileEntry[], diagnostics: IconDiagnostic[]): Link {
+  const iconLink = link as ConfiguredIconLink
+  const match = findLocalIcon(iconLink.href, baseURL, iconEntries)
+  if (!match)
+    return link
+  const { entry, resolvedHref } = match
+
+  if (iconLink.href !== resolvedHref) {
+    diagnostics.push({
+      _tag: 'IconHrefNormalized',
+      configured: String(iconLink.href),
+      resolved: resolvedHref,
+    })
+  }
+
+  const normalizedSizes = normalizeIconSizes(iconLink.sizes, entry.sizes)
+  if (normalizedSizes.normalized) {
+    diagnostics.push({
+      _tag: 'IconSizesNormalized',
+      href: String(iconLink.href),
+      configured: String(iconLink.sizes),
+      resolved: entry.sizes,
+    })
+  }
+  return {
+    ...iconLink,
+    href: resolvedHref,
+    type: iconLink.type || entry.type,
+    sizes: normalizedSizes.sizes,
+    media: iconLink.media || entry.media,
+  } as Link
+}
+
+export default async function generateTagsFromPublicFiles(nuxt: Nuxt = useNuxt()): Promise<{ hasIcons: boolean, diagnostics: IconDiagnostic[] }> {
   const publicDirs = nuxt.options._layers
     .map(layer => resolve(layer.config.rootDir!, layer.config.dir?.public || 'public'))
 
@@ -38,49 +112,40 @@ export default async function generateTagsFromPublicFiles(nuxt: Nuxt = useNuxt()
     meta: [],
   })
 
-  if (!hasLinkRel(headConfig, 'icon')) {
-    if (rootPublicFiles.includes('favicon.ico') && nuxt.options.app.baseURL !== '/') {
-      headConfig.link!.push({
-        rel: 'icon',
-        href: joinURL(nuxt.options.app.baseURL, 'favicon.ico'),
-        sizes: 'any',
-      })
+  const iconEntries = (await Promise.all(fileEntries.map(async ({ file, dir }): Promise<IconFileEntry | undefined> => {
+    const rel = classifyIconFilename(file)
+    if (!rel)
+      return
+    const meta = await getImageMeta(dir, file, true)
+    return {
+      file,
+      dir,
+      rel,
+      type: String(meta.type),
+      sizes: String(meta.sizes),
+      media: meta.media ? String(meta.media) : undefined,
     }
+  }))).filter(entry => entry !== undefined)
 
-    const isIcon = (file: string): boolean => file.includes('icon') && !file.endsWith('.ico')
-    const isAppleTouchIcon = (file: string): boolean => (
-      (file.includes('apple-icon') || file.includes('apple-touch-icon') || file.includes('apple-touch'))
-    )
+  const diagnostics: IconDiagnostic[] = []
+  headConfig.link = headConfig.link!.map(link => enrichConfiguredIcon(link as Link, nuxt.options.app.baseURL, iconEntries, diagnostics))
+  const configuredIconRels = new Set(headConfig.link.map(link => getIconRel(link.rel)).filter(rel => rel !== undefined))
 
-    const resolveDir = (file: string): string => fileEntries.find(e => e.file === file)!.dir
-
-    headConfig.link!.push(
-      ...await Promise.all([
-        ...rootPublicFiles
-          .filter(file => isIcon(file) && !isAppleTouchIcon(file))
-          .sort()
-          .map(async (iconFile) => {
-            const meta = await getImageMeta(resolveDir(iconFile), iconFile, true)
-            return {
-              rel: 'icon',
-              href: joinURL(nuxt.options.app.baseURL, iconFile),
-              ...meta,
-            }
-          }),
-        ...rootPublicFiles
-          .filter(file => isAppleTouchIcon(file))
-          .sort()
-          .map(async (appleIconFile) => {
-            const meta = await getImageMeta(resolveDir(appleIconFile), appleIconFile, true)
-            return {
-              rel: 'apple-touch-icon',
-              href: joinURL(nuxt.options.app.baseURL, appleIconFile),
-              ...meta,
-            }
-          }),
-      ]) as Link[],
-    )
+  for (const rel of ['icon', 'apple-touch-icon'] as const) {
+    if (configuredIconRels.has(rel))
+      continue
+    headConfig.link.push(...iconEntries
+      .filter(entry => entry.rel === rel)
+      .sort((a, b) => a.file.localeCompare(b.file))
+      .map(entry => ({
+        rel: entry.rel,
+        type: entry.type,
+        href: joinURL(nuxt.options.app.baseURL, entry.file),
+        sizes: entry.sizes,
+        media: entry.media,
+      })))
   }
+
   let hasTwitterImage = hasMetaProperty(headConfig, 'twitter:image')
   if (!hasTwitterImage) {
     // add the twitter image
@@ -134,6 +199,6 @@ export default async function generateTagsFromPublicFiles(nuxt: Nuxt = useNuxt()
   }
 
   nuxt.options.app.head = headConfig
-  const hasIcons = rootPublicFiles.some(f => f.includes('icon') || f === 'favicon.ico')
-  return { hasIcons }
+  const hasIcons = iconEntries.length > 0 || configuredIconRels.size > 0
+  return { hasIcons, diagnostics }
 }

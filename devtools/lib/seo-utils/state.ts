@@ -1,7 +1,7 @@
 import { ref, watch } from 'vue'
 
 export interface DebugData {
-  runtimeConfig: { version: string, [key: string]: any }
+  runtimeConfig: { version: string, appBaseURL: string, [key: string]: any }
   siteConfig: {
     url: string
     name: string

@@ -89,11 +89,11 @@
     "defu": "catalog:",
     "escape-string-regexp": "catalog:",
     "exsolve": "catalog:",
-    "image-size": "catalog:",
     "nuxt-site-config": "catalog:",
     "nuxtseo-shared": "catalog:",
     "pathe": "catalog:",
     "pkg-types": "catalog:",
+    "probe-image-size": "catalog:",
     "scule": "catalog:",
     "tinyglobby": "catalog:",
     "ufo": "catalog:"

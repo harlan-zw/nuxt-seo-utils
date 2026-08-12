@@ -2,7 +2,7 @@ import type { Nuxt } from '@nuxt/schema'
 import type { Link, SerializableHead } from '@unhead/vue/types'
 import { Buffer } from 'node:buffer'
 import { createResolver } from '@nuxt/kit'
-import imageSize from 'image-size'
+import probeImageSize from 'probe-image-size/sync.js'
 import { describe, expect, it } from 'vitest'
 import generateTagsFromPublicFiles from './generateTagsFromPublicFiles'
 import { classifyIconFilename, getIconRel, partitionColorModeIconLinks, pngToIco } from './iconAssets'
@@ -88,7 +88,7 @@ describe('icon asset conventions', () => {
       { buffer: onePixelPng, width: 48, height: 48 },
     ])
 
-    expect(imageSize(ico).images).toEqual([
+    expect(probeImageSize(ico)?.variants).toEqual([
       expect.objectContaining({ width: 16, height: 16 }),
       expect.objectContaining({ width: 32, height: 32 }),
       expect.objectContaining({ width: 48, height: 48 }),

@@ -27,17 +27,3 @@ declare module 'sharp' {
   const sharp: SharpFactory
   export default sharp
 }
-
-declare module 'probe-image-size/sync.js' {
-  interface ImageVariant {
-    width: number
-    height: number
-  }
-
-  interface ImageDimensions extends ImageVariant {
-    variants?: ImageVariant[]
-  }
-
-  const probeImageSize: (data: Uint8Array) => ImageDimensions | null
-  export default probeImageSize
-}

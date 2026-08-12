@@ -2,7 +2,7 @@ import type { SerializableHead } from '@unhead/vue/types'
 import fs from 'node:fs'
 import { readFile } from 'node:fs/promises'
 import { dirname, resolve } from 'pathe'
-import probeImageSize from 'probe-image-size/sync.js'
+import { parseImageDimensions } from './build-time/imageDimensions'
 
 export function hasMetaProperty(input: SerializableHead, property: string): boolean | undefined {
   return input.meta?.some(meta => meta.property === property)
@@ -57,12 +57,12 @@ export async function getImageMeta(base: string, path: string, isIcon = false): 
 }
 export async function getImageDimensions(absolutePath: string) {
   const buffer = await readFile(absolutePath)
-  const dimensions = probeImageSize(buffer)
+  const dimensions = parseImageDimensions(buffer)
   if (!dimensions)
     throw new TypeError(`Unsupported image format: ${absolutePath}`)
   return {
     width: dimensions.width,
     height: dimensions.height,
-    images: dimensions.variants,
+    images: dimensions.images,
   }
 }

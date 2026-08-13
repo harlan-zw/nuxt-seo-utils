@@ -61,9 +61,9 @@ packages:
 overrides:
   # 3.2.0's SSR transform rewrites `head.ssr = false` into invalid syntax.
   # Keep the Unhead packages aligned until an upstream patch is available.
-  '@unhead/bundler': 3.2.1
-  '@unhead/vue': 3.2.1
-  unhead: 3.2.1
+  '@unhead/bundler': ^3.3.2
+  '@unhead/vue': ^3.3.2
+  unhead: ^3.3.2
   vue: ^3.5.41
 catalog:
   '@antfu/eslint-config': ^9.3.0
@@ -124,8 +124,3 @@ allowBuilds:
   '@parcel/watcher': true
   esbuild: true
   vue-demi: true
-catalogs:
-  conflicts_@unhead/vue_3_3_2:
-    '@unhead/vue': 3.3.2
-  conflicts_unhead_3_3_2:
-    unhead: 3.3.2

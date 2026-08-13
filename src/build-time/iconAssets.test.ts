@@ -88,11 +88,15 @@ describe('icon asset conventions', () => {
       { buffer: onePixelPng, width: 48, height: 48 },
     ])
 
-    expect(parseImageDimensions(ico)?.images).toEqual([
-      expect.objectContaining({ width: 16, height: 16 }),
-      expect.objectContaining({ width: 32, height: 32 }),
-      expect.objectContaining({ width: 48, height: 48 }),
-    ])
+    expect(parseImageDimensions(ico)).toEqual({
+      width: 48,
+      height: 48,
+      images: [
+        { width: 16, height: 16 },
+        { width: 32, height: 32 },
+        { width: 48, height: 48 },
+      ],
+    })
   })
 })
 

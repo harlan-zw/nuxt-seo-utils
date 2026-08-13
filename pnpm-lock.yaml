@@ -69,9 +69,6 @@ catalogs:
     happy-dom:
       specifier: ^20.11.2
       version: 20.11.2
-    image-size:
-      specifier: ^2.0.2
-      version: 2.0.2
     lint-staged:
       specifier: ^17.3.0
       version: 17.3.0
@@ -164,9 +161,6 @@ importers:
       exsolve:
         specifier: 'catalog:'
         version: 1.1.1
-      image-size:
-        specifier: 'catalog:'
-        version: 2.0.2
       lightningcss:
         specifier: '>=1.20.0'
         version: 1.32.0
@@ -5166,11 +5160,6 @@ packages:
 
   image-meta@0.2.2:
     resolution: {integrity: sha512-3MOLanc3sb3LNGWQl1RlQlNWURE5g32aUphrDyFeCsxBTk08iE3VNe4CwsUZ0Qs1X+EfX0+r29Sxdpza4B+yRA==}
-
-  image-size@2.0.2:
-    resolution: {integrity: sha512-IRqXKlaXwgSMAMtpNzZa1ZAe8m+Sa1770Dhk8VkSsP9LS+iHD62Zd8FQKs8fbPiagBE7BzoFX23cxFnwshpV6w==}
-    engines: {node: '>=16.x'}
-    hasBin: true
 
   immutable@5.1.6:
     resolution: {integrity: sha512-q1swsS8K7L8usSHuOqF2TAoCCkonYz0SG38wLAggaa4Wml70zixIvt2ql4coQ2C2B3hTjltJry4r6bULwgAXLQ==}
@@ -13194,8 +13183,6 @@ snapshots:
   ignore@7.0.6: {}
 
   image-meta@0.2.2: {}
-
-  image-size@2.0.2: {}
 
   immutable@5.1.6: {}
 

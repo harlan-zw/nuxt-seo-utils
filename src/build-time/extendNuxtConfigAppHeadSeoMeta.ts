@@ -19,10 +19,11 @@ export default function extendNuxtConfigAppHeadSeoMeta(nuxt: Nuxt = useNuxt()): 
     ...nuxt.options.app.head,
     meta: [
       ...nuxt.options.app.head.meta || [],
-      // @ts-expect-error untyped
       ...unpackMeta(seoMeta),
       ...unpackMeta(configSeoMeta || {}),
-    ],
+      // Unhead accepts null and array content.
+      // Nuxt's static head type remains narrower.
+    ] as NonNullable<Nuxt['options']['app']['head']['meta']>,
   }
   // @ts-expect-error untyped
   delete nuxt.options.app.seoMeta

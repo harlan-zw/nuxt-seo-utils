@@ -1,6 +1,23 @@
 # Changelog
 
 
+## v8.4.0...main
+
+[compare changes](https://github.com/harlan-zw/nuxt-seo-utils/compare/v8.4.0...main)
+
+### 🔥 Performance
+
+- Make runtime minification opt-in ([#134](https://github.com/harlan-zw/nuxt-seo-utils/pull/134))
+
+### 🏡 Chore
+
+- Bump ([c990aa4](https://github.com/harlan-zw/nuxt-seo-utils/commit/c990aa4))
+- Bump ([5823242](https://github.com/harlan-zw/nuxt-seo-utils/commit/5823242))
+
+### ❤️ Contributors
+
+- Harlan Wilton ([@harlan-zw](https://github.com/harlan-zw))
+
 ## v8.3.3...main
 
 [compare changes](https://github.com/harlan-zw/nuxt-seo-utils/compare/v8.3.3...main)

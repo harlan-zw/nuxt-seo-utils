@@ -1,6 +1,22 @@
 # Changelog
 
 
+## v8.1.1...main
+
+[compare changes](https://github.com/harlan-zw/nuxt-seo-utils/compare/v8.1.1...main)
+
+### 🩹 Fixes
+
+- **devtools:** False positives ([46cd8c3](https://github.com/harlan-zw/nuxt-seo-utils/commit/46cd8c3))
+
+### 🏡 Chore
+
+- Bump deps ([271079e](https://github.com/harlan-zw/nuxt-seo-utils/commit/271079e))
+
+### ❤️ Contributors
+
+- Harlan Wilton ([@harlan-zw](https://github.com/harlan-zw))
+
 ## v8.1.0...main
 
 [compare changes](https://github.com/harlan-zw/nuxt-seo-utils/compare/v8.1.0...main)

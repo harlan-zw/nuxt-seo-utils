@@ -155,7 +155,7 @@ jobs:
             }
 
             const { data: viewer } = await withRetry(() => github.rest.users.getAuthenticated())
-            const viewerLogin = viewer.login.replace('[bot]', '')
+            const viewerLogin = viewer.login
 
             const { data: comments } = await withRetry(() =>
               github.rest.issues.listComments({ owner, repo, issue_number: number, per_page: 100 }),

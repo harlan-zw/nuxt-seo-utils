@@ -1,5 +1,6 @@
 catalogMode: prefer
 minimumReleaseAgeExclude:
+  - eslint-plugin-harlanzw@0.18.1
   - '@img/sharp-darwin-arm64@0.35.0'
   - '@img/sharp-darwin-x64@0.35.0'
   - '@img/sharp-freebsd-wasm32@0.35.0'
@@ -85,7 +86,7 @@ catalog:
   defu: ^6.1.7
   escape-string-regexp: ^5.0.0
   eslint: ^10.8.1
-  eslint-plugin-harlanzw: ^0.17.1
+  eslint-plugin-harlanzw: ^0.18.1
   exsolve: ^1.1.1
   happy-dom: ^20.11.2
   lint-staged: ^17.3.0

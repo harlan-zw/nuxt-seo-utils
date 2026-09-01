@@ -243,7 +243,7 @@ describe('dead and conflicting tags', () => {
     expect(validateAppHead({
       head: { meta: [{ content: 'orphaned' }] },
     })).toEqual([
-      { _tag: 'MalformedTag', level: 'warn', index: 0 },
+      { _tag: 'MalformedTag', level: 'warn', index: 0, layered: false },
     ])
   })
 
@@ -341,6 +341,40 @@ describe('layered heads', () => {
       [{ name: 'description', content: 'Base' }],
       [{ name: 'description', content: 'Project' }],
     ])
+  })
+
+  it('collects app.head.seoMeta, which reaches the head as meta tags', () => {
+    const head = collectUserAppHead({
+      options: {
+        _layers: [
+          { config: { app: { head: { seoMeta: { ogSiteName: 'Project' } } } } },
+        ],
+      },
+    } as unknown as Parameters<typeof collectUserAppHead>[0])
+    expect(head.metaByLayer).toEqual([
+      [{ property: 'og:site_name', content: 'Project' }],
+    ])
+  })
+
+  it('renders a layer seoMeta entry after the meta array of that layer', () => {
+    const head = collectUserAppHead({
+      options: {
+        _layers: [
+          {
+            config: {
+              app: {
+                head: {
+                  meta: [{ property: 'og:site_name', content: 'From meta' }],
+                  seoMeta: { ogSiteName: 'From seoMeta' },
+                },
+              },
+            },
+          },
+        ],
+      },
+    } as unknown as Parameters<typeof collectUserAppHead>[0])
+    // extendNuxtConfigAppHeadSeoMeta appends unpacked seoMeta, so it wins the dedupe
+    expect(head.metaByLayer!.at(-1)).toEqual([{ property: 'og:site_name', content: 'From seoMeta' }])
   })
 
   it('keeps the project value for scalars and html attributes', () => {

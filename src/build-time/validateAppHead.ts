@@ -1,4 +1,5 @@
 import type { Nuxt } from '@nuxt/schema'
+import { unpackMeta } from '@unhead/vue/utils'
 
 /**
  * A head entry as authored in `nuxt.config`. Values stay `unknown` because the user
@@ -9,7 +10,6 @@ export interface HeadEntry { [key: string]: unknown }
 export interface UserAppHead {
   charset?: unknown
   viewport?: unknown
-  title?: unknown
   titleTemplate?: unknown
   htmlAttrs?: Record<string, unknown>
   /** Meta entries authored in one place. Use `metaByLayer` when several layers contribute. */
@@ -53,7 +53,7 @@ export type AppHeadDiagnostic
     | { _tag: 'RedundantTag', level: 'info', tag: string, reason: string }
     | { _tag: 'GlobalPageTag', level: 'error' | 'warn', tag: string, reason: string }
     | { _tag: 'DuplicateTag', level: 'warn', tag: string }
-    | { _tag: 'MalformedTag', level: 'warn', index: number }
+    | { _tag: 'MalformedTag', level: 'warn', index: number, layered: boolean }
     | { _tag: 'TitleTemplateMissingPlaceholder', level: 'warn', titleTemplate: string }
     | { _tag: 'SiteNameMismatch', level: 'warn', head: string, site?: string }
     | { _tag: 'RelativeSocialImage', level: 'warn', tag: string, src: string }
@@ -195,7 +195,7 @@ function checkMeta(ctx: AppHeadContext, groups: HeadEntry[][], diagnostics: AppH
       index++
       const key = metaTagKey(entry)
       if (!key) {
-        diagnostics.push({ _tag: 'MalformedTag', level: 'warn', index })
+        diagnostics.push({ _tag: 'MalformedTag', level: 'warn', index, layered: groups.length > 1 })
         continue
       }
       const content = key === 'charset' ? asString(entry.charset) : metaContent(entry)
@@ -326,7 +326,10 @@ export function formatAppHeadDiagnostic(diagnostic: AppHeadDiagnostic): string {
     case 'DuplicateTag':
       return `\`${diagnostic.tag}\` is set more than once with different content. Only the last value renders.`
     case 'MalformedTag':
-      return `\`app.head.meta[${diagnostic.index}]\` has no \`name\`, \`property\`, \`http-equiv\`, or \`charset\`. It renders an empty tag.`
+      // the index counts every layer's entries, so it names no single file in a layered app
+      return diagnostic.layered
+        ? `An \`app.head.meta\` entry has no \`name\`, \`property\`, \`http-equiv\`, or \`charset\`. It renders an empty tag.`
+        : `\`app.head.meta[${diagnostic.index}]\` has no \`name\`, \`property\`, \`http-equiv\`, or \`charset\`. It renders an empty tag.`
     case 'TitleTemplateMissingPlaceholder':
       return `\`titleTemplate\` is "${diagnostic.titleTemplate}" and has no \`%s\`. Every page renders the same title. Add \`%s\` where the page title belongs.`
     case 'SiteNameMismatch':
@@ -355,6 +358,10 @@ export function collectUserAppHead(nuxt: Nuxt): UserAppHead {
       continue
     if (layerHead.meta?.length)
       head.metaByLayer!.push(layerHead.meta)
+    // `app.head.seoMeta` unpacks into meta after the layer's own entries, so it renders later
+    const seoMeta = (layerHead as { seoMeta?: Record<string, unknown> }).seoMeta
+    if (seoMeta && Object.keys(seoMeta).length)
+      head.metaByLayer!.push(unpackMeta(seoMeta) as HeadEntry[])
     head.link!.push(...(layerHead.link || []))
   }
   for (const layer of layers) {
@@ -364,7 +371,6 @@ export function collectUserAppHead(nuxt: Nuxt): UserAppHead {
     head.charset ??= layerHead.charset
     head.viewport ??= layerHead.viewport
     head.titleTemplate ??= layerHead.titleTemplate
-    head.title ??= layerHead.title
     if (layerHead.htmlAttrs)
       head.htmlAttrs = { ...layerHead.htmlAttrs, ...head.htmlAttrs }
   }

@@ -96,6 +96,28 @@ describe('redundant tags', () => {
     })).toEqual([])
   })
 
+  it('keeps a sole og:site_name when the module defaults are disabled', () => {
+    const diagnostics = validateAppHead({
+      head: { meta: [{ property: 'og:site_name', content: 'Acme' }] },
+      siteConfig: {},
+      defaultsActive: false,
+    })
+    expect(diagnostics).toEqual([])
+    for (const diagnostic of diagnostics) {
+      const message = formatAppHeadDiagnostic(diagnostic)
+      expect(message).not.toContain('remove the meta tag')
+      expect(message).not.toContain('nuxt-seo-utils then sets it')
+    }
+  })
+
+  it('keeps a disagreeing og:site_name when the module defaults are disabled', () => {
+    expect(validateAppHead({
+      head: { meta: [{ property: 'og:site_name', content: 'Acme' }] },
+      siteConfig: { name: 'Acme Inc' },
+      defaultsActive: false,
+    })).toEqual([])
+  })
+
   it('keeps a description that repeats the site config when site config merging is disabled', () => {
     expect(validateAppHead({
       head: { meta: [{ name: 'description', content: 'Acme builds things.' }] },

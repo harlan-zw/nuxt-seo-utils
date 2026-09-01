@@ -1,4 +1,3 @@
-import type { AppHeadDiagnostic } from './build-time/validateAppHead'
 import type { MetaFlatSerializable } from './runtime/types'
 import { existsSync } from 'node:fs'
 import { pathToFileURL } from 'node:url'
@@ -540,22 +539,21 @@ export {}
     if (config.validateAppHead) {
       // run once every module has contributed to the head and site config
       nuxt.hook('modules:done', () => {
-        const userHead = collectUserAppHead(nuxt)
-        // `seo.meta` is user authored too, so hold it to the same rules
-        userHead.meta!.push(...unpackMeta(config.meta || {}) as Record<string, unknown>[])
-        const siteConfig = useSiteConfig(nuxt)
-        // Unhead's own tag rules already cover these tags. Its Vite plugin injects the
-        // runtime ValidatePlugin on the client, which validates the resolved head, and
-        // `app.head` reaches that head through Nuxt's `useHead` call. So only check what
-        // Unhead cannot see: how the Nuxt config head lines up with site config, i18n,
-        // and the per route tags this module owns.
-        let diagnostics: AppHeadDiagnostic[]
         try {
-        // `@nuxtjs/i18n` and `nuxt-i18n-micro` auto-install through optional module
-        // dependencies, so a module match alone is not proof the user uses i18n.
-        // Only treat i18n as present when a user layer actually configures it.
+          const userHead = collectUserAppHead(nuxt)
+          // `seo.meta` is user authored too, so hold it to the same rules
+          userHead.meta!.push(...unpackMeta(config.meta || {}) as Record<string, unknown>[])
+          const siteConfig = useSiteConfig(nuxt)
+          // Unhead's own tag rules already cover these tags. Its Vite plugin injects the
+          // runtime ValidatePlugin on the client, which validates the resolved head, and
+          // `app.head` reaches that head through Nuxt's `useHead` call. So only check what
+          // Unhead cannot see: how the Nuxt config head lines up with site config, i18n,
+          // and the per route tags this module owns.
+          // `@nuxtjs/i18n` and `nuxt-i18n-micro` auto-install through optional module
+          // dependencies, so a module match alone is not proof the user uses i18n.
+          // Only treat i18n as present when a user layer actually configures it.
           const hasUserI18n = hasI18n && (nuxt.options._layers || []).some(layer => Boolean((layer.config as { i18n?: unknown } | undefined)?.i18n))
-          diagnostics = validateAppHead({
+          const diagnostics = validateAppHead({
             head: userHead,
             siteConfig: {
               name: siteConfig.name,
@@ -566,21 +564,21 @@ export {}
             hasI18n: hasUserI18n,
             hasRobotsModule: hasNuxtModule('@nuxtjs/robots', nuxt),
             defaultsActive: config.automaticDefaults,
+            mergeWithSiteConfig: config.mergeWithSiteConfig,
           })
+          if (!diagnostics.length)
+            return
+          const lines = diagnostics.map(d => `  ${d.level === 'info' ? '·' : '✖'} ${formatAppHeadDiagnostic(d)}`)
+          const message = `Found ${diagnostics.length} issue${diagnostics.length > 1 ? 's' : ''} in your Nuxt config head.\n${lines.join('\n')}\n  Set \`seo: { validateAppHead: false }\` to turn off this check.`
+          if (diagnostics.some(d => d.level !== 'info'))
+            logger.warn(message)
+          else
+            logger.info(message)
         }
         catch (e) {
           // a check must never fail the build, so report the miss and move on
           logger.warn(`Skipped the head config check. ${e}`)
-          return
         }
-        if (!diagnostics.length)
-          return
-        const lines = diagnostics.map(d => `  ${d.level === 'info' ? '·' : '✖'} ${formatAppHeadDiagnostic(d)}`)
-        const message = `Found ${diagnostics.length} issue${diagnostics.length > 1 ? 's' : ''} in your Nuxt config head.\n${lines.join('\n')}\n  Set \`seo: { validateAppHead: false }\` to turn off this check.`
-        if (diagnostics.some(d => d.level !== 'info'))
-          logger.warn(message)
-        else
-          logger.info(message)
       })
     }
 

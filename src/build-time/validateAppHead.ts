@@ -32,6 +32,12 @@ export interface AppHeadContext {
    * or `og:type` are skipped, they would be wrong advice.
    */
   defaultsActive?: boolean
+  /**
+   * Whether the module merges site config into the head, owning the `description` tag.
+   * When `false`, diagnostics that claim nuxt-seo-utils sets `description` are skipped,
+   * they would be wrong advice.
+   */
+  mergeWithSiteConfig?: boolean
 }
 
 export type DiagnosticLevel = 'error' | 'warn' | 'info'
@@ -201,14 +207,16 @@ function checkMeta(ctx: AppHeadContext, diagnostics: AppHeadDiagnostic[]): void 
         diagnostics.push({ _tag: 'SiteNameMismatch', level: 'warn', head: content })
       }
       else if (siteName === content) {
-        diagnostics.push({ _tag: 'RedundantTag', level: 'info', tag: 'og:site_name', reason: 'nuxt-seo-utils sets it from your site config.' })
+        // the tag already renders the site name, so flag redundancy only when the module owns the tag
+        if (ctx.defaultsActive !== false)
+          diagnostics.push({ _tag: 'RedundantTag', level: 'info', tag: 'og:site_name', reason: 'nuxt-seo-utils sets it from your site config.' })
       }
       else {
         diagnostics.push({ _tag: 'SiteNameMismatch', level: 'warn', head: content, site: siteName })
       }
     }
 
-    if (key === 'description' && content && content === asString(ctx.siteConfig?.description))
+    if (key === 'description' && content && ctx.mergeWithSiteConfig !== false && content === asString(ctx.siteConfig?.description))
       diagnostics.push({ _tag: 'RedundantTag', level: 'info', tag: 'description', reason: 'nuxt-seo-utils sets it from your site config.' })
 
     if ((key === 'og:image' || key === 'twitter:image') && content && !ABSOLUTE_SRC_RE.test(content) && !asString(ctx.siteConfig?.url))

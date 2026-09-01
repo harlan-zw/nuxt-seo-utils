@@ -88,6 +88,22 @@ describe('redundant tags', () => {
     })).toEqual(['RedundantTag'])
   })
 
+  it('keeps a matching og:site_name when the module defaults are disabled', () => {
+    expect(validateAppHead({
+      head: { meta: [{ property: 'og:site_name', content: 'Acme' }] },
+      siteConfig: { name: 'Acme' },
+      defaultsActive: false,
+    })).toEqual([])
+  })
+
+  it('keeps a description that repeats the site config when site config merging is disabled', () => {
+    expect(validateAppHead({
+      head: { meta: [{ name: 'description', content: 'Acme builds things.' }] },
+      siteConfig: { description: 'Acme builds things.' },
+      mergeWithSiteConfig: false,
+    })).toEqual([])
+  })
+
   it('flags og:site_name that disagrees with the site name', () => {
     expect(validateAppHead({
       head: { meta: [{ property: 'og:site_name', content: 'Acme' }] },

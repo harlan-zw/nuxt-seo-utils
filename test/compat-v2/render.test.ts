@@ -15,7 +15,7 @@ await setup({
 })
 
 describe('unhead v2 compatibility', () => {
-  it('renders inferred og/twitter tags and resolved template params', async () => {
+  it('renders inferred og tags, suppresses twitter:card, and resolves template params', async () => {
     const html = await $fetch('/') as string
     const $ = load(html)
 
@@ -24,8 +24,9 @@ describe('unhead v2 compatibility', () => {
     // InferSeoMetaPlugin: og:title / og:description inferred from useSeoMeta
     expect(meta('property="og:title"')).toContain('Hello v2')
     expect(meta('property="og:description"')).toBe('inferred description on the unhead v2 stack')
-    // InferSeoMetaPlugin: twitter card is synthesised
-    expect(meta('name="twitter:card"')).toBe('summary_large_image')
+    // automaticTwitterTags: false must not synthesise a twitter:card (unhead v2
+    // ignores the `twitterCard: false` option, so the module strips its own card)
+    expect(meta('name="twitter:card"')).toBeUndefined()
 
     // TemplateParamsPlugin: the module's '%s %separator %siteName' titleTemplate
     // resolves %siteName from the site config templateParams

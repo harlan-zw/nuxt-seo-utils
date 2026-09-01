@@ -1,6 +1,10 @@
 export default defineNuxtConfig({
   modules: ['nuxt-seo-utils'],
 
+  seo: {
+    automaticTwitterTags: false,
+  },
+
   site: {
     url: 'https://example.com',
     name: 'Compat v2',

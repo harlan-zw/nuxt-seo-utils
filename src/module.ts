@@ -551,6 +551,10 @@ export {}
         // and the per route tags this module owns.
         let diagnostics: AppHeadDiagnostic[]
         try {
+        // `@nuxtjs/i18n` and `nuxt-i18n-micro` auto-install through optional module
+        // dependencies, so a module match alone is not proof the user uses i18n.
+        // Only treat i18n as present when a user layer actually configures it.
+          const hasUserI18n = hasI18n && (nuxt.options._layers || []).some(layer => Boolean((layer.config as { i18n?: unknown } | undefined)?.i18n))
           diagnostics = validateAppHead({
             head: userHead,
             siteConfig: {
@@ -559,8 +563,9 @@ export {}
               description: siteConfig.description,
               defaultLocale: siteConfig.defaultLocale,
             },
-            hasI18n,
+            hasI18n: hasUserI18n,
             hasRobotsModule: hasNuxtModule('@nuxtjs/robots', nuxt),
+            defaultsActive: config.automaticDefaults,
           })
         }
         catch (e) {

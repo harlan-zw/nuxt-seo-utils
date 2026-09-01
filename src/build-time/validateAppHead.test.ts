@@ -96,6 +96,16 @@ describe('redundant tags', () => {
       { _tag: 'SiteNameMismatch', level: 'warn', head: 'Acme', site: 'Acme Inc' },
     ])
   })
+
+  it('guides to set site.name instead of dropping og:site_name when no site name is set', () => {
+    const diagnostics = validateAppHead({
+      head: { meta: [{ property: 'og:site_name', content: 'Acme' }] },
+      siteConfig: {},
+    })
+    expect(diagnostics.some(d => d._tag === 'RedundantTag')).toBe(false)
+    expect(diagnostics[0]).toMatchObject({ _tag: 'SiteNameMismatch', level: 'warn', head: 'Acme' })
+    expect(formatAppHeadDiagnostic(diagnostics[0]!)).toContain('site.name')
+  })
 })
 
 describe('dead and conflicting tags', () => {
@@ -104,6 +114,18 @@ describe('dead and conflicting tags', () => {
       head: { link: [{ rel: 'canonical', href: 'https://example.com' }] },
     })
     expect(diagnostics[0]).toMatchObject({ _tag: 'GlobalPageTag', level: 'error', tag: 'link[rel="canonical"]' })
+  })
+
+  it('skips module-owned diagnostics when the module defaults are disabled', () => {
+    const head = {
+      meta: [
+        { property: 'og:url', content: 'https://example.com' },
+        { property: 'og:type', content: 'website' },
+      ],
+      link: [{ rel: 'canonical', href: 'https://example.com' }],
+    }
+    expect(validateAppHead({ head, defaultsActive: false })).toEqual([])
+    expect(tags({ head })).toEqual(['GlobalPageTag', 'RedundantTag', 'GlobalPageTag'])
   })
 
   it('flags a global og:url and hreflang', () => {
@@ -144,6 +166,39 @@ describe('dead and conflicting tags', () => {
         ],
       },
     })).toEqual([])
+  })
+
+  it('accepts duplicate arrayable meta keys that unhead renders as a list', () => {
+    expect(validateAppHead({
+      head: {
+        meta: [
+          { property: 'og:image', content: 'https://example.com/a.png' },
+          { property: 'og:image', content: 'https://example.com/b.png' },
+        ],
+      },
+    })).toEqual([])
+  })
+
+  it('accepts a second theme-color, another arrayable key', () => {
+    expect(validateAppHead({
+      head: {
+        meta: [
+          { name: 'theme-color', content: '#000000', media: '(prefers-color-scheme: dark)' },
+          { name: 'theme-color', content: '#ffffff', media: '(prefers-color-scheme: light)' },
+        ],
+      },
+    })).toEqual([])
+  })
+
+  it('still flags duplicates of keys unhead dedupes', () => {
+    expect(tags({
+      head: {
+        meta: [
+          { property: 'og:title', content: 'One' },
+          { property: 'og:title', content: 'Two' },
+        ],
+      },
+    })).toEqual(['DuplicateTag'])
   })
 
   it('flags a meta entry with no identifying key', () => {

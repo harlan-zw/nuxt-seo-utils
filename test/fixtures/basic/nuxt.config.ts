@@ -12,5 +12,13 @@ export default defineNuxtConfig({
     },
   },
 
+  app: {
+    head: {
+      htmlAttrs: {
+        lang: 'fr',
+      },
+    },
+  },
+
   compatibilityDate: '2024-08-07',
 })

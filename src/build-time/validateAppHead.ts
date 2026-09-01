@@ -26,6 +26,12 @@ export interface AppHeadContext {
   }
   hasI18n?: boolean
   hasRobotsModule?: boolean
+  /**
+   * Whether the module's automatic defaults own the per route tags.
+   * When `false`, diagnostics that claim nuxt-seo-utils sets canonical, `og:url`,
+   * or `og:type` are skipped, they would be wrong advice.
+   */
+  defaultsActive?: boolean
 }
 
 export type DiagnosticLevel = 'error' | 'warn' | 'info'
@@ -40,7 +46,7 @@ export type AppHeadDiagnostic
     | { _tag: 'DuplicateTag', level: 'warn', tag: string }
     | { _tag: 'MalformedTag', level: 'warn', index: number }
     | { _tag: 'TitleTemplateMissingPlaceholder', level: 'warn', titleTemplate: string }
-    | { _tag: 'SiteNameMismatch', level: 'warn', head: string, site: string }
+    | { _tag: 'SiteNameMismatch', level: 'warn', head: string, site?: string }
     | { _tag: 'RelativeSocialImage', level: 'warn', tag: string, src: string }
     | { _tag: 'RobotsModuleConflict', level: 'warn', content: string }
 
@@ -52,6 +58,38 @@ const ABSOLUTE_SRC_RE = /^(?:[a-z][a-z0-9+.-]*:|\/\/)/i
 
 /** `robots` values that repeat the crawler default. */
 const NOOP_ROBOTS = new Set(['index', 'follow', 'all', 'index,follow', 'follow,index'])
+
+/**
+ * Meta keys unhead keeps every entry for, copied from unhead's `MetaTagsArrayable`.
+ */
+const META_TAGS_ARRAYABLE = new Set([
+  'theme-color',
+  'google-site-verification',
+  'author',
+  'og:locale:alternate',
+  'og:image',
+  'og:video',
+  'og:audio',
+  'article:author',
+  'article:tag',
+  'book:author',
+  'book:tag',
+  'twitter:image',
+])
+
+/**
+ * Whether unhead renders every entry for this key, so a repeat is a list and not a clash.
+ * Mirrors unhead's `isMetaArrayDupeKey`, which matches the suffix after the `meta:` prefix.
+ */
+function isMetaArrayable(key: string): boolean {
+  const dedupeKey = `meta:${key}`
+  const suffix = dedupeKey.slice(dedupeKey.indexOf(':') + 1)
+  return META_TAGS_ARRAYABLE.has(suffix)
+    || suffix.startsWith('og:image:')
+    || suffix.startsWith('og:video:')
+    || suffix.startsWith('og:audio:')
+    || suffix.startsWith('twitter:image:')
+}
 
 function normalizeWhitespace(value: string): string {
   return value.trim().replace(WS_RE, ' ')
@@ -133,7 +171,7 @@ function checkMeta(ctx: AppHeadContext, diagnostics: AppHeadDiagnostic[]): void 
       return
     }
     const content = key === 'charset' ? asString(entry.charset) : metaContent(entry)
-    if (seen.has(key) && seen.get(key) !== content)
+    if (seen.has(key) && seen.get(key) !== content && !isMetaArrayable(key))
       diagnostics.push({ _tag: 'DuplicateTag', level: 'warn', tag: key })
     seen.set(key, content)
 
@@ -143,10 +181,10 @@ function checkMeta(ctx: AppHeadContext, diagnostics: AppHeadDiagnostic[]): void 
     if (key === 'viewport' && content && normalizeWhitespace(content) === NUXT_DEFAULT_VIEWPORT)
       diagnostics.push({ _tag: 'RedundantTag', level: 'info', tag: 'viewport', reason: 'Nuxt sets the same value by default.' })
 
-    if (key === 'og:type' && content === 'website')
+    if (key === 'og:type' && content === 'website' && ctx.defaultsActive !== false)
       diagnostics.push({ _tag: 'RedundantTag', level: 'info', tag: 'og:type', reason: 'nuxt-seo-utils sets it by default.' })
 
-    if (key === 'og:url')
+    if (key === 'og:url' && ctx.defaultsActive !== false)
       diagnostics.push({ _tag: 'GlobalPageTag', level: 'warn', tag: 'og:url', reason: 'It applies the same URL to every page. nuxt-seo-utils sets it per route.' })
 
     if (key === 'robots' && content) {
@@ -158,10 +196,16 @@ function checkMeta(ctx: AppHeadContext, diagnostics: AppHeadDiagnostic[]): void 
 
     if (key === 'og:site_name' && content) {
       const siteName = asString(ctx.siteConfig?.name)
-      if (!siteName || siteName === content)
+      if (!siteName) {
+        // no site `name` means the module sets nothing, so the tag is doing real work
+        diagnostics.push({ _tag: 'SiteNameMismatch', level: 'warn', head: content })
+      }
+      else if (siteName === content) {
         diagnostics.push({ _tag: 'RedundantTag', level: 'info', tag: 'og:site_name', reason: 'nuxt-seo-utils sets it from your site config.' })
-      else
+      }
+      else {
         diagnostics.push({ _tag: 'SiteNameMismatch', level: 'warn', head: content, site: siteName })
+      }
     }
 
     if (key === 'description' && content && content === asString(ctx.siteConfig?.description))
@@ -191,12 +235,14 @@ function checkLinks(ctx: AppHeadContext, diagnostics: AppHeadDiagnostic[]): void
   for (const link of ctx.head.link || []) {
     const rel = asString(link.rel)?.toLowerCase()
     if (rel === 'canonical') {
-      diagnostics.push({
-        _tag: 'GlobalPageTag',
-        level: 'error',
-        tag: 'link[rel="canonical"]',
-        reason: 'It points every page at one URL. nuxt-seo-utils sets a canonical per route.',
-      })
+      if (ctx.defaultsActive !== false) {
+        diagnostics.push({
+          _tag: 'GlobalPageTag',
+          level: 'error',
+          tag: 'link[rel="canonical"]',
+          reason: 'It points every page at one URL. nuxt-seo-utils sets a canonical per route.',
+        })
+      }
     }
     else if (rel === 'alternate' && asString(link.hreflang)) {
       diagnostics.push({
@@ -247,7 +293,9 @@ export function formatAppHeadDiagnostic(diagnostic: AppHeadDiagnostic): string {
     case 'TitleTemplateMissingPlaceholder':
       return `\`titleTemplate\` is "${diagnostic.titleTemplate}" and has no \`%s\`. Every page renders the same title. Add \`%s\` where the page title belongs.`
     case 'SiteNameMismatch':
-      return `\`og:site_name\` is "${diagnostic.head}" but site \`name\` is "${diagnostic.site}". Keep one source of truth. Set \`site.name\` and remove the meta tag.`
+      return diagnostic.site
+        ? `\`og:site_name\` is "${diagnostic.head}" but site \`name\` is "${diagnostic.site}". Keep one source of truth. Set \`site.name\` and remove the meta tag.`
+        : `\`og:site_name\` is "${diagnostic.head}" but no site \`name\` is set. Set \`site.name\` to "${diagnostic.head}" and remove the meta tag, nuxt-seo-utils then sets it from your site config.`
     case 'RelativeSocialImage':
       return `\`${diagnostic.tag}\` is "${diagnostic.src}" and no site \`url\` is set. Crawlers need an absolute URL. Set \`site.url\`.`
     case 'RobotsModuleConflict':

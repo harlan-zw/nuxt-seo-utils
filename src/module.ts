@@ -13,9 +13,10 @@ import {
   hasNuxtCompatibility,
   hasNuxtModule,
 } from '@nuxt/kit'
+import { unpackMeta } from '@unhead/vue/utils'
 import { defu } from 'defu'
 import { resolveModulePath } from 'exsolve'
-import { installNuxtSiteConfig } from 'nuxt-site-config/kit'
+import { installNuxtSiteConfig, useSiteConfig } from 'nuxt-site-config/kit'
 import { renderNitroTypeAugmentations, resolveHostUnheadMajor, setupNitroRuntimeCompatibility, useModuleLogger } from 'nuxtseo-shared/kit'
 import { dirname, relative } from 'pathe'
 import { readPackageJSON, resolvePackageJSON } from 'pkg-types'
@@ -27,6 +28,7 @@ import { partitionColorModeIconLinks } from './build-time/iconAssets'
 import minifyStaticHead from './build-time/minifyStaticHead'
 import { resolveUnheadVitePluginSource } from './build-time/resolveUnheadVitePluginSource'
 import setupNuxtConfigAppHeadWithMoreDefaults from './build-time/setupNuxtConfigAppHeadWithMoreDefaults'
+import { collectUserAppHead, formatAppHeadDiagnostic, validateAppHead } from './build-time/validateAppHead'
 import { setupDevToolsUI } from './build/devtools'
 
 export interface ModuleOptions {
@@ -158,6 +160,13 @@ export interface ModuleOptions {
   minify: boolean | { build?: boolean, runtime?: boolean }
 
   /**
+   * Checks the `app.head` in your Nuxt config for conflicts, redundant tags, and dead tags.
+   * Warnings print on dev server start and on build.
+   *
+   * @default true
+   */
+  validateAppHead: boolean
+  /**
    * Enables debug logs and a debug endpoint.
    *
    * @default false
@@ -202,6 +211,7 @@ export default defineNuxtModule<ModuleOptions>({
     setupNuxtConfigAppHeadWithMoreDefaults: true,
     automaticOgAndTwitterTags: true,
     canonicalLowercase: true,
+    validateAppHead: true,
     tagPriority: 'low',
     minify: { build: true, runtime: false },
   },
@@ -523,6 +533,54 @@ export {}
       addServerHandler({
         route: '/__nuxt-seo-utils/debug.json',
         handler: resolve('./runtime/server/routes/__nuxt-seo-utils/debug'),
+      })
+    }
+
+    if (config.validateAppHead) {
+      // run once every module has contributed to the head and site config
+      nuxt.hook('modules:done', () => {
+        try {
+          const userHead = collectUserAppHead(nuxt)
+          // `seo.meta` is user authored too, so hold it to the same rules
+          const seoMeta = unpackMeta(config.meta || {}) as Record<string, unknown>[]
+          if (seoMeta.length)
+            userHead.metaByLayer!.push(seoMeta)
+          const siteConfig = useSiteConfig(nuxt)
+          // Unhead's own tag rules already cover these tags. Its Vite plugin injects the
+          // runtime ValidatePlugin on the client, which validates the resolved head, and
+          // `app.head` reaches that head through Nuxt's `useHead` call. So only check what
+          // Unhead cannot see: how the Nuxt config head lines up with site config, i18n,
+          // and the per route tags this module owns.
+          // `@nuxtjs/i18n` and `nuxt-i18n-micro` auto-install through optional module
+          // dependencies, so a module match alone is not proof the user uses i18n.
+          // Only treat i18n as present when a user layer actually configures it.
+          const hasUserI18n = hasI18n && (nuxt.options._layers || []).some(layer => Boolean((layer.config as { i18n?: unknown } | undefined)?.i18n))
+          const diagnostics = validateAppHead({
+            head: userHead,
+            siteConfig: {
+              name: siteConfig.name,
+              url: siteConfig.url,
+              description: siteConfig.description,
+              defaultLocale: siteConfig.defaultLocale,
+            },
+            hasI18n: hasUserI18n,
+            hasRobotsModule: hasNuxtModule('@nuxtjs/robots', nuxt),
+            defaultsActive: config.automaticDefaults,
+            mergeWithSiteConfig: config.mergeWithSiteConfig,
+          })
+          if (!diagnostics.length)
+            return
+          const lines = diagnostics.map(d => `  ${d.level === 'info' ? '·' : '✖'} ${formatAppHeadDiagnostic(d)}`)
+          const message = `Found ${diagnostics.length} issue${diagnostics.length > 1 ? 's' : ''} in your Nuxt config head.\n${lines.join('\n')}\n  Set \`seo: { validateAppHead: false }\` to turn off this check.`
+          if (diagnostics.some(d => d.level !== 'info'))
+            logger.warn(message)
+          else
+            logger.info(message)
+        }
+        catch (e) {
+          // a check must never fail the build, so report the miss and move on
+          logger.warn(`Skipped the head config check. ${e}`)
+        }
       })
     }
 

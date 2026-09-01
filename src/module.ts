@@ -542,7 +542,9 @@ export {}
         try {
           const userHead = collectUserAppHead(nuxt)
           // `seo.meta` is user authored too, so hold it to the same rules
-          userHead.meta!.push(...unpackMeta(config.meta || {}) as Record<string, unknown>[])
+          const seoMeta = unpackMeta(config.meta || {}) as Record<string, unknown>[]
+          if (seoMeta.length)
+            userHead.metaByLayer!.push(seoMeta)
           const siteConfig = useSiteConfig(nuxt)
           // Unhead's own tag rules already cover these tags. Its Vite plugin injects the
           // runtime ValidatePlugin on the client, which validates the resolved head, and

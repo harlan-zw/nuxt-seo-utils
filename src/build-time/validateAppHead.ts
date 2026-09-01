@@ -12,7 +12,10 @@ export interface UserAppHead {
   title?: unknown
   titleTemplate?: unknown
   htmlAttrs?: Record<string, unknown>
+  /** Meta entries authored in one place. Use `metaByLayer` when several layers contribute. */
   meta?: HeadEntry[]
+  /** Meta entries per authoring source, in unhead render order: base layers first, the project last. */
+  metaByLayer?: HeadEntry[][]
   link?: HeadEntry[]
 }
 
@@ -126,9 +129,8 @@ function baseLanguage(locale: string): string {
   return locale.toLowerCase().replace(UNDERSCORE_RE, '-').split('-')[0]!
 }
 
-function checkLocale(ctx: AppHeadContext, diagnostics: AppHeadDiagnostic[]): void {
+function checkLocale(ctx: AppHeadContext, meta: HeadEntry[], diagnostics: AppHeadDiagnostic[]): void {
   const lang = asString(ctx.head.htmlAttrs?.lang)
-  const meta = ctx.head.meta || []
   const ogLocale = metaContent(findMeta(meta, 'og:locale'))
   if (ogLocale && ogLocale.includes('-')) {
     diagnostics.push({
@@ -167,61 +169,86 @@ function checkLocale(ctx: AppHeadContext, diagnostics: AppHeadDiagnostic[]): voi
   }
 }
 
-function checkMeta(ctx: AppHeadContext, diagnostics: AppHeadDiagnostic[]): void {
-  const meta = ctx.head.meta || []
-  const seen = new Map<string, string | undefined>()
-  meta.forEach((entry, index) => {
-    const key = metaTagKey(entry)
-    if (!key) {
-      diagnostics.push({ _tag: 'MalformedTag', level: 'warn', index })
-      return
+/** The index of every entry unhead actually renders, keyed by dedupe key. */
+function renderedIndexes(groups: HeadEntry[][]): Map<string, number> {
+  const rendered = new Map<string, number>()
+  let index = -1
+  for (const group of groups) {
+    for (const entry of group) {
+      index++
+      const key = metaTagKey(entry)
+      // unhead keeps the last entry for a deduped key, so a later one replaces this
+      if (key && !isMetaArrayable(key))
+        rendered.set(key, index)
     }
-    const content = key === 'charset' ? asString(entry.charset) : metaContent(entry)
-    if (seen.has(key) && seen.get(key) !== content && !isMetaArrayable(key))
-      diagnostics.push({ _tag: 'DuplicateTag', level: 'warn', tag: key })
-    seen.set(key, content)
+  }
+  return rendered
+}
 
-    if (key === 'charset' && content?.toLowerCase() === 'utf-8')
-      diagnostics.push({ _tag: 'RedundantTag', level: 'info', tag: 'charset', reason: 'Nuxt sets it by default.' })
+function checkMeta(ctx: AppHeadContext, groups: HeadEntry[][], diagnostics: AppHeadDiagnostic[]): void {
+  const rendered = renderedIndexes(groups)
+  let index = -1
+  for (const group of groups) {
+    // duplicates only mean a mistake inside one layer, across layers they are an override
+    const seen = new Map<string, string | undefined>()
+    for (const entry of group) {
+      index++
+      const key = metaTagKey(entry)
+      if (!key) {
+        diagnostics.push({ _tag: 'MalformedTag', level: 'warn', index })
+        continue
+      }
+      const content = key === 'charset' ? asString(entry.charset) : metaContent(entry)
+      if (seen.has(key) && seen.get(key) !== content && !isMetaArrayable(key))
+        diagnostics.push({ _tag: 'DuplicateTag', level: 'warn', tag: key })
+      seen.set(key, content)
 
-    if (key === 'viewport' && content && normalizeWhitespace(content) === NUXT_DEFAULT_VIEWPORT)
-      diagnostics.push({ _tag: 'RedundantTag', level: 'info', tag: 'viewport', reason: 'Nuxt sets the same value by default.' })
+      // a later layer replaced this entry, so advice about its value would be wrong
+      if (!isMetaArrayable(key) && rendered.get(key) !== index)
+        continue
 
-    if (key === 'og:type' && content === 'website' && ctx.defaultsActive !== false)
-      diagnostics.push({ _tag: 'RedundantTag', level: 'info', tag: 'og:type', reason: 'nuxt-seo-utils sets it by default.' })
+      if (key === 'charset' && content?.toLowerCase() === 'utf-8')
+        diagnostics.push({ _tag: 'RedundantTag', level: 'info', tag: 'charset', reason: 'Nuxt sets it by default.' })
 
-    if (key === 'og:url' && ctx.defaultsActive !== false)
-      diagnostics.push({ _tag: 'GlobalPageTag', level: 'warn', tag: 'og:url', reason: 'It applies the same URL to every page. nuxt-seo-utils sets it per route.' })
+      if (key === 'viewport' && content && normalizeWhitespace(content) === NUXT_DEFAULT_VIEWPORT)
+        diagnostics.push({ _tag: 'RedundantTag', level: 'info', tag: 'viewport', reason: 'Nuxt sets the same value by default.' })
 
-    if (key === 'robots' && content) {
-      if (ctx.hasRobotsModule)
-        diagnostics.push({ _tag: 'RobotsModuleConflict', level: 'warn', content })
-      else if (NOOP_ROBOTS.has(content.toLowerCase().replace(WS_RE, '')))
-        diagnostics.push({ _tag: 'RedundantTag', level: 'info', tag: 'robots', reason: 'Crawlers index and follow by default.' })
+      if (key === 'og:type' && content === 'website' && ctx.defaultsActive !== false)
+        diagnostics.push({ _tag: 'RedundantTag', level: 'info', tag: 'og:type', reason: 'nuxt-seo-utils sets it by default.' })
+
+      if (key === 'og:url' && ctx.defaultsActive !== false)
+        diagnostics.push({ _tag: 'GlobalPageTag', level: 'warn', tag: 'og:url', reason: 'It applies the same URL to every page. nuxt-seo-utils sets it per route.' })
+
+      if (key === 'robots' && content) {
+        if (ctx.hasRobotsModule)
+          diagnostics.push({ _tag: 'RobotsModuleConflict', level: 'warn', content })
+        else if (NOOP_ROBOTS.has(content.toLowerCase().replace(WS_RE, '')))
+          diagnostics.push({ _tag: 'RedundantTag', level: 'info', tag: 'robots', reason: 'Crawlers index and follow by default.' })
+      }
+
+      if (key === 'og:site_name' && content) {
+        const siteName = asString(ctx.siteConfig?.name)
+        if (!siteName) {
+          // no site `name` means the module sets nothing, so the tag is doing real work
+          diagnostics.push({ _tag: 'SiteNameMismatch', level: 'warn', head: content })
+        }
+        else if (siteName === content) {
+          // the tag already renders the site name, so flag redundancy only when the module owns the tag
+          if (ctx.defaultsActive !== false)
+            diagnostics.push({ _tag: 'RedundantTag', level: 'info', tag: 'og:site_name', reason: 'nuxt-seo-utils sets it from your site config.' })
+        }
+        else {
+          diagnostics.push({ _tag: 'SiteNameMismatch', level: 'warn', head: content, site: siteName })
+        }
+      }
+
+      if (key === 'description' && content && ctx.mergeWithSiteConfig !== false && content === asString(ctx.siteConfig?.description))
+        diagnostics.push({ _tag: 'RedundantTag', level: 'info', tag: 'description', reason: 'nuxt-seo-utils sets it from your site config.' })
+
+      if ((key === 'og:image' || key === 'twitter:image') && content && !ABSOLUTE_SRC_RE.test(content) && !asString(ctx.siteConfig?.url))
+        diagnostics.push({ _tag: 'RelativeSocialImage', level: 'warn', tag: key, src: content })
     }
-
-    if (key === 'og:site_name' && content) {
-      const siteName = asString(ctx.siteConfig?.name)
-      if (!siteName) {
-        // no site `name` means the module sets nothing, so the tag is doing real work
-        diagnostics.push({ _tag: 'SiteNameMismatch', level: 'warn', head: content })
-      }
-      else if (siteName === content) {
-        // the tag already renders the site name, so flag redundancy only when the module owns the tag
-        if (ctx.defaultsActive !== false)
-          diagnostics.push({ _tag: 'RedundantTag', level: 'info', tag: 'og:site_name', reason: 'nuxt-seo-utils sets it from your site config.' })
-      }
-      else {
-        diagnostics.push({ _tag: 'SiteNameMismatch', level: 'warn', head: content, site: siteName })
-      }
-    }
-
-    if (key === 'description' && content && ctx.mergeWithSiteConfig !== false && content === asString(ctx.siteConfig?.description))
-      diagnostics.push({ _tag: 'RedundantTag', level: 'info', tag: 'description', reason: 'nuxt-seo-utils sets it from your site config.' })
-
-    if ((key === 'og:image' || key === 'twitter:image') && content && !ABSOLUTE_SRC_RE.test(content) && !asString(ctx.siteConfig?.url))
-      diagnostics.push({ _tag: 'RelativeSocialImage', level: 'warn', tag: key, src: content })
-  })
+  }
 }
 
 function checkShorthand(ctx: AppHeadContext, diagnostics: AppHeadDiagnostic[]): void {
@@ -271,9 +298,10 @@ function checkLinks(ctx: AppHeadContext, diagnostics: AppHeadDiagnostic[]): void
  */
 export function validateAppHead(ctx: AppHeadContext): AppHeadDiagnostic[] {
   const diagnostics: AppHeadDiagnostic[] = []
-  checkLocale(ctx, diagnostics)
+  const groups = ctx.head.metaByLayer ?? (ctx.head.meta ? [ctx.head.meta] : [])
+  checkLocale(ctx, groups.flat(), diagnostics)
   checkShorthand(ctx, diagnostics)
-  checkMeta(ctx, diagnostics)
+  checkMeta(ctx, groups, diagnostics)
   checkLinks(ctx, diagnostics)
   return diagnostics
 }
@@ -317,13 +345,21 @@ export function formatAppHeadDiagnostic(diagnostic: AppHeadDiagnostic): string {
  * defaults from looking like user input.
  */
 export function collectUserAppHead(nuxt: Nuxt): UserAppHead {
-  const head: UserAppHead = { meta: [], link: [] }
-  for (const layer of nuxt.options._layers || []) {
+  const head: UserAppHead = { metaByLayer: [], link: [] }
+  const layers = nuxt.options._layers || []
+  // `_layers` runs project first, unhead renders the project last, so walk it backwards
+  for (let i = layers.length - 1; i >= 0; i--) {
+    const layerHead = (layers[i]?.config?.app as { head?: UserAppHead } | undefined)?.head
+    if (!layerHead)
+      continue
+    if (layerHead.meta?.length)
+      head.metaByLayer!.push(layerHead.meta)
+    head.link!.push(...(layerHead.link || []))
+  }
+  for (const layer of layers) {
     const layerHead = (layer.config?.app as { head?: UserAppHead } | undefined)?.head
     if (!layerHead)
       continue
-    head.meta!.push(...(layerHead.meta || []))
-    head.link!.push(...(layerHead.link || []))
     head.charset ??= layerHead.charset
     head.viewport ??= layerHead.viewport
     head.titleTemplate ??= layerHead.titleTemplate

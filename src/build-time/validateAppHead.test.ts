@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { formatAppHeadDiagnostic, validateAppHead } from './validateAppHead'
+import { collectUserAppHead, formatAppHeadDiagnostic, validateAppHead } from './validateAppHead'
 
 function tags(input: Parameters<typeof validateAppHead>[0]): string[] {
   return validateAppHead(input).map(d => d._tag)
@@ -262,5 +262,75 @@ describe('clean configs', () => {
       },
       siteConfig: { name: 'Acme', url: 'https://example.com', defaultLocale: 'fr-FR' },
     })).toEqual([])
+  })
+})
+
+describe('layered heads', () => {
+  it('reads only the entry a later layer does not override', () => {
+    // a base layer sets og:site_name, the project overrides it with the site name
+    expect(validateAppHead({
+      head: {
+        metaByLayer: [
+          [{ property: 'og:site_name', content: 'Acme' }],
+          [{ property: 'og:site_name', content: 'Acme Inc' }],
+        ],
+      },
+      siteConfig: { name: 'Acme Inc' },
+    })).toEqual([
+      { _tag: 'RedundantTag', level: 'info', tag: 'og:site_name', reason: 'nuxt-seo-utils sets it from your site config.' },
+    ])
+  })
+
+  it('accepts a project layer that overrides a base layer tag', () => {
+    expect(validateAppHead({
+      head: {
+        metaByLayer: [
+          [{ name: 'description', content: 'Base description.' }],
+          [{ name: 'description', content: 'Project description.' }],
+        ],
+      },
+    })).toEqual([])
+  })
+
+  it('still flags a tag set twice inside one layer', () => {
+    expect(tags({
+      head: {
+        metaByLayer: [
+          [
+            { name: 'description', content: 'One' },
+            { name: 'description', content: 'Two' },
+          ],
+        ],
+      },
+    })).toEqual(['DuplicateTag'])
+  })
+
+  it('collects layer meta in the order unhead renders it', () => {
+    const head = collectUserAppHead({
+      options: {
+        _layers: [
+          { config: { app: { head: { meta: [{ name: 'description', content: 'Project' }] } } } },
+          { config: { app: { head: { meta: [{ name: 'description', content: 'Base' }] } } } },
+        ],
+      },
+    } as unknown as Parameters<typeof collectUserAppHead>[0])
+    // Nuxt renders base layers first and the project last, so the project wins
+    expect(head.metaByLayer).toEqual([
+      [{ name: 'description', content: 'Base' }],
+      [{ name: 'description', content: 'Project' }],
+    ])
+  })
+
+  it('keeps the project value for scalars and html attributes', () => {
+    const head = collectUserAppHead({
+      options: {
+        _layers: [
+          { config: { app: { head: { titleTemplate: '%s | Project', htmlAttrs: { lang: 'fr' } } } } },
+          { config: { app: { head: { titleTemplate: 'BASE %s', htmlAttrs: { lang: 'de' } } } } },
+        ],
+      },
+    } as unknown as Parameters<typeof collectUserAppHead>[0])
+    expect(head.titleTemplate).toBe('%s | Project')
+    expect(head.htmlAttrs).toEqual({ lang: 'fr' })
   })
 })

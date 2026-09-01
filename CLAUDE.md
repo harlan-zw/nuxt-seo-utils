@@ -78,6 +78,7 @@ export default defineNuxtConfig({
     enabled: true,
     metaDataFiles: true,
     automaticOgAndTwitterTags: true,
+    automaticTwitterTags: true,
     fallbackTitle: true,
     canonicalQueryWhitelist: [],
     redirectToCanonicalSiteUrl: true,

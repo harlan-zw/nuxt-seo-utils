@@ -56,6 +56,12 @@ export interface ModuleOptions {
    */
   automaticOgAndTwitterTags: boolean
   /**
+   * Whether to infer Twitter metadata from Open Graph metadata.
+   *
+   * @default true
+   */
+  automaticTwitterTags: boolean
+  /**
    * Attempts to treeshake the `useSeoMeta` function. Can save around 5kb in the client bundle.
    *
    * @default true
@@ -210,6 +216,7 @@ export default defineNuxtModule<ModuleOptions>({
     extendNuxtConfigAppHeadTypes: true,
     setupNuxtConfigAppHeadWithMoreDefaults: true,
     automaticOgAndTwitterTags: true,
+    automaticTwitterTags: true,
     canonicalLowercase: true,
     validateAppHead: true,
     tagPriority: 'low',
@@ -353,6 +360,7 @@ export default defineNuxtModule<ModuleOptions>({
         'tag',
       ],
       canonicalLowercase: config.canonicalLowercase,
+      automaticTwitterTags: config.automaticTwitterTags,
       tagPriority: config.tagPriority,
       separator: headTemplateParams?.separator,
       titleSeparator: headTemplateParams?.titleSeparator,

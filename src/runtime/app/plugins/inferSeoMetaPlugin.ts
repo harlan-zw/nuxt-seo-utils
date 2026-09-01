@@ -1,6 +1,6 @@
 import { injectHead } from '@unhead/vue'
 import { InferSeoMetaPlugin, TemplateParamsPlugin } from '@unhead/vue/plugins'
-import { defineNuxtPlugin } from 'nuxt/app'
+import { defineNuxtPlugin, useRuntimeConfig } from 'nuxt/app'
 
 export default defineNuxtPlugin(() => {
   const head = injectHead()
@@ -9,6 +9,10 @@ export default defineNuxtPlugin(() => {
   if (!head)
     return
 
+  const { automaticTwitterTags } = useRuntimeConfig().public['seo-utils'] as { automaticTwitterTags?: boolean }
+
   head.use(TemplateParamsPlugin)
-  head.use(InferSeoMetaPlugin())
+  head.use(InferSeoMetaPlugin({
+    twitterCard: automaticTwitterTags === false ? false : undefined,
+  }))
 })

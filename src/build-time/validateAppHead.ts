@@ -29,7 +29,7 @@ export interface AppHeadContext {
   /**
    * Whether the module's automatic defaults own the per route tags.
    * When `false`, diagnostics that claim nuxt-seo-utils sets canonical, `og:url`,
-   * or `og:type` are skipped, they would be wrong advice.
+   * `og:type`, or `og:site_name` are skipped, they would be wrong advice.
    */
   defaultsActive?: boolean
   /**
@@ -200,16 +200,17 @@ function checkMeta(ctx: AppHeadContext, diagnostics: AppHeadDiagnostic[]): void 
         diagnostics.push({ _tag: 'RedundantTag', level: 'info', tag: 'robots', reason: 'Crawlers index and follow by default.' })
     }
 
-    if (key === 'og:site_name' && content) {
+    // the module only owns `og:site_name` when the automatic defaults are active,
+    // so with them off any user tag is doing real work and must not be flagged
+    if (key === 'og:site_name' && content && ctx.defaultsActive !== false) {
       const siteName = asString(ctx.siteConfig?.name)
       if (!siteName) {
         // no site `name` means the module sets nothing, so the tag is doing real work
         diagnostics.push({ _tag: 'SiteNameMismatch', level: 'warn', head: content })
       }
       else if (siteName === content) {
-        // the tag already renders the site name, so flag redundancy only when the module owns the tag
-        if (ctx.defaultsActive !== false)
-          diagnostics.push({ _tag: 'RedundantTag', level: 'info', tag: 'og:site_name', reason: 'nuxt-seo-utils sets it from your site config.' })
+        // the tag already renders the site name, which the module also sets
+        diagnostics.push({ _tag: 'RedundantTag', level: 'info', tag: 'og:site_name', reason: 'nuxt-seo-utils sets it from your site config.' })
       }
       else {
         diagnostics.push({ _tag: 'SiteNameMismatch', level: 'warn', head: content, site: siteName })

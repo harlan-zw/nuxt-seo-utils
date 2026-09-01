@@ -1,6 +1,40 @@
 # Changelog
 
 
+## v8.4.2...main
+
+[compare changes](https://github.com/harlan-zw/nuxt-seo-utils/compare/v8.4.2...main)
+
+### 🩹 Fixes
+
+- Make the absolute image tags:resolve hook synchronous ([#139](https://github.com/harlan-zw/nuxt-seo-utils/pull/139))
+
+### 🏡 Chore
+
+- Adopt eslint-plugin-harlanzw base config ([#136](https://github.com/harlan-zw/nuxt-seo-utils/pull/136))
+
+### ❤️ Contributors
+
+- Harlan Wilton ([@harlan-zw](https://github.com/harlan-zw))
+
+## v8.4.1...main
+
+[compare changes](https://github.com/harlan-zw/nuxt-seo-utils/compare/v8.4.1...main)
+
+### 🩹 Fixes
+
+- Replace vulnerable image parser ([#135](https://github.com/harlan-zw/nuxt-seo-utils/pull/135))
+
+### 🏡 Chore
+
+- Bump ([8f9438f](https://github.com/harlan-zw/nuxt-seo-utils/commit/8f9438f))
+- Bump ([06859a6](https://github.com/harlan-zw/nuxt-seo-utils/commit/06859a6))
+- Bump ([481a1ca](https://github.com/harlan-zw/nuxt-seo-utils/commit/481a1ca))
+
+### ❤️ Contributors
+
+- Harlan Wilton ([@harlan-zw](https://github.com/harlan-zw))
+
 ## v8.4.0...main
 
 [compare changes](https://github.com/harlan-zw/nuxt-seo-utils/compare/v8.4.0...main)

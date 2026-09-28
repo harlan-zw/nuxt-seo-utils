@@ -4,6 +4,11 @@ export default {
     name: 'fr name',
     description: 'fr description',
   },
+  pages: {
+    about: {
+      title: 'À propos (i18n)',
+    },
+  },
   breadcrumb: {
     items: {
       index: {

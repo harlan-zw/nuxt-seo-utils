@@ -8,7 +8,8 @@ import { unpackMeta } from '@unhead/vue/utils'
 import { defu } from 'defu'
 import { basename, resolve } from 'pathe'
 import { joinURL } from 'ufo'
-import { isMetaTagFile } from '../const'
+import { classifySocialImageFilename, isMetaTagFile } from '../const'
+import { TWITTER_IMAGE_FALLBACK_KEY } from '../runtime/shared/derivedTagKeys'
 import { getImageDimensions, getImageMeta, hasMetaProperty } from '../util'
 import { classifyIconFilename, getIconRel, normalizeIconSizes } from './iconAssets'
 
@@ -149,7 +150,7 @@ export default async function generateTagsFromPublicFiles(nuxt: Nuxt = useNuxt()
   let hasTwitterImage = hasMetaProperty(headConfig, 'twitter:image')
   if (!hasTwitterImage) {
     // add the twitter image
-    const twitterImageFiles = rootPublicFiles.filter(file => file.startsWith('twitter-image.'))
+    const twitterImageFiles = rootPublicFiles.filter(file => classifySocialImageFilename(file) === 'twitterImage')
       .sort()
     if (twitterImageFiles.length) {
       headConfig.meta!.push(
@@ -171,26 +172,19 @@ export default async function generateTagsFromPublicFiles(nuxt: Nuxt = useNuxt()
   }
   // do og:image, duplicate to twitter:image if hasTwitterImage is false
   if (!hasMetaProperty(headConfig, 'og:image')) {
-    const ogImageFiles = rootPublicFiles.filter(file => file.startsWith('og-image.') || file.startsWith('og.'))
+    const ogImageFiles = rootPublicFiles.filter(file => classifySocialImageFilename(file) === 'ogImage')
       .sort()
     if (ogImageFiles.length) {
       headConfig.meta!.push(
         ...(await Promise.all(ogImageFiles.map(async (src) => {
           const meta = await getImageMeta(fileEntries.find(e => e.file === src)!.dir, src, false)
           delete meta.sizes
-          const seoMeta: MetaFlatSerializable = {
-            ogImage: {
-              url: src,
-              ...meta,
-            },
-          }
+          const tags: Meta[] = unpackMeta({ ogImage: { url: src, ...meta } } satisfies MetaFlatSerializable) as Meta[]
           if (!hasTwitterImage) {
-            seoMeta.twitterImage = {
-              url: src,
-              ...meta,
-            }
+            const twitterTags = unpackMeta({ twitterImage: { url: src, ...meta } } satisfies MetaFlatSerializable) as Meta[]
+            tags.push(...twitterTags.map(tag => ({ ...tag, key: `${TWITTER_IMAGE_FALLBACK_KEY}:${src}` })))
           }
-          return unpackMeta(seoMeta)
+          return tags
         }))
         )
           .flat() as Meta[],

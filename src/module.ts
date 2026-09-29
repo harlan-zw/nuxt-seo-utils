@@ -266,6 +266,10 @@ export default defineNuxtModule<ModuleOptions>({
     }
 
     const hasI18n = hasNuxtModule('@nuxtjs/i18n') || hasNuxtModule('nuxt-i18n-micro')
+    // Keeps og:image:*, the public twitter:image copy, and og:url in step with the tags that win.
+    addPlugin({
+      src: resolve(runtimeDir, './app/plugins/derivedTags'),
+    })
     if (config.automaticDefaults) {
       // i18n complicates things, we need to run the server plugin at the right time, client is fine
       if (hasI18n) {

@@ -5,6 +5,14 @@
 [![License][license-src]][license-href]
 [![Nuxt][nuxt-src]][nuxt-href]
 
+<a href="https://skilld.dev/gh/harlan-zw/nuxt-seo-utils">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="https://skilld.dev/b/harlan-zw/nuxt-seo-utils?theme=dark">
+    <source media="(prefers-color-scheme: light)" srcset="https://skilld.dev/b/harlan-zw/nuxt-seo-utils?theme=light">
+    <img alt="Skill repository on skilld.dev" src="https://skilld.dev/b/harlan-zw/nuxt-seo-utils?theme=light">
+  </picture>
+</a>
+
 Nuxt SEO Utils is a collection of defaults and utilities to improve your Nuxt site's discoverability and shareability.
 
 While there are several features covering many aspects of SEO, it covers important defaults such as [automatic canonical URLs](https://nuxtseo.com/learn/controlling-crawlers/canonical-urls) and
@@ -40,10 +48,7 @@ npx nuxi@latest module add nuxt-seo-utils
 ```
 
 > [!TIP]
-> Generate an Agent Skill for this package using [skilld](https://github.com/harlan-zw/skilld):
-> ```bash
-> npx skilld add nuxt-seo-utils
-> ```
+> Using an AI agent? Get the nuxt-seo-utils Skill on [skilld.dev/gh/harlan-zw/nuxt-seo-utils](https://skilld.dev/gh/harlan-zw/nuxt-seo-utils).
 
 💡 Set up your meta tags? Check titles, descriptions and OG tags with a SERP preview using the free [Meta Tag Checker](https://nuxtseo.com/tools/meta-tag-checker), or monitor them across every page with [Nuxt SEO Pro](https://nuxtseo.com/pro).
 

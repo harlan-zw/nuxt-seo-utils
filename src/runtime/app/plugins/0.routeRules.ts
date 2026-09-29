@@ -1,5 +1,5 @@
 import type { SerializableHead, UseSeoMetaInput } from '@unhead/vue/types'
-import { defineNuxtPlugin, useHead, useRequestEvent, useRuntimeConfig, useSeoMeta, useState } from '#imports'
+import { defineNuxtPlugin, useHead, useRequestEvent, useSeoMeta, useState } from '#imports'
 
 interface RouteRuleState {
   head?: SerializableHead
@@ -26,19 +26,26 @@ export default defineNuxtPlugin({
   enforce: 'post',
   env: { islands: false },
   setup() {
-    const { tagPriority } = useRuntimeConfig().public['seo-utils'] as { tagPriority: number | 'critical' | 'high' | 'low' | `before:${string}` | `after:${string}` | undefined }
     const routeRuleState = useState<RouteRuleState | null>('nuxt-seo-utils:routeRules', () => null)
     if (import.meta.server) {
       const event = useRequestEvent()
       routeRuleState.value = parseRouteRuleState(event?.context as RouteRuleEventContext)
     }
 
+    // Route rules have their own layer. Precedence, lowest first:
+    // 1. module defaults, at the `tagPriority` option ('low' by default)
+    // 2. app.head and seo.meta
+    // 3. route rules
+    // 4. page useHead() and useSeoMeta()
+    // Layers 2 to 4 share the default weight. Unhead breaks the tie by entry order, and this
+    // entry registers after app.head and before page setup. The `tagPriority` option does not
+    // apply here, so raising it can never let a route rule beat the page.
     if (routeRuleState.value) {
       const { head: headInput, seoMeta } = routeRuleState.value
       if (headInput)
         useHead(headInput)
       if (seoMeta)
-        useSeoMeta(seoMeta, { tagPriority })
+        useSeoMeta(seoMeta)
     }
   },
 })

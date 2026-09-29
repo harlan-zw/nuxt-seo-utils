@@ -8,6 +8,7 @@ import { stringifyQuery } from 'ufo'
 import { computed, toValue } from 'vue'
 import { useSiteConfig } from '#site-config/app/composables/useSiteConfig'
 import { createSitePathResolver } from '#site-config/app/composables/utils'
+import { OG_URL_KEY } from '../../shared/derivedTagKeys'
 
 const LOCALE_UNDERSCORE_RE = /_/g
 
@@ -103,10 +104,6 @@ export function applyDefaults(): void {
 
   const seoMeta: UseSeoMetaInput = {
     ogType: 'website',
-    ogUrl: () => {
-      const url = canonicalUrl.value
-      return url ? url.href : false
-    },
     ogSiteName: siteConfig.name,
   }
   // SSR-only default description so page-level descriptions are not overridden
@@ -124,4 +121,16 @@ export function applyDefaults(): void {
   }
   // TODO server only for some tags
   useSeoMeta(seoMeta, seoMetaPriority)
+  // The derived tags plugin replaces this content with the resolved canonical href,
+  // so a page-level canonical also moves og:url.
+  useHead({
+    meta: [{
+      property: 'og:url',
+      content: () => {
+        const url = canonicalUrl.value
+        return url ? url.href : false
+      },
+      key: OG_URL_KEY,
+    }],
+  }, seoMetaPriority)
 }

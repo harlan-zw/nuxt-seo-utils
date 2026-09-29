@@ -1,5 +1,5 @@
 import type { SerializableHead, UseSeoMetaInput } from '@unhead/vue/types'
-import { defineNuxtPlugin, useHead, useRequestEvent, useRuntimeConfig, useSeoMeta, useState } from '#imports'
+import { defineNuxtPlugin, useHead, useRequestEvent, useSeoMeta, useState } from '#imports'
 
 interface RouteRuleState {
   head?: SerializableHead
@@ -26,19 +26,21 @@ export default defineNuxtPlugin({
   enforce: 'post',
   env: { islands: false },
   setup() {
-    const { tagPriority } = useRuntimeConfig().public['seo-utils'] as { tagPriority: number | 'critical' | 'high' | 'low' | `before:${string}` | `after:${string}` | undefined }
     const routeRuleState = useState<RouteRuleState | null>('nuxt-seo-utils:routeRules', () => null)
     if (import.meta.server) {
       const event = useRequestEvent()
       routeRuleState.value = parseRouteRuleState(event?.context as RouteRuleEventContext)
     }
 
+    // Route rules are user config scoped to a route, so they render at normal priority.
+    // They register after app.head and before page setup: they beat app.head and
+    // seo.meta, and a page useSeoMeta() or useHead() call beats them.
     if (routeRuleState.value) {
       const { head: headInput, seoMeta } = routeRuleState.value
       if (headInput)
         useHead(headInput)
       if (seoMeta)
-        useSeoMeta(seoMeta, { tagPriority })
+        useSeoMeta(seoMeta)
     }
   },
 })

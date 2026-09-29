@@ -1,10 +1,10 @@
-import type { QueryObject } from 'ufo'
 import type { ComputedRef, MaybeRefOrGetter } from 'vue'
 import { useRoute, useRuntimeConfig } from 'nuxt/app'
-import { stringifyQuery, withQuery } from 'ufo'
+import { withQuery } from 'ufo'
 import { computed, toValue } from 'vue'
 import { useSiteConfig } from '#site-config/app/composables/useSiteConfig'
 import { createSitePathResolver } from '#site-config/app/composables/utils'
+import { resolveCanonicalUrl } from '../../shared/canonicalUrl'
 
 export type SharePlatform = 'twitter' | 'facebook' | 'linkedin' | 'whatsapp' | 'telegram' | 'reddit' | 'pinterest' | 'email'
 
@@ -139,18 +139,11 @@ export function useShareLinks(options: ShareLinksOptions = {}): ComputedRef<Shar
       canonicalUrl = customUrl
     }
     else {
-      let url = resolveUrl(route.path || '/').value || route.path
-      if (canonicalLowercase) {
-        url = url.toLowerCase()
-      }
-      const filteredQuery = Object.fromEntries(
-        Object.entries(route.query)
-          .filter(([key]) => canonicalQueryWhitelist.includes(key))
-          .sort(([a], [b]) => a.localeCompare(b)),
-      ) as QueryObject
-      canonicalUrl = Object.keys(filteredQuery).length
-        ? `${url}?${stringifyQuery(filteredQuery)}`
-        : url
+      canonicalUrl = resolveCanonicalUrl(resolveUrl(route.path || '/').value || route.path, route.query, {
+        lowercase: canonicalLowercase,
+        locale: toValue(siteConfig.currentLocale) || toValue(siteConfig.defaultLocale),
+        queryWhitelist: canonicalQueryWhitelist,
+      })
     }
 
     const utm = toValue(options.utm) ?? true

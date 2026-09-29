@@ -74,14 +74,14 @@ The module accepts these options in `nuxt.config.ts`:
 ```typescript
 export default defineNuxtConfig({
   modules: ['nuxt-seo-utils'],
-  seoUtils: {
+  seo: {
     enabled: true,
     metaDataFiles: true,
     automaticOgAndTwitterTags: true,
     automaticTwitterTags: true,
     fallbackTitle: true,
-    canonicalQueryWhitelist: [],
-    redirectToCanonicalSiteUrl: true,
+    canonicalQueryWhitelist: ['page', 'sort', 'filter', 'search', 'q', 'category', 'tag'],
+    redirectToCanonicalSiteUrl: false,
     debug: false
   }
 })
@@ -90,7 +90,6 @@ export default defineNuxtConfig({
 ## Key Composables and Utilities
 
 - `useBreadcrumbItems()` - Generate breadcrumb navigation
-- `defineOgImage()` - Define Open Graph images
 - Route rules SEO meta support
 - Automatic canonical URL generation
 - Meta tag inference from page data

@@ -34,4 +34,10 @@ describe('unhead v2 compatibility', () => {
     expect(title).toContain('Hello v2')
     expect(title).toContain('Compat v2')
   })
+
+  it('moves og:url to a page canonical', async () => {
+    const $ = load(await $fetch('/canonical') as string)
+    expect($('link[rel="canonical"]').attr('href')).toBe('https://example.com/preferred')
+    expect($('meta[property="og:url"]').attr('content')).toBe('https://example.com/preferred')
+  })
 })

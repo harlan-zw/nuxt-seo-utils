@@ -1,13 +1,12 @@
 import type { Link, UseHeadOptions, UseSeoMetaInput } from '@unhead/vue'
-import type { QueryObject } from 'ufo'
 
 import { injectHead, useHead, useSeoMeta } from '@unhead/vue'
 import { TemplateParamsPlugin } from '@unhead/vue/plugins'
 import { useError, useRoute, useRuntimeConfig } from 'nuxt/app'
-import { stringifyQuery } from 'ufo'
 import { computed, toValue } from 'vue'
 import { useSiteConfig } from '#site-config/app/composables/useSiteConfig'
 import { createSitePathResolver } from '#site-config/app/composables/utils'
+import { resolveCanonicalUrl } from '../../shared/canonicalUrl'
 
 const LOCALE_UNDERSCORE_RE = /_/g
 
@@ -42,26 +41,12 @@ export function applyDefaults(): void {
     if (err.value) {
       return false
     }
-    const { query } = route
-    let url = (resolveUrl(route.path || '/').value || route.path)
-    if (canonicalLowercase) {
-      try {
-        url = url.toLocaleLowerCase(resolveCurrentLocale())
-      }
-      catch {
-        // fallback to default
-        url = url.toLowerCase()
-      }
-    }
-    // apply canonicalQueryWhitelist to query
-    const filteredQuery = Object.fromEntries(
-      Object.entries(query)
-        .filter(([key]) => canonicalQueryWhitelist.includes(key))
-        .sort(([a], [b]) => a.localeCompare(b)), // Sort params
-    ) as QueryObject
-    const href = Object.keys(filteredQuery).length
-      ? `${url}?${stringifyQuery(filteredQuery)}`
-      : url
+    const url = resolveUrl(route.path || '/').value || route.path
+    const href = resolveCanonicalUrl(url, route.query, {
+      lowercase: canonicalLowercase,
+      locale: resolveCurrentLocale(),
+      queryWhitelist: canonicalQueryWhitelist,
+    })
     return { rel: 'canonical', href }
   })
 

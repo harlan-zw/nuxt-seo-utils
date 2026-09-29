@@ -1,7 +1,11 @@
 import type { HeadTag } from '@unhead/vue/types'
 import { OG_URL_KEY, TWITTER_IMAGE_FALLBACK_KEY } from '../../shared/derivedTagKeys'
 
-// Unhead packs the entry index into the high bits of a tag position.
+// Reads Unhead internals: `_p` (entry index in the high bits of a tag position) here, and
+// each entry's `_tags` in the derivedTags plugin. Unhead has no public way to learn which
+// tags lost deduplication. Move this to a public hook once Unhead has one, for example
+// `tags:dedupe` called from dedupeTags with `{ kept, dropped }` whenever a tag replaces
+// another, where each tag carries a public entry id.
 function entryOf(tag: HeadTag): number | undefined {
   return tag._p === undefined ? undefined : tag._p >> 10
 }

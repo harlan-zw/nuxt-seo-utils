@@ -31,6 +31,9 @@ describe('route rule meta priority', () => {
     expect($('meta[property="og:image"]').attr('content')).toBe('https://example.com/about/og-image.png')
     expect($('meta[property="og:image:width"]').attr('content')).toBe('800')
     expect($('meta[property="og:image:height"]').attr('content')).toBe('400')
+    expect($('meta[property="og:image:width"]')).toHaveLength(1)
+    // the twitter:image copied from public/og-image.png follows the og:image it copied
+    expect($('meta[name="twitter:image"]')).toHaveLength(0)
   }, 30_000)
 
   it('pages dir og-image applies to child routes', async () => {

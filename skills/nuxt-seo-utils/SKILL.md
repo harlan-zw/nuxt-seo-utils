@@ -30,7 +30,7 @@ With the defaults, every page gets:
 - `<title>` from the template `%s %separator %siteName`. The separator is `|`. Change it with `site.separator`.
 - A fallback title from the last path segment, title cased: `/blog/my-post` becomes `My Post`. `definePageMeta({ title })` sets it with a static string.
 - `<link rel="canonical">` from `site.url` and the route path, lowercased, with only these query keys kept: `page`, `sort`, `filter`, `search`, `q`, `category`, `tag`.
-- `og:url` (the canonical), `og:type` (`website`), `og:site_name` (`site.name`), and `description` from `site.description`.
+- `og:url` (the resolved canonical, including one a page sets), `og:type` (`website`), `og:site_name` (`site.name`), and `description` from `site.description`.
 - `og:title`, `og:description`, and `twitter:card` (`summary_large_image`), inferred from the title and description.
 - `twitter:site` and `twitter:creator` from `site.twitter`. The `@` is added.
 - `<html lang>` from `site.currentLocale` or `site.defaultLocale`, else `en`.
@@ -38,6 +38,7 @@ With the defaults, every page gets:
 - Relative `og:image` and `twitter:image` values become absolute against `site.url`.
 
 Module tags use `tagPriority: 'low'`, so a page `useSeoMeta()` or `useHead()` call replaces them.
+A page `ogImage` also drops the default image's width, height, type, and copied `twitter:image`. A page `ogImageAlt` alone keeps the default image.
 A page canonical needs no extra priority:
 
 ```ts
@@ -51,7 +52,7 @@ Set `seo: { automaticDefaults: false }` to drop the canonical, title template, `
 Files in `public/` become site-wide head tags at build time:
 
 - `favicon.{ico,png,svg}`, `icon*.{ico,png,jpg,svg}`, `apple-icon*.png`, `apple-touch-icon*.png`: `<link rel="icon">` or `apple-touch-icon`, with `type` and `sizes` read from the file.
-- `og-image.{png,jpg,jpeg,gif}` or `opengraph-image.*`: `og:image` with width, height, and type. It also fills `twitter:image` when no `twitter-image.*` file exists.
+- `og-image.{png,jpg,jpeg,gif}` or `opengraph-image.*`: `og:image` with width, height, and type. It also fills `twitter:image` when no `twitter-image.*` file exists. The name must match exactly; `blog-og-image.png` is ignored.
 - `<name>.alt.txt` next to an image sets `og:image:alt`.
 - `-dark` or `-light` in an icon name adds a `prefers-color-scheme` media query.
 
@@ -117,15 +118,13 @@ UTM defaults to `utm_source=<platform>` and `utm_medium=social` (or `email`). An
 
 - **`seo.meta` beats `routeRules` `seoMeta`.** Route rule meta renders at low priority. If `seo.meta` sets `author`, a route rule `author` never renders. Put the route value in the page with `useSeoMeta()`.
 - **`htmlAttrs.lang` in `useHead()` or `app.head` is ignored.** The module sets `lang` from site config. Set `site.defaultLocale`, or use `@nuxtjs/i18n`.
-- **A page `ogImage` keeps the default image dimensions and `twitter:image`.** With `public/og-image.png`, `useSeoMeta({ ogImage: '/post.png' })` renders the new `og:image` next to the old `og:image:width`, `og:image:height`, and `twitter:image`. Pass `ogImage` and `twitterImage` as objects with `url`, `width`, and `height`.
-- **A custom canonical does not update `og:url`.** `og:url` still shows the route URL. Set `ogUrl` in `useSeoMeta()` with the same value.
-- **`public/og-image.png` hides `pages/**/og-image.png`.** The route file adds only its `og:image:alt`. Keep route images and a site-wide image apart, or set the route image with `useSeoMeta()`.
-- **A `pages/<route>/og-image.png` renders `og:image` twice on `/<route>`.** The file registers `/<route>` and `/<route>/**`, and both match. Put the image on the parent route or set it with `useSeoMeta()`.
+- **`public/og-image.png` hides `pages/**/og-image.png`.** On that route the public image renders, and the route file adds nothing. Keep route images and a site-wide image apart, or set the route image with `useSeoMeta()`.
 - **The canonical is lowercased; breadcrumb and Schema.org URLs are not.** `/blog/My-Post` gets a canonical of `/blog/my-post`. Use lowercase route paths, or set `canonicalLowercase: false`.
 - **`definePageMeta({ title })` takes a static string only.** Use `useSeoMeta({ title })` for data.
 
 ## Version limits
 
+- 8.5.2 and earlier: a page `ogImage` keeps the default image's dimensions and `twitter:image`, a page canonical leaves `og:url` on the route URL, a `pages/<route>/og-image.png` renders `og:image:alt` twice, and `public/opengraph-image.*` is ignored.
 - `treeShakeUseSeoMeta` needs Unhead v3. On Unhead v2 the module skips it with a warning.
 - `automaticTwitterTags: false` (removes `twitter:card`) arrived in 8.5.0.
 

@@ -56,7 +56,7 @@ Files in `public/` become site-wide head tags at build time:
 - `<name>.alt.txt` next to an image sets `og:image:alt`.
 - `-dark` or `-light` in an icon name adds a `prefers-color-scheme` media query.
 
-The same file names inside `pages/<route>/` or `pages/<route>/_dir/` apply to that route and its children.
+The same file names inside `pages/<route>/` or `pages/<route>/_dir/` apply to that route and its children. They replace a `public/` image there.
 An icon link in `app.head.link` with the same `rel` wins over the files.
 Set `seo: { metaDataFiles: false }` to turn this off.
 
@@ -88,6 +88,7 @@ export default defineNuxtConfig({
 })
 ```
 
+Route rule tags override `seo.meta` and `app.head`. A page `useSeoMeta()` or `useHead()` call overrides them. The `tagPriority` option does not change this.
 Route rule tags render on the server only. They do not update on client navigation.
 
 ## Breadcrumbs
@@ -116,15 +117,14 @@ UTM defaults to `utm_source=<platform>` and `utm_medium=social` (or `email`). An
 
 ## Traps
 
-- **`seo.meta` beats `routeRules` `seoMeta`.** Route rule meta renders at low priority. If `seo.meta` sets `author`, a route rule `author` never renders. Put the route value in the page with `useSeoMeta()`.
 - **`htmlAttrs.lang` in `useHead()` or `app.head` is ignored.** The module sets `lang` from site config. Set `site.defaultLocale`, or use `@nuxtjs/i18n`.
-- **`public/og-image.png` hides `pages/**/og-image.png`.** On that route the public image renders, and the route file adds nothing. Keep route images and a site-wide image apart, or set the route image with `useSeoMeta()`.
 - **The canonical is lowercased; breadcrumb and Schema.org URLs are not.** `/blog/My-Post` gets a canonical of `/blog/my-post`. Use lowercase route paths, or set `canonicalLowercase: false`.
 - **`definePageMeta({ title })` takes a static string only.** Use `useSeoMeta({ title })` for data.
 
 ## Version limits
 
 - 8.5.2 and earlier: a page `ogImage` keeps the default image's dimensions and `twitter:image`, a page canonical leaves `og:url` on the route URL, a `pages/<route>/og-image.png` renders `og:image:alt` twice, and `public/opengraph-image.*` is ignored.
+- 8.5.2 and earlier: `seo.meta` and `public/og-image.png` beat route rule `seoMeta` and `pages/**/og-image.png`. Put the route value in the page with `useSeoMeta()`.
 - `treeShakeUseSeoMeta` needs Unhead v3. On Unhead v2 the module skips it with a warning.
 - `automaticTwitterTags: false` (removes `twitter:card`) arrived in 8.5.0.
 

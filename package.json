@@ -26,7 +26,8 @@
   },
   "files": [
     "bin",
-    "dist"
+    "dist",
+    "skills"
   ],
   "build": {
     "externals": [

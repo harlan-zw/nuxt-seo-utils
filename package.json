@@ -1,7 +1,7 @@
 {
   "name": "nuxt-seo-utils",
   "type": "module",
-  "version": "8.5.0",
+  "version": "8.5.2",
   "packageManager": "pnpm@11.25.0",
   "description": "SEO utilities to improve your Nuxt sites discoverability and shareability",
   "license": "MIT",
@@ -26,7 +26,8 @@
   },
   "files": [
     "bin",
-    "dist"
+    "dist",
+    "skills"
   ],
   "build": {
     "externals": [
@@ -49,7 +50,9 @@
     "prepare:fixtures": "nuxt prepare test/fixtures/basic && nuxt prepare test/fixtures/i18n && nuxt prepare test/fixtures/csp",
     "test": "vitest && pnpm test:nuxt5",
     "test:run": "vitest run --exclude '**/\\_\\_runtime\\_\\_/**'",
-    "test:runtime": "cd test/fixtures/basic && vitest --run",
+    "test:runtime": "pnpm test:runtime:basic && pnpm test:runtime:i18n",
+    "test:runtime:basic": "cd test/fixtures/basic && vitest --run",
+    "test:runtime:i18n": "cd test/fixtures/i18n && vitest --run",
     "test:nuxt5": "pnpm pack --out test/fixtures/nuxt5/module.tgz && node test/fixtures/nuxt5/run.mjs",
     "prepack": "pnpm run build",
     "release": "pnpm build && bumpp -x \"npx changelogen --output=CHANGELOG.md\"",

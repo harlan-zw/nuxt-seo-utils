@@ -3,7 +3,7 @@ import type { MaybeRefOrGetter, Ref } from 'vue'
 import type { RouteMeta } from 'vue-router'
 import { defu } from 'defu'
 import { fixSlashes } from 'nuxt-site-config/urls'
-import { useNuxtApp, useRoute, useRouter, useState } from 'nuxt/app'
+import { useNuxtApp, useRoute, useRouter, useRuntimeConfig, useState } from 'nuxt/app'
 import { withoutTrailingSlash } from 'ufo'
 import {
   computed,
@@ -22,6 +22,7 @@ import { defineBreadcrumb, useI18n, useSchemaOrg } from '#imports'
 import { useSiteConfig } from '#site-config/app/composables/useSiteConfig'
 import { createSitePathResolver } from '#site-config/app/composables/utils'
 import { pathBreadcrumbSegments, resolveBreadcrumbRoot } from '../../shared/breadcrumbs'
+import { normaliseCanonicalUrl } from '../../shared/canonicalUrl'
 
 interface NuxtUIBreadcrumbItem extends NuxtLinkProps {
   label: string
@@ -329,12 +330,18 @@ export function useBreadcrumbItems(_options: BreadcrumbProps = {}): Ref<Breadcru
 
   const schemaOrgEnabled = typeof _options.schemaOrg === 'undefined' ? true : _options.schemaOrg
   if ((import.meta.server || import.meta.env?.NODE_ENV === 'test') && schemaOrgEnabled) {
+    const { canonicalLowercase } = useRuntimeConfig().public['seo-utils'] as { canonicalLowercase: boolean }
+    // Item URLs name pages, so they follow the canonical rules. The `to` links stay as authored.
+    const schemaItemUrl = (to: string) => normaliseCanonicalUrl(toValue(siteResolver(to)), {
+      lowercase: canonicalLowercase,
+      locale: toValue(siteConfig.currentLocale) || toValue(siteConfig.defaultLocale),
+    })
     useSchemaOrg([
       defineBreadcrumb({
         '@id': `#${id}`,
         'itemListElement': computed(() => items.value.map(item => ({
           name: item.label || item.ariaLabel,
-          item: item.to ? siteResolver(item.to) : undefined,
+          item: item.to ? schemaItemUrl(String(item.to)) : undefined,
         }))),
       }),
     ])

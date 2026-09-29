@@ -8,9 +8,18 @@ export const MetaTagFileDeepGlobs = [
   '**/*.apple-*.{jpg,jpeg,png}',
 ]
 
-// Matches meta tag files in a flat directory listing (no glob needed)
-const SOCIAL_IMAGE_RE = /^(?:og-image|opengraph-image|twitter-image)\.(?:png|jpe?g|gif)$/
+const SOCIAL_IMAGE_RE = /^(og-image|opengraph-image|twitter-image)\.(?:png|jpe?g|gif)$/
+
+export type SocialImageProperty = 'ogImage' | 'twitterImage'
+
+// The one list of social image file names, shared by public/ and pages/ scanning.
+export function classifySocialImageFilename(filename: string): SocialImageProperty | undefined {
+  const keyword = SOCIAL_IMAGE_RE.exec(filename)?.[1]
+  if (!keyword)
+    return
+  return keyword === 'twitter-image' ? 'twitterImage' : 'ogImage'
+}
 
 export function isMetaTagFile(filename: string): boolean {
-  return SOCIAL_IMAGE_RE.test(filename) || classifyIconFilename(filename) !== undefined
+  return classifySocialImageFilename(filename) !== undefined || classifyIconFilename(filename) !== undefined
 }

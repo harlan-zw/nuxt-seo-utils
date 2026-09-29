@@ -1,3 +1,15 @@
+## 8.5.2
+
+[Compare changes](https://github.com/harlan-zw/nuxt-seo-utils/compare/v8.5.1...v8.5.2)
+
+- fix(i18n): resolve fallback titles from useNuxtApp().$i18n in plugins (#147) ([8b43423](https://github.com/harlan-zw/nuxt-seo-utils/commit/8b4342308aefac64f426c5156d0da6b6bc52176a))
+
+## 8.5.1
+
+[Compare changes](https://github.com/harlan-zw/nuxt-seo-utils/compare/v8.5.0...v8.5.1)
+
+- fix(page-dir-images): resolve pages dir against layer srcDir (#144) ([f57bb13](https://github.com/harlan-zw/nuxt-seo-utils/commit/f57bb134fba6bc1d59c0662d51e77fb0df77b51a))
+
 # Changelog
 
 

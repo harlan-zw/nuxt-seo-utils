@@ -5,7 +5,7 @@ import { defu } from 'defu'
 import { basename, dirname, resolve } from 'pathe'
 import { glob } from 'tinyglobby'
 import { joinURL } from 'ufo'
-import { isMetaTagFile, MetaTagFileDeepGlobs } from '../const'
+import { classifySocialImageFilename, isMetaTagFile, MetaTagFileDeepGlobs } from '../const'
 import { generateNuxtPageFromFile } from '../pageUtils'
 import { getImageMeta } from '../util'
 import { classifyIconFilename } from './iconAssets'
@@ -16,7 +16,9 @@ interface GeneratedRouteRule {
   head: {
     link: Array<Record<string, string | undefined>>
   }
-  seoMeta: Record<string, Array<Record<string, unknown>>>
+  // One image object per property. Nitro merges every matching route rule with defu,
+  // which concatenates arrays: `/about` and `/about/**` both match `/about`.
+  seoMeta: Partial<Record<'ogImage' | 'twitterImage', Record<string, unknown>>>
 }
 
 function addGeneratedRouteRule(nuxt: Nuxt, route: string, generatedRule: GeneratedRouteRule): void {
@@ -33,7 +35,7 @@ function addGeneratedRouteRule(nuxt: Nuxt, route: string, generatedRule: Generat
 
 export default async function generateTagsFromPageDirImages(nuxt: Nuxt = useNuxt()): Promise<void> {
   const pagesDirs = nuxt.options._layers
-    .map(layer => resolve(layer.config.rootDir!, layer.config.dir?.pages || 'pages'))
+    .map(layer => resolve(layer.config.srcDir || layer.cwd, layer.config.dir?.pages || 'pages'))
     .filter(dir => fs.existsSync(dir))
 
   const appendRouteRules: Record<string, GeneratedRouteRule> = {}
@@ -44,10 +46,10 @@ export default async function generateTagsFromPageDirImages(nuxt: Nuxt = useNuxt
   for (const pagesDir of pagesDirs) {
     const files = (await glob(MetaTagFileDeepGlobs, { cwd: pagesDir, onlyFiles: true }))
       .filter(file => isMetaTagFile(basename(file)))
+      .sort()
 
     for (const file of files) {
       const fileName = basename(file)
-      const keyword = fileName.split('.')[0] || ''
       let { path } = generateNuxtPageFromFile(resolve(pagesDir, dirname(file)), pagesDir)
       if (path.endsWith('/_dir'))
         path = path.replace(DIR_SUFFIX_RE, '')
@@ -73,9 +75,13 @@ export default async function generateTagsFromPageDirImages(nuxt: Nuxt = useNuxt
         })
       }
       else {
-        const property = ['opengraph-image', 'og-image'].includes(keyword) ? 'ogImage' : 'twitterImage'
-        routeRule.seoMeta[property] ||= []
-        routeRule.seoMeta[property].push({ url: href, ...meta, sizes: undefined })
+        const property = classifySocialImageFilename(fileName)
+        // the first file wins when a directory holds two images for one property
+        if (!property || routeRule.seoMeta[property])
+          continue
+        // An empty alt renders no tag. It stops defu from merging a parent route's alt
+        // into a nested route's image.
+        routeRule.seoMeta[property] = { url: href, ...meta, alt: meta.alt || '', sizes: undefined }
       }
       devMiddlewareMap[routeAssetPath] = resolve(pagesDir, file)
       nitroOutputMap.push({

@@ -20,6 +20,9 @@ jobs:
     # on cdn.playwright.dev whenever the lockfile cache key misses.
     with:
       playwright: false
+      # The root vitest projects exclude **/__runtime__/**. Run the i18n runtime
+      # suite after prepare:fixtures so the fallback title fix stays covered.
+      test-command: pnpm test && pnpm test:runtime:i18n
 
   # The module imports @unhead/vue directly and feature-detects the host's unhead
   # major. The main suite runs on the unhead v3 stack, so it can't catch a v2 host

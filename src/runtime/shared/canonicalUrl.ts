@@ -1,7 +1,8 @@
 import type { QueryObject } from 'ufo'
-import { stringifyQuery } from 'ufo'
+import { parseURL, stringifyParsedURL, stringifyQuery } from 'ufo'
 
 const LOCALE_UNDERSCORE_RE = /_/g
+const DEFAULT_LOCALE = 'en'
 
 export interface CanonicalUrlOptions {
   lowercase: boolean
@@ -16,12 +17,23 @@ export interface CanonicalUrlOptions {
 export function normaliseCanonicalUrl(url: string, { lowercase, locale }: CanonicalUrlOptions): string {
   if (!lowercase)
     return url
+  const parsed = parseURL(url)
+  // Locale rules apply to the path only. A Turkish ı in the host names another host,
+  // and query values and the hash keep their meaning only as authored.
+  if (parsed.host)
+    parsed.host = parsed.host.toLowerCase()
+  parsed.pathname = lowercasePath(parsed.pathname, locale)
+  return stringifyParsedURL(parsed)
+}
+
+function lowercasePath(path: string, locale: string | undefined): string {
   try {
-    return url.toLocaleLowerCase(locale?.replace(LOCALE_UNDERSCORE_RE, '-'))
+    // Without a locale, `toLocaleLowerCase` follows the runtime default, so server and browser disagree.
+    return path.toLocaleLowerCase(locale ? locale.replace(LOCALE_UNDERSCORE_RE, '-') : DEFAULT_LOCALE)
   }
   catch {
     // invalid locale tag
-    return url.toLowerCase()
+    return path.toLowerCase()
   }
 }
 

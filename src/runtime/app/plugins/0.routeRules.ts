@@ -32,9 +32,14 @@ export default defineNuxtPlugin({
       routeRuleState.value = parseRouteRuleState(event?.context as RouteRuleEventContext)
     }
 
-    // Route rules are user config scoped to a route, so they render at normal priority.
-    // They register after app.head and before page setup: they beat app.head and
-    // seo.meta, and a page useSeoMeta() or useHead() call beats them.
+    // Route rules have their own layer. Precedence, lowest first:
+    // 1. module defaults, at the `tagPriority` option ('low' by default)
+    // 2. app.head and seo.meta
+    // 3. route rules
+    // 4. page useHead() and useSeoMeta()
+    // Layers 2 to 4 share the default weight. Unhead breaks the tie by entry order, and this
+    // entry registers after app.head and before page setup. The `tagPriority` option does not
+    // apply here, so raising it can never let a route rule beat the page.
     if (routeRuleState.value) {
       const { head: headInput, seoMeta } = routeRuleState.value
       if (headInput)

@@ -1,6 +1,23 @@
 # Changelog
 
 
+## v8.4.3...main
+
+[compare changes](https://github.com/harlan-zw/nuxt-seo-utils/compare/v8.4.3...main)
+
+### 🚀 Enhancements
+
+- Validate the Nuxt config head ([#141](https://github.com/harlan-zw/nuxt-seo-utils/pull/141))
+- Allow disabling automatic Twitter tags ([#142](https://github.com/harlan-zw/nuxt-seo-utils/pull/142))
+
+### 🏡 Chore
+
+- Bump ([84e2eab](https://github.com/harlan-zw/nuxt-seo-utils/commit/84e2eab))
+
+### ❤️ Contributors
+
+- Harlan Wilton ([@harlan-zw](https://github.com/harlan-zw))
+
 ## v8.4.2...main
 
 [compare changes](https://github.com/harlan-zw/nuxt-seo-utils/compare/v8.4.2...main)

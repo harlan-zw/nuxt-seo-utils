@@ -118,12 +118,13 @@ UTM defaults to `utm_source=<platform>` and `utm_medium=social` (or `email`). An
 ## Traps
 
 - **`htmlAttrs.lang` in `useHead()` or `app.head` is ignored.** The module sets `lang` from site config. Set `site.defaultLocale`, or use `@nuxtjs/i18n`.
-- **The canonical is lowercased; breadcrumb and Schema.org URLs are not.** `/blog/My-Post` gets a canonical of `/blog/my-post`. Use lowercase route paths, or set `canonicalLowercase: false`.
+- **The Schema.org WebPage URL keeps the route case.** `canonicalLowercase` lowercases the canonical, `og:url`, `useShareLinks()` URLs, and `BreadcrumbList` item URLs, but nuxt-schema-org builds the WebPage `url` from the route path. `/blog/My-Post` gets a canonical of `/blog/my-post` and a WebPage URL of `/blog/My-Post`. Use lowercase route paths, or set `canonicalLowercase: false`. Breadcrumb `to` links keep their case on purpose.
 - **`definePageMeta({ title })` takes a static string only.** Use `useSeoMeta({ title })` for data.
 
 ## Version limits
 
 - 8.5.2 and earlier: a page `ogImage` keeps the default image's dimensions and `twitter:image`, a page canonical leaves `og:url` on the route URL, a `pages/<route>/og-image.png` renders `og:image:alt` twice, and `public/opengraph-image.*` is ignored.
+- 8.5.2 and earlier: `BreadcrumbList` item URLs keep the route case, and `useShareLinks()` lowercases without the site locale.
 - 8.5.2 and earlier: `seo.meta` and `public/og-image.png` beat route rule `seoMeta` and `pages/**/og-image.png`. Put the route value in the page with `useSeoMeta()`.
 - `treeShakeUseSeoMeta` needs Unhead v3. On Unhead v2 the module skips it with a warning.
 - `automaticTwitterTags: false` (removes `twitter:card`) arrived in 8.5.0.

@@ -118,7 +118,7 @@ UTM defaults to `utm_source=<platform>` and `utm_medium=social` (or `email`). An
 ## Traps
 
 - **`htmlAttrs.lang` in `useHead()` or `app.head` is ignored.** The module sets `lang` from site config. Set `site.defaultLocale`, or use `@nuxtjs/i18n`.
-- **The Schema.org WebPage URL keeps the route case.** `canonicalLowercase` lowercases the canonical, `og:url`, `useShareLinks()` URLs, and `BreadcrumbList` item URLs, but nuxt-schema-org builds the WebPage `url` from the route path. `/blog/My-Post` gets a canonical of `/blog/my-post` and a WebPage URL of `/blog/My-Post`. Use lowercase route paths, or set `canonicalLowercase: false`. Breadcrumb `to` links keep their case on purpose.
+- **Before nuxt-schema-org 6.4.1, the Schema.org WebPage URL keeps the route case.** `canonicalLowercase` lowercases the canonical, `og:url`, `useShareLinks()` URLs, and `BreadcrumbList` item URLs. nuxt-schema-org before 6.4.1 builds the WebPage `url` from the route path. There, `/blog/My-Post` gets a canonical of `/blog/my-post` and a WebPage URL of `/blog/My-Post`. From 6.4.1, the WebPage `url` follows the canonical. On an older version, upgrade nuxt-schema-org, use lowercase route paths, or set `canonicalLowercase: false`. Breadcrumb `to` links keep their case on purpose.
 - **`definePageMeta({ title })` takes a static string only.** Use `useSeoMeta({ title })` for data.
 
 ## Version limits

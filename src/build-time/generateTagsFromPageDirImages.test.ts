@@ -42,7 +42,7 @@ describe('generateTagsFromPageDirImages', () => {
 
       const routeRule = (nuxt.options.routeRules as Record<string, any>)['/blog']
       expect(routeRule).toBeDefined()
-      expect(routeRule.seoMeta.ogImage[0]).toMatchObject({
+      expect(routeRule.seoMeta.ogImage).toMatchObject({
         url: '/blog/og-image.png',
         type: 'image/png',
         width: 1270,

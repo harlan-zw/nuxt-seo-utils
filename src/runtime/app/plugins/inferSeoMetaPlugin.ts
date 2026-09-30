@@ -1,6 +1,5 @@
-import { injectHead } from '@unhead/vue'
 import { InferSeoMetaPlugin, TemplateParamsPlugin } from '@unhead/vue/plugins'
-import { defineNuxtPlugin, useRuntimeConfig } from 'nuxt/app'
+import { defineNuxtPlugin, injectHead, useRuntimeConfig } from 'nuxt/app'
 
 // unhead v3 skips the twitter:card push for `twitterCard: false`, but v2 ignores
 // the option and falls back to `summary_large_image`. Both majors render the option

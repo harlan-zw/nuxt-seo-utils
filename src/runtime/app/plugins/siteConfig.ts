@@ -1,6 +1,5 @@
 import type { SerializableHead } from '@unhead/vue/types'
-import { injectHead } from '@unhead/vue'
-import { defineNuxtPlugin, useRuntimeConfig } from 'nuxt/app'
+import { defineNuxtPlugin, injectHead, useRuntimeConfig } from 'nuxt/app'
 import { useSiteConfig } from '#site-config/app/composables/useSiteConfig'
 
 export default defineNuxtPlugin(() => {

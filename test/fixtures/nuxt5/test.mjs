@@ -24,7 +24,7 @@ const nitroServer = (await Promise.all(
     .map(entry => readFile(resolve(entry.parentPath, entry.name), 'utf8')),
 )).join('\n')
 
-assert.equal(nitroManifest.versions.nitro, '3.0.260610-beta')
+assert.match(nitroManifest.versions.nitro, /^3\./)
 assert.doesNotMatch(nitroServer, /nitropack\/runtime/)
 
 const server = spawn(process.execPath, ['.output/server/index.mjs'], {

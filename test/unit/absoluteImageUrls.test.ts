@@ -5,8 +5,7 @@ const { defineNuxtPluginMock, injectHeadMock } = vi.hoisted(() => ({
   injectHeadMock: vi.fn(),
 }))
 
-vi.mock('nuxt/app', () => ({ defineNuxtPlugin: defineNuxtPluginMock }))
-vi.mock('@unhead/vue', () => ({ injectHead: injectHeadMock }))
+vi.mock('nuxt/app', () => ({ defineNuxtPlugin: defineNuxtPluginMock, injectHead: injectHeadMock }))
 vi.mock('#site-config/app/composables/utils', () => ({
   createSitePathResolver: () => (path: string) => `https://example.com${path}`,
 }))

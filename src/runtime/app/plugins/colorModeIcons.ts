@@ -1,5 +1,5 @@
 import type { ColorModeIconLinks } from '../../types'
-import { defineNuxtPlugin, useHead, useNuxtApp, useRuntimeConfig } from '#imports'
+import { defineNuxtPlugin, useHead, useNuxtApp, useRuntimeConfig } from 'nuxt/app'
 import { selectColorModeIconLinks } from '../logic/colorModeIcons'
 
 interface ColorModeState {

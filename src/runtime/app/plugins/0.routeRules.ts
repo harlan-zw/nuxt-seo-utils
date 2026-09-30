@@ -1,5 +1,5 @@
 import type { SerializableHead, UseSeoMetaInput } from '@unhead/vue/types'
-import { defineNuxtPlugin, useHead, useRequestEvent, useSeoMeta, useState } from '#imports'
+import { defineNuxtPlugin, useHead, useRequestEvent, useSeoMeta, useState } from 'nuxt/app'
 
 interface RouteRuleState {
   head?: SerializableHead

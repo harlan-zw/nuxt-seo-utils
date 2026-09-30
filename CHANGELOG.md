@@ -1,3 +1,10 @@
+## 8.6.1
+
+[Compare changes](https://github.com/harlan-zw/nuxt-seo-utils/compare/v8.6.0...v8.6.1)
+
+- chore(ci): remove the docs deploy dispatch (#158) ([46f3a3e](https://github.com/harlan-zw/nuxt-seo-utils/commit/46f3a3ee080c7aabb3186700d4546dbf599a9436))
+- fix(nuxt5): use portable Nuxt app imports (#159) ([4ebf3f3](https://github.com/harlan-zw/nuxt-seo-utils/commit/4ebf3f3ba50db1c1751bcecd3141cf2faa1e7d0d))
+
 ## 8.5.2
 
 [Compare changes](https://github.com/harlan-zw/nuxt-seo-utils/compare/v8.5.1...v8.5.2)

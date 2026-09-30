@@ -1,11 +1,12 @@
-import { useError, useRoute } from 'nuxt/app'
-import { describe, expect, it, vi } from 'vitest'
+import { useError, useNuxtApp, useRoute } from 'nuxt/app'
+import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { ref } from 'vue'
 import { useFallbackTitle } from '../../src/runtime/app/composables/useFallbackTitle'
 
 vi.mock('nuxt/app', () => ({
   useRoute: vi.fn(),
   useError: vi.fn(),
+  useNuxtApp: vi.fn(),
 }))
 
 vi.mock('scule', () => ({
@@ -13,6 +14,10 @@ vi.mock('scule', () => ({
 }))
 
 describe('useFallbackTitle', () => {
+  beforeEach(() => {
+    vi.mocked(useNuxtApp).mockReturnValue({} as any)
+  })
+
   it('returns error title for 404', () => {
     vi.mocked(useRoute).mockReturnValue({ path: '/', meta: {} } as any)
     vi.mocked(useError).mockReturnValue(ref({ statusCode: 404, message: 'Page not found' }) as any)
@@ -59,5 +64,15 @@ describe('useFallbackTitle', () => {
 
     const title = useFallbackTitle()
     expect(title.value).toBe('Contact')
+  })
+
+  it('uses the Nuxt i18n translator for a matched route', () => {
+    vi.mocked(useRoute).mockReturnValue({ path: '/blog', meta: {}, matched: [{ name: 'blog' }] } as any)
+    vi.mocked(useError).mockReturnValue(ref(null) as any)
+    vi.mocked(useNuxtApp).mockReturnValue({ $i18n: { t: () => 'Articles' } } as any)
+
+    const title = useFallbackTitle()
+
+    expect(title.value).toBe('Articles')
   })
 })

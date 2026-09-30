@@ -4,9 +4,10 @@ import { useBreadcrumbItems } from '../../src/runtime/app/composables/useBreadcr
 
 const seoUtilsConfig = { canonicalLowercase: true, canonicalQueryWhitelist: [] as string[] }
 const route = { path: '/Blog/My-Post', query: {}, meta: {} }
+let appI18n: { locale: string, defaultLocale: string, strategy: string, t: (_: string, fallback: string) => string } | undefined
 
 vi.mock('nuxt/app', () => ({
-  useNuxtApp: () => ({ isHydrating: false, hooks: { hook: () => () => {} } }),
+  useNuxtApp: () => ({ isHydrating: false, hooks: { hook: () => () => {} }, $i18n: appI18n }),
   useRoute: () => route,
   useRouter: () => ({ resolve: () => ({ matched: [] }) }),
   useState: (_key: string, init: () => unknown) => ref(init()),
@@ -36,6 +37,8 @@ describe('breadcrumb schema URLs', () => {
   beforeEach(() => {
     defineBreadcrumb.mockClear()
     seoUtilsConfig.canonicalLowercase = true
+    route.path = '/Blog/My-Post'
+    appI18n = undefined
   })
 
   it('lowercases BreadcrumbList item URLs like the canonical', () => {
@@ -60,5 +63,14 @@ describe('breadcrumb schema URLs', () => {
       'https://example.com/Blog',
       'https://example.com/Blog/My-Post',
     ])
+  })
+
+  it('uses the active i18n locale for breadcrumb roots', () => {
+    route.path = '/fr/Blog/My-Post'
+    appI18n = { locale: 'fr', defaultLocale: 'en', strategy: 'prefix_except_default', t: (_key, fallback) => fallback }
+
+    const items = useBreadcrumbItems()
+
+    expect(items.value[0]?.to).toBe('/fr')
   })
 })

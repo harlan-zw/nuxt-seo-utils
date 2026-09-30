@@ -1,5 +1,4 @@
-import { injectHead } from '@unhead/vue'
-import { defineNuxtPlugin } from 'nuxt/app'
+import { defineNuxtPlugin, injectHead } from 'nuxt/app'
 import { unref } from 'vue'
 import { createSitePathResolver } from '#site-config/app/composables/utils'
 

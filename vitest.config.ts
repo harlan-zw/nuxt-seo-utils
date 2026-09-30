@@ -18,6 +18,8 @@ export default defineConfig({
       defineProject({
         test: {
           name: 'e2e',
+          // E2E files build the same Nuxt fixture and share its .nuxt directory.
+          fileParallelism: false,
           include: [
             './test/e2e/**/*.test.ts',
           ],

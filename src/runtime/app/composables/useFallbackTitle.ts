@@ -2,7 +2,6 @@ import { useError, useNuxtApp, useRoute } from 'nuxt/app'
 import { titleCase } from 'scule'
 import { withoutTrailingSlash } from 'ufo'
 import { computed } from 'vue'
-import { useI18n } from '#imports'
 
 interface I18nTranslator {
   t: (key: string, fallback: string, options?: Record<string, unknown>) => string
@@ -18,17 +17,7 @@ export function useFallbackTitle() {
     i18n = (useNuxtApp() as unknown as { $i18n?: I18nTranslator }).$i18n
   }
   catch {
-    // useNuxtApp() needs a Nuxt context (plugin or component setup); try the fallback below.
-  }
-  if (!i18n) {
-    try {
-      // installs without i18n register a polyfill translator that always returns the fallback,
-      // so this only fails when i18n is installed but its instance cannot be resolved.
-      i18n = useI18n()
-    }
-    catch {
-      console.warn('[nuxt-seo-utils] useFallbackTitle: could not resolve the i18n instance. Titles will not be resolved from i18n messages.')
-    }
+    // useNuxtApp() needs a Nuxt context (plugin or component setup).
   }
   return computed(() => {
     if (err.value?.statusCode && [404, 500].includes(err.value.statusCode)) {

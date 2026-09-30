@@ -26,6 +26,12 @@ const state = vi.hoisted(() => ({
 
 vi.mock('nuxt/app', () => ({
   defineNuxtPlugin: (plugin: unknown) => plugin,
+  injectHead: () => ({
+    push: (input: Record<string, unknown>) => state.pushed.push(input),
+    use: state.headUse,
+  }),
+  useHead: (input: Record<string, unknown>) => state.headed.push(input),
+  useSeoMeta: (input: Record<string, unknown>) => state.seoMeta.push(input),
   useRuntimeConfig: () => state.runtimeConfig,
   useRoute: () => ({
     path: '/',
@@ -46,15 +52,6 @@ vi.mock('#site-config/app/composables/utils', () => ({
 
 vi.mock('@unhead/vue/plugins', () => ({
   TemplateParamsPlugin: Symbol.for('template-params-plugin'),
-}))
-
-vi.mock('@unhead/vue', () => ({
-  injectHead: () => ({
-    push: (input: Record<string, unknown>) => state.pushed.push(input),
-    use: state.headUse,
-  }),
-  useHead: (input: Record<string, unknown>) => state.headed.push(input),
-  useSeoMeta: (input: Record<string, unknown>) => state.seoMeta.push(input),
 }))
 
 const siteConfigPluginModule = import('../../src/runtime/app/plugins/siteConfig')

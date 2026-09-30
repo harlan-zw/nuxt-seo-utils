@@ -1,8 +1,7 @@
 import type { Link, UseHeadOptions, UseSeoMetaInput } from '@unhead/vue'
 
-import { injectHead, useHead, useSeoMeta } from '@unhead/vue'
 import { TemplateParamsPlugin } from '@unhead/vue/plugins'
-import { useError, useRoute, useRuntimeConfig } from 'nuxt/app'
+import { injectHead, useError, useHead, useRoute, useRuntimeConfig, useSeoMeta } from 'nuxt/app'
 import { computed, toValue } from 'vue'
 import { useSiteConfig } from '#site-config/app/composables/useSiteConfig'
 import { createSitePathResolver } from '#site-config/app/composables/utils'

@@ -9,7 +9,7 @@ const state = vi.hoisted(() => ({
   useHead: vi.fn(),
 }))
 
-vi.mock('#imports', () => ({
+vi.mock('nuxt/app', () => ({
   defineNuxtPlugin: (plugin: unknown) => plugin,
   useHead: state.useHead,
   useNuxtApp: () => ({ $colorMode: state.colorMode }),

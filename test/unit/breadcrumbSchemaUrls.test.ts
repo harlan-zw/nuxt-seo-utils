@@ -14,10 +14,9 @@ vi.mock('nuxt/app', () => ({
 }))
 
 const defineBreadcrumb = vi.fn((input: unknown) => input)
-vi.mock('#imports', () => ({
+vi.mock('#seo-utils-schema', () => ({
   defineBreadcrumb: (input: unknown) => defineBreadcrumb(input),
   useSchemaOrg: () => {},
-  useI18n: () => ({ t: (_: string, fallback: string) => fallback, te: () => false, strategy: 'no_prefix' }),
 }))
 
 vi.mock('#site-config/app/composables/useSiteConfig', () => ({

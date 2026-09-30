@@ -17,12 +17,13 @@ import {
   toValue,
   watch,
 } from 'vue'
-// @ts-expect-error these are conditionally registered via addImports in module.ts
-import { defineBreadcrumb, useI18n, useSchemaOrg } from '#imports'
+// @ts-expect-error resolved to the schema module or local polyfills by module.ts
+import { defineBreadcrumb, useSchemaOrg } from '#seo-utils-schema'
 import { useSiteConfig } from '#site-config/app/composables/useSiteConfig'
 import { createSitePathResolver } from '#site-config/app/composables/utils'
 import { pathBreadcrumbSegments, resolveBreadcrumbRoot } from '../../shared/breadcrumbs'
 import { normaliseCanonicalUrl } from '../../shared/canonicalUrl'
+import { useI18n as useI18nPolyfill } from './polyfills'
 
 interface NuxtUIBreadcrumbItem extends NuxtLinkProps {
   label: string
@@ -205,7 +206,7 @@ export function useBreadcrumbItems(_options: BreadcrumbProps = {}): Ref<Breadcru
   }
   const route = useRoute()
   const router = useRouter()
-  const i18n = useI18n()
+  const i18n = (nuxtApp as typeof nuxtApp & { $i18n?: ReturnType<typeof useI18nPolyfill> }).$i18n || useI18nPolyfill()
   const siteResolver = createSitePathResolver({
     canonical: true,
     absolute: true,

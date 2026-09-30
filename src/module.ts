@@ -352,6 +352,12 @@ export default defineNuxtModule<ModuleOptions>({
       })
     }
     nuxt.options.alias['#seo-utils'] = runtimeDir
+    // Resolve the optional schema integration without importing the server-side #imports alias.
+    // @ts-expect-error schemaOrg is added by the optional module
+    const hasSchemaOrg = hasNuxtModule('nuxt-schema-org') && nuxt.options.schemaOrg?.enable !== false
+    nuxt.options.alias['#seo-utils-schema'] = hasSchemaOrg
+      ? resolve(runtimeDir, './app/composables/schemaOrg')
+      : resolve(runtimeDir, './app/composables/polyfills')
     nuxt.options.runtimeConfig.public['nuxt-seo-utils-version'] = nuxt.options.runtimeConfig.public['nuxt-seo-utils-version'] || version || ''
     nuxt.options.runtimeConfig.public['seo-utils'] = defu(nuxt.options.runtimeConfig.public['seo-utils'] || {}, {
       canonicalQueryWhitelist: config.canonicalQueryWhitelist ?? [

@@ -19,6 +19,9 @@ function createPng(width: number, height: number): Buffer {
 function createNuxt(rootDir: string, srcDir: string): Nuxt {
   return {
     options: {
+      rootDir,
+      srcDir,
+      alias: {},
       _layers: [{ cwd: rootDir, config: { rootDir, srcDir } }],
       app: { baseURL: '/' },
       dev: false,

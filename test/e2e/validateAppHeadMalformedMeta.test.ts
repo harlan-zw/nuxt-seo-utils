@@ -19,10 +19,10 @@ const restore = [process.stdout, process.stderr].map((stream) => {
 await setup({
   rootDir: resolve('../fixtures/no-i18n'),
   nuxtConfig: {
-    // @ts-expect-error module config key
     seo: {
       extendNuxtConfigAppHeadSeoMeta: false,
       meta: {
+        // @ts-expect-error malformed user input exercises runtime validation
         'og:image': [undefined],
       },
     },

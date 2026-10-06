@@ -1,5 +1,6 @@
 import type { MetaFlatSerializable } from './runtime/types'
 import { existsSync } from 'node:fs'
+import { readFile } from 'node:fs/promises'
 import { pathToFileURL } from 'node:url'
 import {
   addImports,
@@ -10,16 +11,14 @@ import {
   createResolver,
   defineNuxtModule,
   directoryToURL,
-  hasNuxtCompatibility,
   hasNuxtModule,
 } from '@nuxt/kit'
 import { unpackMeta } from '@unhead/vue/utils'
 import { defu } from 'defu'
 import { resolveModulePath } from 'exsolve'
 import { installNuxtSiteConfig, useSiteConfig } from 'nuxt-site-config/kit'
-import { renderNitroTypeAugmentations, resolveHostUnheadMajor, setupNitroRuntimeCompatibility, useModuleLogger } from 'nuxtseo-shared/kit'
+import { renderNitroTypeAugmentations, setupNitroRuntimeCompatibility, setupRuntimeAliases, useModuleLogger } from 'nuxtseo-shared/kit'
 import { dirname, relative } from 'pathe'
-import { readPackageJSON, resolvePackageJSON } from 'pkg-types'
 import extendNuxtConfigAppHeadSeoMeta from './build-time/extendNuxtConfigAppHeadSeoMeta'
 import extendNuxtConfigAppHeadTypes from './build-time/extendNuxtConfigAppHeadTypes'
 import generateTagsFromPageDirImages from './build-time/generateTagsFromPageDirImages'
@@ -185,7 +184,7 @@ export default defineNuxtModule<ModuleOptions>({
     name: 'nuxt-seo-utils',
     configKey: 'seo',
     compatibility: {
-      nuxt: '>=3.16.0',
+      nuxt: '^4.6.0 || ^5.0.0',
     },
   },
   moduleDependencies: {
@@ -198,7 +197,7 @@ export default defineNuxtModule<ModuleOptions>({
       optional: true,
     },
     'nuxt-site-config': {
-      version: '>=3.2',
+      version: '>=5.0.0',
     },
   },
   defaults: {
@@ -229,8 +228,8 @@ export default defineNuxtModule<ModuleOptions>({
       return
     }
     const nitroCompatibility = setupNitroRuntimeCompatibility(nuxt)
-    const { resolve } = createResolver(import.meta.url)
-    const { version } = await readPackageJSON(resolve('../package.json'))
+    const { resolve, resolvePath } = createResolver(import.meta.url)
+    const { version } = JSON.parse(await readFile(resolve('../package.json'), 'utf8')) as { version: string }
     await installNuxtSiteConfig()
 
     const runtimeDir = resolve('./runtime')
@@ -325,7 +324,7 @@ export default defineNuxtModule<ModuleOptions>({
     // if user disables certain modules we need to pollyfill the imports
     const polyfills = [
       // @ts-expect-error runtime type
-      ...((!hasNuxtModule('nuxt-schema-org') || nuxt.options.schemaOrg?.enable === false)
+      ...((!hasNuxtModule('nuxt-schema-org') || nuxt.options.schemaOrg?.enabled === false)
         ? [
             'useSchemaOrg',
             'defineWebSite',
@@ -351,10 +350,10 @@ export default defineNuxtModule<ModuleOptions>({
         middleware: true,
       })
     }
-    nuxt.options.alias['#seo-utils'] = runtimeDir
+    setupRuntimeAliases({ namespace: '#seo-utils', app: resolve(runtimeDir, './app') }, nuxt)
     // Resolve the optional schema integration without importing the server-side #imports alias.
     // @ts-expect-error schemaOrg is added by the optional module
-    const hasSchemaOrg = hasNuxtModule('nuxt-schema-org') && nuxt.options.schemaOrg?.enable !== false
+    const hasSchemaOrg = hasNuxtModule('nuxt-schema-org') && nuxt.options.schemaOrg?.enabled !== false
     nuxt.options.alias['#seo-utils-schema'] = hasSchemaOrg
       ? resolve(runtimeDir, './app/composables/schemaOrg')
       : resolve(runtimeDir, './app/composables/polyfills')
@@ -429,11 +428,11 @@ export {}
         return
 
       headConfig.link = result.links
-      const seoRuntimeConfig = nuxt.options.runtimeConfig.public['seo-utils'] as Record<string, unknown>
+      const seoRuntimeConfig = nuxt.options.runtimeConfig.public['seo-utils']
       seoRuntimeConfig.colorModeIcons = result.icons
       addPlugin({ src: resolve(appRuntimeDir, 'plugins', 'colorModeIcons') })
     })
-    // Seed nuxt.options.unhead.vite so Nuxt >=4.5.0 compat>=5 (which registers
+    // Seed nuxt.options.unhead.vite so compatibilityVersion 5 (which registers
     // @unhead/vue/vite itself) uses the same config as our fallback registration.
     // Users can pass false to disable the plugin entirely, or override any option.
     ;(nuxt.options as any).unhead = defu(
@@ -443,26 +442,17 @@ export {}
     const viteOpts = (nuxt.options as any).unhead.vite
     const nuxtRegistersUnheadVite = nuxt.options.future?.compatibilityVersion >= 5
       && nuxt.options.builder === '@nuxt/vite-builder'
-      && await hasNuxtCompatibility({ nuxt: '>=4.5.0' })
     if (!nuxtRegistersUnheadVite && viteOpts !== false) {
-      // Detect the major the host actually *renders* with, not whichever @unhead/vue
-      // resolves from rootDir: under pnpm a nested @unhead/vue v2 can sit at the root
-      // while Nitro/Nuxt render with unhead v3. Picking the wrong major makes the
-      // build-time useSeoMeta->useHead transform emit a _flatMeta shape the runtime
-      // FlatMetaPlugin reads differently, silently dropping meta:description (#555).
-      const unheadMajor = await resolveHostUnheadMajor(nuxt.options.rootDir)
-      // Resolve minifier paths eagerly (matches Nuxt 4.5 behavior). Vite 8+ ships
+      // Resolve from Nuxt's dependency tree so transforms match the renderer's Unhead.
+      // Resolve minifier paths eagerly. Vite 8+ ships
       // rolldown/experimental and lightningcss as direct deps; older setups skip gracefully.
       const importPaths = nuxt.options.modulesDir.map(d => directoryToURL(d))
       const rolldownPath = resolveModulePath('rolldown/experimental', { try: true, from: importPaths })
       const lightningcssPath = resolveModulePath('lightningcss', { try: true, from: importPaths })
       const rolldownURL = rolldownPath ? pathToFileURL(rolldownPath).href : undefined
       const lightningcssURL = lightningcssPath ? pathToFileURL(lightningcssPath).href : undefined
-      const hostImportPaths = unheadMajor >= 3
-        ? [directoryToURL(dirname(await resolvePackageJSON('nuxt', { url: directoryToURL(nuxt.options.rootDir).href })))]
-        : []
+      const hostImportPaths = [directoryToURL(dirname(resolveModulePath('nuxt/package.json', { from: importPaths })))]
       const vitePluginSource = resolveUnheadVitePluginSource({
-        unheadMajor,
         hostImportPaths,
         importPaths,
       }, resolveModulePath)
@@ -484,10 +474,7 @@ export {}
           }
           : undefined,
       }
-      if (vitePluginSource._tag === 'unsupported-v2') {
-        logger.warn('`treeShakeUseSeoMeta` requires Unhead v3; skipping the transform on Unhead v2.')
-      }
-      else if (vitePluginSource._tag === 'missing-vue') {
+      if (vitePluginSource._tag === 'missing-vue') {
         logger.warn('`treeShakeUseSeoMeta` requires `@unhead/vue` with the `/vite` export. Install Unhead v3 or disable `treeShakeUseSeoMeta`.')
       }
       else {
@@ -499,8 +486,27 @@ export {}
         })
       }
     }
-    if (config.automaticOgAndTwitterTags)
+    if (config.automaticOgAndTwitterTags) {
+      // Unhead's plugin re-export includes this file. Nitro can misplace its external SSR path.
+      const minifyImports = ['unhead/minify', await resolvePath('unhead/minify')]
+      nuxt.hook('nitro:config', (nitroConfig) => {
+        if (nitroCompatibility._tag === 'nitro-v3') {
+          const nitro3Config = nitroConfig as Omit<typeof nitroConfig, 'noExternals'> & { noExternals?: boolean | (string | RegExp)[] }
+          if (nitro3Config.noExternals !== true) {
+            nitro3Config.noExternals = [
+              ...(Array.isArray(nitro3Config.noExternals) ? nitro3Config.noExternals : []),
+              ...minifyImports,
+            ]
+          }
+        }
+        else {
+          nitroConfig.externals ||= {}
+          nitroConfig.externals.inline ||= []
+          nitroConfig.externals.inline.push(...minifyImports)
+        }
+      })
       addPlugin({ src: resolve(appRuntimeDir, 'plugins', 'inferSeoMetaPlugin') })
+    }
 
     if (config.mergeWithSiteConfig)
       addPlugin({ src: resolve(appRuntimeDir, 'plugins', 'siteConfig') })

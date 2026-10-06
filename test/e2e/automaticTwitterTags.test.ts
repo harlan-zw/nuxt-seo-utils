@@ -11,7 +11,6 @@ await setup({
     modules: [
       resolve('../../src/module'),
     ],
-    // @ts-expect-error module config key
     seo: {
       automaticTwitterTags: false,
       treeShakeUseSeoMeta: false,

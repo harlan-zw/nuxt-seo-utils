@@ -25,7 +25,7 @@ const nitroServer = (await Promise.all(
 )).join('\n')
 
 assert.match(nitroManifest.versions.nitro, /^3\./)
-assert.doesNotMatch(nitroServer, /nitropack\/runtime/)
+  assert.doesNotMatch(nitroServer, /nitropack\/runtime/)
 
 const server = spawn(process.execPath, ['.output/server/index.mjs'], {
   cwd: import.meta.dirname,
@@ -55,9 +55,15 @@ async function waitForServer() {
 
 try {
   const response = await waitForServer()
+  assert.equal((await (await fetch(`${origin}/api/runtime-alias`)).json()).enabled, true)
   const html = await response.text()
+  assert.match(html, /href="https:\/\/x\.com\/intent\/tweet\?/)
   assert.match(html, /Nuxt SEO Utils Nitro 3/)
   assert.match(html, /Nuxt 5 compatible SEO utils/)
+  assert.match(html, /Nuxt 5 SEO Utils/)
+  assert.match(html, /<meta(?=[^>]*property="og:title")(?=[^>]*content="Nuxt 5 SEO Utils")[^>]*>/)
+  assert.match(html, /<meta(?=[^>]*property="og:description")(?=[^>]*content="Nuxt 5 compatible SEO utils")[^>]*>/)
+  assert.doesNotMatch(html, /application\/ld\+json/)
 
   const debug = await fetch(`${origin}/__nuxt-seo-utils/debug.json`).then(response => response.json())
   assert.equal(debug.siteConfig.name, 'Nuxt 5 SEO Utils')

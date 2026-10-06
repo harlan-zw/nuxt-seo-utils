@@ -8,7 +8,6 @@ const { resolve } = createResolver(import.meta.url)
 await setup({
   rootDir: resolve('../fixtures/route-meta'),
   nuxtConfig: {
-    // @ts-expect-error module config key
     seo: {
       tagPriority: 'high',
     },

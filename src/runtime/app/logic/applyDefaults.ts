@@ -28,7 +28,7 @@ export function applyDefaults(): void {
   const { canonicalQueryWhitelist, canonicalLowercase, tagPriority, separator, titleSeparator } = useRuntimeConfig().public['seo-utils'] as {
     canonicalQueryWhitelist: string[]
     canonicalLowercase: boolean
-    tagPriority: number | undefined
+    tagPriority: UseHeadOptions['tagPriority']
     separator?: string
     titleSeparator?: string
   }

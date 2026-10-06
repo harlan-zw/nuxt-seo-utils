@@ -1,10 +1,9 @@
-import { defineEventHandler, getQuery } from '#nuxtseo/h3'
-import { useRuntimeConfig } from '#nuxtseo/nitro'
+import { defineEventHandler, getQuery, useRuntimeConfig } from 'nuxt/server'
 import { getSiteConfig } from '#site-config/server/composables'
 
 export default defineEventHandler((e) => {
   const siteConfig = getSiteConfig(e)
-  const runtimeConfig = useRuntimeConfig(e)
+  const runtimeConfig = useRuntimeConfig()
   const seoUtils = runtimeConfig.public?.['seo-utils'] || {}
   const headConfig = runtimeConfig['seo-utils-head'] || { link: [], meta: [] }
   const query = getQuery(e)

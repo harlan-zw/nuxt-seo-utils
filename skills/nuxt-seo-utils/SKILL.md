@@ -5,7 +5,7 @@ description: Set up, override, and debug the default SEO head tags in a Nuxt app
 
 # nuxt-seo-utils
 
-Tested against `nuxt-seo-utils` 8.5.2 on Nuxt 4.5.2 with Unhead v3 (requires Nuxt `>=3.16.0`).
+Requires Nuxt `^4.6.0 || ^5.0.0` and Unhead 3.4.2 or newer.
 The module adds default head tags from site config, reads icon and social image files, and ships breadcrumb and share link composables.
 Docs: https://nuxtseo.com/docs/seo-utils
 

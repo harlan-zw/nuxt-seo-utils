@@ -3,14 +3,8 @@ name: CI
 on:
   push:
     paths-ignore:
-      - '**/*.md'
+      - '**/README.md'
       - 'docs/**'
-    branches:
-      - main
-  pull_request:
-    paths-ignore:
-      - '**/*.md'
-      - docs/**
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.event.number || github.sha }}
@@ -21,7 +15,7 @@ permissions:
 
 jobs:
   ci:
-    uses: harlan-zw/nuxt-seo/.github/workflows/reusable-ci.yml@09760efb0ffeac9f477673725c1c2f1fc8b1b049
+    uses: harlan-zw/nuxt-seo/.github/workflows/reusable-ci.yml@main
     # No browser tests here; skip the ~183MB arm64 Chromium download that stalls
     # on cdn.playwright.dev whenever the lockfile cache key misses.
     with:
@@ -29,4 +23,3 @@ jobs:
       # The root vitest projects exclude **/__runtime__/**. Run the i18n runtime
       # suite after prepare:fixtures so the fallback title fix stays covered.
       test-command: pnpm test && pnpm test:runtime:i18n
-      node-version: 22.22.3

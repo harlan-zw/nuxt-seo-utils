@@ -15,10 +15,11 @@ permissions:
 
 jobs:
   ci:
-    uses: harlan-zw/nuxt-seo/.github/workflows/reusable-ci.yml@main
+    uses: harlan-zw/nuxt-seo/.github/workflows/reusable-ci.yml@226c091a0744b7286ef721ac035eed53856bfaa5
     # No browser tests here; skip the ~183MB arm64 Chromium download that stalls
     # on cdn.playwright.dev whenever the lockfile cache key misses.
     with:
+      migration: true
       playwright: false
       # The root vitest projects exclude **/__runtime__/**. Run the i18n runtime
       # suite after prepare:fixtures so the fallback title fix stays covered.

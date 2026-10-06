@@ -52,3 +52,7 @@ Network Trash Folder
 Temporary Items
 .apdisk
 .claude/
+
+.migration-sources/
+.migration-checkouts/
+.migration-artifacts/

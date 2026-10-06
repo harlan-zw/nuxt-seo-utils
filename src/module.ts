@@ -324,7 +324,7 @@ export default defineNuxtModule<ModuleOptions>({
     // if user disables certain modules we need to pollyfill the imports
     const polyfills = [
       // @ts-expect-error runtime type
-      ...((!hasNuxtModule('nuxt-schema-org') || nuxt.options.schemaOrg?.enable === false)
+      ...((!hasNuxtModule('nuxt-schema-org') || nuxt.options.schemaOrg?.enabled === false)
         ? [
             'useSchemaOrg',
             'defineWebSite',

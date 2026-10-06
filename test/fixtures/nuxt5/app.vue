@@ -4,6 +4,8 @@ import { useBreadcrumbItems, useShareLinks } from '#seo-utils/app'
 const platform: SharePlatform = 'twitter'
 const shareLinks = useShareLinks()
 const breadcrumbs = useBreadcrumbItems()
+// Installed Schema can be disabled. Its auto-imports must remain safe to call.
+useSchemaOrg([defineWebSite(), defineWebPage(), defineBreadcrumb([])])
 useSeoMeta({
   description: 'Nuxt 5 compatible SEO utils',
 })

@@ -3,7 +3,7 @@ import type { Link, Meta, SerializableHead } from '@unhead/vue/types'
 import type { MetaFlatSerializable } from '../runtime/types'
 import type { IconDiagnostic, IconRel } from './iconAssets'
 import { readdir } from 'node:fs/promises'
-import { useNuxt } from '@nuxt/kit'
+import { getLayerDirectories, useNuxt } from '@nuxt/kit'
 import { unpackMeta } from '@unhead/vue/utils'
 import { defu } from 'defu'
 import { basename, resolve } from 'pathe'
@@ -91,8 +91,7 @@ function enrichConfiguredIcon(link: Link, baseURL: string, iconEntries: IconFile
 }
 
 export default async function generateTagsFromPublicFiles(nuxt: Nuxt = useNuxt()): Promise<{ hasIcons: boolean, diagnostics: IconDiagnostic[] }> {
-  const publicDirs = nuxt.options._layers
-    .map(layer => resolve(layer.config.rootDir!, layer.config.dir?.public || 'public'))
+  const publicDirs = getLayerDirectories(nuxt).map(layer => layer.public)
 
   // collect files from all layers, first layer (app) wins on conflicts
   const seen = new Set<string>()

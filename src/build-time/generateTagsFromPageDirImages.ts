@@ -1,6 +1,6 @@
 import type { Nuxt } from '@nuxt/schema'
 import fs from 'node:fs'
-import { useNuxt } from '@nuxt/kit'
+import { getLayerDirectories, useNuxt } from '@nuxt/kit'
 import { defu } from 'defu'
 import { basename, dirname, resolve } from 'pathe'
 import { glob } from 'tinyglobby'
@@ -34,8 +34,8 @@ function addGeneratedRouteRule(nuxt: Nuxt, route: string, generatedRule: Generat
 }
 
 export default async function generateTagsFromPageDirImages(nuxt: Nuxt = useNuxt()): Promise<void> {
-  const pagesDirs = nuxt.options._layers
-    .map(layer => resolve(layer.config.srcDir || layer.cwd, layer.config.dir?.pages || 'pages'))
+  const pagesDirs = getLayerDirectories(nuxt)
+    .map(layer => layer.appPages)
     .filter(dir => fs.existsSync(dir))
 
   const appendRouteRules: Record<string, GeneratedRouteRule> = {}

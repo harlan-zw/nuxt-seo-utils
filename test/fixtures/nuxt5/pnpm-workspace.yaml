@@ -1,11 +1,15 @@
+trustPolicyExclude:
+  - cssnano@9.2.2
+allowBuilds:
+  esbuild: true
 minimumReleaseAgeExclude:
-  - '@nuxt/kit-nightly@5.0.0-29844772.97ae4fa8'
-  - '@nuxt/nitro-server-nightly@5.0.0-29844772.97ae4fa8'
-  - '@nuxt/schema-nightly@5.0.0-29844772.97ae4fa8'
-  - '@nuxt/vite-builder-nightly@5.0.0-29844772.97ae4fa8'
-  - nuxt-nightly@5.0.0-29844772.97ae4fa8
+  - '@nuxt/kit-nightly@5.0.0-2610052343-36eafab'
+  - '@nuxt/nitro-server-nightly@5.0.0-2610052343-36eafab'
+  - '@nuxt/schema-nightly@5.0.0-2610052343-36eafab'
+  - '@nuxt/vite-builder-nightly@5.0.0-2610052343-36eafab'
+  - nuxt-nightly@5.0.0-2610052343-36eafab
   - nuxtseo-shared
   - nuxt-site-config
   - nuxt-site-config-kit@4.1.4
   - site-config-stack@4.1.4
-  - '@nuxt/vite-server-nightly@5.0.0-29844772.97ae4fa8'
+  - '@nuxt/vite-server-nightly@5.0.0-2610052343-36eafab'

@@ -3,10 +3,10 @@ import { computed, toValue } from 'vue'
 import { useSiteConfig } from '#site-config/app/composables/useSiteConfig'
 
 // eslint-disable-next-line harlanzw/vue-no-faux-composables
-export function useSchemaOrg(): void {}
+export function useSchemaOrg(_input?: unknown): void {}
 export function defineWebSite(): void {}
 export function defineWebPage(): void {}
-export function defineBreadcrumb(): void {}
+export function defineBreadcrumb(_input?: unknown): void {}
 
 export function useI18n(): {
   t: (_: string, fallback: string, _options: any) => string

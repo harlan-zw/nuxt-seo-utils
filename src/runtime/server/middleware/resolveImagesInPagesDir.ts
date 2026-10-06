@@ -1,19 +1,18 @@
 import fs from 'node:fs'
-import { parseURL } from 'ufo'
-import { defineEventHandler, setHeader } from '#nuxtseo/h3'
+import { defineEventHandler } from 'nuxt/server'
 import { fileMapping } from '#seo-utils-virtual/pageDirImages'
 
 // Note: this only runs in dev
 export default defineEventHandler(async (e) => {
-  const path = parseURL(e.path).pathname
+  const path = e.url.pathname
   if (fileMapping[path]) {
     // add correct header for path type
     if (path.endsWith('.svg'))
-      setHeader(e, 'Content-Type', 'image/svg+xml')
+      e.res.headers.set('Content-Type', 'image/svg+xml')
     else if (path.endsWith('.png'))
-      setHeader(e, 'Content-Type', 'image/png')
+      e.res.headers.set('Content-Type', 'image/png')
     else if (path.endsWith('.jpg') || path.endsWith('.jpeg'))
-      setHeader(e, 'Content-Type', 'image/jpeg')
+      e.res.headers.set('Content-Type', 'image/jpeg')
 
     return fs.readFileSync(fileMapping[path])
   }

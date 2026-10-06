@@ -26,6 +26,9 @@ async function nuxtWithPublicFiles(files: Record<string, Buffer>): Promise<Nuxt>
     await writeFile(resolve(rootDir, 'public', name), content)
   return {
     options: {
+      rootDir,
+      srcDir: rootDir,
+      alias: {},
       _layers: [{ cwd: rootDir, config: { rootDir } }],
       app: { baseURL: '/', head: {} },
     },

@@ -12,6 +12,9 @@ const { resolve } = createResolver(import.meta.url)
 function createNuxt(rootDir: string, head: SerializableHead = {}, baseURL = '/'): Nuxt {
   return {
     options: {
+      rootDir,
+      srcDir: rootDir,
+      alias: {},
       _layers: [{ config: { rootDir, dir: { public: 'public' } } }],
       app: { baseURL, head },
     },

@@ -1,7 +1,7 @@
 {
   "name": "nuxt-seo-utils",
   "type": "module",
-  "version": "8.6.1",
+  "version": "9.0.0",
   "packageManager": "pnpm@11.25.0",
   "description": "SEO utilities to improve your Nuxt sites discoverability and shareability",
   "license": "MIT",
@@ -31,12 +31,16 @@
   ],
   "build": {
     "externals": [
+      "nuxt/server",
       "unhead",
       "@unhead/vue",
       "@unhead/vue/plugins",
       "@unhead/vue/utils",
       "@unhead/vue/vite"
     ]
+  },
+  "engines": {
+    "node": "^22.22.3 || ^24.15.0 || >=26.0.0"
   },
   "scripts": {
     "client:build": "node -e \"require('fs').cpSync('devtools','dist/devtools',{recursive:true})\"",
@@ -49,24 +53,24 @@
     "typecheck": "nuxt typecheck",
     "prepare:fixtures": "nuxt prepare test/fixtures/basic && nuxt prepare test/fixtures/i18n && nuxt prepare test/fixtures/csp",
     "test": "vitest && pnpm test:nuxt5",
-    "test:run": "vitest run --exclude '**/\\_\\_runtime\\_\\_/**'",
+    "test:run": "vitest run --exclude '**/\\_\\_runtime\\_\\_/**' && pnpm test:nuxt-lanes",
     "test:runtime": "pnpm test:runtime:basic && pnpm test:runtime:i18n",
     "test:runtime:basic": "cd test/fixtures/basic && vitest --run",
     "test:runtime:i18n": "cd test/fixtures/i18n && vitest --run",
-    "test:nuxt5": "pnpm pack --out test/fixtures/nuxt5/module.tgz && node test/fixtures/nuxt5/run.mjs",
+    "test:nuxt5": "node scripts/test-nuxt-lanes.ts nuxt5",
     "prepack": "pnpm run build",
     "release": "pnpm build && bumpp -x \"npx changelogen --output=CHANGELOG.md\"",
     "lint:docs": "markdownlint ./docs/content && case-police 'docs/content/**/*.md' *.md",
     "lint:docs:fix": "markdownlint ./docs/content --fix && case-police 'docs/content/**/*.md' *.md --fix",
-    "test:compat-v2": "node test/compat-v2/run.mjs"
+    "test:nuxt-lanes": "node scripts/test-nuxt-lanes.ts"
   },
   "peerDependencies": {
-    "@unhead/vue": "^2.0.7 || ^3.0.0",
+    "@unhead/vue": "^3.4.2",
     "esbuild": ">=0.17.0",
     "lightningcss": ">=1.20.0",
-    "nuxt": "^3.0.0 || ^4.0.0 || ^5.0.0",
+    "nuxt": "^4.6.0 || ^5.0.0",
     "rolldown": ">=1.0.0-beta.0",
-    "unhead": "^2.0.7 || ^3.0.0"
+    "unhead": "^3.4.2"
   },
   "peerDependenciesMeta": {
     "@unhead/vue": {
@@ -95,7 +99,6 @@
     "nuxt-site-config": "catalog:",
     "nuxtseo-shared": "catalog:",
     "pathe": "catalog:",
-    "pkg-types": "catalog:",
     "scule": "catalog:",
     "tinyglobby": "catalog:",
     "ufo": "catalog:"

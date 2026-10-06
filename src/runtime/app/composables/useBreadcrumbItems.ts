@@ -17,7 +17,6 @@ import {
   toValue,
   watch,
 } from 'vue'
-// @ts-expect-error resolved to the schema module or local polyfills by module.ts
 import { defineBreadcrumb, useSchemaOrg } from '#seo-utils-schema'
 import { useSiteConfig } from '#site-config/app/composables/useSiteConfig'
 import { createSitePathResolver } from '#site-config/app/composables/utils'

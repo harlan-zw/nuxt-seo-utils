@@ -61,6 +61,8 @@ try {
   assert.match(html, /href="https:\/\/x\.com\/intent\/tweet\?/)
   assert.match(html, /Nuxt SEO Utils Nitro 3/)
   assert.match(html, /Nuxt 5 compatible SEO utils/)
+  assert.match(html, /Nuxt 5 SEO Utils/)
+  assert.doesNotMatch(html, /application\/ld\+json/)
 
   const debug = await fetch(`${origin}/__nuxt-seo-utils/debug.json`).then(response => response.json())
   assert.equal(debug.siteConfig.name, 'Nuxt 5 SEO Utils')

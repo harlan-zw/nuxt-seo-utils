@@ -353,7 +353,7 @@ export default defineNuxtModule<ModuleOptions>({
     setupRuntimeAliases({ namespace: '#seo-utils', app: resolve(runtimeDir, './app') }, nuxt)
     // Resolve the optional schema integration without importing the server-side #imports alias.
     // @ts-expect-error schemaOrg is added by the optional module
-    const hasSchemaOrg = hasNuxtModule('nuxt-schema-org') && nuxt.options.schemaOrg?.enable !== false
+    const hasSchemaOrg = hasNuxtModule('nuxt-schema-org') && nuxt.options.schemaOrg?.enabled !== false
     nuxt.options.alias['#seo-utils-schema'] = hasSchemaOrg
       ? resolve(runtimeDir, './app/composables/schemaOrg')
       : resolve(runtimeDir, './app/composables/polyfills')

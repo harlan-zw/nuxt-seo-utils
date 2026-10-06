@@ -8,16 +8,16 @@
   },
   "dependencies": {
     "nitro": "3.0.260903-beta",
-    "nuxt": "npm:nuxt-nightly@5.0.0-2610052343-36eafab",
-    "nuxt-seo-utils": "file:module.tgz",
+    "nuxt": "npm:nuxt-nightly@5.0.0-2610061032-c7ad8cd",
+    "nuxt-seo-utils": "link:../../..",
     "nuxt-site-config": "^5.0.0",
     "nuxtseo-shared": "^6.0.0",
-    "vue": "^3.5.40",
-    "vue-router": "5.3.1",
+    "vue": "^3.5.43",
+    "vue-router": "^5.3.1",
     "nuxt-schema-org": "^7.0.0"
   },
   "devDependencies": {
     "typescript": "6.0.3",
-    "vue-tsc": "^3.3.8"
+    "vue-tsc": "^3.3.12"
   }
 }

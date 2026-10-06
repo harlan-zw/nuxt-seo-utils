@@ -3,8 +3,14 @@ name: CI
 on:
   push:
     paths-ignore:
-      - '**/README.md'
+      - '**/*.md'
       - 'docs/**'
+    branches:
+      - main
+  pull_request:
+    paths-ignore:
+      - '**/*.md'
+      - docs/**
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.event.number || github.sha }}
@@ -15,12 +21,28 @@ permissions:
 
 jobs:
   ci:
-    uses: harlan-zw/nuxt-seo/.github/workflows/reusable-ci.yml@226c091a0744b7286ef721ac035eed53856bfaa5
+    uses: harlan-zw/nuxt-seo/.github/workflows/reusable-ci.yml@09760efb0ffeac9f477673725c1c2f1fc8b1b049
     # No browser tests here; skip the ~183MB arm64 Chromium download that stalls
     # on cdn.playwright.dev whenever the lockfile cache key misses.
     with:
-      migration: true
       playwright: false
       # The root vitest projects exclude **/__runtime__/**. Run the i18n runtime
       # suite after prepare:fixtures so the fallback title fix stays covered.
-      test-command: pnpm test:run && pnpm test:runtime:i18n
+      test-command: pnpm test && pnpm test:runtime:i18n
+      node-version: 22.22.3
+
+  # The module imports @unhead/vue directly and feature-detects the host's unhead
+  # major. The main suite runs on the unhead v3 stack, so it can't catch a v2 host
+  # regression. This job builds + packs the module and installs it into an isolated
+  # unhead v2 host (Nuxt 4.2 / @unhead/vue@2 / unhead@2).
+  compat-v2:
+    runs-on: ubuntu-24.04-arm
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: pnpm/action-setup@v6
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: 'lts/*'
+          cache: pnpm
+      - run: pnpm i
+      - run: pnpm test:compat-v2

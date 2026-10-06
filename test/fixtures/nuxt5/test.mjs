@@ -24,8 +24,7 @@ const nitroServer = (await Promise.all(
     .map(entry => readFile(resolve(entry.parentPath, entry.name), 'utf8')),
 )).join('\n')
 
-assert.match(nitroManifest.versions.nitro, process.env.NUXT_TEST_LANE === 'nuxt5' ? /^3\./ : /^2\./)
-if (process.env.NUXT_TEST_LANE === 'nuxt5')
+assert.match(nitroManifest.versions.nitro, /^3\./)
   assert.doesNotMatch(nitroServer, /nitropack\/runtime/)
 
 const server = spawn(process.execPath, ['.output/server/index.mjs'], {

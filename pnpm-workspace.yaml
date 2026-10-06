@@ -1,62 +1,25 @@
 catalogMode: prefer
+blockExoticSubdeps: false
+
+minimumReleaseAgeExcludePrune: true
 minimumReleaseAgeExclude:
-  - eslint-plugin-harlanzw@0.19.2
-  - '@img/sharp-darwin-arm64@0.35.0'
-  - '@img/sharp-darwin-x64@0.35.0'
-  - '@img/sharp-freebsd-wasm32@0.35.0'
-  - '@img/sharp-libvips-darwin-arm64@1.3.0'
-  - '@img/sharp-libvips-darwin-x64@1.3.0'
-  - '@img/sharp-libvips-linux-arm64@1.3.0'
-  - '@img/sharp-libvips-linux-arm@1.3.0'
-  - '@img/sharp-libvips-linux-ppc64@1.3.0'
-  - '@img/sharp-libvips-linux-riscv64@1.3.0'
-  - '@img/sharp-libvips-linux-s390x@1.3.0'
-  - '@img/sharp-libvips-linux-x64@1.3.0'
-  - '@img/sharp-libvips-linuxmusl-arm64@1.3.0'
-  - '@img/sharp-libvips-linuxmusl-x64@1.3.0'
-  - '@img/sharp-linux-arm64@0.35.0'
-  - '@img/sharp-linux-arm@0.35.0'
-  - '@img/sharp-linux-ppc64@0.35.0'
-  - '@img/sharp-linux-riscv64@0.35.0'
-  - '@img/sharp-linux-s390x@0.35.0'
-  - '@img/sharp-linux-x64@0.35.0'
-  - '@img/sharp-linuxmusl-arm64@0.35.0'
-  - '@img/sharp-linuxmusl-x64@0.35.0'
-  - '@img/sharp-wasm32@0.35.0'
-  - '@img/sharp-webcontainers-wasm32@0.35.0'
-  - '@img/sharp-win32-arm64@0.35.0'
-  - '@img/sharp-win32-ia32@0.35.0'
-  - '@img/sharp-win32-x64@0.35.0'
-  - '@types/node@25.9.3'
-  - sharp@0.35.0
   - nuxtseo-layer-devtools
   - unhead
   - '@unhead/vue'
   - '@unhead/bundler'
   - nuxtseo-shared
-  - '@vue/compiler-core@3.5.38'
-  - '@vue/compiler-dom@3.5.38'
-  - '@vue/compiler-sfc@3.5.38'
-  - '@vue/compiler-ssr@3.5.38'
-  - '@vue/reactivity@3.5.38'
-  - '@vue/runtime-core@3.5.38'
-  - '@vue/runtime-dom@3.5.38'
-  - '@vue/server-renderer@3.5.38'
-  - '@vue/shared@3.5.38'
-  - vue@3.5.38
-  - '@nuxt/kit@4.5.0 || 4.6.0'
-  - '@nuxt/nitro-server@4.5.0 || 4.6.0'
-  - '@nuxt/schema@4.5.0 || 4.6.0'
-  - '@nuxt/vite-builder@4.5.0 || 4.6.0'
-  - nuxt@4.5.0 || 4.6.0
-  - nuxt-site-config-kit@4.1.4
-  - nuxt-site-config@4.1.4
-  - site-config-stack@4.1.4
+  - '@nuxt/kit@4.6.0'
+  - '@nuxt/nitro-server@4.6.0'
+  - '@nuxt/schema@4.6.0'
+  - '@nuxt/vite-builder@4.6.0'
+  - nuxt@4.6.0
   - '@nuxt/cli@4.0.0'
   - '@nuxt/vite-server@4.6.0'
-shellEmulator: true
+  - '@nuxt/devtools-kit@4.0.0-beta.4'
 
 trustPolicy: no-downgrade
+trustPolicyIgnoreAfter: 262800
+
 trustPolicyExclude:
   - stylehacks@9.0.7
   - postcss-normalize-timing-functions@9.0.5
@@ -88,6 +51,9 @@ trustPolicyExclude:
   - cssnano-utils@8.1.0
   - cssnano-preset-default@9.2.2
   - cssnano@9.2.2
+
+shellEmulator: true
+
 packages:
   - '!examples/**'
 
@@ -99,6 +65,10 @@ overrides:
   cssnano: 9.2.2
   cssnano-preset-default: 9.2.2
   cssnano-utils: 8.1.0
+  nuxt-schema-org: https://pkg.pr.new/harlan-zw/nuxt-schema-org/nuxt-schema-org@92d351e5b56e8bbcfb20951947a3354ffdf720c8
+  nuxt-site-config: https://pkg.pr.new/harlan-zw/nuxt-site-config/nuxt-site-config@59e27b8dc55b21407ce19dfdbb7be0c6571e9490
+  nuxt-site-config-kit: https://pkg.pr.new/harlan-zw/nuxt-site-config/nuxt-site-config-kit@59e27b8dc55b21407ce19dfdbb7be0c6571e9490
+  nuxtseo-shared: https://pkg.pr.new/harlan-zw/nuxt-seo/nuxtseo-shared@226c091a0744b7286ef721ac035eed53856bfaa5
   postcss-colormin: 9.0.6
   postcss-convert-values: 9.0.7
   postcss-discard-comments: 9.0.6
@@ -125,55 +95,26 @@ overrides:
   postcss-reduce-transforms: 9.0.4
   postcss-svgo: 9.0.4
   postcss-unique-selectors: 9.0.5
+  site-config-stack: https://pkg.pr.new/harlan-zw/nuxt-site-config/site-config-stack@59e27b8dc55b21407ce19dfdbb7be0c6571e9490
+
   stylehacks: 9.0.7
   unhead: ^3.4.2
-  vue: ^3.5.42
-catalog:
-  '@antfu/eslint-config': ^9.3.0
-  '@nuxt/devtools-kit': 4.0.0-alpha.9
-  '@nuxt/kit': ^4.6.0
-  '@nuxt/module-builder': ^1.0.3
-  '@nuxt/schema': ^4.6.0
-  '@nuxt/test-utils': ^4.2.0
-  '@nuxt/ui': ^4.11.0
-  '@nuxtjs/i18n': ^10.6.0
-  '@types/node': ^26.4.0
-  '@unhead/vue': ^3.4.2
-  '@vue/test-utils': ^2.5.0
-  bumpp: ^12.2.2
-  case-police: ^2.2.1
-  cheerio: ^1.2.0
-  citty: ^0.2.2
-  consola: ^3.4.2
-  defu: ^6.1.7
-  escape-string-regexp: ^5.0.0
-  eslint: ^10.9.1
-  eslint-plugin-harlanzw: ^0.20.0
-  exsolve: ^1.1.1
-  happy-dom: ^20.12.0
-  lint-staged: ^17.4.1
-  markdownlint-cli: ^0.49.1
-  nuxt: 4.6.0
-  nuxt-security: ^2.6.0
-  nuxt-site-config: ^5.0.0
-  nuxtseo-layer-devtools: ^5.3.14
-  nuxtseo-shared: ^6.0.0
-  pathe: ^2.0.3
-  playwright-core: ^1.62.1
-  sass: ^1.103.1
-  scule: ^1.3.0
-  sharp: ^0.35.4
-  tinyglobby: ^0.2.17
-  typescript: 6.0.3
-  ufo: ^1.6.4
-  ultrahtml: ^1.7.0
-  unbuild: ^3.6.1
-  unhead: ^3.4.2
-  vitest: ^4.1.11
-  vue: ^3.5.42
-  vue-tsc: ^3.3.11
+  vue: ^3.5.43
+
+allowBuilds:
+  '@firebase/util': false
+  '@parcel/watcher': true
+  better-sqlite3: false
+  esbuild: true
+  protobufjs: false
+  simple-git-hooks: false
+  unrs-resolver: false
+  vue-demi: true
+  workerd: false
+
 ignoredBuiltDependencies:
   - esbuild
+
 onlyBuiltDependencies:
   - '@parcel/watcher'
   - '@tailwindcss/oxide'
@@ -181,14 +122,48 @@ onlyBuiltDependencies:
   - sharp
   - unrs-resolver
   - vue-demi
-trustPolicyIgnoreAfter: 262800
-allowBuilds:
-  '@firebase/util': false
-  'better-sqlite3': false
-  'protobufjs': false
-  'simple-git-hooks': false
-  'unrs-resolver': false
-  'workerd': false
-  '@parcel/watcher': true
-  esbuild: true
-  vue-demi: true
+
+catalog:
+  '@antfu/eslint-config': ^9.5.1
+  '@nuxt/devtools-kit': 4.0.0-beta.4
+  '@nuxt/kit': ^4.6.0
+  '@nuxt/module-builder': ^1.0.3
+  '@nuxt/schema': ^4.6.0
+  '@nuxt/test-utils': ^4.3.3
+  '@nuxt/ui': ^4.11.3
+  '@nuxtjs/i18n': ^10.6.0
+  '@types/node': ^26.6.4
+  '@unhead/vue': ^3.4.2
+  '@vue/test-utils': ^2.5.1
+  bumpp: ^12.3.0
+  case-police: ^2.2.1
+  cheerio: ^1.2.0
+  citty: ^0.2.2
+  consola: ^3.4.2
+  defu: ^6.1.7
+  escape-string-regexp: ^5.0.0
+  eslint: ^10.12.0
+  eslint-plugin-harlanzw: ^0.23.0
+  exsolve: ^1.1.3
+  happy-dom: ^20.14.5
+  lint-staged: ^17.6.0
+  markdownlint-cli: ^0.49.1
+  nuxt: 4.6.0
+  nuxt-security: ^2.6.0
+  nuxt-site-config: ^5.0.0
+  nuxtseo-layer-devtools: ^5.3.16
+  nuxtseo-shared: ^6.0.0
+  pathe: ^2.0.3
+  playwright-core: ^1.63.0
+  sass: ^1.105.1
+  scule: ^1.3.0
+  sharp: ^0.35.5
+  tinyglobby: ^0.2.17
+  typescript: 6.0.3
+  ufo: ^1.6.4
+  ultrahtml: ^1.7.0
+  unbuild: ^3.6.1
+  unhead: ^3.4.2
+  vitest: ^5.0.3
+  vue: ^3.5.43
+  vue-tsc: ^3.3.12

@@ -53,16 +53,15 @@
     "typecheck": "nuxt typecheck",
     "prepare:fixtures": "nuxt prepare test/fixtures/basic && nuxt prepare test/fixtures/i18n && nuxt prepare test/fixtures/csp",
     "test": "vitest && pnpm test:nuxt5",
-    "test:run": "vitest run --exclude '**/\\_\\_runtime\\_\\_/**' && pnpm test:nuxt-lanes",
+    "test:run": "vitest run --exclude '**/\\_\\_runtime\\_\\_/**' && pnpm test:nuxt5",
     "test:runtime": "pnpm test:runtime:basic && pnpm test:runtime:i18n",
     "test:runtime:basic": "cd test/fixtures/basic && vitest --run",
     "test:runtime:i18n": "cd test/fixtures/i18n && vitest --run",
-    "test:nuxt5": "node scripts/test-nuxt-lanes.ts nuxt5",
+    "test:nuxt5": "pnpm build && pnpm --dir test/fixtures/nuxt5 install --frozen-lockfile && pnpm --dir test/fixtures/nuxt5 test",
     "prepack": "pnpm run build",
     "release": "pnpm build && bumpp -x \"npx changelogen --output=CHANGELOG.md\"",
     "lint:docs": "markdownlint ./docs/content && case-police 'docs/content/**/*.md' *.md",
-    "lint:docs:fix": "markdownlint ./docs/content --fix && case-police 'docs/content/**/*.md' *.md --fix",
-    "test:nuxt-lanes": "node scripts/test-nuxt-lanes.ts"
+    "lint:docs:fix": "markdownlint ./docs/content --fix && case-police 'docs/content/**/*.md' *.md --fix"
   },
   "peerDependencies": {
     "@unhead/vue": "^3.4.2",

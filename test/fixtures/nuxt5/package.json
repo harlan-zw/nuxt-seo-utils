@@ -4,7 +4,7 @@
   "type": "module",
   "packageManager": "pnpm@11.17.0",
   "scripts": {
-    "test": "nuxt prepare && vue-tsc --noEmit -p .nuxt/tsconfig.server.json && nuxt build && node test.mjs"
+    "test": "nuxt prepare && vue-tsc --noEmit -p .nuxt/tsconfig.app.json && vue-tsc --noEmit -p .nuxt/tsconfig.server.json && nuxt build && node test.mjs"
   },
   "dependencies": {
     "nitro": "3.0.260903-beta",

@@ -17,7 +17,7 @@ import { unpackMeta } from '@unhead/vue/utils'
 import { defu } from 'defu'
 import { resolveModulePath } from 'exsolve'
 import { installNuxtSiteConfig, useSiteConfig } from 'nuxt-site-config/kit'
-import { renderNitroTypeAugmentations, setupNitroRuntimeCompatibility, useModuleLogger } from 'nuxtseo-shared/kit'
+import { renderNitroTypeAugmentations, setupNitroRuntimeCompatibility, setupRuntimeAliases, useModuleLogger } from 'nuxtseo-shared/kit'
 import { dirname, relative } from 'pathe'
 import extendNuxtConfigAppHeadSeoMeta from './build-time/extendNuxtConfigAppHeadSeoMeta'
 import extendNuxtConfigAppHeadTypes from './build-time/extendNuxtConfigAppHeadTypes'
@@ -350,7 +350,7 @@ export default defineNuxtModule<ModuleOptions>({
         middleware: true,
       })
     }
-    nuxt.options.alias['#seo-utils'] = runtimeDir
+    setupRuntimeAliases({ namespace: '#seo-utils', app: resolve(runtimeDir, './app') }, nuxt)
     // Resolve the optional schema integration without importing the server-side #imports alias.
     // @ts-expect-error schemaOrg is added by the optional module
     const hasSchemaOrg = hasNuxtModule('nuxt-schema-org') && nuxt.options.schemaOrg?.enable !== false

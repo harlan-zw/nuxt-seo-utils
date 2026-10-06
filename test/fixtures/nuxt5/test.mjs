@@ -56,7 +56,9 @@ async function waitForServer() {
 
 try {
   const response = await waitForServer()
+  assert.equal((await (await fetch(`${origin}/api/runtime-alias`)).json()).enabled, true)
   const html = await response.text()
+  assert.match(html, /href="https:\/\/x\.com\/intent\/tweet\?/)
   assert.match(html, /Nuxt SEO Utils Nitro 3/)
   assert.match(html, /Nuxt 5 compatible SEO utils/)
 

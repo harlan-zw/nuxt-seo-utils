@@ -228,7 +228,7 @@ export default defineNuxtModule<ModuleOptions>({
       return
     }
     const nitroCompatibility = setupNitroRuntimeCompatibility(nuxt)
-    const { resolve } = createResolver(import.meta.url)
+    const { resolve, resolvePath } = createResolver(import.meta.url)
     const { version } = JSON.parse(await readFile(resolve('../package.json'), 'utf8')) as { version: string }
     await installNuxtSiteConfig()
 
@@ -486,8 +486,27 @@ export {}
         })
       }
     }
-    if (config.automaticOgAndTwitterTags)
+    if (config.automaticOgAndTwitterTags) {
+      // Unhead's plugin re-export includes this file. Nitro can misplace its external SSR path.
+      const minifyImports = ['unhead/minify', await resolvePath('unhead/minify')]
+      nuxt.hook('nitro:config', (nitroConfig) => {
+        if (nitroCompatibility._tag === 'nitro-v3') {
+          const nitro3Config = nitroConfig as Omit<typeof nitroConfig, 'noExternals'> & { noExternals?: boolean | (string | RegExp)[] }
+          if (nitro3Config.noExternals !== true) {
+            nitro3Config.noExternals = [
+              ...(Array.isArray(nitro3Config.noExternals) ? nitro3Config.noExternals : []),
+              ...minifyImports,
+            ]
+          }
+        }
+        else {
+          nitroConfig.externals ||= {}
+          nitroConfig.externals.inline ||= []
+          nitroConfig.externals.inline.push(...minifyImports)
+        }
+      })
       addPlugin({ src: resolve(appRuntimeDir, 'plugins', 'inferSeoMetaPlugin') })
+    }
 
     if (config.mergeWithSiteConfig)
       addPlugin({ src: resolve(appRuntimeDir, 'plugins', 'siteConfig') })

@@ -62,6 +62,8 @@ try {
   assert.match(html, /Nuxt SEO Utils Nitro 3/)
   assert.match(html, /Nuxt 5 compatible SEO utils/)
   assert.match(html, /Nuxt 5 SEO Utils/)
+  assert.match(html, /<meta(?=[^>]*property="og:title")(?=[^>]*content="Nuxt 5 SEO Utils")[^>]*>/)
+  assert.match(html, /<meta(?=[^>]*property="og:description")(?=[^>]*content="Nuxt 5 compatible SEO utils")[^>]*>/)
   assert.doesNotMatch(html, /application\/ld\+json/)
 
   const debug = await fetch(`${origin}/__nuxt-seo-utils/debug.json`).then(response => response.json())

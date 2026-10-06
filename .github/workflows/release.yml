@@ -6,7 +6,25 @@ on:
       - 'v*'
 
 jobs:
+  check-version-published:
+    runs-on: ubuntu-latest
+    outputs:
+      published: ${{ steps.check.outputs.published }}
+    steps:
+      - name: Check if the tag version is already on npm
+        id: check
+        run: |
+          VERSION="${GITHUB_REF_NAME#v}"
+          if npm view "nuxt-seo-utils@${VERSION}" version >/dev/null 2>&1; then
+            echo "published=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "published=false" >> "$GITHUB_OUTPUT"
+          fi
+
   release:
+    needs: check-version-published
+    # A re-pushed tag must not fail with 409 when the version is already published.
+    if: needs.check-version-published.outputs.published != 'true'
     permissions:
       contents: write
       id-token: write

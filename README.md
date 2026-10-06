@@ -1,17 +1,10 @@
-<h1>nuxt-seo-utils</h1>
+<h1><a href="https://nuxtseo.com"><img src=".github/assets/icon.svg" width="40" height="40" alt="Nuxt SEO" align="top"></a> nuxt-seo-utils</h1>
 
 [![npm version][npm-version-src]][npm-version-href]
 [![npm downloads][npm-downloads-src]][npm-downloads-href]
 [![License][license-src]][license-href]
 [![Nuxt][nuxt-src]][nuxt-href]
-
-<a href="https://skilld.dev/gh/harlan-zw/nuxt-seo-utils">
-  <picture>
-    <source media="(prefers-color-scheme: dark)" srcset="https://skilld.dev/b/harlan-zw/nuxt-seo-utils?theme=dark">
-    <source media="(prefers-color-scheme: light)" srcset="https://skilld.dev/b/harlan-zw/nuxt-seo-utils?theme=light">
-    <img alt="Skill repository on skilld.dev" src="https://skilld.dev/b/harlan-zw/nuxt-seo-utils?theme=light">
-  </picture>
-</a>
+[![Skill repository on skilld.dev][skilld-src]][skilld-href]
 
 Nuxt SEO Utils is a collection of defaults and utilities to improve your Nuxt site's discoverability and shareability.
 
@@ -73,14 +66,17 @@ npx nuxi@latest module add nuxt-seo-utils
 Licensed under the [MIT license](https://github.com/harlan-zw/nuxt-seo-utils/blob/main/LICENSE.md).
 
 <!-- Badges -->
-[npm-version-src]: https://img.shields.io/npm/v/nuxt-seo-utils/latest.svg?style=flat&colorA=18181B&colorB=28CF8D
+[npm-version-src]: https://img.shields.io/npm/v/nuxt-seo-utils/latest.svg?style=flat&labelColor=16152b&color=00a63e
 [npm-version-href]: https://npmjs.com/package/nuxt-seo-utils
 
-[npm-downloads-src]: https://img.shields.io/npm/dm/nuxt-seo-utils.svg?style=flat&colorA=18181B&colorB=28CF8D
+[npm-downloads-src]: https://img.shields.io/npm/dm/nuxt-seo-utils.svg?style=flat&labelColor=16152b&color=00a63e
 [npm-downloads-href]: https://npmjs.com/package/nuxt-seo-utils
 
-[license-src]: https://img.shields.io/github/license/harlan-zw/nuxt-seo-utils.svg?style=flat&colorA=18181B&colorB=28CF8D
+[license-src]: https://img.shields.io/github/license/harlan-zw/nuxt-seo-utils.svg?style=flat&labelColor=16152b&color=00a63e
 [license-href]: https://github.com/harlan-zw/nuxt-seo-utils/blob/main/LICENSE.md
 
-[nuxt-src]: https://img.shields.io/badge/Nuxt-18181B?logo=nuxt
+[nuxt-src]: https://img.shields.io/badge/Nuxt-16152b?logo=nuxt&style=flat
 [nuxt-href]: https://nuxt.com
+
+[skilld-src]: https://skilld.dev/b/harlan-zw/nuxt-seo-utils?style=flat&labelColor=16152b&color=00a63e&logoColor=ffffff
+[skilld-href]: https://skilld.dev/gh/harlan-zw/nuxt-seo-utils

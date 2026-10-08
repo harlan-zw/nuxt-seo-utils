@@ -66,7 +66,7 @@ Generate icon files from one source image in `public/`:
 pnpm exec nuxt-seo-utils icons --source logo.svg
 ```
 
-It writes `favicon.ico`, `apple-touch-icon.png`, and `icon-{16,32,192,512}` PNGs to `public/`. It needs `sharp`, which installs as an optional dependency.
+It writes `favicon.ico`, `apple-touch-icon.png`, and `icon-{16,32,192,512}` PNGs to `public/`. Install the optional peer with `pnpm add -D sharp` before generating icons.
 
 ## Site-wide and per-route meta
 
@@ -133,7 +133,7 @@ UTM defaults to `utm_source=<platform>` and `utm_medium=social` (or `email`). An
 
 - `redirectToCanonicalSiteUrl` (`false`): in production, send a 301 from other hosts to the `site.url` host.
 - `canonicalQueryWhitelist`: replaces the default list. It does not extend it.
-- `minify` (`{ build: true, runtime: false }`): minify inline scripts and styles in `app.head` and prerendered HTML. `runtime: true` minifies on every SSR request.
+- `minify` (`{ build: true, runtime: false }`): minify static `app.head` JavaScript/CSS with parser-based tooling. Compact JSON/CSS in prerendered HTML. `runtime: true` compacts JSON/CSS per SSR request. Dynamic JavaScript and custom script types remain unchanged.
 - `automaticOgAndTwitterTags` (`true`): the `og:title`, `og:description`, and `twitter:card` inference.
 - Other options: https://nuxtseo.com/docs/seo-utils/api/config
 

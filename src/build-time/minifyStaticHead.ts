@@ -1,5 +1,7 @@
 import { useLogger, useNuxt } from '@nuxt/kit'
-import { JSON_TYPES, SKIP_JS_TYPES } from '../runtime/shared/minify'
+import { JSON_TYPES } from '../runtime/shared/minify'
+
+const JS_TYPES = new Set(['', 'module', 'text/javascript', 'application/javascript', 'text/ecmascript', 'application/ecmascript'])
 
 const logger = useLogger('nuxt-seo-utils')
 
@@ -59,7 +61,7 @@ export default function minifyStaticHead() {
         if (typeof script === 'string')
           continue
         const content = String(script.innerHTML || script.textContent || '')
-        if (!content)
+        if (!content || script.src)
           continue
         const setContent = (val: string) => {
           if (script.innerHTML)
@@ -78,7 +80,7 @@ export default function minifyStaticHead() {
           }
           continue
         }
-        if (script.type && SKIP_JS_TYPES.has(script.type))
+        if (!JS_TYPES.has(script.type?.toLowerCase().trim() ?? ''))
           continue
         promises.push(minifyJSBuildTime(content).then((minified) => {
           if (minified && minified.length < content.length)

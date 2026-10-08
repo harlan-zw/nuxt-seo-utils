@@ -157,8 +157,8 @@ export interface ModuleOptions {
    * - `false`: Disabled.
    * - `{ build?: boolean, runtime?: boolean }`: Toggle each mode independently.
    *
-   * **Build mode**: Minifies static `app.head` scripts/styles and prerendered route HTML using esbuild (JS) and lightningcss (CSS).
-   * **Runtime mode**: Minifies all inline scripts/styles per SSR request via an Unhead `ssr:render` plugin using lightweight pure JS minifiers.
+   * **Build mode**: Minifies static `app.head` JavaScript/styles with parser-based tooling, plus JSON/CSS in prerendered HTML.
+   * **Runtime mode**: Minifies inline JSON/CSS per SSR request. Preserves dynamic JavaScript and custom script types.
    *
    * @default { build: true, runtime: false }
    */

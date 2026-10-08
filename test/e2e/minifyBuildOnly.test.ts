@@ -1,7 +1,8 @@
+import { runInNewContext } from 'node:vm'
 import { createResolver } from '@nuxt/kit'
 import { $fetch, setup } from '@nuxt/test-utils/e2e'
 import { parse } from 'ultrahtml'
-import { querySelectorAll } from 'ultrahtml/selector'
+import { querySelector, querySelectorAll } from 'ultrahtml/selector'
 import { describe, expect, it } from 'vitest'
 
 const { resolve } = createResolver(import.meta.url)
@@ -20,6 +21,9 @@ await setup({
       head: {
         script: [
           { innerHTML: 'var   buildOnlyScript   =   true  ;  // should be minified at build time' },
+          { id: 'static-regex', innerHTML: String.raw`globalThis.regexMatches = /https?:\/\//.test('https://example.com');` },
+          // @ts-expect-error Custom browser data blocks are outside Unhead's script MIME union.
+          { id: 'static-custom', type: 'text/x-template', innerHTML: '  <div> template // literal </div>  ' },
         ],
         style: [
           { innerHTML: '.build-only  {  color:  blue;  /* build comment */  display:  flex  }' },
@@ -46,6 +50,14 @@ function getStyleContent(el: any) {
 }
 
 describe('default build-only minification', () => {
+  it('preserves executable regexes and custom static script content', async () => {
+    const ast = parse(await $fetch<string>('/'))
+    const context: Record<string, any> = {}
+    runInNewContext(getScriptContent(querySelector(ast, '#static-regex')), context)
+    expect(context.regexMatches).toBe(true)
+    expect(getScriptContent(querySelector(ast, '#static-custom'))).toBe('  <div> template // literal </div>  ')
+  }, 30_000)
+
   it('minifies static head scripts at build time', async () => {
     const html = await $fetch<string>('/')
     const ast = parse(html)

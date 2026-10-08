@@ -439,6 +439,9 @@ importers:
       sass:
         specifier: 'catalog:'
         version: 1.105.1
+      sharp:
+        specifier: 'catalog:'
+        version: 0.35.5(@types/node@26.6.4)
       typescript:
         specifier: 'catalog:'
         version: 6.0.3
@@ -460,10 +463,6 @@ importers:
       vue-tsc:
         specifier: 'catalog:'
         version: 3.3.12(typescript@6.0.3)
-    optionalDependencies:
-      sharp:
-        specifier: 'catalog:'
-        version: 0.35.5(@types/node@26.6.4)
 
 packages:
 
@@ -8505,8 +8504,7 @@ snapshots:
       '@iconify/types': 2.0.0
       vue: 3.5.43(typescript@6.0.3)
 
-  '@img/colour@1.1.0':
-    optional: true
+  '@img/colour@1.1.0': {}
 
   '@img/sharp-darwin-arm64@0.35.5':
     optionalDependencies:
@@ -15240,7 +15238,6 @@ snapshots:
       '@img/sharp-win32-ia32': 0.35.5
       '@img/sharp-win32-x64': 0.35.5
       '@types/node': 26.6.4
-    optional: true
 
   shebang-command@2.0.0:
     dependencies:

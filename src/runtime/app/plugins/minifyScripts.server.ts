@@ -1,5 +1,5 @@
 import { defineNuxtPlugin, injectHead } from 'nuxt/app'
-import { JSON_TYPES, minifyCSS, minifyJS, minifyJSON, SKIP_JS_TYPES } from '../../shared/minify'
+import { JSON_TYPES, minifyCSS, minifyJSON } from '../../shared/minify'
 
 export default defineNuxtPlugin({
   enforce: 'post',
@@ -30,16 +30,7 @@ export default defineNuxtPlugin({
                 }
                 continue
               }
-              if (type && SKIP_JS_TYPES.has(type))
-                continue
-              try {
-                const minified = minifyJS(content)
-                if (minified.length < content.length)
-                  tag.innerHTML = minified
-              }
-              catch {
-                // Inline script minification is best-effort; preserve the original content on failure.
-              }
+              // Dynamic JavaScript and custom script types need a parser. Preserve them at runtime.
             }
             else if (tag.tag === 'style') {
               try {

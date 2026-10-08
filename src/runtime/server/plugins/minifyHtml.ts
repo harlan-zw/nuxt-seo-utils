@@ -1,5 +1,5 @@
 import { defineNitroPlugin } from '#nuxtseo/nitro'
-import { JSON_TYPES, minifyCSS, minifyJS, minifyJSON, SKIP_JS_TYPES } from '../../shared/minify'
+import { JSON_TYPES, minifyCSS, minifyJSON } from '../../shared/minify'
 
 const INLINE_SCRIPT_RE = /<script(?![^>]+\bsrc\b)([^>]*)>([\s\S]*?)<\/script\s*>/gi
 const INLINE_STYLE_RE = /<style([^>]*)>([\s\S]*?)<\/style\s*>/gi
@@ -19,15 +19,8 @@ function minifyChunk(chunk: string): string {
         return full
       }
     }
-    if (type && SKIP_JS_TYPES.has(type))
-      return full
-    try {
-      const m = minifyJS(content)
-      return m.length < content.length ? `<script${attrs}>${m}</script>` : full
-    }
-    catch {
-      return full
-    }
+    // Prerendered JavaScript and custom script types need a parser. Preserve them here.
+    return full
   })
   out = out.replace(INLINE_STYLE_RE, (full, attrs: string, content: string) => {
     if (!content)

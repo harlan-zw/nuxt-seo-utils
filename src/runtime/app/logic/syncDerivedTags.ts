@@ -42,24 +42,34 @@ export function ogImageEntryIds(entryTags: Iterable<HeadTag[]>): Set<number> {
  * - The default `og:url` takes the href of the resolved canonical link.
  */
 export function syncDerivedTags(tags: HeadTag[], entriesWithOgImage: Set<number>): HeadTag[] {
-  const winningOgImageEntries = new Set(tags.filter(isOgImage).map(entryOf))
-  const canonicalHref = tags.find(tag => tag.tag === 'link' && tag.props.rel === 'canonical')?.props.href
+  const winningOgImageEntries = new Set<number | undefined>()
+  let canonicalTag: HeadTag | undefined
+  for (const tag of tags) {
+    if (isOgImage(tag))
+      winningOgImageEntries.add(entryOf(tag))
+    if (!canonicalTag && tag.tag === 'link' && tag.props.rel === 'canonical')
+      canonicalTag = tag
+  }
+  const canonicalHref = canonicalTag?.props.href
   const lostOgImage = (tag: HeadTag): boolean => {
     const entry = entryOf(tag)
     return entry !== undefined && entriesWithOgImage.has(entry) && !winningOgImageEntries.has(entry)
   }
-  return tags.flatMap((tag) => {
-    if (tag.tag !== 'meta')
-      return [tag]
-    if (metaKey(tag)?.startsWith('og:image:') && lostOgImage(tag))
-      return []
-    if (tag.key?.startsWith(TWITTER_IMAGE_FALLBACK_KEY) && lostOgImage(tag))
-      return []
-    if (tag.key === OG_URL_KEY) {
-      if (typeof canonicalHref !== 'string' || !canonicalHref)
-        return []
-      return [{ ...tag, props: { ...tag.props, content: canonicalHref } }]
+  const result: HeadTag[] = []
+  for (const tag of tags) {
+    if (tag.tag === 'meta') {
+      if (metaKey(tag)?.startsWith('og:image:') && lostOgImage(tag))
+        continue
+      if (tag.key?.startsWith(TWITTER_IMAGE_FALLBACK_KEY) && lostOgImage(tag))
+        continue
+      if (tag.key === OG_URL_KEY) {
+        if (typeof canonicalHref !== 'string' || !canonicalHref)
+          continue
+        result.push({ ...tag, props: { ...tag.props, content: canonicalHref } })
+        continue
+      }
     }
-    return [tag]
-  })
+    result.push(tag)
+  }
+  return result
 }

@@ -69,6 +69,7 @@
     "lightningcss": ">=1.20.0",
     "nuxt": "^4.6.0 || ^5.0.0",
     "rolldown": ">=1.0.0-beta.0",
+    "sharp": "^0.35.5",
     "unhead": "^3.4.2"
   },
   "peerDependenciesMeta": {
@@ -82,6 +83,9 @@
       "optional": true
     },
     "rolldown": {
+      "optional": true
+    },
+    "sharp": {
       "optional": true
     },
     "unhead": {
@@ -101,9 +105,6 @@
     "scule": "catalog:",
     "tinyglobby": "catalog:",
     "ufo": "catalog:"
-  },
-  "optionalDependencies": {
-    "sharp": "catalog:"
   },
   "devDependencies": {
     "@antfu/eslint-config": "catalog:",
@@ -129,6 +130,7 @@
     "nuxtseo-layer-devtools": "catalog:",
     "playwright-core": "catalog:",
     "sass": "catalog:",
+    "sharp": "catalog:",
     "typescript": "catalog:",
     "ultrahtml": "catalog:",
     "unbuild": "catalog:",

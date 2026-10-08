@@ -1,8 +1,9 @@
 import { createHash } from 'node:crypto'
+import { runInNewContext } from 'node:vm'
 import { createResolver } from '@nuxt/kit'
 import { $fetch, fetch, setup } from '@nuxt/test-utils/e2e'
 import { parse } from 'ultrahtml'
-import { querySelectorAll } from 'ultrahtml/selector'
+import { querySelector, querySelectorAll } from 'ultrahtml/selector'
 import { describe, expect, it } from 'vitest'
 
 const { resolve } = createResolver(import.meta.url)
@@ -32,6 +33,14 @@ function extractHashes(csp: string, directive: string): string[] {
 }
 
 describe('nuxt-security CSP hash compat with seo-utils minify', () => {
+  it('preserves executable regexes in prerendered scripts', async () => {
+    const ast = parse(await $fetch<string>('/'))
+    const context: Record<string, any> = {}
+    const script = querySelector(ast, '#prerender-regex')
+    runInNewContext(script?.children?.[0]?.value ?? '', context)
+    expect(context.prerenderRegexMatches).toBe(true)
+  }, 60_000)
+
   it('cSP script-src hashes match the minified inline script contents', async () => {
     const res = await fetch('/')
     const body = await res.text()

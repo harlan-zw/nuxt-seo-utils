@@ -1,3 +1,4 @@
+import { runInNewContext } from 'node:vm'
 import { createResolver } from '@nuxt/kit'
 import { $fetch, setup } from '@nuxt/test-utils/e2e'
 import { parse } from 'ultrahtml'
@@ -47,24 +48,15 @@ function getStyleContent(el: ReturnType<typeof querySelector>) {
 }
 
 describe('minify', () => {
-  it('minifies inline script tags in SSR response', async () => {
-    const html = await $fetch<string>('/')
-    const ast = parse(html)
-    const scripts = getInlineScripts(ast)
-      .filter((el) => {
-        const type = el.attributes.type
-        return !type || ['text/javascript', 'module', 'application/javascript'].includes(type)
-      })
-
-    const largeScripts = scripts
-      .map(el => getScriptContent(el))
-      .filter(content => content.trim().length >= 20)
-
-    expect(largeScripts.length).toBeGreaterThan(0)
-    for (const content of largeScripts) {
-      // minified scripts should not have multiple consecutive newlines
-      expect(content).not.toMatch(/\n\s*\n/)
-    }
+  it('preserves dynamic JavaScript semantics and custom script types', async () => {
+    const ast = parse(await $fetch<string>('/script-semantics'))
+    const content = getScriptContent(querySelector(ast, '#script-semantics'))
+    const context: Record<string, any> = {}
+    runInNewContext(content, context)
+    expect(context.scriptSemantics).toMatchObject({ matches: true, asi: undefined })
+    expect(getScriptContent(querySelector(ast, '#custom-script'))).toBe('  <div> template // literal </div>  ')
+    expect(JSON.parse(getScriptContent(querySelector(ast, '#script-json')))).toEqual({ value: 'https://example.com' })
+    expect(JSON.parse(getScriptContent(querySelector(ast, '#script-importmap')))).toEqual({ imports: { example: '/example.js' } })
   }, 30_000)
 
   it('minifies inline style tags in SSR response', async () => {

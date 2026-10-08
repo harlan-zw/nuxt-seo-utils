@@ -36,8 +36,9 @@ describe('rendering configuration lifecycle', () => {
     const output = await warnings({ ssr: false }, dev)
     expect(output).toContain('Rendering configuration issues:')
     expect(output).toContain('SSR is disabled for indexable pages matching `/**`')
-    expect(output).toContain('Enable SSR for public pages.')
-    expect(output).toContain('`robots: false`')
+    expect(output).toContain('enable global SSR')
+    expect(output).toContain('"/**": { ssr: true }')
+    expect(output).toContain('"/**": { robots: false }')
     expect(output).not.toContain('issue in your Nuxt config head')
   })
 
@@ -51,6 +52,8 @@ describe('rendering configuration lifecycle', () => {
       },
     })
     expect(output).toContain('indexable pages matching `/public/**`')
+    expect(output).toContain('"/public/**": { ssr: true }')
+    expect(output).toContain('"/public/**": { robots: false }')
     expect(output).not.toContain('indexable pages matching `/app/**`')
   })
 

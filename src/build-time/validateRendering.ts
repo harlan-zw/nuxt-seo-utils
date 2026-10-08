@@ -65,5 +65,25 @@ export function validateRendering(context: RenderingContext): RenderingDiagnosti
 }
 
 export function formatRenderingDiagnostic(diagnostic: RenderingDiagnostic): string {
-  return `SSR is disabled for indexable pages matching \`${diagnostic.path}\`. Crawlers and agents that skip JavaScript may miss their page content. Enable SSR for public pages. For private app pages, set \`robots: false\` on the route rule with Nuxt Robots.`
+  const path = JSON.stringify(diagnostic.path)
+  return [
+    `SSR is disabled for indexable pages matching \`${diagnostic.path}\`.`,
+    'Crawlers and agents that skip JavaScript may miss their page content.',
+    'For public pages, enable global SSR and restore SSR on the route:',
+    '```ts [nuxt.config.ts]',
+    'export default defineNuxtConfig({',
+    '  ssr: true,',
+    `  routeRules: { ${path}: { ssr: true } },`,
+    '})',
+    '```',
+    'For private app pages, keep their rendering rule and disable indexing with Nuxt Robots:',
+    '```ts [nuxt.config.ts]',
+    'export default defineNuxtConfig({',
+    '  modules: [\'@nuxtjs/robots\'],',
+    `  routeRules: { ${path}: { robots: false } },`,
+    '})',
+    '```',
+    'Requires `@nuxtjs/robots`. Install it with `pnpm add @nuxtjs/robots`.',
+    'Merge the chosen example into your existing Nuxt config.',
+  ].join('\n')
 }

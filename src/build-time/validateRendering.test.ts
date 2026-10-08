@@ -1,7 +1,24 @@
 import { describe, expect, it } from 'vitest'
-import { validateRendering } from './validateRendering'
+import { formatRenderingDiagnostic, validateRendering } from './validateRendering'
 
 describe('indexable client-rendered configuration', () => {
+  it('includes copyable public and private fixes for the matched path', () => {
+    const [diagnostic] = validateRendering({ routeRules: { '/app/**': { ssr: false } } })
+    const warning = formatRenderingDiagnostic(diagnostic!)
+    expect(warning).toContain('enable global SSR')
+    expect(warning).toContain('ssr: true,')
+    expect(warning).toContain('"/app/**": { ssr: true }')
+    expect(warning).toContain('"/app/**": { robots: false }')
+    expect(warning).toContain('Requires `@nuxtjs/robots`.')
+    expect(warning.match(/```ts \[nuxt.config.ts\]/g)).toHaveLength(2)
+  })
+
+  it('quotes route paths safely in the suggested config', () => {
+    const warning = formatRenderingDiagnostic({ _tag: 'ClientRendering', level: 'warn', path: '/customer\'s/**' })
+    expect(warning).toContain('"/customer\'s/**": { ssr: true }')
+    expect(warning).toContain('"/customer\'s/**": { robots: false }')
+  })
+
   it('warns when the whole site disables SSR', () => {
     expect(validateRendering({ ssr: false })).toEqual([
       { _tag: 'ClientRendering', level: 'warn', path: '/**' },

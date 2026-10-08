@@ -28,6 +28,7 @@ import minifyStaticHead from './build-time/minifyStaticHead'
 import { resolveUnheadVitePluginSource } from './build-time/resolveUnheadVitePluginSource'
 import setupNuxtConfigAppHeadWithMoreDefaults from './build-time/setupNuxtConfigAppHeadWithMoreDefaults'
 import { collectUserAppHead, formatAppHeadDiagnostic, validateAppHead } from './build-time/validateAppHead'
+import { formatRenderingDiagnostic, validateRendering } from './build-time/validateRendering'
 import { setupDevToolsUI } from './build/devtools'
 
 export interface ModuleOptions {
@@ -557,6 +558,23 @@ export {}
       addServerHandler({
         route: '/__nuxt-seo-utils/debug.json',
         handler: resolve('./runtime/server/routes/__nuxt-seo-utils/debug'),
+      })
+    }
+
+    if (!nuxt.options._prepare) {
+      nuxt.hooks.afterEach((event) => {
+        if (event.name !== 'nitro:config')
+          return
+        const [nitroConfig] = event.args
+        const site = nuxt.options.site as { indexable?: boolean } | undefined
+        const robots = (nuxt.options as typeof nuxt.options & { robots?: { indexable?: boolean } | false }).robots
+        const diagnostics = validateRendering({
+          ssr: nuxt.options.ssr,
+          indexable: site?.indexable === false || (robots && robots.indexable === false) ? false : undefined,
+          routeRules: defu(nitroConfig.routeRules, nuxt.options.routeRules),
+        })
+        if (diagnostics.length)
+          logger.warn(`Rendering configuration issues:\n${diagnostics.map(d => `  ${formatRenderingDiagnostic(d)}`).join('\n')}`)
       })
     }
 

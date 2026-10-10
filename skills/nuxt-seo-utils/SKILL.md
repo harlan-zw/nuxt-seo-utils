@@ -2,7 +2,7 @@
 name: nuxt-seo-utils
 description: Set up, override, and debug the default SEO head tags in a Nuxt app with the nuxt-seo-utils module. Use when a task mentions canonical URLs, the title template or separator, fallback titles, og:image or twitter:image files, favicons and app icons, seo.meta, seoMeta or head in routeRules, useBreadcrumbItems, useShareLinks, the nuxt-seo-utils icons CLI, or the seo config key. Also use when a page tag does not override a default, html lang ignores useHead, or og:image renders twice.
 license: MIT
-compatibility: "Requires a project using nuxt-seo-utils. Requires Node.js ^22.22.3 || ^24.15.0 || >=26.0.0. Requires Nuxt ^4.6.0 || ^5.0.0."
+compatibility: "Requires Node.js ^22.22.3 || ^24.15.0 || >=26.0.0. Requires Nuxt ^4.6.0 || ^5.0.0."
 ---
 
 # nuxt-seo-utils

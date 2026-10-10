@@ -1,7 +1,7 @@
 import type { MetaFlatSerializable } from './runtime/types'
 import { existsSync } from 'node:fs'
 import { readFile } from 'node:fs/promises'
-import { pathToFileURL } from 'node:url'
+import { fileURLToPath, pathToFileURL } from 'node:url'
 import {
   addImports,
   addPlugin,
@@ -16,7 +16,7 @@ import {
 import { unpackMeta } from '@unhead/vue/utils'
 import { defu } from 'defu'
 import { resolveModulePath } from 'exsolve'
-import { installNuxtSiteConfig, useSiteConfig } from 'nuxt-site-config/kit'
+import { useSiteConfig } from 'nuxt-site-config/kit'
 import { renderNitroTypeAugmentations, setupNitroRuntimeCompatibility, setupRuntimeAliases, useModuleLogger } from 'nuxtseo-shared/kit'
 import { dirname, relative } from 'pathe'
 import extendNuxtConfigAppHeadSeoMeta from './build-time/extendNuxtConfigAppHeadSeoMeta'
@@ -197,7 +197,7 @@ export default defineNuxtModule<ModuleOptions>({
       version: '>=1',
       optional: true,
     },
-    'nuxt-site-config': {
+    [fileURLToPath(import.meta.resolve('nuxt-site-config'))]: {
       version: '>=5.0.0',
     },
   },
@@ -231,7 +231,6 @@ export default defineNuxtModule<ModuleOptions>({
     const nitroCompatibility = setupNitroRuntimeCompatibility(nuxt)
     const { resolve, resolvePath } = createResolver(import.meta.url)
     const { version } = JSON.parse(await readFile(resolve('../package.json'), 'utf8')) as { version: string }
-    await installNuxtSiteConfig()
 
     const runtimeDir = resolve('./runtime')
     if (config.metaDataFiles) {

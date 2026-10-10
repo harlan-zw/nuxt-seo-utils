@@ -15,6 +15,7 @@ export default defineNuxtConfig({
   i18n: false,
   vite: { resolve: { dedupe: ['nuxt', 'vue', 'vue-router'] } },
   modules: [
+    NuxtSiteConfig,
     NuxtSchemaOrg,
     NuxtSeoUtils,
   ],

@@ -1,6 +1,6 @@
 ---
 name: nuxt-seo-utils
-description: Set up, override, and debug the default SEO head tags in a Nuxt app with the nuxt-seo-utils module. Use when a task mentions canonical URLs, the title template or separator, fallback titles, og:image or twitter:image files, favicons and app icons, seo.meta, seoMeta or head in routeRules, useBreadcrumbItems, useShareLinks, the nuxt-seo-utils icons CLI, or the seo config key. Also use when a page tag does not override a default, html lang ignores useHead, or og:image renders twice.
+description: Set up, override, and debug the default SEO head tags in a Nuxt app with the nuxt-seo-utils module. Use when a task mentions canonical URLs, the title template or separator, fallback titles, og:image or twitter:image files, favicons and app icons, seo.meta, seoMeta or head in routeRules, useBreadcrumbItems, useShareLinks, the nuxt-seo-utils icons CLI, seo.redirects, moved or deleted URLs, 301 or 410 responses, or the seo config key. Also use when a page tag does not override a default, html lang ignores useHead, or og:image renders twice.
 license: MIT
 compatibility: "Requires Node.js ^22.22.3 || ^24.15.0 || >=26.0.0. Requires Nuxt ^4.6.0 || ^5.0.0. Requires Unhead ^3.4.2."
 ---
@@ -119,11 +119,39 @@ const share = useShareLinks({ title: post.value.title, utm: { source: 'auto', ca
 `title` defaults to `site.name`, not the page title. Pass it.
 UTM defaults to `utm_source=<platform>` and `utm_medium=social` (or `email`). An object without `source: 'auto'` switches to manual mode: `{ campaign: 'launch' }` sends only `utm_campaign`.
 
+## Redirects and gone URLs
+
+`seo.redirects` lists old URLs, keyed by path without `app.baseURL`. Every entry needs `addedAt`.
+
+```ts
+export default defineNuxtConfig({
+  seo: {
+    redirects: {
+      '/blog/old-post': { to: '/blog/new-post', addedAt: '2026-10-13' }, // 301; set statusCode: 308 to keep the method
+      '/docs/v1/**': { to: '/docs/**', addedAt: '2026-10-13' }, // /docs/v1/setup -> /docs/setup
+      '/spring-sale': { statusCode: 410, addedAt: '2026-10-13', reason: 'Sale ended' }, // error page with 410
+    },
+  },
+})
+```
+
+- A moved URL has `to` (a path or an absolute URL) and `statusCode` 301 (default) or 308. A gone URL has no `to` and `statusCode` 410 or 404.
+- The request query string is kept. A trailing slash does not change the match. An exact key beats a `/**` key.
+- `reason` is a private note. Visitors never see it.
+- Nothing expires. After `redirectReviewAfterDays` (365) from `addedAt` or `reviewedAt`, `nuxt dev` and `nuxt build` list the entry for review. To keep it, set `reviewedAt` to today. Delete it only when the old URL gets no visits and no backlinks.
+- Chains flatten at build: `/a` to `/b` and `/b` to `/c` serve `/a` to `/c`. A loop or an invalid entry stops the build. A redirect to a gone URL warns.
+- With an i18n prefix strategy, each unprefixed entry also applies under each locale prefix. A translated path needs its own entry.
+- For a long list, import a file typed with `satisfies Redirects` (`import type { Redirects } from 'nuxt-seo-utils'`).
+- Do not redirect deleted pages to the home page. Google can treat that as a soft 404. Use a gone URL.
+- Use `routeRules` `redirect` for temporary 302 or 307 redirects. `seo.redirects` accepts only permanent ones.
+
 ## Traps
 
 - **`htmlAttrs.lang` in `useHead()` or `app.head` is ignored.** The module sets `lang` from site config. Set `site.defaultLocale`, or use `@nuxtjs/i18n`.
 - **Before nuxt-schema-org 6.4.1, the Schema.org WebPage URL keeps the route case.** `canonicalLowercase` lowercases the canonical, `og:url`, `useShareLinks()` URLs, and `BreadcrumbList` item URLs. nuxt-schema-org before 6.4.1 builds the WebPage `url` from the route path. There, `/blog/My-Post` gets a canonical of `/blog/my-post` and a WebPage URL of `/blog/My-Post`. From 6.4.1, the WebPage `url` follows the canonical. On an older version, upgrade nuxt-schema-org, use lowercase route paths, or set `canonicalLowercase: false`. Breadcrumb `to` links keep their case on purpose.
 - **`definePageMeta({ title })` takes a static string only.** Use `useSeoMeta({ title })` for data.
+- **A static build (`nuxt generate`) cannot send 301 or 410.** Each exact moved URL becomes an instant meta refresh page. Gone URLs and `/**` keys need host redirect rules. The build lists them.
+- **A catch-all page skips client-side redirects.** `seo.redirects` runs on the server. A `NuxtLink` to an old URL that a `[...slug].vue` page matches renders that page. Fix the link. Nuxt Link Checker flags a link to a 301 entry.
 
 ## Version limits
 
@@ -148,6 +176,8 @@ Older limits:
 
 - `redirectToCanonicalSiteUrl` (`false`): in production, send a 301 from other hosts to the `site.url` host.
 - `canonicalQueryWhitelist`: replaces the default list. It does not extend it.
+- `redirects`: moved and gone URLs. See the section above.
+- `redirectReviewAfterDays` (`365`): days until an entry is due for review. `false` turns the review off.
 - `minify` (`{ build: true, runtime: false }`): minify static `app.head` JavaScript/CSS with parser-based tooling. Compact JSON/CSS in prerendered HTML. `runtime: true` compacts JSON/CSS per SSR request. Dynamic JavaScript and custom script types remain unchanged.
 - `automaticOgAndTwitterTags` (`true`): the `og:title`, `og:description`, and `twitter:card` inference.
 - Other options: https://nuxtseo.com/docs/seo-utils/api/config

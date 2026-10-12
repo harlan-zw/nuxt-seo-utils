@@ -58,6 +58,7 @@ packages:
   - '!examples/**'
 
 overrides:
+  '@nuxtjs/sitemap': https://pkg.pr.new/nuxt-modules/sitemap/@nuxtjs/sitemap@b0ff3faf7a29fb38c8b39137f5e86ae94ea86be3
   # 3.2.0's SSR transform rewrites `head.ssr = false` into invalid syntax.
   # Keep the Unhead packages aligned until an upstream patch is available.
   '@unhead/bundler': ^3.4.2
@@ -132,6 +133,7 @@ catalog:
   '@nuxt/test-utils': ^4.3.3
   '@nuxt/ui': ^4.11.3
   '@nuxtjs/i18n': ^10.6.0
+  '@nuxtjs/sitemap': ^9.0.0
   '@types/node': ^26.6.4
   '@unhead/vue': ^3.4.2
   '@vue/test-utils': ^2.5.1

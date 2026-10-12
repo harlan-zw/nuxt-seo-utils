@@ -25,6 +25,10 @@ export default defineNuxtConfig({
   seo: {
     debug: true,
     metaDataFiles: false,
+    redirects: {
+      '/old': { to: '/', addedAt: '2026-10-01' },
+      '/gone': { statusCode: 410, addedAt: '2026-10-01' },
+    },
   },
 
   site: {

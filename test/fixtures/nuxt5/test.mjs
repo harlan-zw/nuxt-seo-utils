@@ -65,6 +65,12 @@ try {
   assert.match(html, /<meta(?=[^>]*property="og:description")(?=[^>]*content="Nuxt 5 compatible SEO utils")[^>]*>/)
   assert.doesNotMatch(html, /application\/ld\+json/)
 
+  const moved = await fetch(`${origin}/old?ref=a`, { redirect: 'manual' })
+  assert.equal(moved.status, 301)
+  assert.equal(moved.headers.get('location'), '/?ref=a')
+  const gone = await fetch(`${origin}/gone`, { headers: { accept: 'text/html' } })
+  assert.equal(gone.status, 410)
+
   const debug = await fetch(`${origin}/__nuxt-seo-utils/debug.json`).then(response => response.json())
   assert.equal(debug.siteConfig.name, 'Nuxt 5 SEO Utils')
   assert.equal(debug.siteConfig.url, 'https://nuxt5.example.com')

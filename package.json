@@ -114,6 +114,7 @@
     "@nuxt/test-utils": "catalog:",
     "@nuxt/ui": "catalog:",
     "@nuxtjs/i18n": "catalog:",
+    "@nuxtjs/sitemap": "catalog:",
     "@types/node": "catalog:",
     "@unhead/vue": "catalog:",
     "@vue/test-utils": "catalog:",

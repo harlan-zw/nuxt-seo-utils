@@ -12,6 +12,9 @@ export type RedirectRule
 
 export type MovedRule = Extract<RedirectRule, { _tag: 'Moved' }>
 
+/** Without a max-age, Chromium caches a 301 or 308 forever, so a later fix or removal never reaches returning visitors. */
+export const REDIRECT_CACHE_CONTROL = 'public, max-age=3600'
+
 export function normalizePath(path: string): string {
   return path === '/' ? path : withoutTrailingSlash(path)
 }

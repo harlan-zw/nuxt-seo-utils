@@ -1,7 +1,7 @@
 import type { RedirectRule } from '../../shared/redirects'
 import { createError, defineEventHandler, sendRedirect, useRuntimeConfig } from 'nuxt/server'
 import { decodePath, joinURL, withoutBase } from 'ufo'
-import { appendSearch, createRedirectMatcher, isAbsoluteUrl, resolveTarget } from '../../shared/redirects'
+import { appendSearch, createRedirectMatcher, isAbsoluteUrl, REDIRECT_CACHE_CONTROL, resolveTarget } from '../../shared/redirects'
 
 let match: ((path: string) => RedirectRule | undefined) | undefined
 
@@ -18,8 +18,7 @@ export default defineEventHandler((e) => {
   }
   const target = resolveTarget(rule, path)
   const location = isAbsoluteUrl(target) ? target : joinURL(baseURL, target)
-  // Without a max-age, Chromium caches a 301 or 308 forever, so a later fix or removal never reaches returning visitors
   if (!e.res.headers.has('cache-control'))
-    e.res.headers.set('cache-control', 'public, max-age=3600')
+    e.res.headers.set('cache-control', REDIRECT_CACHE_CONTROL)
   return sendRedirect(e, appendSearch(location, e.url.search), rule.statusCode)
 })

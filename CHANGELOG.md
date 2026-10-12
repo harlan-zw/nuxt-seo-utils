@@ -1,3 +1,22 @@
+## 9.0.0
+
+[Compare changes](https://github.com/harlan-zw/nuxt-seo-utils/compare/v8.6.1...v9.0.0)
+
+- fix(ci): skip release publish when the tag version is already on npm (#163) ([97a5af9](https://github.com/harlan-zw/nuxt-seo-utils/commit/97a5af9a1dceeb7b2fc9b81e2c999274e08e9c14))
+- docs: add the module icon and unify the README badges (#162) ([42865a5](https://github.com/harlan-zw/nuxt-seo-utils/commit/42865a55e9f70133e51a7e31ff8dbb11e36c419e))
+- feat!: require Nuxt 4.6 and use native server APIs (#161) ([9f65089](https://github.com/harlan-zw/nuxt-seo-utils/commit/9f65089fd379f042d8c2de5cdb918400cb29f9d9))
+- chore: restore original CI and defer the release bump (#164) ([3a104d0](https://github.com/harlan-zw/nuxt-seo-utils/commit/3a104d0339d831d07ca1be51de2769417071303b))
+- chore: schedule weekly package maintenance (#165) ([01aba2a](https://github.com/harlan-zw/nuxt-seo-utils/commit/01aba2a0f8f622d122759f0136ed3e852ecc4540))
+- perf: make Sharp opt-in and preserve dynamic JavaScript (#168) ([d0dc0e4](https://github.com/harlan-zw/nuxt-seo-utils/commit/d0dc0e4bf5ec23dcca7623c827ff5b3d3ae3a752))
+- perf: reduce derived metadata allocations (#169) ([1a53650](https://github.com/harlan-zw/nuxt-seo-utils/commit/1a536502294a541ea2d2f5a3ad4a980c5808ea47))
+- docs(seo-utils): explain waiting after canonical edits (#171) ([d679da8](https://github.com/harlan-zw/nuxt-seo-utils/commit/d679da8e95b83ff750415ab248aeb563f51a5f43))
+- feat(ssr): warn about indexable client-rendered pages (#170) ([3644935](https://github.com/harlan-zw/nuxt-seo-utils/commit/3644935e5622b8cba60116f773541933f25179f0))
+- fix(skills): align metadata with the Agent Skills spec (#172) ([25fe6af](https://github.com/harlan-zw/nuxt-seo-utils/commit/25fe6af5f196c2b3a29f7b822994e436fdafac4e))
+- refactor: use native site config dependencies (#173) ([e557ed5](https://github.com/harlan-zw/nuxt-seo-utils/commit/e557ed52fde59ad694b5da0856b2f8c6bbf969e5))
+- docs: add v9 release notes and update launch docs (#174) ([82b90dc](https://github.com/harlan-zw/nuxt-seo-utils/commit/82b90dc69dfaabd116eef15e5fb66f60b728b92e))
+- ci: let the reusable workflow skip docs-only jobs (#177) ([3d481c2](https://github.com/harlan-zw/nuxt-seo-utils/commit/3d481c2b1e47791c7bf1ac4e92f02367cb67e7fc))
+- feat: add seo.redirects for moved and gone URLs (#176) ([627df70](https://github.com/harlan-zw/nuxt-seo-utils/commit/627df704f1d72ee34e4c88645c69560f55e94993))
+
 ## 8.6.1
 
 [Compare changes](https://github.com/harlan-zw/nuxt-seo-utils/compare/v8.6.0...v8.6.1)

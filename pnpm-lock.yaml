@@ -286,8 +286,8 @@ overrides:
   cssnano-preset-default: 9.2.2
   cssnano-utils: 8.1.0
   nuxt-schema-org: https://pkg.pr.new/harlan-zw/nuxt-schema-org/nuxt-schema-org@92d351e5b56e8bbcfb20951947a3354ffdf720c8
-  nuxt-site-config: https://pkg.pr.new/harlan-zw/nuxt-site-config/nuxt-site-config@59e27b8dc55b21407ce19dfdbb7be0c6571e9490
-  nuxt-site-config-kit: https://pkg.pr.new/harlan-zw/nuxt-site-config/nuxt-site-config-kit@59e27b8dc55b21407ce19dfdbb7be0c6571e9490
+  nuxt-site-config: https://pkg.pr.new/harlan-zw/nuxt-site-config/nuxt-site-config@b8c8a6978ce818d77ecc50c679d412e748fdbdcb
+  nuxt-site-config-kit: https://pkg.pr.new/harlan-zw/nuxt-site-config/nuxt-site-config-kit@b8c8a6978ce818d77ecc50c679d412e748fdbdcb
   nuxtseo-shared: https://pkg.pr.new/harlan-zw/nuxt-seo/nuxtseo-shared@226c091a0744b7286ef721ac035eed53856bfaa5
   postcss-colormin: 9.0.6
   postcss-convert-values: 9.0.7
@@ -315,7 +315,7 @@ overrides:
   postcss-reduce-transforms: 9.0.4
   postcss-svgo: 9.0.4
   postcss-unique-selectors: 9.0.5
-  site-config-stack: https://pkg.pr.new/harlan-zw/nuxt-site-config/site-config-stack@59e27b8dc55b21407ce19dfdbb7be0c6571e9490
+  site-config-stack: https://pkg.pr.new/harlan-zw/nuxt-site-config/site-config-stack@b8c8a6978ce818d77ecc50c679d412e748fdbdcb
   stylehacks: 9.0.7
   unhead: ^3.4.2
   vue: ^3.5.43
@@ -349,11 +349,11 @@ importers:
         specifier: '>=1.20.0'
         version: 1.33.0
       nuxt-site-config:
-        specifier: https://pkg.pr.new/harlan-zw/nuxt-site-config/nuxt-site-config@59e27b8dc55b21407ce19dfdbb7be0c6571e9490
-        version: https://pkg.pr.new/harlan-zw/nuxt-site-config/nuxt-site-config@59e27b8dc55b21407ce19dfdbb7be0c6571e9490(0355a1c953852d2b695d41381fa7c699)
+        specifier: https://pkg.pr.new/harlan-zw/nuxt-site-config/nuxt-site-config@b8c8a6978ce818d77ecc50c679d412e748fdbdcb
+        version: https://pkg.pr.new/harlan-zw/nuxt-site-config/nuxt-site-config@b8c8a6978ce818d77ecc50c679d412e748fdbdcb(0355a1c953852d2b695d41381fa7c699)
       nuxtseo-shared:
         specifier: https://pkg.pr.new/harlan-zw/nuxt-seo/nuxtseo-shared@226c091a0744b7286ef721ac035eed53856bfaa5
-        version: https://pkg.pr.new/harlan-zw/nuxt-seo/nuxtseo-shared@226c091a0744b7286ef721ac035eed53856bfaa5(e7deb3d81dc50c2763a5a9f2bc3179e7)
+        version: https://pkg.pr.new/harlan-zw/nuxt-seo/nuxtseo-shared@226c091a0744b7286ef721ac035eed53856bfaa5(c43d24509cf4e690357d7ed7f30fd420)
       pathe:
         specifier: 'catalog:'
         version: 2.0.3
@@ -432,7 +432,7 @@ importers:
         version: 2.6.0(@nuxt/schema@4.6.0)(confbox@0.2.4)(dotenv@17.4.2)(giget@3.3.0)(jiti@2.7.0)(magic-string@1.4.2)(magicast@0.5.4)(mlly@1.8.2)(oxc-parser@0.141.0)(rolldown@1.2.12)(rollup@4.61.1)(supports-color@10.2.2)(unplugin@3.4.0(esbuild@0.28.0)(rolldown@1.2.12)(rollup@4.61.1)(vite@8.3.2(@types/node@26.6.4)(esbuild@0.28.0)(jiti@2.7.0)(sass@1.105.1)(terser@5.48.0)(yaml@2.9.0)))
       nuxtseo-layer-devtools:
         specifier: 'catalog:'
-        version: 5.3.16(74038a9d0fa40e7573a40100942d4d01)
+        version: 5.3.16(ddfe7f022d725914ae004415b1b05512)
       playwright-core:
         specifier: 'catalog:'
         version: 1.63.0
@@ -5832,13 +5832,13 @@ packages:
     resolution: {integrity: sha512-5rEfyxw1gS+vl1s5q7GcGuFOL5g0I03Q/mz7Zfr+IRJFsaZKwRxNVMFNRbatfK3Dz65LuRPnLewLmJ+Yh9ujOA==}
     engines: {node: '>=24.0.0'}
 
-  nuxt-site-config-kit@https://pkg.pr.new/harlan-zw/nuxt-site-config/nuxt-site-config-kit@59e27b8dc55b21407ce19dfdbb7be0c6571e9490:
-    resolution: {integrity: sha512-GEKIhSQoXRNCHgIp5vzeQHO6jxyMk2v/kclJvHrBleYpXBdPFZtRbMwoBA/U663lyANTCb6nSIuU1HuQjwAOOg==, tarball: https://pkg.pr.new/harlan-zw/nuxt-site-config/nuxt-site-config-kit@59e27b8dc55b21407ce19dfdbb7be0c6571e9490}
+  nuxt-site-config-kit@https://pkg.pr.new/harlan-zw/nuxt-site-config/nuxt-site-config-kit@b8c8a6978ce818d77ecc50c679d412e748fdbdcb:
+    resolution: {integrity: sha512-ccFWndpPU41Th46R/9skL+TWz9b0nub590QWMOQnvA4q+wnmnRzh3F2xQyFnpd/GQID2DVcuzVXGhu820/Owlw==, tarball: https://pkg.pr.new/harlan-zw/nuxt-site-config/nuxt-site-config-kit@b8c8a6978ce818d77ecc50c679d412e748fdbdcb}
     version: 5.0.0
     engines: {node: ^22.22.3 || ^24.15.0 || >=26.0.0}
 
-  nuxt-site-config@https://pkg.pr.new/harlan-zw/nuxt-site-config/nuxt-site-config@59e27b8dc55b21407ce19dfdbb7be0c6571e9490:
-    resolution: {integrity: sha512-yjFeOv+6SgCQajTMlU94cqV5Dj8vD7boEN/AH56c3m8lFW31hWgOiboyYcTjj6e+t9PUfJsJg4y+mgo/qHxT1w==, tarball: https://pkg.pr.new/harlan-zw/nuxt-site-config/nuxt-site-config@59e27b8dc55b21407ce19dfdbb7be0c6571e9490}
+  nuxt-site-config@https://pkg.pr.new/harlan-zw/nuxt-site-config/nuxt-site-config@b8c8a6978ce818d77ecc50c679d412e748fdbdcb:
+    resolution: {integrity: sha512-ee3wo2L6O86G1ZBZ6K8Uas63mODZTniyXyGBnFU4T1JFPvdyyS/XyjRnpSqIn0TEcpzoqVE10JPXVzXnfJS5GQ==, tarball: https://pkg.pr.new/harlan-zw/nuxt-site-config/nuxt-site-config@b8c8a6978ce818d77ecc50c679d412e748fdbdcb}
     version: 5.0.0
     engines: {node: ^22.22.3 || ^24.15.0 || >=26.0.0}
     peerDependencies:
@@ -6616,8 +6616,8 @@ packages:
   sisteransi@1.0.5:
     resolution: {integrity: sha512-bLGGlR1QxBcynn2d5YmDX4MGjlZvy2MRBDRNHLJ8VI6l6+9FUiyTFNJ0IveOSP0bcXgVDPRcfGqA0pjaqUpfVg==}
 
-  site-config-stack@https://pkg.pr.new/harlan-zw/nuxt-site-config/site-config-stack@59e27b8dc55b21407ce19dfdbb7be0c6571e9490:
-    resolution: {integrity: sha512-o/I+vJEvqsY4Qc7Gu1vr9WcChGhmoajtO+DZNJCGs3Fvz34mMQLrzlrxNUjUQf5/UESifX9nLdxbad6w8Gltlw==, tarball: https://pkg.pr.new/harlan-zw/nuxt-site-config/site-config-stack@59e27b8dc55b21407ce19dfdbb7be0c6571e9490}
+  site-config-stack@https://pkg.pr.new/harlan-zw/nuxt-site-config/site-config-stack@b8c8a6978ce818d77ecc50c679d412e748fdbdcb:
+    resolution: {integrity: sha512-o/I+vJEvqsY4Qc7Gu1vr9WcChGhmoajtO+DZNJCGs3Fvz34mMQLrzlrxNUjUQf5/UESifX9nLdxbad6w8Gltlw==, tarball: https://pkg.pr.new/harlan-zw/nuxt-site-config/site-config-stack@b8c8a6978ce818d77ecc50c679d412e748fdbdcb}
     version: 5.0.0
     engines: {node: ^22.22.3 || ^24.15.0 || >=26.0.0}
     peerDependencies:
@@ -13911,10 +13911,10 @@ snapshots:
       - supports-color
       - unplugin
 
-  nuxt-site-config-kit@https://pkg.pr.new/harlan-zw/nuxt-site-config/nuxt-site-config-kit@59e27b8dc55b21407ce19dfdbb7be0c6571e9490(@nuxt/schema@4.6.0)(confbox@0.2.4)(dotenv@17.4.2)(giget@3.3.0)(jiti@2.7.0)(magic-string@1.4.2)(mlly@1.8.2)(oxc-parser@0.141.0)(rolldown@1.2.12)(unplugin@3.4.0(esbuild@0.28.0)(rolldown@1.2.12)(rollup@4.61.1)(vite@8.3.2(@types/node@26.6.4)(esbuild@0.28.0)(jiti@2.7.0)(sass@1.105.1)(terser@5.48.0)(yaml@2.9.0)))(vue@3.5.43(typescript@6.0.3)):
+  nuxt-site-config-kit@https://pkg.pr.new/harlan-zw/nuxt-site-config/nuxt-site-config-kit@b8c8a6978ce818d77ecc50c679d412e748fdbdcb(@nuxt/schema@4.6.0)(confbox@0.2.4)(dotenv@17.4.2)(giget@3.3.0)(jiti@2.7.0)(magic-string@1.4.2)(mlly@1.8.2)(oxc-parser@0.141.0)(rolldown@1.2.12)(unplugin@3.4.0(esbuild@0.28.0)(rolldown@1.2.12)(rollup@4.61.1)(vite@8.3.2(@types/node@26.6.4)(esbuild@0.28.0)(jiti@2.7.0)(sass@1.105.1)(terser@5.48.0)(yaml@2.9.0)))(vue@3.5.43(typescript@6.0.3)):
     dependencies:
       '@nuxt/kit': 4.6.0(@nuxt/schema@4.6.0)(confbox@0.2.4)(dotenv@17.4.2)(giget@3.3.0)(jiti@2.7.0)(magic-string@1.4.2)(mlly@1.8.2)(oxc-parser@0.141.0)(rolldown@1.2.12)(unplugin@3.4.0(esbuild@0.28.0)(rolldown@1.2.12)(rollup@4.61.1)(vite@8.3.2(@types/node@26.6.4)(esbuild@0.28.0)(jiti@2.7.0)(sass@1.105.1)(terser@5.48.0)(yaml@2.9.0)))
-      site-config-stack: https://pkg.pr.new/harlan-zw/nuxt-site-config/site-config-stack@59e27b8dc55b21407ce19dfdbb7be0c6571e9490(vue@3.5.43(typescript@6.0.3))
+      site-config-stack: https://pkg.pr.new/harlan-zw/nuxt-site-config/site-config-stack@b8c8a6978ce818d77ecc50c679d412e748fdbdcb(vue@3.5.43(typescript@6.0.3))
       ufo: 1.6.4
     transitivePeerDependencies:
       - '@nuxt/schema'
@@ -13929,16 +13929,16 @@ snapshots:
       - unplugin
       - vue
 
-  nuxt-site-config@https://pkg.pr.new/harlan-zw/nuxt-site-config/nuxt-site-config@59e27b8dc55b21407ce19dfdbb7be0c6571e9490(0355a1c953852d2b695d41381fa7c699):
+  nuxt-site-config@https://pkg.pr.new/harlan-zw/nuxt-site-config/nuxt-site-config@b8c8a6978ce818d77ecc50c679d412e748fdbdcb(0355a1c953852d2b695d41381fa7c699):
     dependencies:
       '@nuxt/devalue': 2.0.2
       '@nuxt/kit': 4.6.0(@nuxt/schema@4.6.0)(confbox@0.2.4)(dotenv@17.4.2)(giget@3.3.0)(jiti@2.7.0)(magic-string@1.4.2)(mlly@1.8.2)(oxc-parser@0.141.0)(rolldown@1.2.12)(unplugin@3.4.0(esbuild@0.28.0)(rolldown@1.2.12)(rollup@4.61.1)(vite@8.3.2(@types/node@26.6.4)(esbuild@0.28.0)(jiti@2.7.0)(sass@1.105.1)(terser@5.48.0)(yaml@2.9.0)))
       consola: 3.4.2
       defu: 6.1.7
       nuxt: 4.6.0(@babel/plugin-syntax-jsx@7.29.7(@babel/core@7.29.7(supports-color@10.2.2)))(@babel/plugin-syntax-typescript@7.29.7(@babel/core@7.29.7(supports-color@10.2.2)))(@oxc-project/types@0.152.0)(@parcel/watcher@2.5.6)(@types/node@26.6.4)(@vue/compiler-sfc@3.5.43)(acorn@8.18.0)(confbox@0.2.4)(db0@0.3.4)(dotenv@17.4.2)(esbuild@0.28.0)(eslint@10.12.0(jiti@2.7.0)(supports-color@10.2.2))(giget@3.3.0)(ioredis@5.11.1(supports-color@10.2.2))(lightningcss@1.33.0)(mlly@1.8.2)(optionator@0.9.4)(oxc-parser@0.141.0)(rolldown@1.2.12)(rollup-plugin-visualizer@7.0.1(rolldown@1.2.12)(rollup@4.61.1))(rollup@4.61.1)(sass@1.105.1)(srvx@0.11.22)(supports-color@10.2.2)(terser@5.48.0)(typescript@6.0.3)(vite@8.3.2(@types/node@26.6.4)(esbuild@0.28.0)(jiti@2.7.0)(sass@1.105.1)(terser@5.48.0)(yaml@2.9.0))(vue-tsc@3.3.12(typescript@6.0.3))(yaml@2.9.0)
-      nuxt-site-config-kit: https://pkg.pr.new/harlan-zw/nuxt-site-config/nuxt-site-config-kit@59e27b8dc55b21407ce19dfdbb7be0c6571e9490(@nuxt/schema@4.6.0)(confbox@0.2.4)(dotenv@17.4.2)(giget@3.3.0)(jiti@2.7.0)(magic-string@1.4.2)(mlly@1.8.2)(oxc-parser@0.141.0)(rolldown@1.2.12)(unplugin@3.4.0(esbuild@0.28.0)(rolldown@1.2.12)(rollup@4.61.1)(vite@8.3.2(@types/node@26.6.4)(esbuild@0.28.0)(jiti@2.7.0)(sass@1.105.1)(terser@5.48.0)(yaml@2.9.0)))(vue@3.5.43(typescript@6.0.3))
-      nuxtseo-shared: https://pkg.pr.new/harlan-zw/nuxt-seo/nuxtseo-shared@226c091a0744b7286ef721ac035eed53856bfaa5(e7deb3d81dc50c2763a5a9f2bc3179e7)
-      site-config-stack: https://pkg.pr.new/harlan-zw/nuxt-site-config/site-config-stack@59e27b8dc55b21407ce19dfdbb7be0c6571e9490(vue@3.5.43(typescript@6.0.3))
+      nuxt-site-config-kit: https://pkg.pr.new/harlan-zw/nuxt-site-config/nuxt-site-config-kit@b8c8a6978ce818d77ecc50c679d412e748fdbdcb(@nuxt/schema@4.6.0)(confbox@0.2.4)(dotenv@17.4.2)(giget@3.3.0)(jiti@2.7.0)(magic-string@1.4.2)(mlly@1.8.2)(oxc-parser@0.141.0)(rolldown@1.2.12)(unplugin@3.4.0(esbuild@0.28.0)(rolldown@1.2.12)(rollup@4.61.1)(vite@8.3.2(@types/node@26.6.4)(esbuild@0.28.0)(jiti@2.7.0)(sass@1.105.1)(terser@5.48.0)(yaml@2.9.0)))(vue@3.5.43(typescript@6.0.3))
+      nuxtseo-shared: https://pkg.pr.new/harlan-zw/nuxt-seo/nuxtseo-shared@226c091a0744b7286ef721ac035eed53856bfaa5(c43d24509cf4e690357d7ed7f30fd420)
+      site-config-stack: https://pkg.pr.new/harlan-zw/nuxt-site-config/site-config-stack@b8c8a6978ce818d77ecc50c679d412e748fdbdcb(vue@3.5.43(typescript@6.0.3))
       ufo: 1.6.4
       vue: 3.5.43(typescript@6.0.3)
     transitivePeerDependencies:
@@ -14108,7 +14108,7 @@ snapshots:
       - xml2js
       - yaml
 
-  nuxtseo-layer-devtools@5.3.16(74038a9d0fa40e7573a40100942d4d01):
+  nuxtseo-layer-devtools@5.3.16(ddfe7f022d725914ae004415b1b05512):
     dependencies:
       '@iconify-json/carbon': 1.2.25
       '@nuxt/devtools-kit': 4.0.0-alpha.7(@nuxt/schema@4.6.0)(confbox@0.2.4)(dotenv@17.4.2)(giget@3.3.0)(jiti@2.7.0)(magic-string@1.4.2)(mlly@1.8.2)(oxc-parser@0.141.0)(rolldown@1.2.12)(unplugin@3.4.0(esbuild@0.28.0)(rolldown@1.2.12)(rollup@4.61.1)(vite@8.3.2(@types/node@26.6.4)(esbuild@0.28.0)(jiti@2.7.0)(sass@1.105.1)(terser@5.48.0)(yaml@2.9.0)))(vite@8.3.2(@types/node@26.6.4)(esbuild@0.28.0)(jiti@2.7.0)(sass@1.105.1)(terser@5.48.0)(yaml@2.9.0))
@@ -14118,7 +14118,7 @@ snapshots:
       '@shikijs/themes': 4.4.3
       '@vueuse/core': 14.4.0(vue@3.5.43(typescript@6.0.3))
       '@vueuse/nuxt': 14.4.0(25329eaa058af058b021f6161d12880c)
-      nuxtseo-shared: https://pkg.pr.new/harlan-zw/nuxt-seo/nuxtseo-shared@226c091a0744b7286ef721ac035eed53856bfaa5(e7deb3d81dc50c2763a5a9f2bc3179e7)
+      nuxtseo-shared: https://pkg.pr.new/harlan-zw/nuxt-seo/nuxtseo-shared@226c091a0744b7286ef721ac035eed53856bfaa5(c43d24509cf4e690357d7ed7f30fd420)
       ofetch: 1.5.1
       shiki: 4.4.3
       tailwindcss: 4.3.3
@@ -14211,7 +14211,7 @@ snapshots:
       - yup
       - zod
 
-  nuxtseo-shared@https://pkg.pr.new/harlan-zw/nuxt-seo/nuxtseo-shared@226c091a0744b7286ef721ac035eed53856bfaa5(e7deb3d81dc50c2763a5a9f2bc3179e7):
+  nuxtseo-shared@https://pkg.pr.new/harlan-zw/nuxt-seo/nuxtseo-shared@226c091a0744b7286ef721ac035eed53856bfaa5(c43d24509cf4e690357d7ed7f30fd420):
     dependencies:
       '@nuxt/kit': 4.6.0(@nuxt/schema@4.6.0)(confbox@0.2.4)(dotenv@17.4.2)(giget@3.3.0)(jiti@2.7.0)(magic-string@1.4.2)(mlly@1.8.2)(oxc-parser@0.141.0)(rolldown@1.2.12)(unplugin@3.4.0(esbuild@0.28.0)(rolldown@1.2.12)(rollup@4.61.1)(vite@8.3.2(@types/node@26.6.4)(esbuild@0.28.0)(jiti@2.7.0)(sass@1.105.1)(terser@5.48.0)(yaml@2.9.0)))
       '@nuxt/schema': 4.6.0
@@ -14224,7 +14224,7 @@ snapshots:
       ufo: 1.6.4
       vue: 3.5.43(typescript@6.0.3)
     optionalDependencies:
-      nuxt-site-config: https://pkg.pr.new/harlan-zw/nuxt-site-config/nuxt-site-config@59e27b8dc55b21407ce19dfdbb7be0c6571e9490(0355a1c953852d2b695d41381fa7c699)
+      nuxt-site-config: https://pkg.pr.new/harlan-zw/nuxt-site-config/nuxt-site-config@b8c8a6978ce818d77ecc50c679d412e748fdbdcb(0355a1c953852d2b695d41381fa7c699)
       zod: 4.4.3
     transitivePeerDependencies:
       - confbox
@@ -15280,7 +15280,7 @@ snapshots:
 
   sisteransi@1.0.5: {}
 
-  site-config-stack@https://pkg.pr.new/harlan-zw/nuxt-site-config/site-config-stack@59e27b8dc55b21407ce19dfdbb7be0c6571e9490(vue@3.5.43(typescript@6.0.3)):
+  site-config-stack@https://pkg.pr.new/harlan-zw/nuxt-site-config/site-config-stack@b8c8a6978ce818d77ecc50c679d412e748fdbdcb(vue@3.5.43(typescript@6.0.3)):
     dependencies:
       ufo: 1.6.4
       vue: 3.5.43(typescript@6.0.3)

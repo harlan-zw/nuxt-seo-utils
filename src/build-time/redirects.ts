@@ -112,6 +112,10 @@ function parseEntry(source: string, input: RedirectInput): { entry?: RedirectEnt
     issues.push({ _tag: 'InvalidTarget', level: 'error', source, to, reason: 'use a path that starts with `/`, or an absolute `https://` URL' })
     return { issues }
   }
+  if (to.includes('*') && !(to.endsWith('/**') && !to.slice(0, -3).includes('*'))) {
+    issues.push({ _tag: 'InvalidTarget', level: 'error', source, to, reason: 'only a trailing `/**` is supported' })
+    return { issues }
+  }
   if (to.endsWith('/**') && pattern._tag !== 'Prefix') {
     issues.push({ _tag: 'InvalidTarget', level: 'error', source, to, reason: 'a target that ends in `/**` needs a source that ends in `/**`' })
     return { issues }

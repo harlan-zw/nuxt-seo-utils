@@ -49,6 +49,14 @@ describe('planRedirects', () => {
     expect(tags({ '/**': { statusCode: 410, addedAt: '2026-10-01' } })).toEqual(['InvalidSource'])
   })
 
+  it.each([
+    '/b/**?q=1',
+    '/b/**/',
+    '/b/**/c',
+  ])('rejects the target %s, which has `/**` before its end', (to) => {
+    expect(tags({ '/a/**': { to, addedAt: '2026-10-01' } })).toEqual(['InvalidTarget'])
+  })
+
   it('rejects a `/**` target on an exact source', () => {
     expect(tags({ '/old': { to: '/new/**', addedAt: '2026-10-01' } })).toEqual(['InvalidTarget'])
   })

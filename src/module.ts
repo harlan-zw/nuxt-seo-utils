@@ -213,7 +213,7 @@ export default defineNuxtModule<ModuleOptions>({
     name: 'nuxt-seo-utils',
     configKey: 'seo',
     compatibility: {
-      nuxt: '^4.6.0 || ^5.0.0',
+      nuxt: '^4.6.0 || ^5.0.0-0',
     },
   },
   moduleDependencies: {

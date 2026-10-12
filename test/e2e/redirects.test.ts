@@ -7,12 +7,16 @@ const { resolve } = createResolver(import.meta.url)
 await setup({
   rootDir: resolve('../fixtures/basic'),
   nuxtConfig: {
+    routeRules: {
+      '/kept-cache': { headers: { 'cache-control': 'no-store' } },
+    },
     seo: {
       redirects: {
         '/old-about': { to: '/about', addedAt: '2026-10-01' },
         '/café': { to: '/about', addedAt: '2026-10-01' },
         '/old-home': { to: '/', statusCode: 308, addedAt: '2026-10-01' },
         '/legacy/**': { to: '/admin/**', addedAt: '2026-10-01' },
+        '/kept-cache': { to: '/about', addedAt: '2026-10-01' },
         '/first': { to: '/second', addedAt: '2026-10-01' },
         '/second': { to: '/about', addedAt: '2026-10-01' },
         '/spring-sale': { statusCode: 410, addedAt: '2026-03-01', reason: 'The sale ended.' },
@@ -37,6 +41,12 @@ describe('seo.redirects', () => {
     expect(res.status).toBe(status)
     expect(res.headers.get('location')).toBe(location)
     expect(res.headers.get('cache-control')).toBe('public, max-age=3600')
+  })
+
+  it('keeps a Cache-Control header that a route rule sets', async () => {
+    const res = await request('/kept-cache')
+    expect(res.status).toBe(301)
+    expect(res.headers.get('cache-control')).toBe('no-store')
   })
 
   it('renders the error page with 410 for a gone URL and keeps the reason private', async () => {

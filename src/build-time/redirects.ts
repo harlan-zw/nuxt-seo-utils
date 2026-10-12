@@ -1,6 +1,6 @@
 import type { RedirectRule, SourcePattern } from '../runtime/shared/redirects'
 import { joinURL } from 'ufo'
-import { createRedirectMatcher, isAbsoluteUrl, parseSourcePattern, resolveTarget } from '../runtime/shared/redirects'
+import { appendSearch, createRedirectMatcher, isAbsoluteUrl, parseSourcePattern, resolveTarget } from '../runtime/shared/redirects'
 
 /** A calendar date, such as `'2026-10-13'`. */
 export type RedirectDate = `${number}-${number}-${number}`
@@ -129,6 +129,14 @@ function targetPath(to: string): string | undefined {
   return isAbsoluteUrl(to) ? undefined : to.split(/[?#]/)[0]
 }
 
+/** Carry the query and hash of an earlier hop onto the next target. */
+function withSuffix(target: string, suffix: string): string {
+  const hashIndex = suffix.indexOf('#')
+  const search = hashIndex === -1 ? suffix : suffix.slice(0, hashIndex)
+  const hash = hashIndex === -1 ? '' : suffix.slice(hashIndex)
+  return appendSearch(target, search) + (target.includes('#') ? '' : hash)
+}
+
 /**
  * Follow each moved entry through the other entries, so that every source reaches its final target in one hop.
  * A `/**` target flattens only through a `/**` source that covers its whole subtree.
@@ -168,7 +176,7 @@ function flattenChains(entries: RedirectEntry[]): RedirectPlan {
       if (wildcard)
         to = next.to.endsWith('/**') ? `${resolveTarget(next, lookup).replace(/\/$/, '')}/**` : next.to
       else
-        to = resolveTarget(next, path) + to.slice(path.length)
+        to = withSuffix(resolveTarget(next, path), to.slice(path.length))
       hops.push(to)
     }
     if (to === entry.to)

@@ -77,6 +77,13 @@ describe('redirect chains', () => {
     })['/promo']).toBe('301 /articles/launch?ref=promo')
   })
 
+  it('merges the query of each hop when it flattens', () => {
+    expect(targets({
+      '/promo': { to: '/blog/launch?ref=promo#top', addedAt: '2026-10-01' },
+      '/blog/launch': { to: '/articles/launch?src=blog', addedAt: '2026-10-01' },
+    })['/promo']).toBe('301 /articles/launch?src=blog&ref=promo#top')
+  })
+
   it('flattens one `/**` move into another', () => {
     expect(targets({
       '/a/**': { to: '/b/**', addedAt: '2026-10-01' },

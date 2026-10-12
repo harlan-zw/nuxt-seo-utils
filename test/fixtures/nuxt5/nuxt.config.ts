@@ -2,6 +2,14 @@ import NuxtSeoUtils from 'nuxt-seo-utils'
 import NuxtSiteConfig from 'nuxt-site-config'
 import NuxtSchemaOrg from 'nuxt-schema-org'
 
+// nuxt-schema-org releases before the `^5.0.0-0` range reject Nuxt 5 nightlies.
+// Delete this patch once the fixture installs a nuxt-schema-org release with that range.
+for (const module of [NuxtSchemaOrg]) {
+  const metadata = await module.getMeta()
+  metadata.compatibility ||= {}
+  metadata.compatibility.nuxt = `${metadata.compatibility.nuxt} || 5.0.0-2610061032-c7ad8cd`
+}
+
 export default defineNuxtConfig({
   workspaceDir: import.meta.dirname,
   imports: { autoImport: true },

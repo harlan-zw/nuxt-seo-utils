@@ -2,7 +2,7 @@
 name: nuxt-seo-utils
 description: Set up, override, and debug the default SEO head tags in a Nuxt app with the nuxt-seo-utils module. Use when a task mentions canonical URLs, the title template or separator, fallback titles, og:image or twitter:image files, favicons and app icons, seo.meta, seoMeta or head in routeRules, useBreadcrumbItems, useShareLinks, the nuxt-seo-utils icons CLI, or the seo config key. Also use when a page tag does not override a default, html lang ignores useHead, or og:image renders twice.
 license: MIT
-compatibility: "Requires Node.js ^22.22.3 || ^24.15.0 || >=26.0.0. Requires Nuxt ^4.6.0 || ^5.0.0."
+compatibility: "Requires Node.js ^22.22.3 || ^24.15.0 || >=26.0.0. Requires Nuxt ^4.6.0 || ^5.0.0. Requires Unhead ^3.4.2."
 ---
 
 # nuxt-seo-utils
@@ -13,6 +13,8 @@ Docs: https://nuxtseo.com/docs/seo-utils
 
 ## Setup
 
+Install with `npx nuxt module add nuxt-seo-utils`.
+Included in `@nuxtjs/seo` v6. If the app uses `@nuxtjs/seo`, configure the `seo` key and do not add the module again.
 The config key is `seo`. `seoUtils` does nothing.
 Set `site.url` and `site.name`. The canonical URL, `og:url`, the title template, and absolute image URLs read them.
 
@@ -125,10 +127,21 @@ UTM defaults to `utm_source=<platform>` and `utm_medium=social` (or `email`). An
 
 ## Version limits
 
+v9 breaking changes and their fixes:
+
+- Nuxt `^4.6.0 || ^5.0.0`, Node `^22.22.3 || ^24.15.0 || >=26.0.0`, and Unhead `^3.4.2` are required. Upgrade Nuxt and Node first.
+- Unhead v2 is not supported. Remove any `@unhead/vue` 2 pin or override.
+- `nuxt-site-config` 5 is required. Change a pinned `nuxt-site-config` to `^5.0.0`.
+- The module no longer installs Sharp. Run `pnpm add -D sharp` before `nuxt-seo-utils icons`.
+- Runtime and prerender minification keep inline JavaScript unchanged. Put scripts that need minification in `app.head`.
+- Only `#seo-utils/app` resolves. Replace `#seo-utils/types`, `#seo-utils/server/`, and `#seo-utils/shared/` imports with `#seo-utils/app` exports.
+- The DevTools panel needs `nuxtseo-devtools-host` as a dev dependency.
+
+Older limits:
+
 - 8.5.2 and earlier: a page `ogImage` keeps the default image's dimensions and `twitter:image`, a page canonical leaves `og:url` on the route URL, a `pages/<route>/og-image.png` renders `og:image:alt` twice, and `public/opengraph-image.*` is ignored.
 - 8.5.2 and earlier: `BreadcrumbList` item URLs keep the route case, and `useShareLinks()` lowercases without the site locale.
 - 8.5.2 and earlier: `seo.meta` and `public/og-image.png` beat route rule `seoMeta` and `pages/**/og-image.png`. Put the route value in the page with `useSeoMeta()`.
-- `treeShakeUseSeoMeta` needs Unhead v3. On Unhead v2 the module skips it with a warning.
 - `automaticTwitterTags: false` (removes `twitter:card`) arrived in 8.5.0.
 
 ## Config
@@ -143,4 +156,5 @@ UTM defaults to `utm_source=<platform>` and `utm_medium=social` (or `email`). An
 
 - On `nuxt dev` and `nuxt build`, the module warns about conflicts in `app.head`, such as a static `lang` or an `og:site_name` that differs from `site.name`. Fix the site config, not the head. Set `validateAppHead: false` to hide the check.
 - `/__nuxt-seo-utils/debug.json` in dev, or in production with `seo: { debug: true }`.
-- Nuxt DevTools has an SEO Utils tab.
+- On `nuxt dev` and `nuxt build`, the module warns when SSR is off for indexable pages. Turn SSR on for public routes. For private routes, set `robots: false` with `@nuxtjs/robots`.
+- Nuxt DevTools has an SEO Utils tab. The panel needs `nuxtseo-devtools-host` as a dev dependency.

@@ -37,7 +37,7 @@ While there are several features covering many aspects of SEO, it covers importa
 Install `nuxt-seo-utils` dependency to your project:
 
 ```bash
-npx nuxi@latest module add nuxt-seo-utils
+npx nuxt module add nuxt-seo-utils
 ```
 
 > [!TIP]

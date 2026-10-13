@@ -35,7 +35,8 @@ With the defaults, every page gets:
 - A fallback title from the last path segment, title cased: `/blog/my-post` becomes `My Post`. `definePageMeta({ title })` sets it with a static string.
 - `<link rel="canonical">` from `site.url` and the route path, lowercased, with only these query keys kept: `page`, `sort`, `filter`, `search`, `q`, `category`, `tag`.
 - `og:url` (the resolved canonical, including one a page sets), `og:type` (`website`), `og:site_name` (`site.name`), and `description` from `site.description`.
-- `og:title`, `og:description`, and `twitter:card` (`summary_large_image`), inferred from the title and description.
+- `og:title` and `og:description`, inferred from the title and description.
+- `twitter:card`: `summary_large_image` when the page has an `og:image` or `twitter:image`, else `summary`. A page `twitterCard` wins.
 - `twitter:site` and `twitter:creator` from `site.twitter`. The `@` is added.
 - `<html lang>` from `site.currentLocale` or `site.defaultLocale`, else `en`.
 - `og:locale` only when the locale has a region. `en-US` renders `en_US`. `en` renders no tag.
@@ -171,6 +172,7 @@ Older limits:
 - 8.5.2 and earlier: `BreadcrumbList` item URLs keep the route case, and `useShareLinks()` lowercases without the site locale.
 - 8.5.2 and earlier: `seo.meta` and `public/og-image.png` beat route rule `seoMeta` and `pages/**/og-image.png`. Put the route value in the page with `useSeoMeta()`.
 - `automaticTwitterTags: false` (removes `twitter:card`) arrived in 8.5.0.
+- 9.0.0 and earlier: `twitter:card` is `summary_large_image` on pages without an image. Set `twitterCard: 'summary'` on those pages.
 
 ## Config
 

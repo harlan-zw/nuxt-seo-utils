@@ -9,3 +9,8 @@ export const TWITTER_IMAGE_FALLBACK_KEY = 'nuxt-seo-utils:twitter-image-fallback
  * Marks the default `og:url`. It takes the href of the resolved canonical link.
  */
 export const OG_URL_KEY = 'nuxt-seo-utils:og-url'
+
+/**
+ * Marks the default `twitter:card`. It is `summary_large_image` when an image tag resolves, else `summary`.
+ */
+export const TWITTER_CARD_KEY = 'nuxt-seo-utils:twitter-card'

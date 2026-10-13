@@ -62,6 +62,9 @@ export interface ModuleOptions {
   /**
    * Whether to infer Twitter metadata from Open Graph metadata.
    *
+   * The inferred `twitter:card` is `summary_large_image` when the page has an `og:image` or
+   * `twitter:image`, else `summary`. A `twitter:card` you set always wins.
+   *
    * @default true
    */
   automaticTwitterTags: boolean

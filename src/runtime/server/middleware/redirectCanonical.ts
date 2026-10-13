@@ -1,6 +1,13 @@
-import { defineEventHandler, getRequestHost, sendRedirect } from 'nuxt/server'
+import { defineEventHandler, getRequestHeader, sendRedirect } from 'nuxt/server'
 import { joinURL } from 'ufo'
 import { getSiteConfig } from '#site-config/server/composables/getSiteConfig'
+
+// `getRequestHost` from `nuxt/server` runs through Nuxt's core server module on Nitro 2, which
+// imports app.config. Under `future.compatibilityVersion: 5` nothing defines `defineAppConfig` in
+// the server bundle, so the server would throw while it starts. Read the headers instead.
+function getForwardedHost(e: Parameters<typeof getRequestHeader>[0]): string {
+  return getRequestHeader(e, 'x-forwarded-host')?.split(',')[0]?.trim() || getRequestHeader(e, 'host') || ''
+}
 
 export default defineEventHandler((e) => {
   // avoid redirecting in prerender mode
@@ -21,7 +28,7 @@ export default defineEventHandler((e) => {
     return
   }
   const siteConfigHostName = new URL(e.url.pathname, siteConfig.url).host
-  const host = getRequestHost(e, { xForwardedHost: true })
+  const host = getForwardedHost(e)
   // check for redirect header
   if (e.req.headers.get('x-nuxt-seo-redirected') || host.includes('http') || host.replace('https://', '').includes(':')) {
     return

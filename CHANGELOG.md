@@ -1,3 +1,9 @@
+## 9.0.1
+
+[Compare changes](https://github.com/harlan-zw/nuxt-seo-utils/compare/v9.0.0...v9.0.1)
+
+- fix: read the canonical redirect host from headers (#182) ([920d7c8](https://github.com/harlan-zw/nuxt-seo-utils/commit/920d7c87c449e0088ceea5560e5422374555f3cf))
+
 ## 9.0.0
 
 [Compare changes](https://github.com/harlan-zw/nuxt-seo-utils/compare/v8.6.1...v9.0.0)

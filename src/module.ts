@@ -438,15 +438,6 @@ import type { RobotsContext } from '#robots/types'
 
 ${nitroTypes}
 
-
-declare module '@nuxt/schema' {
-  interface AppHeadMetaObject { seoMeta?: import('${typesPath}').MetaFlatSerializable }
-}
-
-declare module 'nuxt/schema' {
-  interface AppHeadMetaObject { seoMeta?: import('${typesPath}').MetaFlatSerializable }
-}
-
 export {}
 `
       },

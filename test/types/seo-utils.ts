@@ -5,7 +5,7 @@ import { defineNuxtConfig } from 'nuxt/config'
 import '../../src/runtime/types'
 
 // An application or another module supplies its public runtime config types.
-declare module '@nuxt/schema' {
+declare module 'nuxt/schema' {
   interface PublicRuntimeConfig {
     api: string
   }
@@ -70,6 +70,16 @@ const schemaConfig: NuxtConfig = {
 }
 
 declare const options: NuxtOptions
+options.runtimeConfig.public['seo-utils'] = {
+  canonicalQueryWhitelist: ['page'],
+  canonicalLowercase: true,
+  automaticTwitterTags: true,
+  tagPriority: 10,
+}
+options.runtimeConfig.public['seo-utils'].colorModeIcons = {
+  dark: [{ rel: 'icon', href: '/dark.svg' }],
+  light: [{ rel: 'icon', href: '/light.svg' }],
+}
 declare const bridgedOptions: BridgedNuxtOptions
 const appDescription: string | undefined = options.app.seoMeta?.description
 const headDescription: string | undefined = options.app.head.seoMeta?.description

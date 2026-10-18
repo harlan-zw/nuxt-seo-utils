@@ -22,10 +22,6 @@ type SeoUtilsAppConfig = Omit<ConfigSchema['app'], 'head'> & {
 }
 
 declare module '@nuxt/schema' {
-  interface PublicRuntimeConfig {
-    'seo-utils': SeoUtilsRuntimeConfig
-  }
-
   interface NuxtConfig {
     app?: PartialConfig<SeoUtilsAppConfig>
   }
@@ -37,6 +33,11 @@ declare module '@nuxt/schema' {
 
 // Nuxt's config entry uses these interfaces through its schema bridge.
 declare module 'nuxt/schema' {
+  // Nuxt generates runtime config here, then bridges it into @nuxt/schema.
+  interface PublicRuntimeConfig {
+    'seo-utils': SeoUtilsRuntimeConfig
+  }
+
   interface NuxtConfig {
     app?: PartialConfig<SeoUtilsAppConfig>
   }

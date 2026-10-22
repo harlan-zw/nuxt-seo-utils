@@ -9,6 +9,10 @@ export default defineNuxtConfig({
   imports: {
     autoImport: true,
   },
+  // i18n auto-installs through optional moduleDependencies when resolvable. Its
+  // shared runtime imports `useRuntimeConfig` from `#imports`, which the
+  // compatibilityVersion 5 shared context no longer exports.
+  i18n: false,
   site: {
     url: 'https://example.com',
     env: 'production',

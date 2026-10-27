@@ -2,22 +2,20 @@ import type { NuxtConfig, NuxtOptions } from '@nuxt/schema'
 import type { NuxtOptions as BridgedNuxtOptions } from 'nuxt/schema'
 import { useRuntimeConfig } from 'nuxt/app'
 import { defineNuxtConfig } from 'nuxt/config'
-import '../../src/runtime/types'
-
-// An application or another module supplies its public runtime config types.
-declare module 'nuxt/schema' {
-  interface PublicRuntimeConfig {
-    api: string
-  }
-}
 
 const config = useRuntimeConfig()
-const api: string = config.public.api
-const canonicalLowercase: boolean = config.public['seo-utils'].canonicalLowercase
+export const apiBase: string = config.public.apiBase
+export const retryLimit: number = config.public.retryLimit
+export const enabled: boolean = config.public.nested.enabled
+export const canonicalLowercase: boolean = config.public['seo-utils'].canonicalLowercase
 // @ts-expect-error Public runtime config must retain the application's string type.
-const invalidApi: number = config.public.api
+export const invalidApiBase: number = config.public.apiBase
+// @ts-expect-error Public runtime config must retain the application's number type.
+export const invalidRetryLimit: string = config.public.retryLimit
+// @ts-expect-error Nested runtime config must retain the application's boolean type.
+export const invalidEnabled: string = config.public.nested.enabled
 // @ts-expect-error Module runtime config must retain its boolean type.
-const invalidCanonicalLowercase: string = config.public['seo-utils'].canonicalLowercase
+export const invalidCanonicalLowercase: string = config.public['seo-utils'].canonicalLowercase
 
 defineNuxtConfig({
   app: {
@@ -62,7 +60,7 @@ defineNuxtConfig({
   },
 })
 
-const schemaConfig: NuxtConfig = {
+export const schemaConfig: NuxtConfig = {
   app: {
     seoMeta: { description: 'App description' },
     head: { seoMeta: { description: 'Head description' } },
@@ -70,19 +68,7 @@ const schemaConfig: NuxtConfig = {
 }
 
 declare const options: NuxtOptions
-options.runtimeConfig.public['seo-utils'] = {
-  canonicalQueryWhitelist: ['page'],
-  canonicalLowercase: true,
-  automaticTwitterTags: true,
-  tagPriority: 10,
-}
-options.runtimeConfig.public['seo-utils'].colorModeIcons = {
-  dark: [{ rel: 'icon', href: '/dark.svg' }],
-  light: [{ rel: 'icon', href: '/light.svg' }],
-}
 declare const bridgedOptions: BridgedNuxtOptions
-const appDescription: string | undefined = options.app.seoMeta?.description
-const headDescription: string | undefined = options.app.head.seoMeta?.description
-const bridgedDescription: string | undefined = bridgedOptions.app.seoMeta?.description
-
-export { api, appDescription, bridgedDescription, canonicalLowercase, headDescription, invalidApi, invalidCanonicalLowercase, schemaConfig }
+export const appDescription: string | undefined = options.app.seoMeta?.description
+export const headDescription: string | undefined = options.app.head.seoMeta?.description
+export const bridgedDescription: string | undefined = bridgedOptions.app.seoMeta?.description

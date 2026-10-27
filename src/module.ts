@@ -396,7 +396,7 @@ export default defineNuxtModule<ModuleOptions>({
       ? resolve(runtimeDir, './app/composables/schemaOrg')
       : resolve(runtimeDir, './app/composables/polyfills')
     nuxt.options.runtimeConfig.public['nuxt-seo-utils-version'] = nuxt.options.runtimeConfig.public['nuxt-seo-utils-version'] || version || ''
-    nuxt.options.runtimeConfig.public['seo-utils'] = defu(nuxt.options.runtimeConfig.public['seo-utils'] || {}, {
+    const seoRuntimeConfig = defu(nuxt.options.runtimeConfig.public['seo-utils'] || {}, {
       canonicalQueryWhitelist: config.canonicalQueryWhitelist ?? [
         'page',
         'sort',
@@ -412,6 +412,7 @@ export default defineNuxtModule<ModuleOptions>({
       separator: headTemplateParams?.separator,
       titleSeparator: headTemplateParams?.titleSeparator,
     })
+    Object.assign(nuxt.options.runtimeConfig.public, { 'seo-utils': seoRuntimeConfig })
 
     if (config.extendNuxtConfigAppHeadSeoMeta)
       extendNuxtConfigAppHeadSeoMeta()
@@ -458,7 +459,7 @@ export {}
 
       headConfig.link = result.links
       const seoRuntimeConfig = nuxt.options.runtimeConfig.public['seo-utils']
-      seoRuntimeConfig.colorModeIcons = result.icons
+      Object.assign(seoRuntimeConfig, { colorModeIcons: result.icons })
       addPlugin({ src: resolve(appRuntimeDir, 'plugins', 'colorModeIcons') })
     })
     // Seed nuxt.options.unhead.vite so compatibilityVersion 5 (which registers

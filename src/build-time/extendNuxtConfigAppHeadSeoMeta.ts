@@ -7,8 +7,8 @@ export default function extendNuxtConfigAppHeadSeoMeta(nuxt: Nuxt = useNuxt()): 
   // from the root public let's find which ones we can infer SEO meta and link tags from, following the Next.js convention
   // outlined in this site: https://nextjs.org/docs/app/api-reference/file-conventions/metadata/app-icons
   const seoMeta: MetaFlatSerializable = nuxt.options.app?.seoMeta || nuxt.options.app?.head?.seoMeta || {}
-  // @ts-expect-error untyped
-  const configSeoMeta: MetaFlatSerializable = nuxt.options.seo?.meta || nuxt.options.seo?.seoMeta || {}
+  const seoOptions: false | undefined | { meta?: MetaFlatSerializable, seoMeta?: MetaFlatSerializable } = nuxt.options.seo
+  const configSeoMeta: MetaFlatSerializable = seoOptions ? seoOptions.meta || seoOptions.seoMeta || {} : {}
   if (!seoMeta && !configSeoMeta)
     return
   nuxt.options.app.head = nuxt.options.app.head || {}

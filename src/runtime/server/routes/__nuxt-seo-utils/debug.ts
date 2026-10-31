@@ -1,7 +1,8 @@
 import { defineEventHandler, getQuery, useRuntimeConfig } from 'nuxt/server'
 import { getSiteConfig } from '#site-config/server/composables'
 
-export default defineEventHandler((e) => {
+// Keep generated route types independent of the application's runtime config types.
+export default defineEventHandler((e): Record<string, unknown> => {
   const siteConfig = getSiteConfig(e)
   const runtimeConfig = useRuntimeConfig()
   const seoUtils = runtimeConfig.public?.['seo-utils'] || {}

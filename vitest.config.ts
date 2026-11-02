@@ -6,6 +6,13 @@ export default defineConfig({
     reporters: 'dot',
     projects: [
       defineProject({
+        define: { 'import.meta.prerender': true },
+        test: {
+          name: 'prerender',
+          include: ['./test/prerender/**/*.test.ts'],
+        },
+      }),
+      defineProject({
         test: {
           name: 'unit',
           include: [

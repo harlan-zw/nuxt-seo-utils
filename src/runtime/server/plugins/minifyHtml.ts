@@ -40,7 +40,8 @@ export default defineNitroPlugin((nitroApp) => {
   if (!import.meta.prerender)
     return
   nitroApp.hooks.hook('render:html', (html) => {
-    for (const arr of [html.head, html.bodyPrepend, html.body, html.bodyAppend]) {
+    // Vue hydrates the app body. Preserve its text exactly as rendered.
+    for (const arr of [html.head, html.bodyPrepend, html.bodyAppend]) {
       for (let i = 0; i < arr.length; i++)
         arr[i] = minifyChunk(arr[i]!)
     }

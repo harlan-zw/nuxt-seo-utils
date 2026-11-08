@@ -11,6 +11,7 @@ import { createSitePathResolver } from '#site-config/app/composables/utils'
 import { resolveCanonicalUrl } from '../../shared/canonicalUrl'
 import { compiledHeadShapes } from '../../shared/compiledHeadShapes'
 import { chooseShape, pushChosenHead } from './compiledHead'
+import { provideOgUrlSetter } from './ogUrlOverride'
 import { chooseClientSiteHead, chooseServerSiteHead } from './siteHead'
 
 const LOCALE_UNDERSCORE_RE = /_/g
@@ -102,12 +103,13 @@ export function applyCompiledDefaults(): void {
 
   // SSR-only default description so page-level descriptions are not overridden
   // during hydration by client-side defaults. The siteConfig plugin also registers
-  // a low-priority client-side fallback.
+  // a low-priority client-side fallback. Without compiler mode it is a `useSeoMeta` call,
+  // and modules such as og-image read it as one.
   if (import.meta.server && siteConfig.description) {
     pushChosenHead(nuxtApp, head, () => {
       const description = toValue(siteConfig.description)
       return chooseShape(shapes?.description, [description], () => compiledHeadShapes.description(description))
-    })
+    }, undefined, { seoMeta: true })
   }
   const siteName = siteConfig.name
   if (siteConfig.twitter) {
@@ -126,9 +128,9 @@ export function applyCompiledDefaults(): void {
     })
   }
   // The derived tags plugin replaces this content with the resolved canonical href,
-  // so a page-level canonical also moves og:url.
-  pushChosenHead(nuxtApp, head, () => {
-    const href = canonicalHref.value
-    return chooseShape(prioritized?.ogUrl, [href], () => compiledHeadShapes.ogUrl(href, tagPriority))
-  })
+  // so a page-level canonical also moves og:url. On the server it sets the content here.
+  const ogUrlChoice = (href: string | false) => chooseShape(prioritized?.ogUrl, [href], () => compiledHeadShapes.ogUrl(href, tagPriority))
+  const replaceOgUrl = pushChosenHead(nuxtApp, head, () => ogUrlChoice(canonicalHref.value))
+  if (import.meta.server && replaceOgUrl)
+    provideOgUrlSetter(head, content => replaceOgUrl(ogUrlChoice(content)))
 }

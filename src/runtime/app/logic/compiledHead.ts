@@ -35,6 +35,7 @@ function sameChoice(a: HeadChoice | undefined, b: HeadChoice): boolean {
 }
 
 interface PatchableEntry {
+  _i?: number
   patch: (input: any, options?: { values?: unknown[] }) => void
 }
 
@@ -43,7 +44,21 @@ export type EntryOptions = Record<string, unknown>
 
 interface PushHead {
   _acceptsCompiled?: unknown
+  entries?: Map<number, { _seoMeta?: true }>
   push: (input: any, options?: EntryOptions & { values?: unknown[] | (() => unknown[]) }) => PatchableEntry
+}
+
+export interface PushChosenOptions {
+  /** The entry stands for a `useSeoMeta` call without compiler mode, so `readCompiledEntry` reports `seoMeta`. */
+  seoMeta?: true
+}
+
+// Unhead has no public way to mark compiled tags as a `useSeoMeta` call. Its own compiled
+// `useSeoMeta` sets this `HeadEntry` field, which `readCompiledEntry` reports as `seoMeta`.
+function markSeoMeta(head: PushHead, entry: PatchableEntry): void {
+  const internal = entry._i === undefined ? undefined : head.entries?.get(entry._i)
+  if (internal)
+    internal._seoMeta = true
 }
 
 /** Whether the head renders compiled tags: a compiled server head, or a lazy client head. */
@@ -64,33 +79,39 @@ function toLoose(choice: HeadChoice): HeadChoice {
  * renders first, it runs at that render. On the client, an effect runs `choose` again when
  * what it reads changes, and patches the entry only when the choice changes.
  */
-export function pushChosenHead(nuxtApp: NuxtApp, head: PushHead, chooseCompiled: () => HeadChoice, options?: EntryOptions): void {
+/** Replaces the choice of a server entry once it has settled. */
+export type ReplaceChoice = (choice: HeadChoice) => void
+
+export function pushChosenHead(nuxtApp: NuxtApp, head: PushHead, chooseCompiled: () => HeadChoice, options?: EntryOptions, { seoMeta }: PushChosenOptions = {}): ReplaceChoice | undefined {
   const accepts = acceptsCompiledTags(head)
   const choose = accepts ? chooseCompiled : () => toLoose(chooseCompiled())
   if (import.meta.server) {
     if (!accepts) {
       // That head resolves a getter input at the render
       head.push(() => (choose() as { input: object }).input, options)
-      return
+      return undefined
     }
     let values: unknown[] | undefined
+    const apply = (choice: HeadChoice): void => {
+      values = choice._tag === 'Compiled' ? choice.values : []
+      if (choice._tag === 'Compiled')
+        entry.patch(choice.tags, { values })
+      else
+        entry.patch(choice.input)
+    }
     const settle = (): unknown[] => {
-      if (!values) {
-        const choice = choose()
-        values = choice._tag === 'Compiled' ? choice.values : []
-        if (choice._tag === 'Compiled')
-          entry.patch(choice.tags, { values })
-        else
-          entry.patch(choice.input)
-      }
-      return values
+      if (!values)
+        apply(choose())
+      return values!
     }
     // Empty compiled tags until the choice, so the entry renders nothing if nothing settles it.
     const entry = head.push([], { ...options, values: settle })
+    if (seoMeta)
+      markSeoMeta(head, entry)
     nuxtApp.hooks.hook('app:rendered', () => {
       settle()
     })
-    return
+    return apply
   }
   let entry: PatchableEntry | undefined
   let current: HeadChoice | undefined
@@ -100,9 +121,14 @@ export function pushChosenHead(nuxtApp: NuxtApp, head: PushHead, chooseCompiled:
       return
     current = choice
     const [input, values] = choice._tag === 'Compiled' ? [choice.tags, { values: choice.values }] : [choice.input, undefined]
-    if (entry)
+    if (entry) {
       entry.patch(input, values)
-    else
+    }
+    else {
       entry = head.push(input, { ...options, ...values })
+      if (seoMeta)
+        markSeoMeta(head, entry)
+    }
   })
+  return undefined
 }

@@ -1,4 +1,6 @@
-import { toHeadInput } from 'unhead/lazy'
+import { toHeadInput } from 'unhead/compiled/compile'
+import { readCompiledEntry as readServerEntry } from 'unhead/compiled/server'
+import { readCompiledEntry as readLazyEntry } from 'unhead/lazy'
 import { OG_URL_KEY, TWITTER_IMAGE_FALLBACK_KEY } from '../../shared/derivedTagKeys'
 import { needsAbsoluteImageUrl } from './absoluteImageUrls'
 
@@ -18,25 +20,24 @@ const unresolvedValues = new Proxy([], { get: (target, key) => typeof key === 's
 interface InternalEntry {
   input: unknown
   options?: { values?: unknown }
-  _compiled?: unknown
-  _values?: unknown
   _pending?: unknown
 }
 
 /**
- * Reads the entries of a compiled server head or a lazy client head. It reads Unhead internals:
- * `_compiled` and `_values` of a server entry, and `_pending` of a client entry. Unhead has no
- * public reader that leaves the values of an entry unresolved.
+ * Reads the entries of a compiled server head or a lazy client head, with the values of each
+ * compiled entry left unresolved until they settle. Loose input of a lazy entry is read from its
+ * pending patch first, as `readCompiledEntry` does for compiled tags.
  */
 export function readEntryInputs(entries: Iterable<InternalEntry>): EntryInput[] {
   const out: EntryInput[] = []
   for (const entry of entries) {
-    const compiledTags = import.meta.server ? entry._compiled : entry._pending ?? entry.input
-    if (Array.isArray(compiledTags)) {
-      const values = import.meta.server ? entry._values : entry.options?.values
-      out.push({ _tag: 'Compiled', compiledTags, input: toHeadInput(compiledTags, Array.isArray(values) ? values : unresolvedValues) })
+    const read = import.meta.server ? readServerEntry(entry as any) : readLazyEntry(entry as any)
+    if (read) {
+      const values = Array.isArray(read.values) ? read.values : undefined
+      out.push({ _tag: 'Compiled', compiledTags: read.tags, input: toHeadInput(read.tags, values ?? unresolvedValues) })
     }
     else {
+      // TODO: Unhead has no public reader for the pending loose input of a lazy entry.
       out.push({ _tag: 'Loose', input: import.meta.server ? entry.input : entry._pending ?? entry.input })
     }
   }

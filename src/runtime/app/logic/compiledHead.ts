@@ -1,6 +1,7 @@
 import type { NuxtApp } from 'nuxt/app'
 import type { CompiledHeadShape } from '../../shared/compiledHeadShapes'
-import { acceptCompiledTags, toHeadInput } from 'unhead/lazy'
+import { toHeadInput } from 'unhead/compiled/compile'
+import { acceptCompiledTags } from 'unhead/lazy'
 import { watchEffect } from 'vue'
 import { isText, specialValue } from '../../shared/compiledHeadShapes'
 

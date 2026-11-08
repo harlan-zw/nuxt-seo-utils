@@ -1,0 +1,49 @@
+import type { Nuxt } from '@nuxt/schema'
+import type { CompiledHeadShapes, HeadCompiler } from './compiledHead'
+import { addTemplate, directoryToURL } from '@nuxt/kit'
+import { resolveModulePath } from 'exsolve'
+import { compiledHeadModule, compileHeadShapes } from './compiledHead'
+
+export type CompiledHeadSetup
+  = | { _tag: 'Off' }
+    | { _tag: 'On' }
+    | { _tag: 'Unavailable', reason: string }
+
+/** Whether the app turns on Unhead compiler mode: `unhead.vite.compile` in the Nuxt config. */
+export function isCompilerMode(nuxt: Nuxt): boolean {
+  const vite = (nuxt.options as { unhead?: { vite?: false | { compile?: unknown } } }).unhead?.vite
+  return !!vite && !!vite.compile
+}
+
+async function compileShapes(nuxt: Nuxt, tagPriority: unknown): Promise<{ _tag: 'Ok', shapes: CompiledHeadShapes } | { _tag: 'Unavailable', reason: string }> {
+  // The compiler must be the one of the Unhead that renders the app, so it resolves from the app.
+  const compilerPath = resolveModulePath('unhead/compiled/compile', {
+    try: true,
+    from: nuxt.options.modulesDir.map(dir => directoryToURL(dir)),
+  })
+  if (!compilerPath)
+    return { _tag: 'Unavailable', reason: 'the installed Unhead has no compiler (unhead/compiled/compile)' }
+  // A dynamic import: an Unhead without the compiler must not break the module when compiler mode is off.
+  const compiler = await import(compilerPath) as HeadCompiler
+  const result = compileHeadShapes(compiler, tagPriority)
+  return result._tag === 'Ok' ? result : { _tag: 'Unavailable', reason: `the ${result.shape} entry cannot compile: ${result.reason}` }
+}
+
+/**
+ * Compiles the default head entries for compiler mode and adds them as
+ * `#nuxt-seo-utils/compiled-head`. With compiler mode off, or with an Unhead that has no
+ * compiler, the module keeps its normal plugins and the module exports `shapes = null`.
+ */
+export async function setupCompiledHead(nuxt: Nuxt, tagPriority: unknown, runtimeDir: string): Promise<CompiledHeadSetup> {
+  const compiled = isCompilerMode(nuxt) ? await compileShapes(nuxt, tagPriority) : undefined
+  const shapes = compiled?._tag === 'Ok' ? compiled.shapes : null
+  const template = addTemplate({
+    filename: 'nuxt-seo-utils/compiled-head.mjs',
+    write: true,
+    getContents: () => compiledHeadModule(shapes, tagPriority, `${runtimeDir}/shared/compiledHeadShapes`),
+  })
+  nuxt.options.alias['#nuxt-seo-utils/compiled-head'] = template.dst
+  if (!compiled)
+    return { _tag: 'Off' }
+  return compiled._tag === 'Ok' ? { _tag: 'On' } : compiled
+}

@@ -27,6 +27,7 @@ import generateTagsFromPublicFiles from './build-time/generateTagsFromPublicFile
 import { partitionColorModeIconLinks } from './build-time/iconAssets'
 import minifyStaticHead from './build-time/minifyStaticHead'
 import { resolveUnheadVitePluginSource } from './build-time/resolveUnheadVitePluginSource'
+import { setupCompiledHead } from './build-time/setupCompiledHead'
 import setupNuxtConfigAppHeadWithMoreDefaults from './build-time/setupNuxtConfigAppHeadWithMoreDefaults'
 import { setupRedirects } from './build-time/setupRedirects'
 import { collectUserAppHead, formatAppHeadDiagnostic, validateAppHead } from './build-time/validateAppHead'
@@ -296,32 +297,38 @@ export default defineNuxtModule<ModuleOptions>({
     }
 
     const hasI18n = hasNuxtModule('@nuxtjs/i18n') || hasNuxtModule('nuxt-i18n-micro')
+    // Under Unhead compiler mode, the plugins that add head entries push compiled tags, so pages
+    // stay on the compiled runtime. Each keeps the output of its normal plugin.
+    const compiledHead = await setupCompiledHead(nuxt, config.tagPriority, runtimeDir)
+    if (compiledHead._tag === 'Unavailable')
+      logger.warn(`Compiler mode is on, but the default head entries stay normal input, so pages load the full Unhead runtime: ${compiledHead.reason}.`)
+    const headPlugin = (name: string) => resolve(runtimeDir, compiledHead._tag === 'On' ? `./app/plugins/compiled/${name}` : `./app/plugins/${name}`)
     // Keeps og:image:*, the public twitter:image copy, and og:url in step with the tags that win.
     addPlugin({
-      src: resolve(runtimeDir, './app/plugins/derivedTags'),
+      src: headPlugin('derivedTags'),
     })
     if (config.automaticDefaults) {
       // i18n complicates things, we need to run the server plugin at the right time, client is fine
       if (hasI18n) {
         addPlugin({
-          src: resolve(runtimeDir, `./app/plugins/defaultsWaitI18n`),
+          src: headPlugin('defaultsWaitI18n'),
         })
       }
       else {
         addPlugin({
-          src: resolve(runtimeDir, `./app/plugins/defaults`),
+          src: headPlugin('defaults'),
         })
       }
     }
     if (config.fallbackTitle) {
       if (hasI18n) {
         addPlugin({
-          src: resolve(runtimeDir, './app/plugins/titlesWaitI18n'),
+          src: headPlugin('titlesWaitI18n'),
         })
       }
       else {
         addPlugin({
-          src: resolve(runtimeDir, './app/plugins/titles'),
+          src: headPlugin('titles'),
         })
       }
     }
@@ -539,13 +546,13 @@ export {}
     }
 
     if (config.mergeWithSiteConfig)
-      addPlugin({ src: resolve(appRuntimeDir, 'plugins', 'siteConfig') })
+      addPlugin({ src: headPlugin('siteConfig') })
 
     if (config.extendRouteRules)
       addPlugin({ src: resolve(appRuntimeDir, 'plugins', '0.routeRules') })
 
     if (config.fixRequiredAbsoluteMetaTagsLinks) {
-      addPlugin({ src: resolve(appRuntimeDir, 'plugins', '1.absoluteImageUrls.server'), mode: 'server' })
+      addPlugin({ src: headPlugin('1.absoluteImageUrls.server'), mode: 'server' })
       // in dev, also run on client so DevTools shows correct absolute URLs
       if (nuxt.options.dev)
         addPlugin({ src: resolve(appRuntimeDir, 'plugins', '1.absoluteImageUrls.server'), mode: 'client' })

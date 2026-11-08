@@ -17,15 +17,15 @@ export function isCompilerMode(nuxt: Nuxt): boolean {
 
 async function compileShapes(nuxt: Nuxt, tagPriority: unknown): Promise<{ _tag: 'Ok', shapes: CompiledHeadShapes } | { _tag: 'Unavailable', reason: string }> {
   // The compiler must be the one of the Unhead that renders the app, so it resolves from the app.
-  const compilerPath = resolveModulePath('unhead/compiled/compile', {
+  const compilerPath = resolveModulePath('unhead/compiled', {
     try: true,
     from: nuxt.options.modulesDir.map(dir => directoryToURL(dir)),
   })
-  if (!compilerPath)
-    return { _tag: 'Unavailable', reason: 'the installed Unhead has no compiler (unhead/compiled/compile)' }
   // A dynamic import: an Unhead without the compiler must not break the module when compiler mode is off.
-  const compiler = await import(compilerPath) as HeadCompiler
-  const result = compileHeadShapes(compiler, tagPriority)
+  const compiler = compilerPath ? await import(compilerPath) as Partial<HeadCompiler> : undefined
+  if (typeof compiler?.compileTags !== 'function' || typeof compiler.dynamicValue !== 'function')
+    return { _tag: 'Unavailable', reason: 'the installed Unhead has no compiler (compileTags in unhead/compiled)' }
+  const result = compileHeadShapes(compiler as HeadCompiler, tagPriority)
   return result._tag === 'Ok' ? result : { _tag: 'Unavailable', reason: `the ${result.shape} entry cannot compile: ${result.reason}` }
 }
 

@@ -1,6 +1,4 @@
-import { toHeadInput } from 'unhead/compiled/compile'
-import { readCompiledEntry as readServerEntry } from 'unhead/compiled/server'
-import { readCompiledEntry as readLazyEntry } from 'unhead/lazy'
+import { readCompiledEntry, toHeadInput } from 'unhead/compiled'
 import { OG_URL_KEY, TWITTER_IMAGE_FALLBACK_KEY } from '../../shared/derivedTagKeys'
 import { needsAbsoluteImageUrl } from './absoluteImageUrls'
 
@@ -25,20 +23,21 @@ interface InternalEntry {
 
 /**
  * Reads the entries of a compiled server head or a lazy client head, with the values of each
- * compiled entry left unresolved until they settle. Loose input of a lazy entry is read from its
- * pending patch first, as `readCompiledEntry` does for compiled tags.
+ * compiled entry left unresolved until they settle. Loose input is read from its pending patch
+ * first, as `readCompiledEntry` does for compiled tags.
  */
 export function readEntryInputs(entries: Iterable<InternalEntry>): EntryInput[] {
   const out: EntryInput[] = []
   for (const entry of entries) {
-    const read = import.meta.server ? readServerEntry(entry as any) : readLazyEntry(entry as any)
+    const read = readCompiledEntry(entry as any)
     if (read) {
       const values = Array.isArray(read.values) ? read.values : undefined
       out.push({ _tag: 'Compiled', compiledTags: read.tags, input: toHeadInput(read.tags, values ?? unresolvedValues) })
     }
     else {
-      // TODO: Unhead has no public reader for the pending loose input of a lazy entry.
-      out.push({ _tag: 'Loose', input: import.meta.server ? entry.input : entry._pending ?? entry.input })
+      // `readCompiledEntry` reads compiled tags only. A patch with loose input waits in
+      // `_pending`, a field of the public `HeadEntry` type, until the head resolves it.
+      out.push({ _tag: 'Loose', input: entry._pending ?? entry.input })
     }
   }
   return out

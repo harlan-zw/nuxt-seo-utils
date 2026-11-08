@@ -1,7 +1,6 @@
 import type { NuxtApp } from 'nuxt/app'
 import type { CompiledHeadShape } from '../../shared/compiledHeadShapes'
-import { toHeadInput } from 'unhead/compiled/compile'
-import { acceptCompiledTags } from 'unhead/lazy'
+import { toHeadInput } from 'unhead/compiled'
 import { watchEffect } from 'vue'
 import { isText, specialValue } from '../../shared/compiledHeadShapes'
 
@@ -44,17 +43,11 @@ export type EntryOptions = Record<string, unknown>
 
 interface PushHead {
   _acceptsCompiled?: unknown
-  blockLoad?: unknown
   push: (input: any, options?: EntryOptions & { values?: unknown[] | (() => unknown[]) }) => PatchableEntry
 }
 
-/**
- * Whether the head renders compiled tags: a compiled server head, or a lazy client head. A lazy
- * head takes them once `acceptCompiledTags` runs, as the first compiled head call does.
- */
+/** Whether the head renders compiled tags: a compiled server head, or a lazy client head. */
 export function acceptsCompiledTags(head: PushHead): boolean {
-  if (!head._acceptsCompiled && head.blockLoad)
-    acceptCompiledTags(head as any)
   return !!head._acceptsCompiled
 }
 

@@ -1,6 +1,6 @@
 import type { CompiledHeadShapes } from '../../src/build-time/compiledHead'
 import type { EntryInput } from '../../src/runtime/app/logic/headEntries'
-import { compileTags, dynamicValue } from 'unhead/compiled/compile'
+import { compileTags, dynamicValue } from 'unhead/compiled'
 import { createHead as createCompiledHead, renderSSRHead as renderCompiledHead } from 'unhead/compiled/server'
 import { createHead, renderSSRHead } from 'unhead/server'
 import { describe, expect, it } from 'vitest'

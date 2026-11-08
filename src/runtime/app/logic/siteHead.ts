@@ -1,5 +1,5 @@
 import type { HeadChoice } from './compiledHead'
-import { compileTags } from 'unhead/compiled/compile'
+import { compileTags } from 'unhead/compiled'
 
 /**
  * Site config head input, such as template params, cannot hold dynamic values. So the server

@@ -5,7 +5,7 @@ export type { CompiledHeadShapes }
 
 type CompileResult = { _tag: 'Ok', tags: unknown } | { _tag: 'Bail', reason: string }
 
-/** The Unhead compiler API the build needs, from `unhead/compiled/compile`. */
+/** The Unhead compiler API the build needs, from `unhead/compiled`. */
 export interface HeadCompiler {
   compileTags: (input: unknown, options?: { dynamicValues?: number }) => CompileResult
   dynamicValue: (index: number) => string

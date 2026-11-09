@@ -1,9 +1,7 @@
-import { unpackMeta } from '@unhead/vue/utils'
 import { defineNuxtPlugin, injectHead, useRuntimeConfig } from 'nuxt/app'
-import { shapes } from '#nuxt-seo-utils/compiled-head'
 import { createDerivedTagsPlugin } from '../../logic/derivedTagsPlugin'
-import { planDerivedTags, readEntryInputs, settleDerivedTagValues } from '../../logic/headEntries'
-import { ogUrlSetter } from '../../logic/ogUrlOverride'
+import { planDerivedTags, readEntryInputs } from '../../logic/headEntries'
+import { defaultCanonicalEntry, ogUrlSetter } from '../../logic/ogUrlOverride'
 
 // The derived tags plugin under compiler mode. Its render hook would send the whole head to the
 // full runtime, so it registers only when a render could change a derived tag, and the server
@@ -13,16 +11,13 @@ export default defineNuxtPlugin({
   setup(nuxtApp) {
     const head = injectHead() as any
     const { tagPriority } = useRuntimeConfig().public['seo-utils'] as { tagPriority?: unknown }
-    // The server reads the flat meta of `useSeoMeta` input. On the client such input loads the
-    // full runtime anyway, so the client bundle leaves the unpacker out.
-    const context = { defaultCanonicalTags: shapes?.canonical?.tags, ogUrlYields: tagPriority === 'low', unpackMeta: import.meta.server ? unpackMeta : undefined }
+    const context = { ogUrlYields: tagPriority === 'low' }
     let registered = false
     const register = () => {
       if (registered)
         return
-      if (import.meta.server)
-        settleDerivedTagValues(head.entries.values())
-      const plan = planDerivedTags(readEntryInputs(head.entries.values()), context)
+      // On the server, reading the entries settles their values, so canonical hrefs compare
+      const plan = planDerivedTags(readEntryInputs(head, defaultCanonicalEntry(head)), context)
       if (plan._tag === 'None')
         return
       // On the server the default og:url takes its content now, so no render hook is needed.

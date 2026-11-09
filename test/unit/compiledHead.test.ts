@@ -1,14 +1,16 @@
+import type { Unhead } from 'unhead/types'
 import type { CompiledHeadShapes } from '../../src/build-time/compiledHead'
 import type { EntryInput } from '../../src/runtime/app/logic/headEntries'
-import { compileTags, dynamicValue, readCompiledEntry } from 'unhead/compiled'
+import { VueResolver } from '@unhead/vue/utils'
+import { useSeoMeta } from 'unhead'
+import { compileTags, dynamicValue, readEntry } from 'unhead/compiled'
 import { createHead as createCompiledHead, renderSSRHead as renderCompiledHead } from 'unhead/compiled/server'
 import { createHead, renderSSRHead } from 'unhead/server'
-import { unpackMeta } from 'unhead/utils'
 import { describe, expect, it } from 'vitest'
 import { ref } from 'vue'
 import { compileHeadShapes } from '../../src/build-time/compiledHead'
-import { chooseShape, pushChosenHead } from '../../src/runtime/app/logic/compiledHead'
-import { absoluteImageEntries, absoluteImageInput, needsDerivedTags, planDerivedTags, readEntryInputs, settleDerivedTagValues, UNRESOLVED } from '../../src/runtime/app/logic/headEntries'
+import { chooseShape, pushChosenHead, pushServerChosenHead } from '../../src/runtime/app/logic/compiledHead'
+import { absoluteImageEntries, absoluteImageInput, needsDerivedTags, planDerivedTags, readEntryInputs } from '../../src/runtime/app/logic/headEntries'
 import { chooseClientSiteHead, chooseServerSiteHead } from '../../src/runtime/app/logic/siteHead'
 import { compiledHeadShapes } from '../../src/runtime/shared/compiledHeadShapes'
 import { OG_URL_KEY, TWITTER_IMAGE_FALLBACK_KEY } from '../../src/runtime/shared/derivedTagKeys'
@@ -72,11 +74,11 @@ describe('compiled default head entries', () => {
   it('marks an entry that stands for a useSeoMeta call, so other modules read its description', () => {
     const head = createCompiledHead()
     const choose = () => chooseShape(shapes.description, ['A site'], () => ({}))
-    pushChosenHead({} as any, head as any, choose, undefined, { seoMeta: true })
+    pushChosenHead({} as any, head as any, choose, { seoMeta: true })
     pushChosenHead({} as any, head as any, choose)
-    const [description, plain] = [...head.entries.values()].slice(-2).map(entry => readCompiledEntry(entry as any))
-    expect(description).toMatchObject({ seoMeta: true })
-    expect(plain?.seoMeta).toBeUndefined()
+    const [description, plain] = [...head.entries.values()].slice(-2).map(entry => readEntry(entry, head))
+    expect(description).toMatchObject({ seoMeta: true, compiled: true, input: { meta: [{ name: 'description', content: 'A site' }] } })
+    expect(plain?.seoMeta).toBe(false)
   })
 
   it('bails when the module tagPriority is an alias that compiled tags cannot hold', () => {
@@ -97,6 +99,40 @@ describe('site config head', () => {
     expect(chooseClientSiteHead(payload, 'defaults', structuredClone(input))).toEqual(first)
   })
 
+  it('holds an entry priority in the compiled tags, so the entry renders as with the entry option', () => {
+    const loose = createHead()
+    loose.push({ templateParams: { separator: '|' } })
+    loose.push(input, { tagPriority: 'low' })
+    loose.push({ title: '%siteName %separator Home' })
+    const choice = chooseServerSiteHead({}, 'defaults', input, 'low')
+    expect(choice._tag).toBe('Compiled')
+    const compiled = createCompiledHead()
+    compiled.push({ templateParams: { separator: '|' } })
+    compiled.push((choice as { tags: unknown }).tags as any)
+    compiled.push({ title: '%siteName %separator Home' })
+    expect(renderCompiledHead(compiled)).toEqual(renderSSRHead(loose))
+    expect(chooseServerSiteHead({}, 'defaults', input, 'low')).toEqual(choice)
+    expect((chooseServerSiteHead({}, 'defaults', input) as { tags: unknown }).tags).not.toEqual((choice as { tags: unknown }).tags)
+  })
+
+  it('pushes the compiled tags of a prioritized entry with no entry options on the server head', () => {
+    const head = createCompiledHead()
+    const nuxtApp = { hooks: { hook: () => {} } }
+    const choice = chooseServerSiteHead({}, 'defaults', input, 'low')
+    pushServerChosenHead(nuxtApp as any, head as any, () => choice, { tagPriority: 'low' })
+    const entry = [...head.entries.values()].at(-1)
+    expect(readEntry(entry!, head)).toMatchObject({ compiled: true, input: { templateParams: input.templateParams } })
+    expect(entry!.options).toEqual({})
+  })
+
+  it('keeps the priority of normal input that cannot compile on the server head', () => {
+    const head = createCompiledHead()
+    const nuxtApp = { hooks: { hook: () => {} } }
+    pushServerChosenHead(nuxtApp as any, head as any, () => ({ _tag: 'Loose', input }), { tagPriority: 'low' })
+    // reading the entries settles the choice, and a reader sees the entry that replaces it
+    expect(readEntryInputs(head as any).at(-1)).toMatchObject({ input, priority: true, tagPriority: 'low' })
+  })
+
   it('keeps normal input on the client when its input differs from the server input', () => {
     const payload = {}
     chooseServerSiteHead(payload, 'defaults', input)
@@ -107,11 +143,10 @@ describe('site config head', () => {
 })
 
 describe('derived tags under compiler mode', () => {
-  const defaultCanonicalTags = ['default canonical']
-  const context = { defaultCanonicalTags, ogUrlYields: true }
-  const compiled = (input: Record<string, any>, compiledTags: unknown = []): EntryInput => ({ _tag: 'Compiled', input, compiledTags, priority: false })
+  const context = { ogUrlYields: true }
+  const compiled = (input: Record<string, any>, defaultCanonical = false): EntryInput => ({ input, priority: false, defaultCanonical })
   const defaults = [
-    compiled({ link: [{ rel: 'canonical', href: 'https://example.com/a' }] }, defaultCanonicalTags),
+    compiled({ link: [{ rel: 'canonical', href: 'https://example.com/a' }] }, true),
     compiled({ meta: [{ property: 'og:url', content: 'https://example.com/a', key: OG_URL_KEY }] }),
   ]
   const publicImage = compiled({
@@ -132,7 +167,7 @@ describe('derived tags under compiler mode', () => {
 
   it('plans the og:url content from the canonical link that wins', () => {
     // the default canonical link has low priority, so a page link wins
-    const defaultLink = compiled({ link: [{ rel: 'canonical', href: 'https://example.com/a', tagPriority: 'low' }] }, defaultCanonicalTags)
+    const defaultLink = compiled({ link: [{ rel: 'canonical', href: 'https://example.com/a', tagPriority: 'low' }] }, true)
     const ogUrl = defaults[1]!
     const page = (href: unknown, tagPriority?: unknown) => compiled({ link: [{ rel: 'canonical', href, tagPriority }] })
     expect(planDerivedTags([defaultLink, ogUrl, page('https://example.com/b')], context)).toEqual({ _tag: 'OgUrl', content: 'https://example.com/b' })
@@ -146,7 +181,7 @@ describe('derived tags under compiler mode', () => {
   })
 
   it('leaves the og:url to the plugin when only the plugin order or a later step decides it', () => {
-    const defaultLink = compiled({ link: [{ rel: 'canonical', href: 'https://example.com/a', tagPriority: 'low' }] }, defaultCanonicalTags)
+    const defaultLink = compiled({ link: [{ rel: 'canonical', href: 'https://example.com/a', tagPriority: 'low' }] }, true)
     const page = (href: unknown, tagPriority?: unknown) => compiled({ link: [{ rel: 'canonical', href, tagPriority }] })
     expect(planDerivedTags([defaultLink, defaults[1]!, page('https://example.com/b', 'after:title')], context)).toEqual({ _tag: 'Plugin' })
     expect(planDerivedTags([defaultLink, defaults[1]!, page('%site.url/b')], context)).toEqual({ _tag: 'Plugin' })
@@ -156,10 +191,6 @@ describe('derived tags under compiler mode', () => {
 
   it('needs no plugin for a canonical link from another entry with the default href', () => {
     expect(needsDerivedTags([...defaults, compiled({ link: [{ rel: 'canonical', href: 'https://example.com/a' }] })], context)).toBe(false)
-  })
-
-  it('needs the plugin for a canonical link whose href has not resolved', () => {
-    expect(needsDerivedTags([...defaults, compiled({ link: [{ rel: 'canonical', href: UNRESOLVED }] })], context)).toBe(true)
   })
 
   it('needs the plugin for another canonical link when the default og:url is off', () => {
@@ -202,26 +233,28 @@ describe('derived tags under compiler mode', () => {
     expect(needsDerivedTags([publicImage, ...defaults, page], context)).toBe(true)
   })
 
-  const loose = (input: unknown, priority = false): EntryInput => ({ _tag: 'Loose', input, priority })
+  // The entries of a real head, after the default entries, as the plugin reads them
+  // Vue refs and getters in the input, as `@unhead/vue` resolves them
+  const readWith = (push: (head: Unhead<any>) => void) => {
+    const head = createHead<any>({ propResolvers: [VueResolver] })
+    push(head)
+    return [...defaults, ...readEntryInputs(head as any)]
+  }
 
   it('reads normal input with known head keys as it reads compiled tags', () => {
-    expect(needsDerivedTags([...defaults, loose({ templateParams: { a: 'b' } })], context)).toBe(false)
-    expect(needsDerivedTags([...defaults, loose({ link: [{ rel: 'alternate', type: 'text/markdown', href: '/index.md' }] })], context)).toBe(false)
-    expect(needsDerivedTags([...defaults, loose({ link: [{ rel: 'canonical', href: 'https://other.example.com/' }] })], context)).toBe(true)
-    expect(needsDerivedTags([publicImage, ...defaults, loose({ meta: [{ property: 'og:image', content: '/post.png' }] })], context)).toBe(true)
+    expect(needsDerivedTags(readWith(head => head.push({ templateParams: { a: 'b' } })), context)).toBe(false)
+    expect(needsDerivedTags(readWith(head => head.push({ link: [{ rel: 'alternate', type: 'text/markdown', href: '/index.md' }] })), context)).toBe(false)
+    expect(needsDerivedTags(readWith(head => head.push({ link: [{ rel: 'canonical', href: ref('https://other.example.com/') }] })), context)).toBe(true)
+    expect(needsDerivedTags([publicImage, ...readWith(head => head.push({ meta: [{ property: 'og:image', content: () => '/post.png' }] }))], context)).toBe(true)
   })
 
-  it('reads the flat meta of a useSeoMeta call with the unpacker it gets', () => {
-    const flat = loose({ title: 'Post', _flatMeta: { ogType: 'article', articleTag: ['a', 'b'] } })
-    expect(needsDerivedTags([...defaults, flat], { ...context, unpackMeta })).toBe(false)
-    expect(needsDerivedTags([publicImage, ...defaults, loose({ _flatMeta: { ogImage: '/a.png' } })], { ...context, unpackMeta })).toBe(true)
-    // the client passes none, and keeps its bundle free of the unpacker
-    expect(needsDerivedTags([...defaults, flat], context)).toBe(true)
+  it('reads the flat meta of a useSeoMeta call through the flat meta plugin of the head', () => {
+    expect(needsDerivedTags(readWith(head => useSeoMeta(head, { title: 'Post', ogType: 'article', articleTag: ['a', 'b'] })), context)).toBe(false)
+    expect(needsDerivedTags([publicImage, ...readWith(head => useSeoMeta(head, { ogImage: '/a.png' }))], context)).toBe(true)
   })
 
   it('needs the plugin for normal input it cannot read', () => {
-    expect(needsDerivedTags([...defaults, loose({ foo: 'bar' })], context)).toBe(true)
-    expect(needsDerivedTags([...defaults, loose(() => ({}))], context)).toBe(true)
+    expect(needsDerivedTags(readWith(head => head.push({ foo: 'bar' } as any)), context)).toBe(true)
   })
 
   it('needs the plugin when an entry priority can change the og:image winner', () => {
@@ -237,46 +270,32 @@ describe('derived tags under compiler mode', () => {
 })
 
 describe('reading head entries under compiler mode', () => {
-  it('settles the values of a server entry with a canonical link, and only that entry', () => {
+  const compile = (input: object, dynamicValues = 1) => {
+    const result = compileTags(input as any, { dynamicValues })
+    if (result._tag !== 'Ok')
+      throw new Error('compile failed')
+    return result.tags
+  }
+
+  it('settles the values of a server entry, so a canonical href compares', () => {
     const head = createCompiledHead()
-    const compile = (input: object) => {
-      const result = compileTags(input as any, { dynamicValues: 1 })
-      if (result._tag !== 'Ok')
-        throw new Error('compile failed')
-      return result.tags
-    }
     head.push(compile({ link: [{ rel: 'canonical', href: dynamicValue(0) }] }) as any, { values: () => ['https://example.com/a'] } as any)
-    head.push(compile({ title: dynamicValue(0) }) as any, { values: () => ['Title'] } as any)
-    settleDerivedTagValues(head.entries.values() as any)
-    const [canonical, title] = [...head.entries.values()].slice(-2).map(entry => readCompiledEntry(entry as any)?.values)
-    expect(canonical).toEqual(['https://example.com/a'])
-    expect(title).toBeUndefined()
+    expect(readEntryInputs(head as any).at(-1)!.input).toEqual({ link: [{ rel: 'canonical', href: 'https://example.com/a' }] })
   })
 
-  it('resolves refs and getters of the link and meta tags of normal input', () => {
-    const [entry] = readEntryInputs([{ input: ref({ link: [{ rel: 'canonical', href: ref('/a') }], meta: () => [{ name: 'a', content: 'b' }] }) }])
-    expect(entry).toEqual({ _tag: 'Loose', input: { link: [{ rel: 'canonical', href: '/a' }], meta: [{ name: 'a', content: 'b' }] }, priority: false })
+  it('reads a pending patch of a lazy entry before its input', () => {
+    const head = createCompiledHead()
+    const active = head.push({ link: [{ rel: 'canonical', href: '/a' }] })
+    active.patch({ link: [{ rel: 'canonical', href: '/b' }] })
+    expect(readEntryInputs(head as any).at(-1)!.input).toEqual({ link: [{ rel: 'canonical', href: '/b' }] })
   })
 
-  it('never calls a getter outside meta and link tags, which may have side effects', () => {
-    let calls = 0
-    const style = () => {
-      calls++
-      return 'body{}'
-    }
-    const getterInput = () => {
-      calls++
-      return { meta: [] }
-    }
-    const [entry, getter] = readEntryInputs([{ input: { style: [style], meta: [{ name: 'a', content: () => 'b' }] } }, { input: getterInput }])
-    expect(calls).toBe(0)
-    expect(entry).toMatchObject({ input: { meta: [{ name: 'a', content: 'b' }] } })
-    expect(needsDerivedTags([getter!], { defaultCanonicalTags: [], ogUrlYields: true })).toBe(true)
-  })
-
-  it('marks an entry with a tagPriority option', () => {
-    const [entry] = readEntryInputs([{ input: { meta: [] }, options: { tagPriority: 'low' } }])
-    expect(entry).toMatchObject({ priority: true })
+  it('marks an entry with a tagPriority option, and the entry it is told is the default canonical', () => {
+    const head = createHead()
+    head.push({ meta: [] }, { tagPriority: 'low' })
+    head.push({ link: [{ rel: 'canonical', href: '/a' }] })
+    const canonical = [...head.entries.values()].at(-1)
+    expect(readEntryInputs(head as any, canonical).slice(-2)).toMatchObject([{ priority: true, defaultCanonical: false }, { priority: false, defaultCanonical: true }])
   })
 })
 
@@ -315,21 +334,40 @@ describe('absolute image entries under compiler mode', () => {
   const resolve = (path: string) => `https://example.com/${path.replace(/^\//, '')}`
 
   it('rewrites normal input with a relative image URL', () => {
-    const entry = { input: { meta: [{ property: 'og:image', content: ref('/post.png') }] } }
-    expect(absoluteImageEntries([entry], resolve)).toEqual([[entry, { meta: [{ property: 'og:image', content: 'https://example.com/post.png' }] }]])
+    const head = createHead<any>({ propResolvers: [VueResolver] })
+    head.push({ meta: [{ property: 'og:image', content: ref('/post.png') }] })
+    const entry = [...head.entries.values()].at(-1)
+    expect(absoluteImageEntries(head as any, resolve)).toEqual([[entry, { meta: [{ property: 'og:image', content: 'https://example.com/post.png' }] }]])
+  })
+
+  it('rewrites compiled tags with a relative image URL once their values settle', () => {
+    const head = createCompiledHead()
+    const tags = compileTags({ meta: [{ property: 'og:image', content: dynamicValue(0) }] }, { dynamicValues: 1 })
+    head.push((tags as { tags: unknown }).tags as any, { values: () => ['/post.png'] } as any)
+    const entry = [...head.entries.values()].at(-1)
+    expect(absoluteImageEntries(head as any, resolve)).toEqual([[entry, { meta: [{ property: 'og:image', content: 'https://example.com/post.png' }] }]])
   })
 
   it('leaves normal input with no image tag alone', () => {
-    expect(absoluteImageEntries([{ input: { link: [{ rel: 'alternate', href: '/index.md' }] } }], resolve)).toEqual([])
+    const head = createHead()
+    head.push({ link: [{ rel: 'alternate', href: '/index.md' }] })
+    expect(absoluteImageEntries(head as any, resolve)).toEqual([])
   })
 
   it('leaves flat meta without an image alone, and flat meta with a relative image to the plugin', () => {
-    expect(absoluteImageEntries([{ input: { _flatMeta: { ogType: 'article', articleTag: ['a'] } } }], resolve, unpackMeta)).toEqual([])
-    expect(absoluteImageEntries([{ input: { _flatMeta: { ogImage: 'https://example.com/a.png' } } }], resolve, unpackMeta)).toEqual([])
-    expect(absoluteImageEntries([{ input: { _flatMeta: { ogImage: '/a.png' } } }], resolve, unpackMeta)).toBe('Plugin')
+    const flat = (input: object) => {
+      const head = createHead()
+      useSeoMeta(head, input as any)
+      return absoluteImageEntries(head as any, resolve)
+    }
+    expect(flat({ ogType: 'article', articleTag: ['a'] })).toEqual([])
+    expect(flat({ ogImage: 'https://example.com/a.png' })).toEqual([])
+    expect(flat({ ogImage: '/a.png' })).toBe('Plugin')
   })
 
   it('leaves normal input it cannot read to the plugin', () => {
-    expect(absoluteImageEntries([{ input: { foo: { ogImage: '/a.png' } } }], resolve)).toBe('Plugin')
+    const head = createHead()
+    head.push({ foo: { ogImage: '/a.png' } } as any)
+    expect(absoluteImageEntries(head as any, resolve)).toBe('Plugin')
   })
 })

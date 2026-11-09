@@ -14,3 +14,17 @@ export function provideOgUrlSetter(head: object, set: SetOgUrl): void {
 export function ogUrlSetter(head: object): SetOgUrl | undefined {
   return ogUrlSetters.get(head)
 }
+
+const defaultCanonicals = new WeakMap<object, () => object | undefined>()
+
+/**
+ * Records the entry of the default canonical link of a head. Its href never moves the default
+ * `og:url`, which takes the same href.
+ */
+export function provideDefaultCanonical(head: object, entry: () => object | undefined): void {
+  defaultCanonicals.set(head, entry)
+}
+
+export function defaultCanonicalEntry(head: object): object | undefined {
+  return defaultCanonicals.get(head)?.()
+}

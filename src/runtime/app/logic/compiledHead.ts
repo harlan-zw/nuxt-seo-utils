@@ -1,6 +1,5 @@
 import type { NuxtApp } from 'nuxt/app'
 import type { CompiledHeadShape } from '../../shared/compiledHeadShapes'
-import { toHeadInput } from 'unhead/compiled'
 import { watchEffect } from 'vue'
 import { isText, specialValue } from '../../shared/compiledHeadShapes'
 
@@ -35,100 +34,118 @@ function sameChoice(a: HeadChoice | undefined, b: HeadChoice): boolean {
 }
 
 interface PatchableEntry {
-  _i?: number
-  patch: (input: any, options?: { values?: unknown[] }) => void
+  patch: (input: any, options?: { values?: unknown[], tagPriority?: EntryPriority }) => void
+  dispose: () => void
 }
 
-/** Entry options other than values, such as `tagPriority`. */
-export type EntryOptions = Record<string, unknown>
+/** The `tagPriority` that `compileTags` can hold in each tag. */
+export type EntryPriority = number | 'critical' | 'high' | 'low'
 
 interface PushHead {
-  _acceptsCompiled?: unknown
-  entries?: Map<number, { _seoMeta?: true }>
-  push: (input: any, options?: EntryOptions & { values?: unknown[] | (() => unknown[]) }) => PatchableEntry
+  entries: Map<number, object>
+  push: (input: any, options?: { values?: unknown[] | (() => unknown[]), tagPriority?: EntryPriority, seoMeta?: true }) => PatchableEntry
 }
 
 export interface PushChosenOptions {
-  /** The entry stands for a `useSeoMeta` call without compiler mode, so `readCompiledEntry` reports `seoMeta`. */
+  /** The entry stands for a `useSeoMeta` call without compiler mode, so `readEntry` reports `seoMeta`. */
   seoMeta?: true
+  /**
+   * The priority of every tag of the entry. A compiled choice holds it in its tags, from the
+   * `tagPriority` option of `compileTags`, so the server entry takes no options and keeps the
+   * memo. Normal input takes it as the entry option.
+   */
+  tagPriority?: EntryPriority
 }
 
-// Unhead has no public way to mark compiled tags as a `useSeoMeta` call. Its own compiled
-// `useSeoMeta` sets this `HeadEntry` field, which `readCompiledEntry` reports as `seoMeta`.
-function markSeoMeta(head: PushHead, entry: PatchableEntry): void {
-  const internal = entry._i === undefined ? undefined : head.entries?.get(entry._i)
-  if (internal)
-    internal._seoMeta = true
+/** Replaces the choice of a server entry once it has settled. */
+export type ReplaceChoice = (choice: HeadChoice) => void
+
+export interface ChosenEntry {
+  /** The entry in `head.entries`. */
+  entry: () => object | undefined
+  /** Replaces the choice of a server entry once it has settled. Only the server has it. */
+  replace?: ReplaceChoice
 }
 
-/** Whether the head renders compiled tags: a compiled server head, or a lazy client head. */
-export function acceptsCompiledTags(head: PushHead): boolean {
-  return !!head._acceptsCompiled
-}
-
-// A head that cannot take compiled tags, such as one from @unhead/vue/server or @unhead/vue/client, takes the input they came from.
-function toLoose(choice: HeadChoice): HeadChoice {
-  return choice._tag === 'Compiled' ? { _tag: 'Loose', input: toHeadInput(choice.tags as any, choice.values) } : choice
+// The entry a push has just added: a new key goes to the end of the map.
+function lastEntry(head: PushHead): object | undefined {
+  let last: object | undefined
+  for (const entry of head.entries.values())
+    last = entry
+  return last
 }
 
 /**
  * Pushes an entry whose content `choose` decides.
  *
+ * The module adds the plugins that call it only under compiler mode, which the build knows, so
+ * the head is a compiled server head or a lazy client head, and both take compiled tags.
+ *
  * On the server, `choose` runs once, when the app has rendered, as `useHead` resolves its
  * getters at the head render. Choices made then can still reach the payload. If the head
- * renders first, it runs at that render. On the client, an effect runs `choose` again when
- * what it reads changes, and patches the entry only when the choice changes.
+ * renders or a reader reads the entry first, it runs then. On the client, an effect runs
+ * `choose` again when what it reads changes, and patches the entry only when the choice changes.
  */
-/** Replaces the choice of a server entry once it has settled. */
-export type ReplaceChoice = (choice: HeadChoice) => void
+export function pushChosenHead(nuxtApp: NuxtApp, head: PushHead, choose: () => HeadChoice, options: PushChosenOptions = {}): ChosenEntry {
+  return import.meta.server ? pushServerChosenHead(nuxtApp, head, choose, options) : pushClientChosenHead(head, choose, options)
+}
 
-export function pushChosenHead(nuxtApp: NuxtApp, head: PushHead, chooseCompiled: () => HeadChoice, options?: EntryOptions, { seoMeta }: PushChosenOptions = {}): ReplaceChoice | undefined {
-  const accepts = acceptsCompiledTags(head)
-  const choose = accepts ? chooseCompiled : () => toLoose(chooseCompiled())
-  if (import.meta.server) {
-    if (!accepts) {
-      // That head resolves a getter input at the render
-      head.push(() => (choose() as { input: object }).input, options)
-      return undefined
+/** `pushChosenHead` on the server: one choice, made when the app has rendered or when the entry is first read. */
+export function pushServerChosenHead(nuxtApp: Pick<NuxtApp, 'hooks'>, head: PushHead, choose: () => HeadChoice, { seoMeta, tagPriority }: PushChosenOptions = {}): ChosenEntry {
+  const marks = seoMeta ? { seoMeta } : {}
+  let values: unknown[] | undefined
+  const apply = (choice: HeadChoice): void => {
+    values = choice._tag === 'Compiled' ? choice.values : []
+    if (choice._tag === 'Compiled') {
+      entry.patch(choice.tags, { values })
     }
-    let values: unknown[] | undefined
-    const apply = (choice: HeadChoice): void => {
-      values = choice._tag === 'Compiled' ? choice.values : []
-      if (choice._tag === 'Compiled')
-        entry.patch(choice.tags, { values })
-      else
-        entry.patch(choice.input)
+    else if (tagPriority === undefined) {
+      entry.patch(choice.input)
     }
-    const settle = (): unknown[] => {
-      if (!values)
-        apply(choose())
-      return values!
+    else {
+      // A patch cannot add the entry option, so normal input with a priority takes a new
+      // entry. Its tags sort by their priority first, so only entries of the same priority
+      // see the new place.
+      entry.dispose()
+      entry = head.push(choice.input, { tagPriority, ...marks })
+      current = lastEntry(head)
     }
-    // Empty compiled tags until the choice, so the entry renders nothing if nothing settles it.
-    const entry = head.push([], { ...options, values: settle })
-    if (seoMeta)
-      markSeoMeta(head, entry)
-    nuxtApp.hooks.hook('app:rendered', () => {
-      settle()
-    })
-    return apply
   }
+  const settle = (): unknown[] => {
+    if (!values)
+      apply(choose())
+    return values!
+  }
+  // Empty compiled tags until the choice, so the entry renders nothing if nothing settles it.
+  let entry = head.push([], { values: settle, ...marks })
+  let current = lastEntry(head)
+  nuxtApp.hooks.hook('app:rendered', () => {
+    settle()
+  })
+  return { entry: () => current, replace: apply }
+}
+
+/** `pushChosenHead` on the client: an effect patches the entry when the choice changes. */
+export function pushClientChosenHead(head: PushHead, choose: () => HeadChoice, { seoMeta, tagPriority }: PushChosenOptions = {}): ChosenEntry {
+  const marks = seoMeta ? { seoMeta } : {}
+  const looseOptions = tagPriority === undefined ? {} : { tagPriority }
   let entry: PatchableEntry | undefined
   let current: HeadChoice | undefined
+  let added: object | undefined
   watchEffect(() => {
     const choice = choose()
     if (sameChoice(current, choice))
       return
     current = choice
-    const [input, values] = choice._tag === 'Compiled' ? [choice.tags, { values: choice.values }] : [choice.input, undefined]
+    // The client has no server memo, so an entry option costs nothing there.
+    const [input, options] = choice._tag === 'Compiled' ? [choice.tags, { values: choice.values, ...looseOptions }] : [choice.input, looseOptions]
     if (entry) {
-      entry.patch(input, values)
+      entry.patch(input, options)
     }
     else {
-      entry = head.push(input, { ...options, ...values })
-      if (seoMeta)
-        markSeoMeta(head, entry)
+      entry = head.push(input, { ...options, ...marks })
+      added = lastEntry(head)
     }
   })
-  return undefined
+  return { entry: () => added }
 }

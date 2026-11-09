@@ -1,4 +1,3 @@
-import { unpackMeta } from '@unhead/vue/utils'
 import { defineNuxtPlugin, injectHead } from 'nuxt/app'
 import { unref } from 'vue'
 import { createSitePathResolver } from '#site-config/app/composables/utils'
@@ -24,7 +23,7 @@ export default defineNuxtPlugin({
     const resolve = (path: string) => unref(resolver(path))
     nuxtApp.hooks.hookOnce('app:created', () => {
       nuxtApp.hooks.hook('app:rendered', () => {
-        const rewrites = absoluteImageEntries(head.entries.values(), resolve, unpackMeta)
+        const rewrites = absoluteImageEntries(head, resolve)
         if (rewrites === 'Plugin') {
           head.use(createAbsoluteImageUrlsPlugin(resolve))
           return

@@ -1,5 +1,5 @@
 import type { UseHeadOptions } from '@unhead/vue'
-import type { HeadChoice } from './compiledHead'
+import type { EntryPriority, HeadChoice } from './compiledHead'
 import type { SiteHeadPayload } from './siteHead'
 import { TemplateParamsPlugin } from '@unhead/vue/plugins'
 import { VueResolver, walkResolver } from '@unhead/vue/utils'
@@ -11,7 +11,7 @@ import { createSitePathResolver } from '#site-config/app/composables/utils'
 import { resolveCanonicalUrl } from '../../shared/canonicalUrl'
 import { compiledHeadShapes } from '../../shared/compiledHeadShapes'
 import { chooseShape, pushChosenHead } from './compiledHead'
-import { provideOgUrlSetter } from './ogUrlOverride'
+import { provideDefaultCanonical, provideOgUrlSetter } from './ogUrlOverride'
 import { chooseClientSiteHead, chooseServerSiteHead } from './siteHead'
 
 const LOCALE_UNDERSCORE_RE = /_/g
@@ -22,9 +22,12 @@ export function useSiteHeadPayload() {
   return useState<SiteHeadPayload>(SITE_HEAD_STATE_KEY, () => ({}))
 }
 
-/** Chooses compiled tags for site config input: compiled on the server, read from the payload on the client. */
-export function chooseSiteHead(payload: SiteHeadPayload, id: string, input: object): HeadChoice {
-  return import.meta.server ? chooseServerSiteHead(payload, id, input) : chooseClientSiteHead(payload, id, input)
+/**
+ * Chooses compiled tags for site config input: compiled on the server, read from the payload on
+ * the client. The server compiles `tagPriority` into each tag, and the payload carries those tags.
+ */
+export function chooseSiteHead(payload: SiteHeadPayload, id: string, input: object, tagPriority?: EntryPriority): HeadChoice {
+  return import.meta.server ? chooseServerSiteHead(payload, id, input, tagPriority) : chooseClientSiteHead(payload, id, input)
 }
 
 /**
@@ -78,6 +81,7 @@ export function applyCompiledDefaults(): void {
     const lang = resolveCurrentLocale()
     return chooseShape(shapes?.lang, [lang], () => compiledHeadShapes.lang(lang))
   })
+  // Template params hold no priority in their input, so the compiled tags hold it
   pushChosenHead(nuxtApp, head, () => chooseSiteHead(payload.value, 'defaults', walkResolver({
     templateParams: {
       site: siteConfig,
@@ -85,14 +89,15 @@ export function applyCompiledDefaults(): void {
       separator: resolveSeparator(),
       titleSeparator: resolveTitleSeparator(),
     },
-  }, VueResolver) as object), { tagPriority: 'low' })
+  }, VueResolver) as object, 'low'), { tagPriority: 'low' })
   pushChosenHead(nuxtApp, head, () => err.value
     ? chooseShape(shapes?.errorTitleTemplate, [], compiledHeadShapes.errorTitleTemplate)
     : chooseShape(shapes?.titleTemplate, [], compiledHeadShapes.titleTemplate))
-  pushChosenHead(nuxtApp, head, () => {
+  const canonical = pushChosenHead(nuxtApp, head, () => {
     const href = canonicalHref.value
     return chooseShape(shapes?.canonical, [href], () => compiledHeadShapes.canonical(href))
   })
+  provideDefaultCanonical(head, canonical.entry)
 
   // og:locale is set at low priority so @nuxtjs/i18n can override it
   pushChosenHead(nuxtApp, head, () => {
@@ -109,7 +114,7 @@ export function applyCompiledDefaults(): void {
     pushChosenHead(nuxtApp, head, () => {
       const description = toValue(siteConfig.description)
       return chooseShape(shapes?.description, [description], () => compiledHeadShapes.description(description))
-    }, undefined, { seoMeta: true })
+    }, { seoMeta: true })
   }
   const siteName = siteConfig.name
   if (siteConfig.twitter) {
@@ -130,7 +135,7 @@ export function applyCompiledDefaults(): void {
   // The derived tags plugin replaces this content with the resolved canonical href,
   // so a page-level canonical also moves og:url. On the server it sets the content here.
   const ogUrlChoice = (href: string | false) => chooseShape(prioritized?.ogUrl, [href], () => compiledHeadShapes.ogUrl(href, tagPriority))
-  const replaceOgUrl = pushChosenHead(nuxtApp, head, () => ogUrlChoice(canonicalHref.value))
+  const { replace: replaceOgUrl } = pushChosenHead(nuxtApp, head, () => ogUrlChoice(canonicalHref.value))
   if (import.meta.server && replaceOgUrl)
     provideOgUrlSetter(head, content => replaceOgUrl(ogUrlChoice(content)))
 }

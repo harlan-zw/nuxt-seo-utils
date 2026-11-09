@@ -1,4 +1,4 @@
-import type { HeadChoice } from './compiledHead'
+import type { EntryPriority, HeadChoice } from './compiledHead'
 import { compileTags } from 'unhead/compiled'
 
 /**
@@ -24,26 +24,28 @@ export function hashInput(json: string): string {
 }
 
 /**
- * Compiles input once per distinct JSON. Returns `undefined` when it cannot compile, or when
- * the cache is full. The same compiled tags return for the same input, so the server head
- * memo sees one set of compiled tags per input.
+ * Compiles input once per distinct JSON and priority. Returns `undefined` when it cannot
+ * compile, or when the cache is full. The same compiled tags return for the same input, so the
+ * server head memo sees one set of compiled tags per input. Each tag holds `tagPriority`, so
+ * the entry needs no options.
  */
-export function compileSiteInput(json: string, input: object): unknown {
-  let tags = compiledInputs.get(json)
+export function compileSiteInput(json: string, input: object, tagPriority?: EntryPriority): unknown {
+  const key = tagPriority === undefined ? json : `${tagPriority}\u0000${json}`
+  let tags = compiledInputs.get(key)
   if (tags === undefined) {
     if (compiledInputs.size >= MAX_COMPILED_INPUTS)
       return undefined
-    const result = compileTags(input)
+    const result = compileTags(input, { tagPriority })
     tags = result._tag === 'Ok' ? result.tags : false
-    compiledInputs.set(json, tags)
+    compiledInputs.set(key, tags)
   }
   return tags || undefined
 }
 
 /** The server choice: compiled tags, recorded in the payload, or the input. */
-export function chooseServerSiteHead(payload: SiteHeadPayload, id: string, input: object): HeadChoice {
+export function chooseServerSiteHead(payload: SiteHeadPayload, id: string, input: object, tagPriority?: EntryPriority): HeadChoice {
   const json = JSON.stringify(input)
-  const tags = compileSiteInput(json, input)
+  const tags = compileSiteInput(json, input, tagPriority)
   if (tags === undefined)
     return { _tag: 'Loose', input }
   payload[id] = [hashInput(json), tags]

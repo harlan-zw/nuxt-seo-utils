@@ -109,10 +109,16 @@ describe('absolute image URLs transform', () => {
     expect(createAbsoluteImageUrlsTransform(head, resolve, SITE).cacheKey!(head as any)).toBe(SITE)
   })
 
-  // The memo holds a token for a dynamic value, and `readEntry` cannot tell a dynamic value from
-  // a static one, so any relative image value keeps the memo out.
-  it('keeps the memo out when an image value is relative', () => {
+  // The memo holds a token for a dynamic value, which the transform leaves as it is
+  it('keeps the memo out when a dynamic image value is relative', () => {
     const { head } = renderBoth([[dynamicImage, ['/post.png']]], ...absolute)
     expect(createAbsoluteImageUrlsTransform(head, resolve, SITE).cacheKey!(head as any)).toBeNull()
+  })
+
+  // The memo runs the transform on a static value itself, so it holds the absolute URL
+  it('keys the memo on the site URL when only a static image value is relative', () => {
+    const { head, on, off } = renderBoth([[{ ...image, title: dynamicValue(1) }, ['https://cdn.example.com/a.png', 'Post']]], ...absolute)
+    expect(on).toEqual(off)
+    expect(createAbsoluteImageUrlsTransform(head, resolve, SITE).cacheKey!(head as any)).toBe(SITE)
   })
 })

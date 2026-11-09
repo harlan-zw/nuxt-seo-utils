@@ -57,9 +57,9 @@ export function createDerivedTagsTransform(head: Unhead<any, any>): HeadPlugin {
 
 /**
  * The absolute image URLs plugin as a tag transform, for compiler mode. A token is left as it
- * is: `cacheKey` keeps the memo only while every image value of the head is absolute, so a
- * token stands for an absolute URL. A relative value, static or dynamic, keeps the memo out,
- * because `readEntry` cannot tell which values the memo holds as tokens.
+ * is: `cacheKey` keeps the memo only while every dynamic image value is absolute, so a token
+ * stands for an absolute URL. The memo runs the transform on a static value itself, so a static
+ * relative value keeps the memo.
  */
 export function createAbsoluteImageUrlsTransform(head: Unhead<any, any>, resolve: (path: string) => string, siteUrl: string): HeadPlugin {
   return withTagTransform(head, {
@@ -69,7 +69,9 @@ export function createAbsoluteImageUrlsTransform(head: Unhead<any, any>, resolve
       : tag),
     cacheKey: () => {
       for (const entry of head.entries.values()) {
-        if (list(readEntry(entry, head).input.meta).some(meta => needsAbsoluteImageUrl('meta', meta)))
+        const { input, dynamic } = readEntry(entry, head)
+        // the memo reads only compiled entries, whose `meta` is a list
+        if (dynamic && list(input.meta).some((meta, i) => needsAbsoluteImageUrl('meta', meta) && dynamic.includes(`meta.${i}.content`)))
           return null
       }
       return siteUrl

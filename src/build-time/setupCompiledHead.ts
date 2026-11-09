@@ -1,12 +1,17 @@
 import type { Nuxt } from '@nuxt/schema'
-import type { CompiledHeadShapes, HeadCompiler } from './compiledHead'
+import type { ColorModeIconLinks } from '../runtime/types'
+import type { ColorModeIconTags, CompiledHeadShapes, HeadCompiler } from './compiledHead'
 import { addTemplate, directoryToURL } from '@nuxt/kit'
 import { resolveModulePath } from 'exsolve'
-import { compiledHeadModule, compileHeadShapes } from './compiledHead'
+import { compileColorModeIcons, compiledHeadModule, compileHeadShapes } from './compiledHead'
 
 export type CompiledHeadSetup
   = | { _tag: 'Off' }
-    | { _tag: 'On' }
+    | {
+      _tag: 'On'
+      /** Compiles the color mode icon links into the module, for the compiled plugin. */
+      addColorModeIcons: (icons: ColorModeIconLinks) => { _tag: 'Ok' } | { _tag: 'Bail', reason: string }
+    }
     | { _tag: 'Unavailable', reason: string }
 
 /** Whether the app turns on Unhead compiler mode: `unhead.vite.compile` in the Nuxt config. */
@@ -15,7 +20,7 @@ export function isCompilerMode(nuxt: Nuxt): boolean {
   return !!vite && !!vite.compile
 }
 
-async function compileShapes(nuxt: Nuxt, tagPriority: unknown): Promise<{ _tag: 'Ok', shapes: CompiledHeadShapes } | { _tag: 'Unavailable', reason: string }> {
+async function compileShapes(nuxt: Nuxt, tagPriority: unknown): Promise<{ _tag: 'Ok', shapes: CompiledHeadShapes, compiler: HeadCompiler } | { _tag: 'Unavailable', reason: string }> {
   // The compiler must be the one of the Unhead that renders the app, so it resolves from the app.
   const compilerPath = resolveModulePath('unhead/compiled', {
     try: true,
@@ -31,7 +36,7 @@ async function compileShapes(nuxt: Nuxt, tagPriority: unknown): Promise<{ _tag: 
   if (typeof plugins?.withTagTransform !== 'function')
     return { _tag: 'Unavailable', reason: 'the installed Unhead has no tag transforms (withTagTransform in unhead/plugins)' }
   const result = compileHeadShapes(compiler as HeadCompiler, tagPriority)
-  return result._tag === 'Ok' ? result : { _tag: 'Unavailable', reason: `the ${result.shape} entry cannot compile: ${result.reason}` }
+  return result._tag === 'Ok' ? { ...result, compiler: compiler as HeadCompiler } : { _tag: 'Unavailable', reason: `the ${result.shape} entry cannot compile: ${result.reason}` }
 }
 
 /**
@@ -42,13 +47,25 @@ async function compileShapes(nuxt: Nuxt, tagPriority: unknown): Promise<{ _tag: 
 export async function setupCompiledHead(nuxt: Nuxt, tagPriority: unknown, runtimeDir: string): Promise<CompiledHeadSetup> {
   const compiled = isCompilerMode(nuxt) ? await compileShapes(nuxt, tagPriority) : undefined
   const shapes = compiled?._tag === 'Ok' ? compiled.shapes : null
+  let colorModeIcons: ColorModeIconTags | null = null
   const template = addTemplate({
     filename: 'nuxt-seo-utils/compiled-head.mjs',
     write: true,
-    getContents: () => compiledHeadModule(shapes, tagPriority, `${runtimeDir}/shared/compiledHeadShapes`),
+    getContents: () => compiledHeadModule(shapes, tagPriority, `${runtimeDir}/shared/compiledHeadShapes`, colorModeIcons),
   })
   nuxt.options.alias['#nuxt-seo-utils/compiled-head'] = template.dst
   if (!compiled)
     return { _tag: 'Off' }
-  return compiled._tag === 'Ok' ? { _tag: 'On' } : compiled
+  if (compiled._tag === 'Unavailable')
+    return compiled
+  return {
+    _tag: 'On',
+    addColorModeIcons(icons) {
+      const result = compileColorModeIcons(compiled.compiler, icons)
+      if (result._tag === 'Bail')
+        return result
+      colorModeIcons = result.tags
+      return { _tag: 'Ok' }
+    },
+  }
 }

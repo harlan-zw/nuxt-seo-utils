@@ -1,4 +1,6 @@
 import type { CompiledHeadShape, CompiledHeadShapeName, CompiledHeadShapes } from '../runtime/shared/compiledHeadShapes'
+import type { ColorModeIconLinks } from '../runtime/types'
+import { selectColorModeIconLinks } from '../runtime/app/logic/colorModeIcons'
 import { compiledHeadShapes, compiledHeadShapeValues, SPECIAL_VALUES } from '../runtime/shared/compiledHeadShapes'
 
 export type { CompiledHeadShapes }
@@ -45,15 +47,36 @@ export function compileHeadShapes(compiler: HeadCompiler, tagPriority: unknown):
   return { _tag: 'Ok', shapes }
 }
 
+/** The compiled tags of the icon links of each color mode. */
+export type ColorModeIconTags = Record<keyof ColorModeIconLinks, unknown>
+
+/**
+ * Compiles the icon links of each color mode. They hold no dynamic value: the plugin picks the
+ * compiled tags of the app color mode, as the normal plugin picks the links.
+ */
+export function compileColorModeIcons(compiler: HeadCompiler, icons: ColorModeIconLinks): { _tag: 'Ok', tags: ColorModeIconTags } | { _tag: 'Bail', reason: string } {
+  const tags = {} as ColorModeIconTags
+  for (const mode of ['dark', 'light'] as const) {
+    const result = compiler.compileTags({ link: selectColorModeIconLinks(icons, mode) })
+    if (result._tag === 'Bail')
+      return { _tag: 'Bail', reason: `${mode}: ${result.reason}` }
+    tags[mode] = result.tags
+  }
+  return { _tag: 'Ok', tags }
+}
+
 /**
  * The `#nuxt-seo-utils/compiled-head` module. `shapes` is `null` when compiler mode is off.
  * `typesPath` is the module that exports `CompiledHeadShapes`, for the JSDoc type.
+ * `colorModeIcons` is `null` without color mode icon links.
  */
-export function compiledHeadModule(shapes: CompiledHeadShapes | null, tagPriority: unknown, typesPath: string): string {
+export function compiledHeadModule(shapes: CompiledHeadShapes | null, tagPriority: unknown, typesPath: string, colorModeIcons: ColorModeIconTags | null = null): string {
   return [
     `/** @type {import('${typesPath}').CompiledHeadShapes | null} */`,
     `export const shapes = ${JSON.stringify(shapes)}`,
     `/** @type {string | number | null} */`,
     `export const tagPriority = ${JSON.stringify(tagPriority ?? null)}`,
+    `/** @type {{ dark: unknown, light: unknown } | null} */`,
+    `export const colorModeIcons = ${JSON.stringify(colorModeIcons)}`,
   ].join('\n')
 }

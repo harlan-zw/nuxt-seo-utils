@@ -465,9 +465,15 @@ export {}
         return
 
       headConfig.link = result.links
+      // The links stay in the runtime config under compiler mode too, so the page HTML is the same
       const seoRuntimeConfig = nuxt.options.runtimeConfig.public['seo-utils']
       Object.assign(seoRuntimeConfig, { colorModeIcons: result.icons })
-      addPlugin({ src: resolve(appRuntimeDir, 'plugins', 'colorModeIcons') })
+      // Under compiler mode the links are compiled tags in `#nuxt-seo-utils/compiled-head`, so the
+      // page stays on the compiled runtime
+      const compiledIcons = compiledHead._tag === 'On' ? compiledHead.addColorModeIcons(result.icons) : undefined
+      if (compiledIcons?._tag === 'Bail')
+        logger.warn(`Compiler mode is on, but the color mode icon links stay normal input, so pages load the full Unhead runtime: ${compiledIcons.reason}.`)
+      addPlugin({ src: resolve(appRuntimeDir, 'plugins', ...(compiledIcons?._tag === 'Ok' ? ['compiled'] : []), 'colorModeIcons') })
     })
     // Seed nuxt.options.unhead.vite so compatibilityVersion 5 (which registers
     // @unhead/vue/vite itself) uses the same config as our fallback registration.

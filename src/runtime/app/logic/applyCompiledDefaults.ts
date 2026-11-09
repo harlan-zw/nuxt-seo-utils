@@ -11,7 +11,6 @@ import { createSitePathResolver } from '#site-config/app/composables/utils'
 import { resolveCanonicalUrl } from '../../shared/canonicalUrl'
 import { compiledHeadShapes } from '../../shared/compiledHeadShapes'
 import { chooseShape, pushChosenHead } from './compiledHead'
-import { provideDefaultCanonical, provideOgUrlSetter } from './ogUrlOverride'
 import { chooseClientSiteHead, chooseServerSiteHead } from './siteHead'
 
 const LOCALE_UNDERSCORE_RE = /_/g
@@ -93,11 +92,10 @@ export function applyCompiledDefaults(): void {
   pushChosenHead(nuxtApp, head, () => err.value
     ? chooseShape(shapes?.errorTitleTemplate, [], compiledHeadShapes.errorTitleTemplate)
     : chooseShape(shapes?.titleTemplate, [], compiledHeadShapes.titleTemplate))
-  const canonical = pushChosenHead(nuxtApp, head, () => {
+  pushChosenHead(nuxtApp, head, () => {
     const href = canonicalHref.value
     return chooseShape(shapes?.canonical, [href], () => compiledHeadShapes.canonical(href))
   })
-  provideDefaultCanonical(head, canonical.entry)
 
   // og:locale is set at low priority so @nuxtjs/i18n can override it
   pushChosenHead(nuxtApp, head, () => {
@@ -132,10 +130,10 @@ export function applyCompiledDefaults(): void {
       return chooseShape(prioritized?.siteMeta, [name], () => compiledHeadShapes.siteMeta(name, tagPriority))
     })
   }
-  // The derived tags plugin replaces this content with the resolved canonical href,
-  // so a page-level canonical also moves og:url. On the server it sets the content here.
-  const ogUrlChoice = (href: string | false) => chooseShape(prioritized?.ogUrl, [href], () => compiledHeadShapes.ogUrl(href, tagPriority))
-  const { replace: replaceOgUrl } = pushChosenHead(nuxtApp, head, () => ogUrlChoice(canonicalHref.value))
-  if (import.meta.server && replaceOgUrl)
-    provideOgUrlSetter(head, content => replaceOgUrl(ogUrlChoice(content)))
+  // The derived tags transform replaces this content with the resolved canonical href,
+  // so a page-level canonical also moves og:url.
+  pushChosenHead(nuxtApp, head, () => {
+    const href = canonicalHref.value
+    return chooseShape(prioritized?.ogUrl, [href], () => compiledHeadShapes.ogUrl(href, tagPriority))
+  })
 }

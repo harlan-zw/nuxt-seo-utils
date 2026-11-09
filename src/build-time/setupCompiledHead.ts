@@ -25,6 +25,11 @@ async function compileShapes(nuxt: Nuxt, tagPriority: unknown): Promise<{ _tag: 
   const compiler = compilerPath ? await import(compilerPath) as Partial<HeadCompiler> : undefined
   if (typeof compiler?.compileTags !== 'function' || typeof compiler.dynamicValue !== 'function')
     return { _tag: 'Unavailable', reason: 'the installed Unhead has no compiler (compileTags in unhead/compiled)' }
+  // The compiled plugins change tags through tag transforms
+  const pluginsPath = resolveModulePath('unhead/plugins', { try: true, from: nuxt.options.modulesDir.map(dir => directoryToURL(dir)) })
+  const plugins = pluginsPath ? await import(pluginsPath) as { withTagTransform?: unknown } : undefined
+  if (typeof plugins?.withTagTransform !== 'function')
+    return { _tag: 'Unavailable', reason: 'the installed Unhead has no tag transforms (withTagTransform in unhead/plugins)' }
   const result = compileHeadShapes(compiler as HeadCompiler, tagPriority)
   return result._tag === 'Ok' ? result : { _tag: 'Unavailable', reason: `the ${result.shape} entry cannot compile: ${result.reason}` }
 }

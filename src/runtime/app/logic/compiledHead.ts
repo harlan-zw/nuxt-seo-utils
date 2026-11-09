@@ -42,7 +42,6 @@ interface PatchableEntry {
 export type EntryPriority = number | 'critical' | 'high' | 'low'
 
 interface PushHead {
-  entries: Map<number, object>
   push: (input: any, options?: { values?: unknown[] | (() => unknown[]), tagPriority?: EntryPriority, seoMeta?: true }) => PatchableEntry
 }
 
@@ -57,24 +56,6 @@ export interface PushChosenOptions {
   tagPriority?: EntryPriority
 }
 
-/** Replaces the choice of a server entry once it has settled. */
-export type ReplaceChoice = (choice: HeadChoice) => void
-
-export interface ChosenEntry {
-  /** The entry in `head.entries`. */
-  entry: () => object | undefined
-  /** Replaces the choice of a server entry once it has settled. Only the server has it. */
-  replace?: ReplaceChoice
-}
-
-// The entry a push has just added: a new key goes to the end of the map.
-function lastEntry(head: PushHead): object | undefined {
-  let last: object | undefined
-  for (const entry of head.entries.values())
-    last = entry
-  return last
-}
-
 /**
  * Pushes an entry whose content `choose` decides.
  *
@@ -86,12 +67,15 @@ function lastEntry(head: PushHead): object | undefined {
  * renders or a reader reads the entry first, it runs then. On the client, an effect runs
  * `choose` again when what it reads changes, and patches the entry only when the choice changes.
  */
-export function pushChosenHead(nuxtApp: NuxtApp, head: PushHead, choose: () => HeadChoice, options: PushChosenOptions = {}): ChosenEntry {
-  return import.meta.server ? pushServerChosenHead(nuxtApp, head, choose, options) : pushClientChosenHead(head, choose, options)
+export function pushChosenHead(nuxtApp: NuxtApp, head: PushHead, choose: () => HeadChoice, options: PushChosenOptions = {}): void {
+  if (import.meta.server)
+    pushServerChosenHead(nuxtApp, head, choose, options)
+  else
+    pushClientChosenHead(head, choose, options)
 }
 
 /** `pushChosenHead` on the server: one choice, made when the app has rendered or when the entry is first read. */
-export function pushServerChosenHead(nuxtApp: Pick<NuxtApp, 'hooks'>, head: PushHead, choose: () => HeadChoice, { seoMeta, tagPriority }: PushChosenOptions = {}): ChosenEntry {
+export function pushServerChosenHead(nuxtApp: Pick<NuxtApp, 'hooks'>, head: PushHead, choose: () => HeadChoice, { seoMeta, tagPriority }: PushChosenOptions = {}): void {
   const marks = seoMeta ? { seoMeta } : {}
   let values: unknown[] | undefined
   const apply = (choice: HeadChoice): void => {
@@ -108,7 +92,6 @@ export function pushServerChosenHead(nuxtApp: Pick<NuxtApp, 'hooks'>, head: Push
       // see the new place.
       entry.dispose()
       entry = head.push(choice.input, { tagPriority, ...marks })
-      current = lastEntry(head)
     }
   }
   const settle = (): unknown[] => {
@@ -118,20 +101,17 @@ export function pushServerChosenHead(nuxtApp: Pick<NuxtApp, 'hooks'>, head: Push
   }
   // Empty compiled tags until the choice, so the entry renders nothing if nothing settles it.
   let entry = head.push([], { values: settle, ...marks })
-  let current = lastEntry(head)
   nuxtApp.hooks.hook('app:rendered', () => {
     settle()
   })
-  return { entry: () => current, replace: apply }
 }
 
 /** `pushChosenHead` on the client: an effect patches the entry when the choice changes. */
-export function pushClientChosenHead(head: PushHead, choose: () => HeadChoice, { seoMeta, tagPriority }: PushChosenOptions = {}): ChosenEntry {
+export function pushClientChosenHead(head: PushHead, choose: () => HeadChoice, { seoMeta, tagPriority }: PushChosenOptions = {}): void {
   const marks = seoMeta ? { seoMeta } : {}
   const looseOptions = tagPriority === undefined ? {} : { tagPriority }
   let entry: PatchableEntry | undefined
   let current: HeadChoice | undefined
-  let added: object | undefined
   watchEffect(() => {
     const choice = choose()
     if (sameChoice(current, choice))
@@ -144,8 +124,6 @@ export function pushClientChosenHead(head: PushHead, choose: () => HeadChoice, {
     }
     else {
       entry = head.push(input, { ...options, ...marks })
-      added = lastEntry(head)
     }
   })
-  return { entry: () => added }
 }

@@ -150,7 +150,7 @@ catalog:
   happy-dom: ^21.0.4
   lint-staged: ^17.6.0
   markdownlint-cli: ^0.49.1
-  nuxt: 4.6.2
+  nuxt: 4.6.3
   nuxt-security: ^2.6.0
   nuxt-site-config: ^5.0.0
   nuxtseo-layer-devtools: ^6.0.2

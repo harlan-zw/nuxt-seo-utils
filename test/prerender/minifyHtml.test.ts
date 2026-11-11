@@ -36,6 +36,15 @@ describe('prerender HTML minification', () => {
     expect(html.body).toEqual([app])
   })
 
+  it('keeps escaped JSON text escaped, so it cannot end its script', () => {
+    const json = String.raw`<script type="application/ld+json">{ "text": "\u003C/script>\u003Cscript>alert(1)" }</script>`
+    const html = renderHtml({ head: [json], bodyPrepend: [], body: [], bodyAppend: [] })
+
+    expect(html.head).toEqual([
+      String.raw`<script type="application/ld+json">{"text":"\u003C/script>\u003Cscript>alert(1)"}</script>`,
+    ])
+  })
+
   it('still minifies managed tags outside the app', () => {
     const style = '<style>.head  { color: red; }</style>'
     const json = '<script type="application/ld+json">{ "value": true }</script>'

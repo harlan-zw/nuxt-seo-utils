@@ -80,20 +80,11 @@ describe('minify', () => {
     expect(allScriptContent).not.toContain('var   testMinifyScript')
   }, 30_000)
 
-  it('minifies JSON script types (strips whitespace)', async () => {
-    const html = await $fetch<string>('/')
-    const ast = parse(html)
-    const dataScripts = querySelectorAll(ast, 'script')
-      .filter(el => /^application\/(?:ld\+)?json$/.test(el.attributes.type ?? ''))
-
-    for (const el of dataScripts) {
-      const content = getScriptContent(el)
-      if (content) {
-        const parsed = JSON.parse(content)
-        // should be valid JSON and already compact (no unnecessary whitespace)
-        expect(content).toBe(JSON.stringify(parsed))
-      }
-    }
+  it('removes whitespace from JSON script types and keeps their escapes', async () => {
+    const ast = parse(await $fetch<string>('/script-semantics'))
+    expect(getScriptContent(querySelector(ast, '#script-json'))).toBe('{"value":"https://example.com"}')
+    // Unhead escapes `<` so the JSON cannot end its script. The escape must reach the HTML.
+    expect(getScriptContent(querySelector(ast, '#script-json-escaped'))).toBe(String.raw`{"html":"\u003C/b>"}`)
   }, 30_000)
 
   it('does not break page rendering', async () => {

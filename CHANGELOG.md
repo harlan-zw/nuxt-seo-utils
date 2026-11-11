@@ -1,3 +1,12 @@
+## 9.0.2
+
+[Compare changes](https://github.com/harlan-zw/nuxt-seo-utils/compare/v9.0.1...v9.0.2)
+
+- chore(deps): update dependencies, opt compat5 fixture out of i18n (#189) ([fefd8be](https://github.com/harlan-zw/nuxt-seo-utils/commit/fefd8be1d987213f3fce43b9c36557dce4781011))
+- fix(types): preserve Nuxt config augmentations (#186) ([571bc28](https://github.com/harlan-zw/nuxt-seo-utils/commit/571bc28e5c8b2cfae11f22aa73f30e444a00676e))
+- fix(minify): preserve Vue-rendered app HTML during prerender (#193) ([a247112](https://github.com/harlan-zw/nuxt-seo-utils/commit/a247112818e073ed1feeb08c9188cefb588407b0))
+- fix(minify): keep JSON escapes in inline scripts (#194) ([be88bfa](https://github.com/harlan-zw/nuxt-seo-utils/commit/be88bfa5c03423c4f0956fa93f2ba351de2f3e52))
+
 ## 9.0.1
 
 [Compare changes](https://github.com/harlan-zw/nuxt-seo-utils/compare/v9.0.0...v9.0.1)

@@ -450,6 +450,17 @@ describe('minifyJSON', () => {
     expect(minifyJSON(input)).toBe('{"@context":"https://schema.org","@type":"WebPage","name":"My Page"}')
   })
 
+  // Unhead escapes `<` so the JSON cannot end its inline script. A decoded escape would.
+  it('keeps escapes in strings as written', () => {
+    const input = String.raw`{ "text" : "\u003C/script>\u003Cscript>alert(1)", "quote" : "a \" b\\" }`
+    expect(minifyJSON(input)).toBe(String.raw`{"text":"\u003C/script>\u003Cscript>alert(1)","quote":"a \" b\\"}`)
+  })
+
+  it('keeps compact JSON with escapes as written', () => {
+    const input = String.raw`{"text":"Add tags to \u003Chead>"}`
+    expect(minifyJSON(input)).toBe(input)
+  })
+
   it('throws on invalid JSON', () => {
     expect(() => minifyJSON('not json')).toThrow()
   })

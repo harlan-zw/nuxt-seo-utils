@@ -145,8 +145,32 @@ function isSelectorFunctionParen(code: string, parenIndex: number): boolean {
 }
 
 /**
- * Minify JSON by stripping whitespace via parse/stringify round-trip.
+ * Minify JSON by removing the whitespace outside strings.
+ * Strings stay as written. A parse/stringify round-trip decodes an escape such as
+ * `\u003C`, and the decoded `</script>` would end the inline script that holds the JSON.
  */
 export function minifyJSON(code: string): string {
-  return JSON.stringify(JSON.parse(code))
+  // Throws on invalid JSON, so the scan below can trust the string boundaries.
+  JSON.parse(code)
+
+  let result = ''
+  let segmentStart = 0
+  let inString = false
+  for (let i = 0; i < code.length; i++) {
+    const ch = code[i]
+    if (inString) {
+      if (ch === '\\')
+        i++
+      else if (ch === '"')
+        inString = false
+    }
+    else if (ch === '"') {
+      inString = true
+    }
+    else if (ch === ' ' || ch === '\t' || ch === '\n' || ch === '\r') {
+      result += code.slice(segmentStart, i)
+      segmentStart = i + 1
+    }
+  }
+  return result + code.slice(segmentStart)
 }

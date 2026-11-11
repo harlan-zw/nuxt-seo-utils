@@ -17,6 +17,7 @@ useHead({
     },
     { id: 'custom-script', type: 'text/x-template', innerHTML: '  <div> template // literal </div>  ' },
     { id: 'script-json', type: 'application/json', innerHTML: '{ "value": "https://example.com" }' },
+    { id: 'script-json-escaped', type: 'application/json', innerHTML: '{ "html" : "</b>" }' },
     { id: 'script-importmap', type: 'importmap', innerHTML: '{ "imports": { "example": "/example.js" } }' },
   ],
 })

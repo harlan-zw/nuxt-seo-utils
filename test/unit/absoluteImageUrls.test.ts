@@ -27,6 +27,35 @@ describe('absoluteImageUrls tags:resolve', () => {
     expect(tag.props.content).toBe('https://example.com/image.png')
   })
 
+  it.each([
+    'og:image:secure_url',
+    'og:video',
+    'og:video:url',
+    'og:video:secure_url',
+    'og:audio',
+    'og:audio:url',
+    'og:audio:secure_url',
+  ])('converts relative %s to an absolute URL', async (property) => {
+    const handler = await registerPlugin()
+    const tag = { tag: 'meta', props: { property, content: '/media/preview.mp4' } }
+    handler({ tags: [tag] })
+    expect(tag.props.content).toBe('https://example.com/media/preview.mp4')
+  })
+
+  it('leaves non-URL media tags alone', async () => {
+    const handler = await registerPlugin()
+    const tag = { tag: 'meta', props: { property: 'og:video:type', content: 'video/mp4' } }
+    handler({ tags: [tag] })
+    expect(tag.props.content).toBe('video/mp4')
+  })
+
+  it('leaves absolute media URLs alone', async () => {
+    const handler = await registerPlugin()
+    const tag = { tag: 'meta', props: { property: 'og:video', content: 'https://cdn.example.org/preview.mp4' } }
+    handler({ tags: [tag] })
+    expect(tag.props.content).toBe('https://cdn.example.org/preview.mp4')
+  })
+
   it('returns synchronously so Unhead does not warn about an ignored promise (#138)', async () => {
     const handler = await registerPlugin()
     const result = handler({ tags: [{ tag: 'meta', props: { property: 'og:image', content: '/image.png' } }] })

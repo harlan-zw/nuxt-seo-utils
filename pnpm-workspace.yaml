@@ -69,7 +69,7 @@ overrides:
   nuxt-schema-org: https://pkg.pr.new/harlan-zw/nuxt-schema-org/nuxt-schema-org@92d351e5b56e8bbcfb20951947a3354ffdf720c8
   nuxt-site-config: https://pkg.pr.new/harlan-zw/nuxt-site-config/nuxt-site-config@b8c8a6978ce818d77ecc50c679d412e748fdbdcb
   nuxt-site-config-kit: https://pkg.pr.new/harlan-zw/nuxt-site-config/nuxt-site-config-kit@b8c8a6978ce818d77ecc50c679d412e748fdbdcb
-  nuxtseo-shared: https://pkg.pr.new/harlan-zw/nuxt-seo/nuxtseo-shared@226c091a0744b7286ef721ac035eed53856bfaa5
+  nuxtseo-shared: ^6.0.4
   postcss-colormin: 9.0.6
   postcss-convert-values: 9.0.7
   postcss-discard-comments: 9.0.6
@@ -154,7 +154,7 @@ catalog:
   nuxt-security: ^2.6.0
   nuxt-site-config: ^5.0.0
   nuxtseo-layer-devtools: ^6.0.2
-  nuxtseo-shared: ^6.0.0
+  nuxtseo-shared: ^6.0.4
   pathe: ^2.0.3
   playwright-core: ^1.64.1
   sass: ^1.106.1

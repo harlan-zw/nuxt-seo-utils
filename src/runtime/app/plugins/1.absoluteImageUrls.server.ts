@@ -2,6 +2,20 @@ import { defineNuxtPlugin, injectHead } from 'nuxt/app'
 import { unref } from 'vue'
 import { createSitePathResolver } from '#site-config/app/composables/utils'
 
+// Link preview crawlers only follow absolute URLs in these tags.
+const ABSOLUTE_URL_PROPERTIES = new Set([
+  'og:image',
+  'og:image:url',
+  'og:image:secure_url',
+  'og:video',
+  'og:video:url',
+  'og:video:secure_url',
+  'og:audio',
+  'og:audio:url',
+  'og:audio:secure_url',
+])
+const ABSOLUTE_URL_NAMES = new Set(['twitter:image', 'twitter:image:src'])
+
 export default defineNuxtPlugin({
   enforce: 'post',
   setup() {
@@ -21,10 +35,9 @@ export default defineNuxtPlugin({
         'tags:resolve': ({ tags }) => {
           // iterate through tags that require absolute URLs and add the host base
           for (const tag of tags) {
-            // og:image and twitter:image need to be absolute
             if (tag.tag !== 'meta')
               continue
-            if (tag.props.property !== 'og:image:url' && tag.props.property !== 'og:image' && tag.props.name !== 'twitter:image' && tag.props.name !== 'twitter:image:src')
+            if (!ABSOLUTE_URL_PROPERTIES.has(tag.props.property) && !ABSOLUTE_URL_NAMES.has(tag.props.name))
               continue
             if (typeof tag.props.content !== 'string' || !tag.props.content.trim() || tag.props.content.startsWith('http') || tag.props.content.startsWith('//'))
               continue

@@ -1,13 +1,16 @@
 import type { RedirectRule } from '../../shared/redirects'
 import { createError, defineEventHandler, sendRedirect, useRuntimeConfig } from 'nuxt/server'
 import { decodePath, joinURL, withoutBase } from 'ufo'
+// @ts-expect-error Nitro supplies the compiled redirect rules.
+import bundledRedirects from '#seo-utils-virtual/redirects.mjs'
 import { appendSearch, createRedirectMatcher, isAbsoluteUrl, REDIRECT_CACHE_CONTROL, resolveTarget } from '../../shared/redirects'
 
 let match: ((path: string) => RedirectRule | undefined) | undefined
 
 export default defineEventHandler((e) => {
   const config = useRuntimeConfig()
-  match ||= createRedirectMatcher(config['seo-utils-redirects'] as RedirectRule[])
+  const override = config['seo-utils-redirects']
+  match ||= createRedirectMatcher(Array.isArray(override) ? override as RedirectRule[] : bundledRedirects as RedirectRule[])
   const baseURL = config.app.baseURL
   const path = decodePath(withoutBase(e.url.pathname, baseURL))
   const rule = match(path)

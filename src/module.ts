@@ -385,6 +385,7 @@ export default defineNuxtModule<ModuleOptions>({
       nuxt,
       logger,
       middleware: resolve(runtimeDir, './server/middleware/redirects'),
+      sitemapPlugin: resolve(runtimeDir, './server/plugins/redirectSitemapRules'),
       now: new Date(),
       hasI18n,
     })

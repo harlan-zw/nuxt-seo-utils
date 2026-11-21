@@ -6,6 +6,7 @@ import { fileURLToPath, pathToFileURL } from 'node:url'
 import {
   addImports,
   addPlugin,
+  addPluginTemplate,
   addServerHandler,
   addTemplate,
   addTypeTemplate,
@@ -281,7 +282,18 @@ export default defineNuxtModule<ModuleOptions>({
     })
     if (config.metaDataFiles) {
       // we need ssr to resolve the tags to the absolute path
-      const { hasIcons, diagnostics } = await generateTagsFromPublicFiles()
+      const { hasIcons, diagnostics, socialImageMeta } = await generateTagsFromPublicFiles(nuxt, serverOnlyCrawlerDefaults)
+      if (serverOnlyCrawlerDefaults && socialImageMeta.length) {
+        addPluginTemplate({
+          filename: 'seo-utils-public-social-images.server.ts',
+          mode: 'server',
+          order: -30,
+          getContents: () => `import { defineNuxtPlugin } from 'nuxt/app'
+export default defineNuxtPlugin((nuxtApp) => {
+  nuxtApp.ssrContext?.head.push({ meta: ${JSON.stringify(socialImageMeta)} })
+})`,
+        })
+      }
       await generateTagsFromPageDirImages()
 
       if (nuxt.options.dev) {

@@ -294,7 +294,14 @@ export default defineNuxtPlugin((nuxtApp) => {
 })`,
         })
       }
-      await generateTagsFromPageDirImages()
+      await generateTagsFromPageDirImages(nuxt, serverOnlyCrawlerDefaults)
+      if (serverOnlyCrawlerDefaults) {
+        addPlugin({
+          src: resolve(runtimeDir, 'app/plugins/pageImages.server'),
+          mode: 'server',
+          order: -29,
+        })
+      }
 
       if (nuxt.options.dev) {
         diagnostics.forEach((diagnostic) => {

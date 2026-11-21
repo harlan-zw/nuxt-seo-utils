@@ -2,6 +2,7 @@ import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { ref } from 'vue'
 
 const state = vi.hoisted(() => ({
+  serverOnlyCrawlerDefaults: false,
   runtimeConfig: {
     public: {
       'seo-utils': {
@@ -54,10 +55,17 @@ vi.mock('@unhead/vue/plugins', () => ({
   TemplateParamsPlugin: Symbol.for('template-params-plugin'),
 }))
 
+vi.mock('#build/seo-utils-build-options', () => ({
+  get serverOnlyCrawlerDefaults() {
+    return state.serverOnlyCrawlerDefaults
+  },
+}))
+
 const siteConfigPluginModule = import('../../src/runtime/app/plugins/siteConfig')
 const applyDefaultsModule = import('../../src/runtime/app/logic/applyDefaults')
 
 beforeEach(() => {
+  state.serverOnlyCrawlerDefaults = false
   state.runtimeConfig.public['seo-utils'] = {
     tagPriority: 'low',
     separator: '·',
@@ -112,5 +120,21 @@ describe('separator fallback', () => {
     expect(input.templateParams.separator()).toBe('·')
     expect(input.templateParams.titleSeparator()).toBe('·')
     expect(input.titleTemplate()).toBe('%s %separator %siteName')
+  })
+
+  it('keeps browser defaults when crawler defaults belong to the server', async () => {
+    state.serverOnlyCrawlerDefaults = true
+    state.siteConfig.description = 'Site description'
+    const { applyDefaults } = await applyDefaultsModule
+    const siteConfigPlugin = (await siteConfigPluginModule).default as () => void
+    applyDefaults()
+    siteConfigPlugin()
+
+    const browserHead = state.headed[0] as { htmlAttrs: { lang: () => string }, titleTemplate: () => string, link?: unknown }
+    expect(browserHead.htmlAttrs.lang()).toBe('en')
+    expect(browserHead.titleTemplate()).toBe('%s %separator %siteName')
+    expect(browserHead.link).toBeUndefined()
+    expect(state.seoMeta).toEqual([])
+    expect(state.pushed[0]?.meta).toBeUndefined()
   })
 })

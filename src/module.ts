@@ -7,6 +7,7 @@ import {
   addImports,
   addPlugin,
   addServerHandler,
+  addTemplate,
   addTypeTemplate,
   addVitePlugin,
   createResolver,
@@ -118,6 +119,13 @@ export interface ModuleOptions {
    * @default true
    */
   automaticDefaults?: boolean
+  /**
+   * Keep the module's generated crawler defaults in server-rendered HTML.
+   * Applies to production builds with SSR enabled.
+   *
+   * @default false
+   */
+  serverOnlyCrawlerDefaults?: boolean
   /**
    * When enabled, it will whitelist the query parameters that are allowed in the canonical URL.
    */
@@ -237,6 +245,7 @@ export default defineNuxtModule<ModuleOptions>({
     redirectToCanonicalSiteUrl: false,
     redirectReviewAfterDays: 365,
     automaticDefaults: true,
+    serverOnlyCrawlerDefaults: false,
     fallbackTitle: true,
     metaDataFiles: true,
     mergeWithSiteConfig: true,
@@ -264,6 +273,12 @@ export default defineNuxtModule<ModuleOptions>({
     const { version } = JSON.parse(await readFile(resolve('../package.json'), 'utf8')) as { version: string }
 
     const runtimeDir = resolve('./runtime')
+    const serverOnlyCrawlerDefaults = config.serverOnlyCrawlerDefaults === true && nuxt.options.ssr && !nuxt.options.dev
+    addTemplate({
+      filename: 'seo-utils-build-options.ts',
+      write: true,
+      getContents: () => `export const serverOnlyCrawlerDefaults = ${serverOnlyCrawlerDefaults}`,
+    })
     if (config.metaDataFiles) {
       // we need ssr to resolve the tags to the absolute path
       const { hasIcons, diagnostics } = await generateTagsFromPublicFiles()
@@ -418,8 +433,11 @@ export default defineNuxtModule<ModuleOptions>({
     if (config.extendNuxtConfigAppHeadSeoMeta)
       extendNuxtConfigAppHeadSeoMeta()
 
-    if (config.setupNuxtConfigAppHeadWithMoreDefaults)
-      setupNuxtConfigAppHeadWithMoreDefaults(nuxt)
+    if (config.setupNuxtConfigAppHeadWithMoreDefaults) {
+      setupNuxtConfigAppHeadWithMoreDefaults(nuxt, serverOnlyCrawlerDefaults
+        ? resolve(runtimeDir, 'app/plugins/defaultOgType.server')
+        : undefined)
+    }
 
     if (config.extendNuxtConfigAppHeadTypes)
       extendNuxtConfigAppHeadTypes()

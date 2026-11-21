@@ -1,5 +1,6 @@
 import type { SerializableHead } from '@unhead/vue/types'
 import { defineNuxtPlugin, injectHead, useRuntimeConfig } from 'nuxt/app'
+import { serverOnlyCrawlerDefaults } from '#build/seo-utils-build-options'
 import { useSiteConfig } from '#site-config/app/composables/useSiteConfig'
 
 export default defineNuxtPlugin(() => {
@@ -17,7 +18,6 @@ export default defineNuxtPlugin(() => {
   const resolvedSeparator = siteConfig.separator || separator || siteConfig.titleSeparator || titleSeparator
   const resolvedTitleSeparator = siteConfig.titleSeparator || titleSeparator || siteConfig.separator || separator
   const input: SerializableHead = {
-    meta: [],
     templateParams: {
       site: siteConfig,
       // support legacy
@@ -31,14 +31,13 @@ export default defineNuxtPlugin(() => {
     input.templateParams!.titleSeparator = resolvedTitleSeparator
   if (siteConfig.description) {
     input.templateParams!.siteDescription = siteConfig.description
-    // we can setup a meta description
-    input.meta!.push(
-      {
+    if (import.meta.server || !serverOnlyCrawlerDefaults) {
+      input.meta = [{
         name: 'description',
         content: '%site.description',
         tagPriority,
-      },
-    )
+      }]
+    }
   }
   head.push(input)
 })

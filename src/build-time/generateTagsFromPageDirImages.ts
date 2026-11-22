@@ -21,19 +21,24 @@ interface GeneratedRouteRule {
   seoMeta: Partial<Record<'ogImage' | 'twitterImage', Record<string, unknown>>>
 }
 
-function addGeneratedRouteRule(nuxt: Nuxt, route: string, generatedRule: GeneratedRouteRule): void {
+function addGeneratedRouteRule(nuxt: Nuxt, route: string, generatedRule: GeneratedRouteRule, serverOnlySocialImages: boolean): void {
   nuxt.options.routeRules ||= {}
   nuxt.options.nitro.routeRules ||= {}
   const routeRules = nuxt.options.routeRules as unknown as Record<string, Record<string, unknown> | undefined>
-  const rule = structuredClone(generatedRule) as unknown as Record<string, unknown>
+  const rule = structuredClone(serverOnlySocialImages ? { head: generatedRule.head } : generatedRule) as unknown as Record<string, unknown>
   routeRules[route] = defu(routeRules[route], rule)
 
   const nitroRouteRules = nuxt.options.nitro.routeRules as unknown as Record<string, Record<string, unknown> | undefined>
   if (nitroRouteRules !== routeRules)
     nitroRouteRules[route] = defu(nitroRouteRules[route], structuredClone(rule))
+  if (serverOnlySocialImages) {
+    nitroRouteRules[route] = defu(nitroRouteRules[route], {
+      _seoUtilsPageImages: structuredClone(generatedRule.seoMeta),
+    })
+  }
 }
 
-export default async function generateTagsFromPageDirImages(nuxt: Nuxt = useNuxt()): Promise<void> {
+export default async function generateTagsFromPageDirImages(nuxt: Nuxt = useNuxt(), serverOnlySocialImages = false): Promise<void> {
   const pagesDirs = getLayerDirectories(nuxt)
     .map(layer => layer.appPages)
     .filter(dir => fs.existsSync(dir))
@@ -92,9 +97,9 @@ export default async function generateTagsFromPageDirImages(nuxt: Nuxt = useNuxt
   }
 
   for (const [route, rule] of Object.entries(appendRouteRules)) {
-    addGeneratedRouteRule(nuxt, route, rule)
+    addGeneratedRouteRule(nuxt, route, rule, serverOnlySocialImages)
     if (route !== '/')
-      addGeneratedRouteRule(nuxt, `${route}/**`, rule)
+      addGeneratedRouteRule(nuxt, `${route}/**`, rule, serverOnlySocialImages)
   }
 
   if (nuxt.options.dev) {

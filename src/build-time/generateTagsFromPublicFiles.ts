@@ -90,7 +90,7 @@ function enrichConfiguredIcon(link: Link, baseURL: string, iconEntries: IconFile
   } as Link
 }
 
-export default async function generateTagsFromPublicFiles(nuxt: Nuxt = useNuxt()): Promise<{ hasIcons: boolean, diagnostics: IconDiagnostic[] }> {
+export default async function generateTagsFromPublicFiles(nuxt: Nuxt = useNuxt(), serverOnly = false): Promise<{ hasIcons: boolean, diagnostics: IconDiagnostic[], socialImageMeta: Meta[] }> {
   const publicDirs = getLayerDirectories(nuxt).map(layer => layer.public)
 
   // collect files from all layers, first layer (app) wins on conflicts
@@ -146,13 +146,14 @@ export default async function generateTagsFromPublicFiles(nuxt: Nuxt = useNuxt()
       })))
   }
 
+  const socialImageMeta: Meta[] = []
   let hasTwitterImage = hasMetaProperty(headConfig, 'twitter:image')
   if (!hasTwitterImage) {
     // add the twitter image
     const twitterImageFiles = rootPublicFiles.filter(file => classifySocialImageFilename(file) === 'twitterImage')
       .sort()
     if (twitterImageFiles.length) {
-      headConfig.meta!.push(
+      socialImageMeta.push(
         ...(await Promise.all(twitterImageFiles.map(async (twitterImageFile) => {
           const dimensions = await getImageDimensions(resolve(fileEntries.find(e => e.file === twitterImageFile)!.dir, twitterImageFile))
           return unpackMeta({
@@ -174,7 +175,7 @@ export default async function generateTagsFromPublicFiles(nuxt: Nuxt = useNuxt()
     const ogImageFiles = rootPublicFiles.filter(file => classifySocialImageFilename(file) === 'ogImage')
       .sort()
     if (ogImageFiles.length) {
-      headConfig.meta!.push(
+      socialImageMeta.push(
         ...(await Promise.all(ogImageFiles.map(async (src) => {
           const meta = await getImageMeta(fileEntries.find(e => e.file === src)!.dir, src, false)
           delete meta.sizes
@@ -191,7 +192,9 @@ export default async function generateTagsFromPublicFiles(nuxt: Nuxt = useNuxt()
     }
   }
 
+  if (!serverOnly)
+    headConfig.meta!.push(...socialImageMeta)
   nuxt.options.app.head = headConfig
   const hasIcons = iconEntries.length > 0 || configuredIconRels.size > 0
-  return { hasIcons, diagnostics }
+  return { hasIcons, diagnostics, socialImageMeta }
 }

@@ -1,3 +1,13 @@
+## 9.1.0
+
+[Compare changes](https://github.com/harlan-zw/nuxt-seo-utils/compare/v9.0.2...v9.1.0)
+
+- Enable `seo.serverOnlyCrawlerDefaults` to keep generated descriptions, canonical links and social tags in server HTML and shrink the client bundle. It applies to production SSR builds and is off by default. Leave it off if those defaults must update during client navigation. [#200](https://github.com/harlan-zw/nuxt-seo-utils/pull/200)
+- Resolve relative Open Graph video and audio URLs against the site URL so link previews can read them. [#197](https://github.com/harlan-zw/nuxt-seo-utils/pull/197)
+- Keep generated redirect rules out of Nitro request config to reduce work on regular SSR requests. [Redirect optimization](https://github.com/harlan-zw/nuxt-seo-utils/commit/ead1f35)
+- Preserve Nuxt config types when the debug route is enabled. [#191](https://github.com/harlan-zw/nuxt-seo-utils/pull/191)
+- If your project pins `unhead` or `@unhead/vue` directly, update it to 3.5.0 or later in the 3.x series. [#201](https://github.com/harlan-zw/nuxt-seo-utils/pull/201)
+
 ## 9.0.2
 
 [Compare changes](https://github.com/harlan-zw/nuxt-seo-utils/compare/v9.0.1...v9.0.2)

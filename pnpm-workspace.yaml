@@ -61,8 +61,8 @@ overrides:
   '@nuxtjs/sitemap': https://pkg.pr.new/nuxt-modules/sitemap/@nuxtjs/sitemap@b0ff3faf7a29fb38c8b39137f5e86ae94ea86be3
   # 3.2.0's SSR transform rewrites `head.ssr = false` into invalid syntax.
   # Keep the Unhead packages aligned until an upstream patch is available.
-  '@unhead/bundler': ^3.4.3
-  '@unhead/vue': ^3.4.3
+  '@unhead/bundler': ^3.5.0
+  '@unhead/vue': ^3.5.0
   cssnano: 9.2.2
   cssnano-preset-default: 9.2.2
   cssnano-utils: 8.1.0
@@ -99,7 +99,7 @@ overrides:
   site-config-stack: https://pkg.pr.new/harlan-zw/nuxt-site-config/site-config-stack@b8c8a6978ce818d77ecc50c679d412e748fdbdcb
 
   stylehacks: 9.0.7
-  unhead: ^3.4.3
+  unhead: ^3.5.0
   vue: ^3.5.44
 
 allowBuilds:
@@ -135,7 +135,7 @@ catalog:
   '@nuxtjs/i18n': ^10.6.0
   '@nuxtjs/sitemap': ^9.0.0
   '@types/node': ^26.6.5
-  '@unhead/vue': ^3.4.3
+  '@unhead/vue': ^3.5.0
   '@vue/test-utils': ^2.5.1
   bumpp: ^12.3.0
   case-police: ^2.2.1
@@ -165,7 +165,7 @@ catalog:
   ufo: ^1.6.4
   ultrahtml: ^1.7.0
   unbuild: ^3.6.1
-  unhead: ^3.4.3
+  unhead: ^3.5.0
   vitest: ^5.0.5
   vue: ^3.5.44
   vue-tsc: ^3.3.13

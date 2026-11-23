@@ -11,6 +11,9 @@ allowBuilds:
   esbuild: true
   vue-demi: true
 minimumReleaseAgeExclude:
+  - nuxt-site-config@5.0.4
+  - nuxt-site-config-kit@5.0.4
+  - site-config-stack@5.0.4
   - eslint-plugin-harlanzw@0.19.2
   - "@img/sharp-darwin-arm64@0.35.0"
   - "@img/sharp-darwin-x64@0.35.0"
@@ -60,9 +63,6 @@ minimumReleaseAgeExclude:
   - "@nuxt/schema@4.5.0 || 4.6.0"
   - "@nuxt/vite-builder@4.5.0 || 4.6.0"
   - nuxt@4.5.0 || 4.6.0
-  - nuxt-site-config-kit@4.1.4
-  - nuxt-site-config@4.1.4
-  - site-config-stack@4.1.4
   - "@nuxt/cli@4.0.0"
   - "@nuxt/vite-server@4.6.0"
   - nuxt-nightly
@@ -136,8 +136,5 @@ overrides:
   unhead: ^3.5.0
   vue: ^3.5.44
   nuxtseo-shared: ^6.0.4
-  nuxt-site-config: https://pkg.pr.new/harlan-zw/nuxt-site-config/nuxt-site-config@40698727ca424460013f3534af9005e36728d669
-  nuxt-site-config-kit: https://pkg.pr.new/harlan-zw/nuxt-site-config/nuxt-site-config-kit@40698727ca424460013f3534af9005e36728d669
-  site-config-stack: https://pkg.pr.new/harlan-zw/nuxt-site-config/site-config-stack@40698727ca424460013f3534af9005e36728d669
   nuxt-schema-org: https://pkg.pr.new/harlan-zw/nuxt-schema-org/nuxt-schema-org@92d351e5b56e8bbcfb20951947a3354ffdf720c8
 blockExoticSubdeps: false

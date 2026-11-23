@@ -7,6 +7,7 @@
 - Keep generated redirect rules out of Nitro request config to reduce work on regular SSR requests. [Redirect optimization](https://github.com/harlan-zw/nuxt-seo-utils/commit/ead1f35)
 - Preserve Nuxt config types when the debug route is enabled. [#191](https://github.com/harlan-zw/nuxt-seo-utils/pull/191)
 - If your project pins `unhead` or `@unhead/vue` directly, update it to 3.5.0 or later in the 3.x series. [#201](https://github.com/harlan-zw/nuxt-seo-utils/pull/201)
+- Require Site Config 5.0.4 or later in the 5.x series.
 
 ## 9.0.2
 

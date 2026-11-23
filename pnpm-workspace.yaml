@@ -3,6 +3,9 @@ blockExoticSubdeps: false
 
 minimumReleaseAgeExcludePrune: true
 minimumReleaseAgeExclude:
+  - nuxt-site-config@5.0.4
+  - nuxt-site-config-kit@5.0.4
+  - site-config-stack@5.0.4
   - nuxtseo-layer-devtools
   - unhead
   - '@unhead/vue'
@@ -67,8 +70,6 @@ overrides:
   cssnano-preset-default: 9.2.2
   cssnano-utils: 8.1.0
   nuxt-schema-org: https://pkg.pr.new/harlan-zw/nuxt-schema-org/nuxt-schema-org@92d351e5b56e8bbcfb20951947a3354ffdf720c8
-  nuxt-site-config: https://pkg.pr.new/harlan-zw/nuxt-site-config/nuxt-site-config@b8c8a6978ce818d77ecc50c679d412e748fdbdcb
-  nuxt-site-config-kit: https://pkg.pr.new/harlan-zw/nuxt-site-config/nuxt-site-config-kit@b8c8a6978ce818d77ecc50c679d412e748fdbdcb
   nuxtseo-shared: ^6.0.4
   postcss-colormin: 9.0.6
   postcss-convert-values: 9.0.7
@@ -96,7 +97,6 @@ overrides:
   postcss-reduce-transforms: 9.0.4
   postcss-svgo: 9.0.4
   postcss-unique-selectors: 9.0.5
-  site-config-stack: https://pkg.pr.new/harlan-zw/nuxt-site-config/site-config-stack@b8c8a6978ce818d77ecc50c679d412e748fdbdcb
 
   stylehacks: 9.0.7
   unhead: ^3.5.0
@@ -152,7 +152,7 @@ catalog:
   markdownlint-cli: ^0.49.1
   nuxt: 4.6.2
   nuxt-security: ^2.6.0
-  nuxt-site-config: ^5.0.0
+  nuxt-site-config: ^5.0.4
   nuxtseo-layer-devtools: ^6.0.2
   nuxtseo-shared: ^6.0.4
   pathe: ^2.0.3

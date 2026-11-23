@@ -65,13 +65,13 @@
     "lint:docs:fix": "markdownlint ./docs/content --fix && case-police 'docs/content/**/*.md' *.md --fix"
   },
   "peerDependencies": {
-    "@unhead/vue": "^3.4.2",
+    "@unhead/vue": "^3.5.0",
     "esbuild": ">=0.17.0",
     "lightningcss": ">=1.20.0",
     "nuxt": "^4.6.0 || ^5.0.0",
     "rolldown": ">=1.0.0-beta.0",
     "sharp": "^0.35.5",
-    "unhead": "^3.4.2"
+    "unhead": "^3.5.0"
   },
   "peerDependenciesMeta": {
     "@unhead/vue": {

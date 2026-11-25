@@ -1,6 +1,6 @@
 import type { RedirectRule, SourcePattern } from '../runtime/shared/redirects'
 import { joinURL } from 'ufo'
-import { appendSearch, createRedirectMatcher, isAbsoluteUrl, parseSourcePattern, resolveTarget } from '../runtime/shared/redirects'
+import { appendSearch, createRedirectMatcher, isAbsoluteUrl, parseSourcePattern, resolveTarget } from '../runtime/shared/redirects.ts'
 
 /** A calendar date, such as `'2026-10-13'`. */
 export type RedirectDate = `${number}-${number}-${number}`

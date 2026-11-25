@@ -5,10 +5,10 @@ import { defu } from 'defu'
 import { basename, dirname, resolve } from 'pathe'
 import { glob } from 'tinyglobby'
 import { joinURL } from 'ufo'
-import { classifySocialImageFilename, isMetaTagFile, MetaTagFileDeepGlobs } from '../const'
-import { generateNuxtPageFromFile } from '../pageUtils'
-import { getImageMeta } from '../util'
-import { classifyIconFilename } from './iconAssets'
+import { classifySocialImageFilename, isMetaTagFile, MetaTagFileDeepGlobs } from '../const.ts'
+import { generateNuxtPageFromFile } from '../pageUtils.ts'
+import { getImageMeta } from '../util.ts'
+import { classifyIconFilename } from './iconAssets.ts'
 
 const DIR_SUFFIX_RE = /\/_dir$/
 

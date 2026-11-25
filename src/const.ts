@@ -1,4 +1,4 @@
-import { classifyIconFilename } from './build-time/iconAssets'
+import { classifyIconFilename } from './build-time/iconAssets.ts'
 
 export const MetaTagFileDeepGlobs = [
   '**/{og-image,opengraph-image,twitter-image}.{png,jpg,jpeg,gif}',

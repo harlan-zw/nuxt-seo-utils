@@ -1,5 +1,5 @@
 import { useLogger, useNuxt } from '@nuxt/kit'
-import { JSON_TYPES } from '../runtime/shared/minify'
+import { JSON_TYPES } from '../runtime/shared/minify.ts'
 
 const JS_TYPES = new Set(['', 'module', 'text/javascript', 'application/javascript', 'text/ecmascript', 'application/ecmascript'])
 

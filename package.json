@@ -29,25 +29,15 @@
     "dist",
     "skills"
   ],
-  "build": {
-    "externals": [
-      "nuxt/server",
-      "unhead",
-      "@unhead/vue",
-      "@unhead/vue/plugins",
-      "@unhead/vue/utils",
-      "@unhead/vue/vite"
-    ]
-  },
   "engines": {
     "node": "^22.22.3 || ^24.15.0 || >=26.0.0"
   },
   "scripts": {
     "client:build": "node -e \"require('fs').cpSync('devtools','dist/devtools',{recursive:true})\"",
-    "build": "nuxt-module-build build --stub && nuxt-module-build prepare && nuxt-module-build build && npm run client:build",
+    "build": "nuxt-module-build prepare && tsdown && npm run client:build",
     "dev": "nuxt dev playground",
-    "dev:prepare": "nuxt-module-build build --stub && nuxt-module-build prepare && nuxt prepare playground && pnpm prepare:fixtures && pnpm run client:build",
-    "stub": "nuxt-module-build build --stub && nuxt-module-build prepare",
+    "dev:prepare": "nuxt-module-build prepare && tsdown && nuxt prepare playground && pnpm prepare:fixtures && pnpm run client:build",
+    "stub": "nuxt-module-build prepare && tsdown",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "typecheck": "nuxt typecheck",
@@ -133,9 +123,9 @@
     "playwright-core": "catalog:",
     "sass": "catalog:",
     "sharp": "catalog:",
+    "tsdown": "catalog:",
     "typescript": "catalog:",
     "ultrahtml": "catalog:",
-    "unbuild": "catalog:",
     "unhead": "catalog:",
     "vitest": "catalog:",
     "vue": "catalog:",

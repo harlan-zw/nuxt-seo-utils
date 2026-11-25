@@ -1,6 +1,6 @@
 import type { Nuxt } from '@nuxt/schema'
 import { addPlugin, useNuxt } from '@nuxt/kit'
-import { hasMetaProperty } from '../util'
+import { hasMetaProperty } from '../util.ts'
 
 export default function setupNuxtConfigAppHeadWithMoreDefaults(nuxt: Nuxt = useNuxt(), serverFallback?: string): void {
   // from the root public let's find which ones we can infer SEO meta and link tags from, following the Next.js convention

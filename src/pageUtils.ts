@@ -14,7 +14,7 @@ const SegmentParserState = {
   optional: 3,
   catchall: 4,
 } as const
-type SegmentParserState = typeof SegmentParserState[keyof typeof SegmentParserState]
+type SegmentParserStateValue = typeof SegmentParserState[keyof typeof SegmentParserState]
 
 const SegmentTokenType = {
   static: 0,
@@ -22,10 +22,10 @@ const SegmentTokenType = {
   optional: 2,
   catchall: 3,
 } as const
-type SegmentTokenType = typeof SegmentTokenType[keyof typeof SegmentTokenType]
+type SegmentTokenTypeValue = typeof SegmentTokenType[keyof typeof SegmentTokenType]
 
 interface SegmentToken {
-  type: SegmentTokenType
+  type: SegmentTokenTypeValue
   value: string
 }
 
@@ -95,7 +95,7 @@ function getRoutePath(tokens: SegmentToken[]): string {
 const PARAM_CHAR_RE = /[\w.]/
 
 function parseSegment(segment: string): SegmentToken[] {
-  let state: SegmentParserState = SegmentParserState.initial
+  let state: SegmentParserStateValue = SegmentParserState.initial
   let i = 0
 
   let buffer = ''

@@ -8,10 +8,10 @@ import { unpackMeta } from '@unhead/vue/utils'
 import { defu } from 'defu'
 import { basename, resolve } from 'pathe'
 import { joinURL } from 'ufo'
-import { classifySocialImageFilename, isMetaTagFile } from '../const'
-import { TWITTER_IMAGE_FALLBACK_KEY } from '../runtime/shared/derivedTagKeys'
-import { getImageDimensions, getImageMeta, hasMetaProperty } from '../util'
-import { classifyIconFilename, getIconRel, normalizeIconSizes } from './iconAssets'
+import { classifySocialImageFilename, isMetaTagFile } from '../const.ts'
+import { TWITTER_IMAGE_FALLBACK_KEY } from '../runtime/shared/derivedTagKeys.ts'
+import { getImageDimensions, getImageMeta, hasMetaProperty } from '../util.ts'
+import { classifyIconFilename, getIconRel, normalizeIconSizes } from './iconAssets.ts'
 
 interface IconFileEntry {
   file: string

@@ -7,7 +7,7 @@ import { defineCommand, runMain } from 'citty'
 import { colors as c } from 'consola/utils'
 import { resolve } from 'pathe'
 import { description, name, version } from '../package.json'
-import { pngToIco } from './build-time/iconAssets'
+import { pngToIco } from './build-time/iconAssets.ts'
 
 const ICON_SIZES = [
   { name: 'icon-16x16.png', width: 16, height: 16 },

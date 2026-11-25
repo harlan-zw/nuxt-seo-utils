@@ -7,23 +7,25 @@ const INDEX_SUFFIX_RE = /-index$/
 
 // copied from nuxt/src/pages/utils.ts
 
-enum SegmentParserState {
-  initial,
-  static,
-  dynamic,
-  optional,
-  catchall,
-}
+const SegmentParserState = {
+  initial: 0,
+  static: 1,
+  dynamic: 2,
+  optional: 3,
+  catchall: 4,
+} as const
+type SegmentParserStateValue = typeof SegmentParserState[keyof typeof SegmentParserState]
 
-enum SegmentTokenType {
-  static,
-  dynamic,
-  optional,
-  catchall,
-}
+const SegmentTokenType = {
+  static: 0,
+  dynamic: 1,
+  optional: 2,
+  catchall: 3,
+} as const
+type SegmentTokenTypeValue = typeof SegmentTokenType[keyof typeof SegmentTokenType]
 
 interface SegmentToken {
-  type: SegmentTokenType
+  type: SegmentTokenTypeValue
   value: string
 }
 
@@ -93,7 +95,7 @@ function getRoutePath(tokens: SegmentToken[]): string {
 const PARAM_CHAR_RE = /[\w.]/
 
 function parseSegment(segment: string): SegmentToken[] {
-  let state: SegmentParserState = SegmentParserState.initial
+  let state: SegmentParserStateValue = SegmentParserState.initial
   let i = 0
 
   let buffer = ''

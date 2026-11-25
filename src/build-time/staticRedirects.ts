@@ -1,6 +1,6 @@
 import type { RedirectRule } from '../runtime/shared/redirects'
 import { joinURL, withoutTrailingSlash } from 'ufo'
-import { isAbsoluteUrl, REDIRECT_CACHE_CONTROL, resolveTarget } from '../runtime/shared/redirects'
+import { isAbsoluteUrl, REDIRECT_CACHE_CONTROL, resolveTarget } from '../runtime/shared/redirects.ts'
 
 /**
  * How a static build serves `seo.redirects`.

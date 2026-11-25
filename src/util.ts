@@ -2,7 +2,7 @@ import type { SerializableHead } from '@unhead/vue/types'
 import fs from 'node:fs'
 import { readFile } from 'node:fs/promises'
 import { dirname, resolve } from 'pathe'
-import { parseImageDimensions } from './build-time/imageDimensions'
+import { parseImageDimensions } from './build-time/imageDimensions.ts'
 
 export function hasMetaProperty(input: SerializableHead, property: string): boolean | undefined {
   return input.meta?.some(meta => meta.property === property)

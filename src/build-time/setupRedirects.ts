@@ -8,8 +8,8 @@ import { defu } from 'defu'
 import { resolveI18nConfig } from 'nuxtseo-shared/i18n'
 import { join } from 'pathe'
 import { joinURL, withoutTrailingSlash } from 'ufo'
-import { expandLocalePrefixes, formatRedirectReport, planRedirects, resolveLocalePrefixes, toRedirectRules } from './redirects'
-import { formatMetaRefreshFallback, formatUnservedGone, nativeSourceKeys, planNativeRedirects, resolveStaticHost } from './staticRedirects'
+import { expandLocalePrefixes, formatRedirectReport, planRedirects, resolveLocalePrefixes, toRedirectRules } from './redirects.ts'
+import { formatMetaRefreshFallback, formatUnservedGone, nativeSourceKeys, planNativeRedirects, resolveStaticHost } from './staticRedirects.ts'
 
 export interface SetupRedirectsContext {
   nuxt: Nuxt

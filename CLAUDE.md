@@ -10,12 +10,10 @@ pnpm install
 
 # Development
 pnpm dev             # Run playground development server
-pnpm dev:prepare     # Build module stub and prepare test fixtures
-pnpm dev:build       # Build playground
+pnpm dev:prepare     # Build the module and prepare test fixtures
 
 # Building
-pnpm stub            # Build module stub
-pnpm build           # Full module build
+pnpm build           # Build the module for release or linked apps
 
 # Testing
 pnpm test            # Run all tests

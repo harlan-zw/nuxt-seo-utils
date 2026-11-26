@@ -1,5 +1,5 @@
 import type { SerializableHead, UseSeoMetaInput } from '@unhead/vue/types'
-import { defineNuxtPlugin, useHead, useRequestEvent, useSeoMeta, useState } from 'nuxt/app'
+import { defineNuxtPlugin, useError, useHead, useRequestEvent, useSeoMeta, useState } from 'nuxt/app'
 
 interface RouteRuleState {
   head?: SerializableHead
@@ -26,6 +26,9 @@ export default defineNuxtPlugin({
   enforce: 'post',
   env: { islands: false },
   setup() {
+    if (import.meta.server && useError().value)
+      return
+
     const routeRuleState = useState<RouteRuleState | null>('nuxt-seo-utils:routeRules', () => null)
     if (import.meta.server) {
       const event = useRequestEvent()

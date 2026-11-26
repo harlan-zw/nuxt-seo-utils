@@ -13,6 +13,13 @@ export default defineConfig({
         },
       }),
       defineProject({
+        define: { 'import.meta.server': true },
+        test: {
+          name: 'unit-server',
+          include: ['./test/unit/**/*.server.test.ts'],
+        },
+      }),
+      defineProject({
         test: {
           name: 'unit',
           include: [
@@ -20,6 +27,7 @@ export default defineConfig({
             './src/**/*.test.ts',
             './devtools/lib/**/*.test.ts',
           ],
+          exclude: ['./test/unit/**/*.server.test.ts'],
         },
       }),
       defineProject({

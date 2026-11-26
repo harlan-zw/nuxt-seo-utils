@@ -1,5 +1,5 @@
 import type { SerializableHead } from '@unhead/vue/types'
-import { defineNuxtPlugin, injectHead, useRuntimeConfig } from 'nuxt/app'
+import { defineNuxtPlugin, injectHead, useError, useRuntimeConfig } from 'nuxt/app'
 import { serverOnlyCrawlerDefaults } from '#build/seo-utils-build-options'
 import { useSiteConfig } from '#site-config/app/composables/useSiteConfig'
 
@@ -31,7 +31,7 @@ export default defineNuxtPlugin(() => {
     input.templateParams!.titleSeparator = resolvedTitleSeparator
   if (siteConfig.description) {
     input.templateParams!.siteDescription = siteConfig.description
-    if (import.meta.server || !serverOnlyCrawlerDefaults) {
+    if (import.meta.server ? !useError().value : !serverOnlyCrawlerDefaults) {
       input.meta = [{
         name: 'description',
         content: '%site.description',

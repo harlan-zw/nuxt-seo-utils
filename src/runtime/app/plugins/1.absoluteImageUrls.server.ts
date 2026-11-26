@@ -1,4 +1,4 @@
-import { defineNuxtPlugin, injectHead } from 'nuxt/app'
+import { defineNuxtPlugin, injectHead, useError } from 'nuxt/app'
 import { unref } from 'vue'
 import { createSitePathResolver } from '#site-config/app/composables/utils'
 
@@ -18,7 +18,11 @@ const ABSOLUTE_URL_NAMES = new Set(['twitter:image', 'twitter:image:src'])
 
 export default defineNuxtPlugin({
   enforce: 'post',
-  setup() {
+  setup(nuxtApp) {
+    const err = useError()
+    if (nuxtApp?.ssrContext && err.value)
+      return
+
     const head = injectHead()
     // something quite wrong
     if (!head)
@@ -33,6 +37,8 @@ export default defineNuxtPlugin({
       key: 'absoluteImageUrls',
       hooks: {
         'tags:resolve': ({ tags }) => {
+          if (err.value)
+            return
           // iterate through tags that require absolute URLs and add the host base
           for (const tag of tags) {
             if (tag.tag !== 'meta')

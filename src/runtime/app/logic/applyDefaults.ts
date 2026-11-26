@@ -52,7 +52,7 @@ export function applyDefaults(): void {
     titleTemplate: () => err.value ? '%s' : '%s %separator %siteName',
   }
 
-  if (!import.meta.server && serverOnlyCrawlerDefaults) {
+  if ((import.meta.server && err.value) || (!import.meta.server && serverOnlyCrawlerDefaults)) {
     useHead(input, minimalPriority)
     return
   }

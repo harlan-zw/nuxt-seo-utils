@@ -1,3 +1,9 @@
+## 9.1.1
+
+[Compare changes](https://github.com/harlan-zw/nuxt-seo-utils/compare/v9.1.0...v9.1.1)
+
+- Skip SSR SEO meta derivation on Nuxt error pages while keeping `<title>`, `<html lang>`, and client `clearError()` recovery intact. [#205](https://github.com/harlan-zw/nuxt-seo-utils/pull/205)
+
 ## 9.1.0
 
 [Compare changes](https://github.com/harlan-zw/nuxt-seo-utils/compare/v9.0.2...v9.1.0)

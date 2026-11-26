@@ -16,7 +16,7 @@ export default defineEventHandler((e) => {
   }
   const path = e.url.pathname
   // we only care about routes getting indexed
-  if (path.startsWith('/_nuxt') || path.startsWith('/api')) {
+  if (path.startsWith('/_nuxt') || path.startsWith('/__nuxt') || path.startsWith('/api')) {
     return
   }
   // ignore files

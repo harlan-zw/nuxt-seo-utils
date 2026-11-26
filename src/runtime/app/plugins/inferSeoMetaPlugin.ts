@@ -1,5 +1,5 @@
 import { InferSeoMetaPlugin, TemplateParamsPlugin } from '@unhead/vue/plugins'
-import { defineNuxtPlugin, injectHead, useRuntimeConfig } from 'nuxt/app'
+import { defineNuxtPlugin, injectHead, useError, useRuntimeConfig } from 'nuxt/app'
 import { serverOnlyCrawlerDefaults } from '#build/seo-utils-build-options'
 
 export default defineNuxtPlugin(() => {
@@ -10,6 +10,9 @@ export default defineNuxtPlugin(() => {
     return
 
   head.use(TemplateParamsPlugin)
+
+  if (import.meta.server && useError().value)
+    return
 
   if (!import.meta.server && serverOnlyCrawlerDefaults)
     return

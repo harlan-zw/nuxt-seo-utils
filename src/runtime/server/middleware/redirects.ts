@@ -13,6 +13,8 @@ export default defineEventHandler((e) => {
   match ||= createRedirectMatcher(Array.isArray(override) ? override as RedirectRule[] : bundledRedirects as RedirectRule[])
   const baseURL = config.app.baseURL
   const path = decodePath(withoutBase(e.url.pathname, baseURL))
+  if (path.startsWith('/__nuxt_error'))
+    return
   const rule = match(path)
   if (!rule)
     return

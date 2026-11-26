@@ -7,6 +7,12 @@ interface I18nTranslator {
   t: (key: string, fallback: string, options?: Record<string, unknown>) => string
 }
 
+export function resolveErrorFallbackTitle(error: { statusCode?: number, message?: string } | null | undefined): string | null {
+  if (error?.statusCode && [404, 500].includes(error.statusCode))
+    return `${error.statusCode} - ${error.message}`
+  return null
+}
+
 export function useFallbackTitle() {
   const route = useRoute()
   const err = useError()
@@ -20,8 +26,9 @@ export function useFallbackTitle() {
     // useNuxtApp() needs a Nuxt context (plugin or component setup).
   }
   return computed(() => {
-    if (err.value?.statusCode && [404, 500].includes(err.value.statusCode)) {
-      return `${err.value.statusCode} - ${err.value.message}`
+    const errorTitle = resolveErrorFallbackTitle(err.value)
+    if (errorTitle) {
+      return errorTitle
     }
     if (typeof route.meta?.title === 'string')
       return route.meta?.title

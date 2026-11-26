@@ -290,6 +290,8 @@ export default defineNuxtModule<ModuleOptions>({
           order: -30,
           getContents: () => `import { defineNuxtPlugin } from 'nuxt/app'
 export default defineNuxtPlugin((nuxtApp) => {
+  if (nuxtApp.payload?.error)
+    return
   // Authored app metadata and page images take precedence over public fallbacks.
   nuxtApp.ssrContext?.head.push({ meta: ${JSON.stringify(socialImageMeta)} }, { tagPriority: 'low' })
 })`,

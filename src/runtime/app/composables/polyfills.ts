@@ -9,7 +9,7 @@ export function defineWebPage(): void {}
 export function defineBreadcrumb(_input?: unknown): void {}
 
 export function useI18n(): {
-  t: (_: string, fallback: string, _options: any) => string
+  t: (_: string, fallback: string, _options?: any) => string
   te: (_: string) => boolean
   strategy: string
   defaultLocale: ComputedRef<string>
@@ -19,7 +19,7 @@ export function useI18n(): {
     resolveRefs: false,
   })
   return {
-    t: (_: string, fallback: string, _options: any) => fallback,
+    t: (_: string, fallback: string, _options?: any) => fallback,
     te: (_: string) => false,
     strategy: 'no_prefix',
     defaultLocale: computed(() => {

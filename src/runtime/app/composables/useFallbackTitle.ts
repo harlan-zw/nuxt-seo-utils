@@ -1,11 +1,9 @@
+import type { I18nTranslator } from '../../shared/i18n'
 import { useError, useNuxtApp, useRoute } from 'nuxt/app'
 import { titleCase } from 'scule'
 import { withoutTrailingSlash } from 'ufo'
 import { computed } from 'vue'
-
-interface I18nTranslator {
-  t: (key: string, fallback: string, options?: Record<string, unknown>) => string
-}
+import { resolveI18nMessage } from '../../shared/i18n'
 
 export function resolveErrorFallbackTitle(error: { statusCode?: number, message?: string } | null | undefined): string | null {
   if (error?.statusCode && [404, 500].includes(error.statusCode))
@@ -40,8 +38,8 @@ export function useFallbackTitle() {
     const matched = route.matched?.at(-1)
     if (matched) {
       const routeName = String(matched.name).split('___')?.[0]
-      if (routeName && i18n)
-        fallback = i18n.t(`pages.${routeName}.title`, fallback || '', { missingWarn: false }) || fallback
+      if (routeName)
+        fallback = resolveI18nMessage(i18n, `pages.${routeName}.title`) ?? fallback
     }
     return fallback
   })

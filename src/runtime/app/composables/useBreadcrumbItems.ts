@@ -22,6 +22,7 @@ import { useSiteConfig } from '#site-config/app/composables/useSiteConfig'
 import { createSitePathResolver } from '#site-config/app/composables/utils'
 import { pathBreadcrumbSegments, resolveBreadcrumbRoot } from '../../shared/breadcrumbs'
 import { normaliseCanonicalUrl } from '../../shared/canonicalUrl'
+import { resolveI18nMessage } from '../../shared/i18n'
 import { useI18n as useI18nPolyfill } from './polyfills'
 
 interface NuxtUIBreadcrumbItem extends NuxtLinkProps {
@@ -295,8 +296,8 @@ export function useBreadcrumbItems(_options: BreadcrumbProps = {}): Ref<Breadcru
             fallbackLabel = 'Home'
           }
           fallbackLabel = routeMeta.breadcrumbLabel || routeMeta.breadcrumbTitle || routeMeta.title || fallbackLabel
-          fallbackLabel = i18n.t(`breadcrumb.items.${routeName}.label`, fallbackLabel, { missingWarn: false })
-          fallbackAriaLabel = i18n.t(`breadcrumb.items.${routeName}.ariaLabel`, fallbackAriaLabel, { missingWarn: false })
+          fallbackLabel = resolveI18nMessage(i18n, `breadcrumb.items.${routeName}.label`) ?? fallbackLabel
+          fallbackAriaLabel = resolveI18nMessage(i18n, `breadcrumb.items.${routeName}.ariaLabel`) ?? fallbackAriaLabel
         }
         else if (flatOptions.hideNonExisting) {
           return false

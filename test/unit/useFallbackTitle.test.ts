@@ -75,4 +75,18 @@ describe('useFallbackTitle', () => {
 
     expect(title.value).toBe('Articles')
   })
+
+  it('skips i18n translation when te reports the key is missing', () => {
+    const t = vi.fn(() => {
+      throw new SyntaxError('Message compilation error')
+    })
+    vi.mocked(useRoute).mockReturnValue({ path: '/docs/@harlan', meta: {}, matched: [{ name: 'docs-slug' }] } as any)
+    vi.mocked(useError).mockReturnValue(ref(null) as any)
+    vi.mocked(useNuxtApp).mockReturnValue({ $i18n: { t, te: () => false } } as any)
+
+    const title = useFallbackTitle()
+
+    expect(title.value).toBe('@harlan')
+    expect(t).not.toHaveBeenCalled()
+  })
 })

@@ -19,4 +19,17 @@ describe('fallback titles with i18n', () => {
       expect(document.title).toContain('À propos (i18n)')
     })
   })
+
+  it.each([
+    ['a|b', 'A|b'],
+    ['{foo}', '{foo}'],
+    ['foo}', 'Foo}'],
+    ['@harlan', '@harlan'],
+  ])('keeps literal fallback title for path segment %s without compiling vue-i18n syntax', async (segment, expectedTitle) => {
+    const router = useRouter()
+    await router.push(`/docs/${segment}`)
+    await vi.waitFor(() => {
+      expect(document.title).toContain(expectedTitle)
+    })
+  })
 })

@@ -1,3 +1,9 @@
+## 9.1.2
+
+[Compare changes](https://github.com/harlan-zw/nuxt-seo-utils/compare/v9.1.1...v9.1.2)
+
+- Avoid compiling URL-derived fallback labels as vue-i18n messages in `useBreadcrumbItems` and `useFallbackTitle`. [#208](https://github.com/harlan-zw/nuxt-seo-utils/pull/208)
+
 ## 9.1.1
 
 [Compare changes](https://github.com/harlan-zw/nuxt-seo-utils/compare/v9.1.0...v9.1.1)
